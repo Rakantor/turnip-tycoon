@@ -38,6 +38,14 @@ function App() {
       </a>
       <header className="site-header">
         <Link to="/" className="brand">
+          <img
+            className="brand-mark"
+            src="/icons/brand-96.webp"
+            srcSet="/icons/brand-192.webp 2x"
+            width={40}
+            height={40}
+            alt=""
+          />
           Turnip Tycoon
         </Link>
         <nav aria-label="Main navigation">

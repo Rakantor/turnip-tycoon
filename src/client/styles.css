@@ -126,6 +126,12 @@ p {
   letter-spacing: -0.8px;
   text-decoration: none;
 }
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
 .site-header nav {
   display: flex;
   align-items: center;
@@ -949,6 +955,10 @@ summary {
   .brand {
     font-size: 22px;
     gap: 8px;
+  }
+  .brand-mark {
+    width: 34px;
+    height: 34px;
   }
   .site-header nav {
     grid-row: 2;
