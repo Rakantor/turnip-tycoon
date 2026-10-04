@@ -50,44 +50,17 @@ See [.env.example](.env.example) and [.dev.vars.example](.dev.vars.example). Nev
 ## Verify
 
 ```sh
-pnpm check          # lint, strict TypeScript, production build, database/API tests
-pnpm format:check   # verify formatting
-pnpm typegen        # regenerate Worker bindings after changing wrangler.jsonc
-pnpm deploy:check   # validate the built Worker without publishing
+pnpm check          # lint, strict TypeScript, local build, unit and PostgreSQL integration tests
+pnpm format:check
+pnpm typegen        # regenerate production Worker binding types
+pnpm deploy:check   # bundle the API Worker without publishing
 ```
 
-The integration suite starts isolated, temporary PostgreSQL databases and exercises real transactions, silent identity creation, access isolation, revocation, single-use pairing and recovery, weekly ownership, concurrent saves, retry deduplication, conflict snapshots, pagination, and migrations. Group tests cover concurrent admission at capacity, admission racing the last departure, duplicate joins, overlap deduplication, membership authorization, and retained history after leaving. It does not use a production database. Calculation tests cover the four patterns, incomplete inputs, rounding, contradictions, and reproduced upstream issues. Browser checks use Playwright CLI against the running app.
+`pnpm build:pages` additionally validates and builds the GitHub Pages frontend. Set `VITE_API_URL` in `.env.pages.local` first; `.env.pages.example` shows its format. CI uses an isolated example origin when checking the Pages build, never a production database.
 
-The pnpm migration preserves the direct dependency versions and passes a clean `pnpm install --frozen-lockfile`, `pnpm check` (including all 124 tests), formatting, icon generation, and the deployment dry run. Both the development server and production preview connect to the existing local database. The dry run checks packaging without publishing.
+The integration suite starts temporary PostgreSQL databases. It covers identity creation, access isolation, device revocation, single-use pairing/recovery, cross-origin bearer authentication, weekly ownership, concurrent saves, retry deduplication, conflict snapshots, groups, and migrations. Client tests cover storage, synchronization, credential persistence and URL generation. Prediction tests cover all four patterns and audited upstream fixes.
 
-The current checkpoint passes all 124 tests across eight files, lint, all TypeScript checks, the production build, and formatting. Browser checks confirm Forecast ranges and Prediction details remain visible after heading clicks on desktop and at 320 pixels, including shared weeks; past-week controls remain read-only. A fresh profile starts with Unknown, an unambiguous preceding week defaults to Decreasing without creating history, and a saved manual Unknown survives reload. The footer credit, link, NOTICE, and Apache license render correctly. Desktop and 320-pixel layouts have no page overflow, and desktop and mobile screenshots were reviewed. No deployment or deployment dry run was performed at this checkpoint.
-
-The previous groups checkpoint passed all 104 tests (48 API/schema, 33 prediction, and 23 browser-storage/calendar tests), lint, strict TypeScript, the production build, formatting, and the deployment dry run. The group change included 12 PostgreSQL integration tests. The dry run verifies packaging without publishing or proving hosted database connectivity.
-
-At that checkpoint, Chrome checks with three independent browser profiles verified immediate access to all 13 price inputs, custom names and saved prices, group creation and sharing, and shared links that prefill a code while requiring an explicit Join action. Overlapping groups showed each player once; the then-current comparisons used reported prices for a selected period and left unknown values blank. Member weeks and past history were read-only. Leaving one group preserved access through another, while the final shared departure revoked access and cleared the shared view without deleting own prices. Desktop and 390-pixel screenshots were reviewed, with no horizontal overflow down to a 320-pixel viewport.
-
-The interactive chart and weekly group-table update passes targeted lint, strict TypeScript, the production build, all 33 prediction tests, and formatting checks. Chrome checks verify click selection of the nearest half-day with exact engine min–max values, arrow keys, Home, End, Escape, touch selection of the first and last periods, and the shared-member chart.
-
-At the prior weekly-table checkpoint, browser checks covered five members including a long name, all thirteen price columns, reported values and predicted ranges, a missing Sunday price with a valid sales-based forecast, empty weeks, inconsistent inputs, and group filters. Mobile then defaulted to By day at 390 pixels, showing Sunday plus the selected day's AM/PM values. Both day selection and Full week scrolling worked at narrow widths; names stayed fixed while scrolling, and the page itself fit a 320-pixel viewport. Desktop and mobile screenshots were reviewed. That rebuilt app passed the 320-pixel smoke check: day and full-week views fit the page, semantic column groups matched the visible days, names remained fixed at the far-right scroll position, and chart tooltips fit without overlapping the legend. Its build, strict TypeScript, and formatting checks passed.
-
-The Full week default and fixed probability grid pass lint, strict TypeScript, production build, formatting, and browser checks at 320, 390, 820, and 1280 pixels. Names and all four probabilities remain fixed and visible at the start, middle, and end of horizontal scrolling while price columns move. Both mobile views use the 2×2 probability grid, By day and day selection still work, and no page overflow occurs. The 390-pixel screenshot was reviewed.
-
-The earlier calculator checkpoint also passed its deployment dry run and desktop/phone-size Chrome checks for direct entry, typing during silent login, real forecasts, reloads, offline edits/reconnect, optional recovery, pairing, history, conflict choices, storage failures, and identity-switch races. Actual phone installation and offline opening remain part of the PWA milestone.
-
-To manually check pairing, use two independent browser profiles (or a normal and private window):
-
-1. Open the first window and enter a weekly price. No profile form is required. In Settings, optionally set a name, then choose **Create recovery code** and save it outside the app.
-2. Open the second window, then choose **Settings → Connect this device to an existing profile** and generate a connection code.
-3. In the first window's Settings, choose **Approve another device** and approve that code. Only approve a code from a device you are connecting yourself.
-4. Choose **Finish connecting** in the second window. Both windows should show the same player and saved prices. Switching profiles preserves their separate records; it does not merge them.
-5. Revoke the second device from the first. Its next authenticated request should fail.
-6. Use a third browser to recover with the saved recovery code. Save the replacement; the old recovery code must no longer work.
-
-Also check price entry with missing values, clearing a saved field, past-week navigation, reconnection after an offline edit, and conflicting edits from two connected devices. Historical controls are read-only; the server still accepts queued edits made before week rollover.
-
-For the chart, enter a Sunday price and some selling prices, then click or tap different half-days to inspect their min–max tooltips. Focus the chart and check arrow keys, Home, End, and Escape. Repeat on a member's read-only week.
-
-For groups, create a group in Friends, then copy its code or share its link with a second browser profile. Join there and enter prices. Refresh in the first profile after the cooldown to compare Sunday, reported sales, and predicted ranges in the table, then open the member's week or history. On mobile, check that Full week opens by default and scroll through Saturday while names and all four probabilities remain visible. Check the 2×2 probability grid in both Full week and the optional By day view. Join both players to a second group to verify that All friends still shows each player once. Leaving one shared group retains access through the other; leaving the final shared group removes access without deleting either player's own records.
+For browser verification, use two independent profiles to create/join a group, compare prices, connect a second device, revoke it, and recover with a one-time code. Check reloads on shared URLs, offline price edits followed by reconnection, and the horizontally scrolling full-week table at 320 pixels. The Pages build must also be tested with third-party cookies blocked.
 
 ## Structure
 
@@ -111,31 +84,51 @@ The `0001_generated_friend_codes` migration replaces legacy friend-code values w
 
 ## Access design
 
-- Opening the calculator reuses a valid device cookie or silently creates a player and session. The public friend code identifies the player; it is neither a recovery secret nor a group admission code. No recovery credential is created during bootstrap.
-- Each device has an independent random session secret, expiring after 180 days. The browser receives it in an HttpOnly, SameSite=Strict cookie; PostgreSQL stores only its SHA-256 verifier. HTTPS uses a Secure `__Host-` cookie. Insecure cookies are allowed only for loopback HTTP development.
-- Pairing begins on the new device. A temporary, high-entropy code is approved from an existing session, then claimed by the initiating browser using a separate secret cookie. Approval alone does not give the approver the new device's session.
+- Opening the calculator reuses a valid device credential or silently creates a player and session. The public friend code identifies the player; it is neither a recovery secret nor a group admission code. No recovery credential is created during bootstrap.
+- Each device has an independent random session secret, expiring after 180 days; PostgreSQL stores only its SHA-256 verifier. Local development uses an HttpOnly, SameSite=Strict cookie. Production on GitHub Pages uses an Authorization bearer token and does not depend on cross-site cookies. The browser persists its credential encrypted with a non-extractable AES-GCM key in IndexedDB. This protects against storing the raw token, but does not protect against malicious JavaScript running on the same origin. Other projects under the same `rakantor.github.io` origin share that security boundary.
+- Pairing begins on the new device. A temporary, high-entropy code is approved from an existing session, then claimed by the initiating browser using a separate secret: a cookie locally or an in-memory token in the initiating Pages tab. Approval alone does not give the approver the new device's session.
 - Pairing expires after ten minutes. Revoking the approving device invalidates its outstanding challenges.
 - Recovery codes are generated only when requested in Settings. Codes are single-use: successful recovery atomically replaces the code and issues a new independent session. Existing devices can be revoked in Settings.
 - Authenticated mutations serialize against the player record and revalidate the session inside the transaction. Other players cannot supply an ownership ID to change these records.
 - Weekly saves use immutable mutation IDs, payload hashes, and base revisions. Replaying an acknowledged request returns its original revision; a conflicting edit returns the current server snapshot for review. Browser caches are separated by player, and authenticated requests assert the expected player to prevent a stale tab from uploading into a newly connected profile.
 - Group codes grant admission, while generated player friend codes identify players. Membership changes serialize against the group record to enforce capacity and atomically delete empty groups. Shared reads hold group locks through membership checks and data reads; another player's week or history is available only while a current shared group permits it. Group membership never grants editing rights.
-- Mutations require a same-origin request; body-bearing endpoints accept bounded JSON with strict validation. API responses are not cacheable. Session tokens and recovery codes are never saved to browser local storage or logged by the application.
+- Production browser requests allow exactly the configured `FRONTEND_ORIGIN`; preflight validation runs before opening a database connection. Bearer mutations require that origin and protected endpoints still require the device credential. Local cookie mutations retain same-origin checks. Body-bearing endpoints accept bounded JSON with strict validation. API responses are not cacheable. Recovery codes are never persisted by the application, and credentials are never logged. Encrypted device credentials and public profile metadata are saved together; stale identity responses must not overwrite a recovered or paired identity.
 
 The `turnip_private` database schema is outside Supabase's default exposed schemas. All application tables enable row-level security without public policies. Keep this schema out of the Supabase Data API. The backend expects a trusted database role that owns these tables, or a role with both explicit schema/table privileges and BYPASSRLS. Browsers never receive database credentials or a Supabase service key.
 
-## Hosted connection checkpoint
+## Deploy to GitHub Pages and Cloudflare
 
-The local Worker → Hyperdrive development binding → PostgreSQL path can be verified here. A deployed Worker → Hyperdrive → **Supabase** connection still requires real service configuration; the all-zero Hyperdrive ID in `wrangler.jsonc` is a local placeholder, not a provisioned resource.
+The frontend is served at `https://rakantor.github.io/turnip-tycoon/`. Its Pages build uses hash routes, such as `/turnip-tycoon/#/settings`, so direct links work on GitHub's static hosting. Vite rebases assets to `/turnip-tycoon/`, and generated invite/pairing URLs preserve that path.
 
-To complete that checkpoint:
+The API runs separately at `https://turnip-tycoon.rakantor-dev.workers.dev` on Cloudflare Workers after deployment. `wrangler.jsonc` contains the production Hyperdrive ID, bearer authentication mode, and allowed frontend origin. The Hyperdrive ID is a non-secret resource identifier; database passwords and Cloudflare API tokens must stay out of Git. Database credentials are stored in Hyperdrive. The Worker requires no separate database-password secret.
 
-1. Choose the Supabase project and apply migrations through a direct PostgreSQL connection with the trusted backend role.
-2. Create a Cloudflare Hyperdrive configuration for Supabase's **direct PostgreSQL endpoint**. Disable query caching for this application; authentication, revocation, and membership checks require current data.
-3. Replace the placeholder Hyperdrive ID in `wrangler.jsonc` with that configuration's ID. Keep production credentials in Cloudflare/Supabase configuration.
-4. Run the checks, build, and deployment dry run. When ready to publish, deploy the built Worker with Wrangler and check `/api/health`, silent bootstrap, weekly saves, groups and membership revocation, pairing, recovery, and device revocation over HTTPS.
+`wrangler.dev.jsonc` is exclusively for local development and preview. It uses the embedded local database and cookie authentication. The deployment commands always specify the production configuration explicitly, so a previous Vite preview build cannot redirect a production deployment to the local configuration.
 
-The code does not provision paid services or publish a production deployment. Real Android/iOS installation and offline verification belong to the PWA milestone.
+1. Apply the SQL migrations to Supabase using `DATABASE_URL` in the ignored `.env`, then run `pnpm db:migrate`. From an IPv4-only computer, copy the complete **Session pooler** connection string on port **5432**; its username and hostname differ from Direct. Use TLS with certificate verification for hosted migration connections (`sslmode=verify-full` and `sslrootcert` pointing to the downloaded Supabase CA certificate).
+2. Configure Hyperdrive with Supabase's **Direct connection** endpoint on port **5432**. Disable query caching so authentication, revocation, membership, and saved-price reads are current. Hyperdrive handles its own pooling; the local migration pooler choice does not change this setting.
+3. Sign into Cloudflare with `pnpm exec wrangler login`. Run `pnpm check` and `pnpm deploy:check`, then publish the API with `pnpm deploy:api`. Save the resulting `https://turnip-tycoon.<subdomain>.workers.dev` origin.
+4. In the GitHub repository, set **Settings → Pages → Source** to **GitHub Actions**. Under **Settings → Secrets and variables → Actions**, add repository variable `VITE_API_URL` with that API origin. It is public configuration and must contain no credentials, path, or query string.
+5. Run the **Deploy GitHub Pages** workflow. It validates the project, builds `dist/pages`, and publishes only that static directory. Both deployment workflows are manual (`workflow_dispatch`), so pushing code does not publish automatically.
+6. To deploy the API through GitHub Actions, create an appropriately scoped Cloudflare API token, save it as the `CLOUDFLARE_API_TOKEN` Actions secret, and add the `CLOUDFLARE_ACCOUNT_ID` repository variable. Then run **Deploy API Worker**. The job uses the `production` GitHub environment, where deployment protection rules can be configured.
+7. Verify the API `/api/health` response and the hosted frontend's silent bootstrap, price saves/reloads, groups, pairing, recovery, and device revocation. Real-device PWA installation and reliable offline opening remain a separate milestone.
 
-References: [Cloudflare React + Vite](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/), [Drizzle and pg through Hyperdrive](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/), [Supabase direct connection](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/supabase/), [Hyperdrive query caching](https://developers.cloudflare.com/hyperdrive/concepts/query-caching/).
+For a production Pages build, put the deployed API origin in `.env.pages.local` and run `pnpm build:pages`. To preview the complete setup locally, first leave `pnpm db:local` running (or reuse the database started by `pnpm dev`). Start a local bearer-mode Worker in another terminal:
+
+```sh
+pnpm exec wrangler dev --config wrangler.jsonc --ip 127.0.0.1 --port 8787 --var FRONTEND_ORIGIN:http://localhost:4174
+```
+
+Build and serve the Pages frontend in a third terminal:
+
+```sh
+VITE_API_URL=http://127.0.0.1:8787 pnpm build:pages
+VITE_API_URL=http://127.0.0.1:8787 pnpm preview:pages
+```
+
+Open `http://localhost:4174/turnip-tycoon/`. This uses the local database, not Supabase. The production origin allowlist intentionally rejects localhost pages. Rebuild with `pnpm build:pages` before publishing to restore the production API origin.
+
+The frontend build receives only public `VITE_` configuration. `.env` is for migration tooling. `secrets.required` is empty in both Worker configs so Wrangler does not infer migration credentials as Worker secrets or generated bindings.
+
+References: [Cloudflare Supabase connection](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/supabase/), [Hyperdrive query caching](https://developers.cloudflare.com/hyperdrive/concepts/query-caching/), [Supabase connection methods](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL verification](https://supabase.com/docs/guides/platform/ssl-enforcement), [GitHub Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 The prediction engine is adapted from [Turnip Prophet](https://github.com/mikebryant/ac-nh-turnip-prices), pinned to `c7b7ab3614faf61686da3c535cf204ef568d4cdb`. Its Apache 2.0 license, NOTICE, and copyright attribution are distributed with the app. The [engine audit](src/prediction/UPSTREAM_AUDIT.md) records reproduced small-spike fixes, input conventions, and remaining approximation limits. Compatibility with the current game version is not yet independently verified.
