@@ -413,6 +413,7 @@ function WeekCalculator({
               </Button>
             </div>
           )}
+          {identity.status === 'ready' && identity.error && <Notice>{identity.error}</Notice>}
           {conflict && (
             <div className="conflict-panel" role="alert">
               <h3>Another device changed this week</h3>

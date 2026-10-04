@@ -9,8 +9,9 @@ import type {
   Player,
   SessionResponse,
 } from '../shared/api';
-import { request } from './data/api';
+import { isCurrentIdentityResponse, request } from './data/api';
 import { Button, defaultDeviceName, Field, messageOf, Notice, useApp } from './ui';
+import { appUrl } from './urls';
 
 function RecoveryCode({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -57,6 +58,8 @@ function Profile() {
         method: 'PATCH',
         body: { displayName: form.get('displayName') },
       });
+      if (!isCurrentIdentityResponse(result))
+        throw new Error('Your profile changed. Please try again.');
       await adopt({ ...session, player: result.player });
       setDisplayName(result.player.displayName);
       setSaved(true);
@@ -297,9 +300,11 @@ function RecoverySettings() {
         method: 'POST',
         body: {},
       });
+      if (!isCurrentIdentityResponse(result))
+        throw new Error('Your profile changed. Please try again.');
+      await adopt({ ...session, hasRecoveryCode: true });
       setCode(result.recoveryCode);
       setConfirming(false);
-      await adopt({ ...session, hasRecoveryCode: true });
     } catch (error) {
       setError(messageOf(error));
     } finally {
@@ -358,6 +363,7 @@ export function Settings() {
       <div className="page-heading">
         <h1>Settings</h1>
       </div>
+      {identity.session && identity.error && <Notice>{identity.error}</Notice>}
       {identity.session ? (
         <>
           <Profile />
@@ -384,10 +390,12 @@ export function Settings() {
             <Button
               secondary
               onClick={() => {
-                void identity.retry();
+                void (identity.creationInterrupted
+                  ? identity.restartInterruptedCreation()
+                  : identity.retry());
               }}
             >
-              Retry connection
+              {identity.creationInterrupted ? 'Start a new profile' : 'Retry connection'}
             </Button>
             <Link to="/">Back to prices</Link>
           </div>
@@ -414,7 +422,7 @@ function AccessPage({ title, children }: { title: string; children: ReactNode })
 }
 
 export function Connect() {
-  const { adopt } = useApp();
+  const { adopt, beginIdentityChange } = useApp();
   const navigate = useNavigate();
   const [pairing, setPairing] = useState<PairingResponse | null>(null);
   const [busy, setBusy] = useState(false);
@@ -425,6 +433,7 @@ export function Connect() {
     setBusy(true);
     setError('');
     try {
+      beginIdentityChange();
       setPairing(
         await request<PairingResponse>('/pairing', {
           method: 'POST',
@@ -441,6 +450,7 @@ export function Connect() {
     setBusy(true);
     setError('');
     try {
+      beginIdentityChange();
       const result = await request<SessionResponse>('/pairing/complete', {
         method: 'POST',
         body: {},
@@ -453,7 +463,7 @@ export function Connect() {
       setBusy(false);
     }
   }
-  const url = pairing ? `${location.origin}/settings?pair=${encodeURIComponent(pairing.code)}` : '';
+  const url = pairing ? appUrl(`/settings?pair=${encodeURIComponent(pairing.code)}`) : '';
   return (
     <AccessPage title="Connect an existing profile">
       <p>
@@ -535,7 +545,7 @@ export function Connect() {
 }
 
 export function Recover() {
-  const { adopt } = useApp();
+  const { adopt, beginIdentityChange } = useApp();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [newCode, setNewCode] = useState('');
@@ -545,6 +555,7 @@ export function Recover() {
     setBusy(true);
     setError('');
     try {
+      beginIdentityChange();
       const result = await request<AccessResponse>('/recovery', {
         method: 'POST',
         body: { code: form.get('code'), deviceName: form.get('deviceName') },

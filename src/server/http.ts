@@ -1,11 +1,64 @@
 import type { Context } from 'hono';
 import { getCookie, setCookie } from 'hono/cookie';
 import type { z } from 'zod';
+import type { AppEnvironment } from './app';
 import { ApiError } from './errors';
 
 export const SESSION_SECONDS = 180 * 24 * 60 * 60;
 export const PAIRING_SECONDS = 10 * 60;
 const MAX_BODY_BYTES = 16 * 1024;
+const CORS_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE'];
+const CORS_HEADERS = ['authorization', 'content-type', 'x-player-id', 'x-pairing-token'];
+
+export type CredentialMode = 'cookie' | 'bearer';
+
+export function validateFrontendOrigin(origin: string | undefined): string {
+  if (origin) {
+    try {
+      const url = new URL(origin);
+      if (
+        url.origin === origin &&
+        (url.protocol === 'https:' ||
+          (url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)))
+      )
+        return origin;
+    } catch {
+      // Configuration errors must fail closed before accepting any credentials.
+    }
+  }
+  throw new Error('Bearer authentication requires a valid FRONTEND_ORIGIN.');
+}
+
+/** Handle browser policy before opening a database connection, including OPTIONS. */
+export function crossOriginRequest(c: Context, frontendOrigin: string): Response | undefined {
+  c.header('Vary', 'Origin', { append: true });
+  const origin = c.req.header('Origin');
+  const mutation = !['GET', 'HEAD', 'OPTIONS'].includes(c.req.method);
+  if (
+    (origin !== undefined && origin !== frontendOrigin) ||
+    ((mutation || c.req.method === 'OPTIONS') && origin !== frontendOrigin)
+  )
+    throw new ApiError(403, 'INVALID_ORIGIN', 'Open this request from the app.');
+
+  if (origin === frontendOrigin) c.header('Access-Control-Allow-Origin', frontendOrigin);
+  if (c.req.method !== 'OPTIONS') return;
+
+  const requestedMethod = c.req.header('Access-Control-Request-Method');
+  const requestedHeaders = c.req.header('Access-Control-Request-Headers');
+  if (
+    !requestedMethod ||
+    !CORS_METHODS.includes(requestedMethod) ||
+    (requestedHeaders !== undefined &&
+      requestedHeaders
+        .split(',')
+        .some((header) => !CORS_HEADERS.includes(header.trim().toLowerCase())))
+  )
+    throw new ApiError(403, 'INVALID_PREFLIGHT', 'This browser request is not allowed.');
+
+  c.header('Access-Control-Allow-Methods', CORS_METHODS.join(', '));
+  c.header('Access-Control-Allow-Headers', CORS_HEADERS.join(', '));
+  return c.body(null, 204);
+}
 
 export function secureTransport(c: Context): boolean {
   const url = new URL(c.req.url);
@@ -19,12 +72,25 @@ function cookieName(c: Context, kind: 'session' | 'pairing'): string {
   return `${secureTransport(c) ? '__Host-' : ''}turnip-${kind}`;
 }
 
-export function readCredential(c: Context, kind: 'session' | 'pairing'): string | undefined {
-  const token = getCookie(c, cookieName(c, kind));
+export function readCredential(
+  c: Context<AppEnvironment>,
+  kind: 'session' | 'pairing',
+): string | undefined {
+  const token =
+    c.get('credentialMode') === 'bearer'
+      ? kind === 'session'
+        ? /^Bearer ([a-f0-9]{64})$/i.exec(c.req.header('Authorization') ?? '')?.[1]
+        : c.req.header('X-Pairing-Token')
+      : getCookie(c, cookieName(c, kind));
   return token && /^[a-f0-9]{64}$/.test(token) ? token : undefined;
 }
 
-export function writeCredential(c: Context, kind: 'session' | 'pairing', token: string): void {
+export function writeCredential(
+  c: Context<AppEnvironment>,
+  kind: 'session' | 'pairing',
+  token: string,
+): void {
+  if (c.get('credentialMode') === 'bearer') return;
   setCookie(c, cookieName(c, kind), token, {
     httpOnly: true,
     secure: secureTransport(c),

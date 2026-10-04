@@ -6,11 +6,14 @@ import { findSession, lockPlayer, newDevice, sessionHash, withSession } from './
 import { ApiError } from './errors';
 import {
   checkOrigin,
+  crossOriginRequest,
   PAIRING_SECONDS,
   readCredential,
   readJson,
   secureTransport,
+  validateFrontendOrigin,
   writeCredential,
+  type CredentialMode,
 } from './http';
 import { formatCode, hashSecret, randomCode, randomToken } from './secrets';
 import {
@@ -24,7 +27,12 @@ import {
 import { registerWeekRoutes } from './weeks';
 import { registerGroupRoutes } from './groups';
 
-export type AppEnvironment = { Variables: { db: Database } };
+export type AppEnvironment = { Variables: { db: Database; credentialMode: CredentialMode } };
+
+export interface AppOptions {
+  frontendOrigin?: string;
+  credentialMode?: CredentialMode;
+}
 
 function pairingUnavailable() {
   return new ApiError(
@@ -34,8 +42,11 @@ function pairingUnavailable() {
   );
 }
 
-export function createApp(databaseUrl: string) {
+export function createApp(databaseUrl: string, options: AppOptions = {}) {
   const app = new Hono<AppEnvironment>();
+  const credentialMode = options.credentialMode ?? 'cookie';
+  const frontendOrigin =
+    credentialMode === 'bearer' ? validateFrontendOrigin(options.frontendOrigin) : undefined;
 
   app.onError((error, c) => {
     if (error instanceof ApiError)
@@ -51,11 +62,15 @@ export function createApp(databaseUrl: string) {
   });
 
   app.use('/api/*', async (c, next) => {
+    c.set('credentialMode', credentialMode);
     c.header('Cache-Control', 'no-store');
     c.header('X-Content-Type-Options', 'nosniff');
     c.header('Referrer-Policy', 'no-referrer');
     secureTransport(c);
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(c.req.method)) checkOrigin(c);
+    if (frontendOrigin) {
+      const response = crossOriginRequest(c, frontendOrigin);
+      if (response) return response;
+    } else if (!['GET', 'HEAD', 'OPTIONS'].includes(c.req.method)) checkOrigin(c);
     await next();
   });
 
@@ -65,7 +80,7 @@ export function createApp(databaseUrl: string) {
     try {
       // A browser can switch players while another tab still has its prior
       // player's cache open. This assertion prevents saving that cache into the
-      // newly connected identity; authorization always comes from the cookie.
+      // newly connected identity; authorization comes from the device credential.
       const expectedPlayer = c.req.header('X-Player-Id');
       if (
         expectedPlayer &&
@@ -101,7 +116,11 @@ export function createApp(databaseUrl: string) {
     const token = readCredential(c, 'session');
     if (token) {
       try {
-        return c.json(await findSession(c.get('db'), await hashSecret(token)));
+        const session = await findSession(c.get('db'), await hashSecret(token));
+        return c.json({
+          ...session,
+          ...(credentialMode === 'bearer' ? { sessionToken: token } : {}),
+        });
       } catch (error) {
         if (!(error instanceof ApiError) || error.status !== 401) throw error;
       }
@@ -121,7 +140,12 @@ export function createApp(databaseUrl: string) {
     });
     writeCredential(c, 'session', result.token);
     return c.json(
-      { player: result.player, deviceId: result.deviceId, hasRecoveryCode: false },
+      {
+        player: result.player,
+        deviceId: result.deviceId,
+        hasRecoveryCode: false,
+        ...(credentialMode === 'bearer' ? { sessionToken: result.token } : {}),
+      },
       201,
     );
   };
@@ -212,7 +236,14 @@ export function createApp(databaseUrl: string) {
         expiresAt,
       });
     writeCredential(c, 'pairing', claim);
-    return c.json({ code: formatCode(code), expiresAt: expiresAt.toISOString() }, 201);
+    return c.json(
+      {
+        code: formatCode(code),
+        expiresAt: expiresAt.toISOString(),
+        ...(credentialMode === 'bearer' ? { pairingToken: claim } : {}),
+      },
+      201,
+    );
   });
 
   app.post('/api/pairing/approve', async (c) => {
@@ -311,6 +342,7 @@ export function createApp(databaseUrl: string) {
       player: result.player,
       deviceId: result.deviceId,
       hasRecoveryCode: result.hasRecoveryCode,
+      ...(credentialMode === 'bearer' ? { sessionToken: result.token } : {}),
     });
   });
 
@@ -354,6 +386,7 @@ export function createApp(databaseUrl: string) {
       deviceId: result.deviceId,
       hasRecoveryCode: true,
       recoveryCode: formatCode(recoveryCode),
+      ...(credentialMode === 'bearer' ? { sessionToken: result.token } : {}),
     });
   });
 

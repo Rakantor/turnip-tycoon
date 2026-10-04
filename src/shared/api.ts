@@ -11,7 +11,12 @@ export interface SessionResponse {
   hasRecoveryCode: boolean;
 }
 
-export interface AccessResponse extends SessionResponse {
+// Credentials belong to the API transport, never the cached player metadata.
+export interface SessionCredentialsResponse extends SessionResponse {
+  sessionToken?: string;
+}
+
+export interface AccessResponse extends SessionCredentialsResponse {
   recoveryCode: string;
 }
 
@@ -26,6 +31,7 @@ export interface Device {
 export interface PairingResponse {
   code: string;
   expiresAt: string;
+  pairingToken?: string;
 }
 
 export interface ApiErrorResponse {

@@ -1,5 +1,6 @@
 import { Dexie, type Table } from 'dexie';
 import type { WeekMutation, WeekRecord } from '../../shared/week';
+import { identityNamespace } from './api-config';
 
 export interface LocalWeek {
   key: string;
@@ -23,4 +24,4 @@ export class TurnipDatabase extends Dexie {
     this.version(1).stores({ weeks: 'key,owner,weekStart', meta: 'key' });
   }
 }
-export const database = new TurnipDatabase();
+export const database = new TurnipDatabase(identityNamespace);
