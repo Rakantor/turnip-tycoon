@@ -28,6 +28,7 @@ import { assetUrl, hashRouting } from './urls';
 import { startPwa, usePwa } from './pwa';
 import { UpdateNotice } from './pwa-ui';
 import { startInstallPromptCapture } from './pwa-install';
+import './fonts.css';
 import './styles.css';
 
 function ScrollToPage() {
@@ -70,23 +71,23 @@ function App() {
               className="brand-mark"
               src={assetUrl('icons/brand-96.webp')}
               srcSet={`${assetUrl('icons/brand-192.webp')} 2x`}
-              width={40}
-              height={40}
+              width={48}
+              height={48}
               alt=""
             />
             Turnip Tycoon
           </Link>
           <nav aria-label="Main navigation">
             <NavLink to="/" end>
-              <CalendarDays size={16} aria-hidden="true" />
+              <CalendarDays size={18} aria-hidden="true" />
               Prices
             </NavLink>
             <NavLink to="/groups">
-              <Users size={16} aria-hidden="true" />
+              <Users size={18} aria-hidden="true" />
               Friends
             </NavLink>
             <NavLink to="/history">
-              <HistoryIcon size={16} aria-hidden="true" />
+              <HistoryIcon size={18} aria-hidden="true" />
               History
             </NavLink>
           </nav>
@@ -96,7 +97,7 @@ function App() {
             aria-label="Settings"
             title="Settings"
           >
-            <SettingsIcon size={19} aria-hidden="true" />
+            <SettingsIcon size={20} aria-hidden="true" />
           </NavLink>
         </header>
         <ScrollToPage />

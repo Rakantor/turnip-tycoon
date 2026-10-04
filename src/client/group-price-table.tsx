@@ -1,4 +1,4 @@
-import { Fragment, useId, useMemo, useState } from 'react';
+import { Fragment, useId, useMemo } from 'react';
 import { Link } from 'react-router';
 import { ArrowLeftRight } from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
@@ -17,20 +17,23 @@ function PriceCell({
   value,
   prediction,
   slot,
+  now = false,
 }: {
   value: number | null;
   prediction: PredictionResult;
   slot?: number;
+  now?: boolean;
 }) {
   const period =
     slot === undefined ? 'Sunday buy' : `${DAYS[Math.floor(slot / 2)]} ${slot % 2 ? 'PM' : 'AM'}`;
   const range =
     slot !== undefined && prediction.status === 'possible' ? prediction.slots[slot] : null;
+  const className = now ? 'price-now' : undefined;
   if (value !== null) {
     return (
-      <td>
+      <td className={className}>
         <span
-          className="group-price-value price-reported"
+          className={`group-price-value ${slot === undefined ? 'price-buy' : 'price-reported'}`}
           title={`${period}: ${value} bells reported`}
         >
           {value}
@@ -41,7 +44,7 @@ function PriceCell({
   }
   if (range) {
     return (
-      <td>
+      <td className={className}>
         <span
           className="group-price-value price-predicted"
           title={`${period}: possible minimum ${range.min}, maximum ${range.max} bells`}
@@ -53,7 +56,7 @@ function PriceCell({
     );
   }
   return (
-    <td className="group-price-missing">
+    <td className={`group-price-missing${now ? ' price-now' : ''}`}>
       <span aria-hidden="true">—</span>
       <span className="sr-only">Not entered{slot !== undefined && ', no forecast available'}</span>
     </td>
@@ -63,14 +66,13 @@ function PriceCell({
 export function GroupPriceTable({
   players,
   owner,
+  currentSlot = null,
 }: {
   players: SharedPlayerWeek[];
   owner: string;
+  currentSlot?: number | null;
 }) {
   const id = useId();
-  const [view, setView] = useState<'week' | 'day'>('week');
-  const [day, setDay] = useState(() => Math.max(0, new Date().getDay() - 1));
-  const daily = view === 'day';
   const rows = useMemo(
     () =>
       [...players]
@@ -86,54 +88,30 @@ export function GroupPriceTable({
         }),
     [players],
   );
-  const slots = daily ? [day * 2, day * 2 + 1] : Array.from({ length: 12 }, (_, index) => index);
+  const slots = Array.from({ length: 12 }, (_, index) => index);
   return (
-    <div className={`group-price-overview${daily ? ' price-view-day' : ' price-view-week'}`}>
-      <div className="price-table-toolbar">
-        <div className="segmented-control" aria-label="Price table view">
-          <button type="button" aria-pressed={!daily} onClick={() => setView('week')}>
-            Full week
-          </button>
-          <button type="button" aria-pressed={daily} onClick={() => setView('day')}>
-            By day
-          </button>
-        </div>
-        {daily && (
-          <label className="period-select">
-            Day
-            <select value={day} onChange={(event) => setDay(Number(event.target.value))}>
-              {DAYS.map((label, index) => (
-                <option key={label} value={index}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-      </div>
+    <div className="group-price-overview">
       <div className="price-table-legend" id={`${id}-legend`}>
         <span>
           <i className="price-key-reported" />
-          Reported price
+          Reported
         </span>
         <span>
           <i className="price-key-predicted" />
-          Predicted min–max
+          Could be (min–max)
         </span>
         <span>— Unavailable</span>
       </div>
-      {!daily && (
-        <p className="price-table-scroll-hint" id={`${id}-scroll`}>
-          <ArrowLeftRight size={14} aria-hidden="true" />
-          Scroll through prices. Names and probabilities stay in place.
-        </p>
-      )}
+      <p className="price-table-scroll-hint" id={`${id}-scroll`}>
+        <ArrowLeftRight size={14} aria-hidden="true" />
+        Swipe through the week. Names and pattern odds stay in place.
+      </p>
       <div
         className="group-price-scroll"
         role="region"
-        aria-label={daily ? `${DAYS[day]} group prices` : 'Full week group prices'}
-        aria-describedby={`${id}-legend${daily ? '' : ` ${id}-scroll`}`}
-        tabIndex={daily ? undefined : 0}
+        aria-label="Full week group prices"
+        aria-describedby={`${id}-legend ${id}-scroll`}
+        tabIndex={0}
       >
         <table className="group-price-table">
           <caption className="sr-only">
@@ -146,28 +124,33 @@ export function GroupPriceTable({
           <colgroup>
             <col className="price-buy-column" />
           </colgroup>
-          {(daily ? [day] : [0, 1, 2, 3, 4, 5]).map((dayIndex) => (
-            <colgroup key={dayIndex} span={2} />
+          {DAYS.map((day) => (
+            <colgroup key={day} span={2} />
           ))}
           <thead>
             <tr>
               <th scope="col" rowSpan={2} className="price-name-cell">
-                Player
+                Island
               </th>
               <th scope="col" rowSpan={2}>
                 Sun<span className="price-header-detail">Buy</span>
               </th>
-              {(daily ? [DAYS[day]] : DAYS).map((label) => (
+              {DAYS.map((label) => (
                 <th key={label} scope="colgroup" colSpan={2}>
-                  {daily ? label : label.slice(0, 3)}
+                  {label.slice(0, 3)}
                 </th>
               ))}
             </tr>
             <tr>
               {slots.map((slot) => (
-                <th key={slot} scope="col">
+                <th
+                  key={slot}
+                  scope="col"
+                  className={slot === currentSlot ? 'price-now' : undefined}
+                >
                   <span className="sr-only">{DAYS[Math.floor(slot / 2)]} </span>
                   {slot % 2 ? 'PM' : 'AM'}
+                  {slot === currentSlot && <span className="sr-only"> (now)</span>}
                 </th>
               ))}
             </tr>
@@ -176,9 +159,7 @@ export function GroupPriceTable({
             {rows.map(({ player, week, prediction, patterns }) => (
               <Fragment key={player.id}>
                 <tr
-                  className={
-                    prediction.status === 'possible' ? 'price-row-with-patterns' : undefined
-                  }
+                  className={`${prediction.status === 'possible' ? 'price-row-with-patterns' : ''}${player.id === owner ? ' price-row-self' : ''}`}
                 >
                   <th scope="row" className="price-name-cell">
                     <Link
@@ -207,11 +188,14 @@ export function GroupPriceTable({
                       slot={slot}
                       value={week.prices[slot]}
                       prediction={prediction}
+                      now={slot === currentSlot}
                     />
                   ))}
                 </tr>
                 {prediction.status === 'possible' && (
-                  <tr className="price-pattern-row">
+                  <tr
+                    className={`price-pattern-row${player.id === owner ? ' price-row-self' : ''}`}
+                  >
                     <td colSpan={slots.length + 2}>
                       <div className="price-pattern-summary">
                         <ul

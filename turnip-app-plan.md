@@ -1,7 +1,7 @@
 # Turnip Tycoon — Implementation Plan
 
 Updated: 4 October 2026  
-Status: Weekly-table calculation, silent access, weekly storage/sync, history, and friend groups are implemented. The interface follows the sibling `turnipcc` prototype, with interactive chart tooltips, complete pattern probabilities, and mobile price tables that scroll independently of names and probabilities. GitHub Pages builds now include project-scoped service-worker caching, offline reopening, Settings installation controls, and user-controlled updates that preserve local writes. These PWA changes have not been deployed. Physical Android/iOS installation, recovery, and offline-use verification remain release checks.
+Status: Weekly-table calculation, silent access, weekly storage/sync, history, and friend groups are implemented. The interface uses the Island Ledger design chosen from a three-direction exploration: a sand-and-cream look drawn from the raccoon mascot, the mascot's weekly advice, a week board with forecast-range placeholders, a half-day bar chart with anchored tooltips, and Right now / Full week friend comparisons. GitHub Pages builds now include project-scoped service-worker caching, offline reopening, Settings installation controls, and user-controlled updates that preserve local writes. These PWA changes have not been deployed. Physical Android/iOS installation, recovery, and offline-use verification remain release checks.
 
 App name: Turnip Tycoon.
 
@@ -9,7 +9,7 @@ App name: Turnip Tycoon.
 
 Build a free Animal Crossing: New Horizons turnip calculator that helps friends decide where and when to sell their turnips.
 
-The app takes inspiration from Turnip Prophet and Turnip-Calculator, with its refreshed visual direction based on the sibling `turnipcc` prototype. Its primary task is entering weekly prices and calculating forecasts. It opens directly to that task, with a weekly table and no landing page or signup flow. Retained history and sharing across groups of friends support the calculator.
+The app takes inspiration from Turnip Prophet and Turnip-Calculator, with the Island Ledger visual direction built around the raccoon mascot. Its primary task is entering weekly prices and calculating forecasts. It opens directly to that task, with a weekly table and no landing page or signup flow. Retained history and sharing across groups of friends support the calculator.
 
 The first release will be a responsive website and installable progressive web app (PWA) for Android and iOS. It will use Cloudflare Workers and Supabase PostgreSQL. Growth should be driven by actual resource usage rather than an authentication provider's monthly active user charges.
 
@@ -35,7 +35,7 @@ This document consolidates the final decisions from planning. The implementation
 | Uploads | Upload a player's edits immediately when online, independently of the pull cooldown. |
 | Time | Use the current device's local calendar and clock. Do not save or share a player time zone. |
 | Price records | Store the week, day, AM/PM slot, and price. No exact observation or edit timestamp is required. |
-| Entry screen | Open directly to the current week's Sunday price and twelve AM/PM inputs, preserving design A's weekly table within the refreshed cream-and-plum interface. |
+| Entry screen | Open directly to the current week's Sunday price and twelve AM/PM inputs: day tickets on desktop and design A's full-week grid on tablets and phones, within the Island Ledger interface. |
 | Access | Silently create/reuse a player and device session. No email, password, social signup, or login screen before price entry. |
 | Friend code | Generate a unique, immutable app friend code for each player. Nintendo friend codes are not part of the app. |
 | Display name | Initially the generated friend code; optionally change the name in Settings. |
@@ -92,7 +92,7 @@ Do not use Supabase Auth, including its anonymous-user feature, for these player
 
 ## 4. Groups and shared visibility
 
-Group APIs and the Friends screen are implemented. A compact friends panel supports the opening calculator, and the Friends screen provides group creation, joining, sharing, leaving, selected-group comparisons, and All friends. Membership is optional and never blocks price entry. Friends are the players visible through shared groups; a separate individual friend-request system is outside this model.
+Group APIs and the Friends screen are implemented. A friends postcard on the opening calculator names the best price shared for the current half-day, and the Friends screen provides group creation, joining, sharing, leaving, selected-group comparisons, and All friends. Membership is optional and never blocks price entry. Friends are the players visible through shared groups; a separate individual friend-request system is outside this model.
 
 Creating a group creates its first membership and generates its share code. The creator has exactly the same capabilities as every other member.
 
@@ -216,20 +216,24 @@ Clear errors and a Waiting to sync state should distinguish local edits from con
 
 ## 7. Main screens
 
-The structure retains **A: Weekly table**, with a visual refresh inspired by the sibling `turnipcc` prototype. A warm cream background, plum accents, rounded cards, and compact Prices / Friends / History / Settings tabs make the calculator easier to scan. The root route is the current week, with a separate Sunday purchase input and six weekday rows containing AM and PM fields. The desktop forecast sits beside the inputs; on mobile it follows the table. Prediction details and available forecast ranges stay visible, access management stays in Settings, and a compact friends comparison supports the calculator without interrupting price entry.
+The structure retains **A: Weekly table** inside the **Island Ledger** visual direction (design B), chosen from a three-direction exploration. A dotted sand background, cream cards with chunky borders and offset shadows, leaf-green actions, gold highlights, and the Fredoka and Nunito typefaces draw on the raccoon mascot. Desktop uses pill navigation; phones use a full-width bottom tab bar for Prices, Friends, and History, with Settings in the header.
+
+The root route is the current week. The mascot opens it with plain-language advice in a speech bubble, followed by a separate Sunday purchase input and six days of AM and PM fields: a row of day tickets on desktop, and a compact full-week grid beside the forecast on tablets and above it on phones, so the whole week is visible at a glance on a phone. Empty fields show their forecast range as a placeholder. Prediction inputs sit in a collapsible Week settings panel that summarises the current values, access management stays in Settings, and a friends postcard supports the calculator without interrupting price entry.
 
 | Screen | Purpose |
 |---|---|
-| My Prices | Sunday purchase price, twelve weekly selling slots, prediction inputs, possible patterns, ranges, and an interactive chart. The compact friends panel compares reported prices for one selected period. |
-| Friends | Create or join groups, compare Sunday buy prices, reported sales and predictions in a weekly table, refresh, share codes/links, and leave. |
-| All friends | Compare all distinct players available through current memberships in the same full-week or By day table. |
+| My Prices | Mascot advice, Sunday purchase price, twelve weekly selling slots with forecast-range placeholders, collapsible prediction inputs, pattern probabilities, and an interactive chart. A friends postcard names the best price shared for the current half-day and links to Friends. |
+| Friends | Create or join groups; compare players Right now (a best-price card and per-player mini week graphs for a selected period) or for the Full week (a weekly table of Sunday buy prices, reported sales, and predictions); refresh, share codes/links, and leave. |
+| All friends | Compare all distinct players available through current memberships in the same Right now and Full week views. |
 | Member week and history | Read another member's full weekly inputs, forecasts, and paginated history while a current shared group permits access. |
 | History | Browse previous weeks and charts in read-only form. |
 | Settings | Editable display name, read-only generated friend code, paired devices, optional recovery, and attribution. Export remains planned. |
 
 ### Exploring the forecast
 
-Clicking or tapping a half-day in the graph opens a tooltip with its potential minimum and maximum in bells per turnip, plus its reported price when available. The selected half-day is marked on the graph. Keyboard users can focus the chart, move with arrow keys, jump with Home or End, and dismiss the tooltip with Escape. Own weeks, history, and shared member weeks use the same chart component; available Forecast ranges stay visible below the chart without a disclosure control.
+The chart shows each half-day as a column: reported prices as dots, unentered half-days as min–max bars, and a dashed line at the purchase price. Every column is labelled AM or PM beneath its day name. Clicking or tapping anywhere in a column opens a tooltip anchored above that half-day with its potential minimum and maximum in bells per turnip, or the reported price, and the change against the purchase price. The selected half-day is marked on the chart. The tooltip lets taps pass through to other columns, may cover the card heading, and stays within the card. Keyboard users reach the chart as one tab stop, move with the arrow keys, jump with Home or End, and dismiss the tooltip with Escape. Own weeks, history, and shared member weeks use the same chart component. The separate Forecast ranges table was removed; ranges appear in the chart and in empty price fields.
+
+The mascot's advice restates only what the forecast supports: the most likely pattern and the highest price still possible in the remaining half-days. When several half-days share that peak, it names the window instead of a single half-day and marks no best day. It recommends selling only when the current reported price meets or beats every remaining possibility. A single best day, when one exists, is marked on the week board and the chart. The current day is marked Today, including Sunday.
 
 ### Comparing selling opportunities
 
@@ -237,11 +241,11 @@ Distinguish observed prices from predictions. A possible future peak must not be
 
 Display the day and AM/PM slot explicitly. With no shared time zone or observation timestamp, the app cannot establish whether another player's shop currently offers a displayed value. Use wording such as Best reported price for the selected period, rather than claiming universal live availability.
 
-The Friends screen shows one row per member, including their name, Sunday buy price, and Monday–Saturday AM/PM cells. Reported values appear in solid green cells. Missing selling observations show possible min–max ranges in dashed purple cells when a forecast exists; they do not become reported prices. Missing Sunday prices are never inferred. Empty or inconsistent weeks leave unavailable cells as “—” and show a forecast status while preserving entered values.
+The Friends screen shows one row per member, including their name, Sunday buy price, and Monday–Saturday AM/PM cells. Reported values appear in solid green cells. Missing selling observations show possible min–max ranges in dashed gold cells when a forecast exists; they do not become reported prices. Missing Sunday prices are never inferred. Empty or inconsistent weeks leave unavailable cells as “—” and show a forecast status while preserving entered values.
 
-Full week is the default at every screen width. At narrow widths, only the price columns scroll horizontally; names and all four selling-pattern probabilities stay in place. The probabilities use a 2×2 grid on mobile in both Full week and By day. The optional By day view keeps the member's name, Sunday buy price, and a selected day's AM/PM values together. The opening calculator's compact friends list retains its selected-period, reported-price comparison. Unknown reported prices remain unknown; do not promote an old high price to the current slot.
+Right now is the default view. It compares one selected period, initially the current half-day. A best-price card names the highest reported selling price, or the lowest Sunday buy price, with that player's most likely pattern and a link to their week. Every other player follows with their reported value for the period and a twelve-column mini graph on a shared scale, in which reported prices are solid bars and forecast ranges are floating bars. Full week shows the weekly table: at narrow widths, only the price columns scroll horizontally; names and all four selling-pattern probabilities stay in place, the probabilities use a 2×2 grid on mobile, and the current half-day's column is highlighted. Right now's period selection replaces the former By day view. The calculator's friends postcard names the best price shared by another player for the current half-day, or says that none is shared yet. Unknown reported prices remain unknown; do not promote an old high price to the current slot.
 
-The weekly-table structure and prototype-inspired visual direction are agreed. The app name and specific chart/component libraries remain implementation choices. Prioritise readable mobile inputs, accessible controls, and clear forecasts; avoid adding a community landing experience.
+The weekly structure and the Island Ledger visual direction are agreed. The app name and specific chart/component libraries remain implementation choices. Prioritise readable mobile inputs, accessible controls, and clear forecasts; avoid adding a community landing experience.
 
 ## 8. Technology stack
 
@@ -251,6 +255,7 @@ The weekly-table structure and prototype-inspired visual direction are agreed. T
 | Frontend | React with Vite. |
 | Navigation | React Router used as a routing library. |
 | App delivery | GitHub Pages PWA with a manifest, regular/maskable install icons, scoped static precaching, and user-controlled updates. |
+| Typefaces | Fredoka and Nunito variable fonts, self-hosted Latin subsets from Fontsource, precached for offline use. |
 | Local data | IndexedDB through Dexie. |
 | API | Hono running on Cloudflare Workers. |
 | Database | Supabase-hosted PostgreSQL. |
@@ -439,6 +444,8 @@ The prior weekly-table checkpoint passed targeted lint, strict TypeScript, produ
 
 The Full week default and fixed probability grid pass lint, strict TypeScript, production build, formatting, and browser checks at 320, 390, 820, and 1280 pixels. Names and all four probabilities remain fixed and visible at the start, middle, and end of horizontal scrolling while price columns move. Both mobile views use the 2×2 probability grid, By day and day selection still work, and no page overflow occurs. The 390-pixel screenshot was reviewed; see [CONTRIBUTING.md](CONTRIBUTING.md) for verification details.
 
+Island Ledger checkpoint (4 October 2026): the redesign replaces the Full week default and By day view described above with Right now and Full week, removes the Forecast ranges table, and moves the selected-period comparison from the calculator to Friends. The suite passes 200 tests, including advice regressions for likely spikes, tied peaks, selling now, confident declines, cautious early weeks, completed weeks, and past weeks. Lint, strict TypeScript, production and Pages builds, and formatting pass; the Pages worker precaches the four font files and the 384-pixel mascot. Browser checks at 320, 390, 860, and 1280 pixels cover day tickets and the phone grid with every weekday visible above the tab bar at 390×844, a full-width tab bar, the Sunday Today marker, anchored tooltips by click and keyboard that stay within the card and pass taps through, Right now and Full week with three profiles, shared weeks, Settings, History, empty and past weeks, and no page overflow.
+
 - Implement unlimited group creation and joining by code.
 - Enforce the configurable eight-member limit.
 - Add Share, Leave, and empty-group deletion.
@@ -484,7 +491,8 @@ Completion check: calculation regressions, access controls, sync behaviour, and 
 - [x] The previous groups checkpoint passed refreshed desktop/mobile layouts and three-profile sharing, comparison, history, and access-revocation browser flows.
 - [x] The prior weekly-table checkpoint passed browser verification for chart click/tap and keyboard tooltips, the weekly group table, mobile By day, and full-week scrolling with fixed names.
 - [x] That rebuilt app passed its 320-pixel browser smoke check for table scrolling, fixed names, semantic column groups, and tooltips clear of the legend.
-- [x] Full week defaults at every width; browser checks from 320 to 1280 pixels verify fixed names and probabilities during horizontal price scrolling, no page overflow, and the mobile 2×2 probability grid in both views.
+- [x] Full week (the default until the Island Ledger redesign) keeps names and probabilities fixed during horizontal price scrolling from 320 to 1280 pixels, without page overflow and with the mobile 2×2 probability grid.
+- [x] The Island Ledger checkpoint passes 200 tests, lint, TypeScript checks, production and Pages builds, and formatting. Browser checks at 320, 390, 860, and 1280 pixels cover the week board, the full phone week above the tab bar, anchored chart tooltips with keyboard control, Right now and Full week, shared weeks, Settings, and History.
 - [x] Current checkpoint passes 124 tests, lint, TypeScript checks, production build, and formatting. Browser checks verify always-visible forecast and prediction sections on own/shared weeks, read-only past controls, Unknown and inferred new-week defaults without an automatic history entry, saved Unknown after reload, footer attribution, and layouts without overflow at 1280 and 320 pixels. Desktop and 320-pixel screenshots were reviewed.
 - [x] One player maps directly to one set of island prices; no island entity exists.
 - [x] Players can belong to multiple groups and create any number of groups.
@@ -526,7 +534,7 @@ The following are not required for the first release:
 - End-to-end encryption or peer-to-peer synchronisation.
 - An email, password, or social authentication provider.
 
-The product name, domain, production service configuration, and exact dependency versions remain implementation-time choices. The accepted visual direction combines the weekly table with cream, plum, rounded cards, and compact navigation inspired by `turnipcc`. Immediate price entry and optional friend groups remain the product model.
+The product name, domain, production service configuration, and exact dependency versions remain implementation-time choices. The accepted visual direction is Island Ledger: the weekly table and full-week phone grid with sand, cream, leaf green, gold, chunky rounded cards, and the mascot's advice. Immediate price entry and optional friend groups remain the product model.
 
 ## 15. Additional implementation references
 

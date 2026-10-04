@@ -145,7 +145,12 @@ function SharedWeekContent({ player, week }: SharedWeekResponse) {
             </dl>
           </section>
         </section>
-        <Forecast prediction={prediction} prices={week.prices} shared />
+        <Forecast
+          prediction={prediction}
+          prices={week.prices}
+          purchasePrice={week.purchasePrice}
+          shared
+        />
       </div>
     </>
   );

@@ -1,28 +1,30 @@
 .about-footer {
   max-width: 640px;
   width: calc(100% - 32px);
-  margin: 20px auto 24px;
+  margin: 20px auto 28px;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 14px;
+  font-weight: 700;
   text-align: center;
 }
 
 .about-footer a,
 .about-footer button {
-  color: var(--accent);
+  color: var(--leaf-dark);
 }
 
 .about-footer pre {
+  max-height: 40vh;
+  overflow: auto;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: 0.75rem;
+  font-weight: 400;
   text-align: left;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 0.75rem;
-  max-height: 40vh;
-  overflow: auto;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px;
 }
 
 .about-license-error {
@@ -33,6 +35,7 @@
   padding: 0;
   border: 0;
   background: none;
+  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
 }

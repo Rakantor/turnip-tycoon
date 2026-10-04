@@ -1,101 +1,104 @@
-.price-table-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 0 0 16px;
-}
 .price-table-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 18px;
-  font-size: 11px;
+  gap: 8px 18px;
+  margin-bottom: 14px;
   color: var(--muted);
-  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 700;
 }
 .price-table-legend > span {
   display: inline-flex;
-  gap: 6px;
   align-items: center;
+  gap: 6px;
 }
 .price-table-legend i {
-  width: 15px;
-  height: 12px;
-  border-radius: 3px;
+  width: 22px;
+  height: 14px;
+  border-radius: 5px;
 }
 .price-key-reported {
-  background: #edf4e7;
-  border: 1px solid #64844f;
+  background: var(--leaf-soft);
 }
 .price-key-predicted {
-  background: #f5f0fa;
-  border: 1px dashed #9e84bb;
+  border: 1.5px dashed var(--gold-strong);
+}
+.price-table-scroll-hint {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  margin: -4px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
 }
 .group-price-scroll {
   position: relative;
-  container-type: inline-size;
   max-width: 100%;
   overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  container-type: inline-size;
+  border: 2px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 5px 0 var(--border);
+  scrollbar-color: var(--gold-line) var(--soft);
   scrollbar-width: thin;
-  scrollbar-color: #c1adce #f7f3f9;
-}
-.group-price-scroll:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
 }
 .group-price-table {
   width: 100%;
-  min-width: 944px;
+  min-width: 960px;
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 .group-price-table .price-name-column {
-  width: 146px;
+  width: 150px;
 }
 .group-price-table .price-buy-column {
-  width: 66px;
+  width: 68px;
 }
 .group-price-table th,
 .group-price-table td {
+  padding: 10px 3px;
+  border-top: 1px dashed var(--border);
   text-align: center;
-  border-bottom: 1px solid var(--border);
-  padding: 12px 3px;
 }
 .group-price-table thead th {
-  background: #f7f3fa;
-  color: var(--accent);
-  font-size: 11px;
+  padding: 10px 3px 4px;
+  border-top: 0;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-size: 15px;
   font-weight: 600;
-  padding: 10px 3px;
-}
-.group-price-table thead tr:first-child > th[colspan] {
-  border-bottom-color: #ebe3f1;
 }
 .group-price-table thead tr:last-child th {
-  color: var(--muted);
-  font-size: 10px;
-  padding: 6px 3px;
+  padding: 2px 3px 8px;
+  color: var(--subtle);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
 }
-.group-price-table thead tr:first-child > th,
-.group-price-table tbody td:nth-child(even),
-.group-price-table thead tr:last-child th:nth-child(even) {
-  border-right: 1px solid #eee8e1;
+.group-price-table thead tr:last-child th.price-now {
+  color: var(--leaf-dark);
 }
-.group-price-table tbody tr:last-child > * {
-  border-bottom: 0;
+.group-price-table .price-now {
+  background: #f6d77c38;
 }
 .group-price-table .price-row-with-patterns > * {
-  border-bottom: 0;
-  padding-bottom: 7px;
+  padding-bottom: 6px;
 }
 .group-price-table .price-pattern-row > td {
   padding: 0;
+  border-top: 0;
+  background: none;
+}
+.price-row-self > * {
+  background: #fffbea;
+}
+.group-price-table .price-row-self > .price-now {
+  background: #f9e7a8;
 }
 .price-pattern-summary {
   position: sticky;
@@ -103,116 +106,115 @@
   width: 100cqi;
   max-width: 100%;
   padding: 2px 10px 12px;
-  background: var(--surface);
 }
 .price-pattern-probabilities {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
-  list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .price-pattern-probabilities li {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 6px;
-  padding: 6px 9px;
-  border-radius: 5px;
-  background: #f5f0fa;
-  color: var(--accent);
-  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--leaf-soft);
+  color: var(--leaf-dark);
+  font-size: 12px;
+  font-weight: 700;
   text-align: left;
 }
 .price-pattern-probabilities strong {
-  font-weight: 650;
+  font-weight: 800;
   white-space: nowrap;
 }
 .price-pattern-probabilities .pattern-ruled-out {
+  background: var(--soft);
   color: var(--muted);
-  background: #f7f5f1;
 }
 .group-price-table .price-name-cell {
   position: sticky;
   left: 0;
   z-index: 1;
-  text-align: left;
-  padding: 14px 12px;
+  padding: 12px;
+  border-right: 2px solid var(--border);
   background: var(--surface);
-  border-right: 1px solid var(--border);
+  text-align: left;
+}
+.group-price-table .price-row-self .price-name-cell {
+  background: #fffbea;
 }
 .group-price-table thead .price-name-cell {
-  background: #f7f3fa;
   z-index: 2;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: bottom;
 }
 .price-player-link {
   color: var(--text);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
   text-decoration: none;
-  font-size: 12px;
-  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 .price-player-link:hover {
-  color: var(--accent);
+  color: var(--leaf-dark);
   text-decoration: underline;
 }
 .price-name-cell .you-label {
-  margin-left: 5px;
-  padding: 1px 4px;
+  margin-left: 6px;
 }
 .price-forecast-status,
 .price-header-detail {
   display: block;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.45;
-  font-weight: 400;
-  margin-top: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 .group-price-value {
   display: block;
-  white-space: nowrap;
+  margin: 0 2px;
   padding: 7px 1px;
-  border-radius: 5px;
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  white-space: nowrap;
 }
 .price-reported {
-  color: #496c36;
-  background: #edf4e7;
-  font-weight: 700;
+  background: var(--leaf-soft);
+  color: var(--leaf-dark);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+}
+.price-buy {
+  background: var(--pink-faint);
+  color: var(--clay);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
 }
 .price-predicted {
-  color: #74508f;
-  background: #faf7fc;
-  border: 1px dashed #d6c6e4;
-  font-size: 11px;
+  border: 1.5px dashed var(--gold-strong);
+  color: var(--gold-text);
+  font-size: 12px;
+  font-weight: 800;
 }
 .group-price-missing {
-  color: var(--muted);
-}
-.price-table-scroll-hint {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.65;
-  margin: 12px 0 16px;
-}
-.price-table-scroll-hint {
-  display: none;
-  align-items: center;
-  gap: 7px;
-}
-.price-view-day .group-price-table {
-  min-width: 0;
-}
-.price-view-day .price-name-column {
-  width: 34%;
-}
-.price-view-day .price-buy-column {
-  width: 18%;
-}
-.price-view-day .price-predicted {
-  font-size: 12px;
+  color: var(--subtle);
+  font-weight: 700;
 }
 @media (max-width: 1050px) {
   .price-table-scroll-hint {
@@ -226,32 +228,21 @@
   }
   .price-pattern-probabilities li {
     flex-wrap: wrap;
-    padding: 6px;
-    gap: 2px 6px;
+    gap: 0 6px;
+    padding: 5px 9px;
+    border-radius: 12px;
+    font-size: 11.5px;
   }
-  .group-price-table .price-name-cell {
-    padding: 12px 8px;
-  }
-  .price-view-week .price-name-column {
+  .group-price-table .price-name-column {
     width: 112px;
   }
-  .price-view-day .group-price-table td {
-    padding: 12px 2px;
+  .group-price-table .price-name-cell {
+    padding: 10px 8px;
   }
-  .price-view-day .price-pattern-row > td {
-    padding: 0;
+  .price-player-link {
+    font-size: 15px;
   }
   .price-pattern-summary {
     padding: 2px 6px 12px;
-  }
-  .price-player-link {
-    font-size: 11px;
-  }
-  .price-view-day .price-predicted {
-    font-size: 11px;
-  }
-  .price-table-toolbar .period-select {
-    width: 100%;
-    justify-content: space-between;
   }
 }

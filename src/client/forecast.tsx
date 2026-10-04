@@ -1,347 +1,400 @@
-import { useId, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
-import { Sparkles } from 'lucide-react';
-import type { PredictionResult } from '../prediction';
+import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { Sparkles, X } from 'lucide-react';
+import type { PatternId, PredictionResult, PriceRange } from '../prediction';
 import { Notice } from './ui';
 import './forecast.css';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const PATTERNS: { id: PatternId; label: string }[] = [
+  { id: 'fluctuating', label: 'Fluctuating' },
+  { id: 'large-spike', label: 'Large spike' },
+  { id: 'decreasing', label: 'Decreasing' },
+  { id: 'small-spike', label: 'Small spike' },
+];
+
+export function rangeLabel({ min, max }: PriceRange): string {
+  return min === max ? String(min) : `${min}–${max}`;
+}
+
+function change(price: number, purchasePrice: number): number {
+  return Math.round((price / purchasePrice - 1) * 100);
+}
+
+function signed(value: number): string {
+  return value > 0 ? `+${value}%` : value < 0 ? `−${Math.abs(value)}%` : '±0%';
+}
 
 function ForecastChart({
   prediction,
   prices,
+  purchasePrice,
+  currentSlot,
+  bestSlot,
 }: {
   prediction: PredictionResult;
   prices: (number | null)[];
+  purchasePrice: number | null;
+  currentSlot: number | null;
+  bestSlot: number | null;
 }) {
   const id = useId();
-  const svgRef = useRef<SVGSVGElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const width = 480;
-  const height = 230;
-  const left = 35;
-  const right = 12;
-  const top = 15;
-  const bottom = 45;
+  const columns = useRef<(HTMLButtonElement | null)[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [focusable, setFocusable] = useState(currentSlot ?? 0);
   const ceiling =
     Math.ceil(
       Math.max(
         100,
         ...prediction.slots.map((slot) => slot.max),
         ...prices.map((price) => price ?? 0),
+        purchasePrice ?? 0,
       ) / 100,
     ) * 100;
-  const x = (index: number) => left + (index * (width - left - right)) / 11;
-  const y = (price: number) => height - bottom - (price / ceiling) * (height - top - bottom);
-  const upper = prediction.slots.map((slot, index) => `${x(index)},${y(slot.max)}`).join(' ');
-  const lower = [...prediction.slots]
-    .reverse()
-    .map((slot, index) => `${x(11 - index)},${y(slot.min)}`)
-    .join(' ');
-  const ticks = [0, ceiling / 2, ceiling];
-  const activeIndex = selectedIndex ?? 0;
-  const activeSlot = prediction.slots[activeIndex];
-  const selectedDay = DAYS[Math.floor(activeIndex / 2)];
-  const selectedPeriod = activeIndex % 2 ? 'PM' : 'AM';
-  const reportedPrice = prices[activeIndex];
-  const selectedDescription = `${selectedDay} ${selectedPeriod}: potential minimum ${activeSlot.min} bells, maximum ${activeSlot.max} bells.${reportedPrice !== null ? ` Reported price: ${reportedPrice} bells.` : ''}`;
+  // The top 8% of the plot stays clear so a tooltip has room above the tallest bar.
+  const height = (price: number) => `${(price / ceiling) * 92}%`;
+  const describe = (index: number) => {
+    const price = prices[index];
+    const slot = prediction.slots[index];
+    return `${DAYS[Math.floor(index / 2)]} ${index % 2 ? 'PM' : 'AM'}: ${
+      price !== null
+        ? `you entered ${price} bells`
+        : slot.min === slot.max
+          ? `expected ${slot.min} bells`
+          : `could be ${slot.min} to ${slot.max} bells`
+    }`;
+  };
 
-  function selectAtPointer(event: MouseEvent<HTMLDivElement>) {
-    const svg = svgRef.current;
-    const matrix = svg?.getScreenCTM();
-    if (!svg || !matrix) return;
-    const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
-    const nearest = Math.round(((point.x - left) / (width - left - right)) * 11);
-    setSelectedIndex(Math.max(0, Math.min(11, nearest)));
-    event.currentTarget.focus({ preventScroll: true });
+  function select(index: number, focus = false) {
+    setSelected(index);
+    setFocusable(index);
+    if (focus) columns.current[index]?.focus();
   }
 
-  function selectWithKeyboard(event: KeyboardEvent<HTMLDivElement>) {
-    let nextIndex = activeIndex;
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'ArrowUp':
-        nextIndex = Math.min(11, activeIndex + 1);
-        break;
-      case 'ArrowLeft':
-      case 'ArrowDown':
-        nextIndex = Math.max(0, activeIndex - 1);
-        break;
-      case 'Home':
-        nextIndex = 0;
-        break;
-      case 'End':
-        nextIndex = 11;
-        break;
-      case 'Enter':
-      case ' ':
-        break;
-      case 'Escape':
-        event.preventDefault();
-        setSelectedIndex(null);
-        return;
-      default:
-        return;
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const target =
+      event.key === 'ArrowRight' || event.key === 'ArrowUp'
+        ? Math.min(11, index + 1)
+        : event.key === 'ArrowLeft' || event.key === 'ArrowDown'
+          ? Math.max(0, index - 1)
+          : event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? 11
+              : null;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setSelected(null);
+    } else if (target !== null) {
+      event.preventDefault();
+      select(target, true);
     }
-    event.preventDefault();
-    setSelectedIndex(nextIndex);
+  }
+
+  const active = selected === null ? null : prediction.slots[selected];
+  const activePrice = selected === null ? null : prices[selected];
+  const center = selected === null ? 0 : ((selected + 0.5) / 12) * 100;
+  // The tooltip points at the top of the selected bar, or at the entered price's dot.
+  const anchor =
+    selected === null || !active
+      ? '0px'
+      : `calc(${height(activePrice ?? active.max)} + ${activePrice === null ? 10 : 18}px)`;
+  const tooltip = useRef<HTMLDivElement>(null);
+  const tail = useRef<HTMLSpanElement>(null);
+
+  // Sit just above the anchor, but slide down onto a very tall bar rather than
+  // leaving the card: the tooltip may cover the heading, never the page around it.
+  useLayoutEffect(() => {
+    const place = () => {
+      const box = tooltip.current;
+      const pointer = tail.current;
+      const card = box?.closest('.forecast-card');
+      if (!box || !pointer || !card) return;
+      box.style.bottom = `calc(${anchor} + 8px)`;
+      pointer.style.bottom = anchor;
+      const overflow = Math.ceil(
+        card.getBoundingClientRect().top + 8 - box.getBoundingClientRect().top,
+      );
+      if (overflow > 0) {
+        box.style.bottom = `calc(${anchor} + 8px - ${overflow}px)`;
+        pointer.style.bottom = `calc(${anchor} - ${overflow}px)`;
+      }
+    };
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
+  }, [anchor, selected]);
+  let note: { text: string; tone: string } | null = null;
+  if (selected !== null && purchasePrice !== null && active) {
+    if (activePrice !== null) {
+      const value = change(activePrice, purchasePrice);
+      note = { text: `${signed(value)} vs. what you paid`, tone: value >= 0 ? 'up' : 'down' };
+    } else {
+      const low = change(active.min, purchasePrice);
+      const high = change(active.max, purchasePrice);
+      note = {
+        text:
+          low === high
+            ? `${signed(low)} vs. what you paid`
+            : `${signed(low)} to ${signed(high)} vs. what you paid`,
+        tone: low >= 0 ? 'up' : high <= 0 ? 'down' : 'mixed',
+      };
+    }
   }
 
   return (
-    <div className="forecast-interaction">
-      <p id={`${id}-instructions`} className="forecast-chart-instructions">
-        Tap or click a half-day to see its range.
-        <span className="sr-only">
-          {' '}
-          Use arrow keys to move between half-days, Home or End to jump to the first or last
-          half-day, and Escape to dismiss the tooltip.
-        </span>
+    <div className="forecast-chart">
+      <p id={`${id}-instructions`} className="sr-only">
+        Select a half-day to see its possible range. Use the arrow keys to move between half-days,
+        Home or End to jump to the first or last, and Escape to close the details.
       </p>
-      <div className="forecast-chart-wrap">
-        <div
-          className="chart-scroll forecast-chart-control"
-          role="slider"
-          tabIndex={0}
-          aria-label="Weekly price forecast, half-day"
-          aria-describedby={`${id}-instructions`}
-          aria-valuemin={0}
-          aria-valuemax={11}
-          aria-valuenow={activeIndex}
-          aria-valuetext={selectedDescription}
-          onClick={selectAtPointer}
-          onFocus={() => setSelectedIndex((current) => current ?? 0)}
-          onKeyDown={selectWithKeyboard}
-        >
-          <svg
-            ref={svgRef}
-            className="forecast-chart"
-            viewBox={`0 0 ${width} ${height}`}
-            role="img"
-            aria-labelledby={`${id}-title ${id}-description`}
-          >
-            <desc id={`${id}-description`}>
-              The shaded area shows possible minimum and maximum prices. Solid dots are prices you
-              entered. Select a half-day for its exact range, or see Forecast ranges below.
-            </desc>
-            {ticks.map((tick) => (
-              <g key={tick}>
-                <line
-                  x1={left}
-                  x2={width - right}
-                  y1={y(tick)}
-                  y2={y(tick)}
-                  className="chart-grid"
-                />
-                <text x={left - 6} y={y(tick) + 4} textAnchor="end" className="chart-label">
-                  {tick}
-                </text>
-              </g>
-            ))}
-            <polygon points={`${upper} ${lower}`} className="chart-range" />
-            <polyline points={upper} className="chart-bound" />
-            <polyline
-              points={[...prediction.slots]
-                .map((slot, index) => `${x(index)},${y(slot.min)}`)
-                .join(' ')}
-              className="chart-bound"
-            />
-            {prices.map(
-              (price, index) =>
-                price !== null && (
-                  <g key={index}>
-                    {index > 0 && prices[index - 1] !== null && (
-                      <line
-                        x1={x(index - 1)}
-                        y1={y(prices[index - 1]!)}
-                        x2={x(index)}
-                        y2={y(price)}
-                        className="chart-observed-line"
-                      />
-                    )}
-                    <circle cx={x(index)} cy={y(price)} r={4} className="chart-observed">
-                      <title>
-                        {DAYS[Math.floor(index / 2)]} {index % 2 ? 'PM' : 'AM'}: {price} bells
-                        reported
-                      </title>
-                    </circle>
-                  </g>
-                ),
-            )}
-            {selectedIndex !== null && (
-              <g className="chart-selection" aria-hidden="true">
-                <line
-                  x1={x(selectedIndex)}
-                  x2={x(selectedIndex)}
-                  y1={top}
-                  y2={height - bottom}
-                  className="chart-selection-guide"
-                />
-                {[activeSlot.min, activeSlot.max].map((price, index) => (
-                  <circle
-                    key={index}
-                    cx={x(selectedIndex)}
-                    cy={y(price)}
-                    r={4.5}
-                    className="chart-selection-point"
-                  />
-                ))}
-              </g>
-            )}
-            {prediction.slots.map((slot, index) => (
-              <text
-                key={index}
-                x={x(index)}
-                y={height - bottom + 18}
-                textAnchor="middle"
-                className="chart-label"
-              >
-                <tspan x={x(index)}>{DAYS[Math.floor(index / 2)].slice(0, 3)}</tspan>
-                <tspan x={x(index)} dy="14">
-                  {index % 2 ? 'PM' : 'AM'}
-                </tspan>
-                <title>
-                  {slot.min}–{slot.max} bells
-                </title>
-              </text>
-            ))}
-          </svg>
+      <div className="chart-plot">
+        <div className="chart-guides" aria-hidden="true">
+          {[ceiling / 2, ceiling].map((tick) => (
+            <span key={tick} className="chart-gridline" style={{ bottom: height(tick) }}>
+              <span>{tick}</span>
+            </span>
+          ))}
+          {purchasePrice !== null && (
+            <span className="chart-buy-line" style={{ bottom: height(purchasePrice) }} />
+          )}
         </div>
-        {selectedIndex !== null && (
-          <div
-            className="forecast-chart-tooltip"
-            role="tooltip"
-            style={{ left: `clamp(90px, ${(x(selectedIndex) / width) * 100}%, calc(100% - 90px))` }}
+        <div
+          className="chart-columns"
+          role="group"
+          aria-label="Weekly price forecast by half-day"
+          aria-describedby={`${id}-instructions`}
+        >
+          {prediction.slots.map((slot, index) => {
+            const price = prices[index];
+            const classes = [
+              'chart-column',
+              selected === index && 'is-selected',
+              currentSlot === index && 'is-now',
+              bestSlot === index && 'is-best',
+            ]
+              .filter(Boolean)
+              .join(' ');
+            return (
+              <button
+                key={index}
+                ref={(element) => {
+                  columns.current[index] = element;
+                }}
+                type="button"
+                className={classes}
+                aria-label={describe(index)}
+                aria-pressed={selected === index}
+                tabIndex={index === focusable ? 0 : -1}
+                onClick={() => (selected === index ? setSelected(null) : select(index))}
+                onKeyDown={(event) => onKeyDown(event, index)}
+              >
+                <span className="chart-track">
+                  {price === null ? (
+                    <span
+                      className="chart-bar"
+                      style={{ bottom: height(slot.min), height: height(slot.max - slot.min) }}
+                    />
+                  ) : (
+                    <>
+                      <span className="chart-dot" style={{ bottom: height(price) }} />
+                      <span className="chart-dot-label" style={{ bottom: height(price) }}>
+                        {price}
+                      </span>
+                    </>
+                  )}
+                </span>
+                <span className="chart-half">{index % 2 ? 'PM' : 'AM'}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="chart-overlay" aria-live="polite">
+          {selected !== null && active && (
+            <>
+              <div
+                ref={tooltip}
+                className="chart-tooltip"
+                style={{
+                  left: `clamp(var(--tip-half), ${center}%, calc(100% - var(--tip-half)))`,
+                }}
+              >
+                <div className="chart-tooltip-heading">
+                  <strong>
+                    {DAYS[Math.floor(selected / 2)]} {selected % 2 ? 'PM' : 'AM'}
+                  </strong>
+                  <button
+                    type="button"
+                    className="chart-tooltip-close"
+                    aria-label="Close half-day details"
+                    onClick={() => {
+                      setSelected(null);
+                      columns.current[selected]?.focus();
+                    }}
+                  >
+                    <X size={14} aria-hidden="true" />
+                  </button>
+                </div>
+                {activePrice !== null ? (
+                  <dl className="chart-tooltip-values">
+                    <div>
+                      <dt>You entered</dt>
+                      <dd className="value-entered">{activePrice}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <dl className="chart-tooltip-values">
+                    <div>
+                      <dt>Low</dt>
+                      <dd>{active.min}</dd>
+                    </div>
+                    <span className="chart-tooltip-dash" aria-hidden="true">
+                      –
+                    </span>
+                    <div>
+                      <dt>High</dt>
+                      <dd className="value-high">{active.max}</dd>
+                    </div>
+                  </dl>
+                )}
+                <p className={`chart-tooltip-note${note ? ` note-${note.tone}` : ''}`}>
+                  {note?.text ?? 'bells per turnip'}
+                </p>
+              </div>
+              <span
+                ref={tail}
+                className="chart-tooltip-tail"
+                style={{ left: `${center}%` }}
+                aria-hidden="true"
+              />
+            </>
+          )}
+        </div>
+      </div>
+      <div className="chart-days" aria-hidden="true">
+        {DAYS.map((day, dayIndex) => (
+          <span
+            key={day}
+            className={
+              selected !== null && Math.floor(selected / 2) === dayIndex ? 'is-selected' : undefined
+            }
           >
-            <strong className="forecast-tooltip-day">
-              {selectedDay} <span>{selectedPeriod}</span>
-            </strong>
-            <dl className="forecast-tooltip-range">
-              <div>
-                <dt>Min</dt>
-                <dd>{activeSlot.min}</dd>
-              </div>
-              <div>
-                <dt>Max</dt>
-                <dd>{activeSlot.max}</dd>
-              </div>
-            </dl>
-            <span className="forecast-tooltip-unit">potential bells per turnip</span>
-            {reportedPrice !== null && (
-              <span className="forecast-tooltip-reported">Reported: {reportedPrice} bells</span>
-            )}
-          </div>
-        )}
+            {day.slice(0, 3)}
+          </span>
+        ))}
       </div>
     </div>
+  );
+}
+
+function PatternOdds({ prediction }: { prediction: PredictionResult }) {
+  const id = useId();
+  const patterns = PATTERNS.map((pattern) => ({
+    ...pattern,
+    probability: prediction.patterns.find((result) => result.id === pattern.id)?.probability ?? 0,
+  })).sort((left, right) => right.probability - left.probability);
+  return (
+    <section className="pattern-card" aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`}>This week’s pattern</h2>
+      <ul className="pattern-list" aria-label="Possible patterns">
+        {patterns.map((pattern) => (
+          <li
+            key={pattern.id}
+            className={pattern.probability === 0 ? 'pattern-ruled-out' : undefined}
+          >
+            <span className="pattern-name">{pattern.label}</span>
+            <strong>
+              {pattern.probability === 0
+                ? 'Ruled out'
+                : pattern.probability < 0.001
+                  ? '<0.1%'
+                  : `${(pattern.probability * 100).toFixed(1)}%`}
+            </strong>
+            <span className="probability-track" aria-hidden="true">
+              <span style={{ width: `${pattern.probability * 100}%` }} />
+            </span>
+          </li>
+        ))}
+      </ul>
+      {prediction.tolerance > 0 && (
+        <p className="hint">
+          These matches allow a {prediction.tolerance}-bell rounding difference.
+        </p>
+      )}
+      <p className="hint">
+        Ranges show possible outcomes, not a guarantee. Each new price helps narrow them down.
+      </p>
+    </section>
   );
 }
 
 export function Forecast({
   prediction,
   prices,
+  purchasePrice,
+  currentSlot = null,
+  bestSlot = null,
   shared = false,
 }: {
   prediction: PredictionResult;
   prices: (number | null)[];
+  purchasePrice: number | null;
+  currentSlot?: number | null;
+  bestSlot?: number | null;
   shared?: boolean;
 }) {
+  const id = useId();
   return (
-    <aside className="forecast" aria-labelledby="forecast-title">
-      {prediction.status === 'needs-input' && (
-        <div className="forecast-empty">
-          <span className="forecast-empty-icon">
-            <Sparkles size={27} aria-hidden="true" />
-          </span>
-          <p>{shared ? 'No forecast yet.' : 'A little data goes a long way.'}</p>
-          <p className="muted">
-            {shared
-              ? 'This player hasn’t entered prices for this week.'
-              : 'Add the prices you know. Leave the rest blank.'}
-          </p>
-        </div>
-      )}
-      {prediction.status === 'inconsistent' && (
-        <Notice>
-          {shared
-            ? 'No pattern matches these reported prices.'
-            : 'No pattern matches these prices. Check your entries and prediction details. Your prices have been kept.'}
-        </Notice>
-      )}
-      {prediction.status === 'possible' && (
-        <>
-          <ForecastChart prediction={prediction} prices={prices} />
-          <div className="chart-legend">
-            <span>
-              <i className="legend-range" /> Possible range
-            </span>
-            <span>
-              <i className="legend-dot" /> Entered price
-            </span>
-          </div>
-          <ul className="pattern-list" aria-label="Possible patterns">
-            {prediction.patterns.map((pattern) => (
-              <li key={pattern.id}>
-                <span>{pattern.label}</span>
-                <strong>
-                  {pattern.probability < 0.001 ? '<0.1' : (pattern.probability * 100).toFixed(1)}%
-                </strong>
-                <span className="probability-track" aria-hidden="true">
-                  <span style={{ width: `${pattern.probability * 100}%` }} />
+    <div className="forecast">
+      <section className="forecast-card" aria-labelledby={`${id}-title`}>
+        <div className="forecast-card-heading">
+          <h2 id={`${id}-title`}>How the week could go</h2>
+          {prediction.status === 'possible' && (
+            <div className="chart-legend" aria-hidden="true">
+              <span>
+                <i className="legend-dot" /> {shared ? 'Reported' : 'Your price'}
+              </span>
+              <span>
+                <i className="legend-range" /> Could be
+              </span>
+              {purchasePrice !== null && (
+                <span>
+                  <i className="legend-buy" /> {shared ? 'Bought for' : 'You paid'} {purchasePrice}
                 </span>
-              </li>
-            ))}
-          </ul>
-          {prediction.tolerance > 0 && (
-            <p className="hint">
-              These matches allow a {prediction.tolerance}-bell rounding difference.
-            </p>
+              )}
+            </div>
           )}
-          <section className="forecast-ranges" aria-labelledby="forecast-ranges-title">
-            <h3 id="forecast-ranges-title" className="forecast-section-heading">
-              Forecast ranges
-            </h3>
-            <table>
-              <caption className="sr-only">
-                Possible price ranges for every morning and afternoon, in bells
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Day</th>
-                  <th scope="col">AM</th>
-                  <th scope="col">PM</th>
-                </tr>
-              </thead>
-              <tbody>
-                {DAYS.map((day, dayIndex) => (
-                  <tr key={day}>
-                    <th scope="row">{day.slice(0, 3)}</th>
-                    {[0, 1].map((period) => {
-                      const index = dayIndex * 2 + period;
-                      const slot = prediction.slots[index];
-                      return (
-                        <td key={period}>
-                          {prices[index] !== null ? (
-                            <>
-                              <strong>{prices[index]}</strong>
-                              <span className="sr-only"> reported</span>
-                            </>
-                          ) : slot.min === slot.max ? (
-                            slot.min
-                          ) : (
-                            `${slot.min}–${slot.max}`
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-          <p className="hint forecast-note">
-            Ranges show possible outcomes, not a guarantee. Each new price helps narrow them down.
-          </p>
-        </>
-      )}
-    </aside>
+        </div>
+        {prediction.status === 'needs-input' && (
+          <div className="forecast-empty">
+            <span className="forecast-empty-icon">
+              <Sparkles size={27} aria-hidden="true" />
+            </span>
+            <p>{shared ? 'No forecast yet.' : 'A little data goes a long way.'}</p>
+            <p className="muted">
+              {shared
+                ? 'This player hasn’t entered prices for this week.'
+                : 'Add the prices you know. Leave the rest blank.'}
+            </p>
+          </div>
+        )}
+        {prediction.status === 'inconsistent' && (
+          <Notice>
+            {shared
+              ? 'No pattern matches these reported prices.'
+              : 'No pattern matches these prices. Check your entries and week settings. Your prices have been kept.'}
+          </Notice>
+        )}
+        {prediction.status === 'possible' && (
+          <ForecastChart
+            prediction={prediction}
+            prices={prices}
+            purchasePrice={purchasePrice}
+            currentSlot={currentSlot}
+            bestSlot={bestSlot}
+          />
+        )}
+      </section>
+      {prediction.status === 'possible' && <PatternOdds prediction={prediction} />}
+    </div>
   );
 }

@@ -68,7 +68,7 @@ for (const size of [32, 48, 96]) {
     .png(optimizedPng)
     .toFile(`${web}/favicon-${size}.png`);
 }
-for (const size of [96, 192]) {
+for (const size of [96, 192, 384]) {
   await (
     await square(size, { transparent: true })
   )

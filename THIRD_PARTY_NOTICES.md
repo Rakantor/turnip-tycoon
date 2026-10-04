@@ -19,3 +19,13 @@ website's public assets:
 - [COPYRIGHT](public/licenses/turnip-prophet/COPYRIGHT)
 
 The public attribution should link to Turnip Prophet and the included license.
+
+## Fonts
+
+The interface bundles the Latin subsets of two variable fonts, installed from the
+[Fontsource](https://fontsource.org) packages `@fontsource-variable/fredoka` and
+`@fontsource-variable/nunito`. Both are licensed under the SIL Open Font License,
+Version 1.1, and their licenses are included in the built website's public assets:
+
+- [Fredoka](https://github.com/hafontia/Fredoka-One), copyright 2016 The Fredoka Project Authors: [license](public/licenses/fonts/Fredoka-OFL.txt)
+- [Nunito](https://github.com/googlefonts/nunito), copyright 2014 The Nunito Project Authors: [license](public/licenses/fonts/Nunito-OFL.txt)

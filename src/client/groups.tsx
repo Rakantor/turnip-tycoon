@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { ArrowRight, Check, Copy, Plus, RefreshCw, Share2, Users, X } from 'lucide-react';
-import { predictWeek } from '../prediction';
+import { ArrowRight, Check, Copy, Plane, Plus, RefreshCw, Share2, Users, X } from 'lucide-react';
+import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
 import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
@@ -12,6 +12,7 @@ import { appUrl } from './urls';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
+type ForecastMember = SharedPlayerWeek & { prediction: PredictionResult };
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 export const PERIODS = ['Sunday buy price', ...DAYS.flatMap((day) => [`${day} AM`, `${day} PM`])];
 function initialPeriod(): number {
@@ -19,6 +20,25 @@ function initialPeriod(): number {
 }
 function reportedPrice(member: SharedPlayerWeek, period: number): number | null {
   return period === 0 ? member.week.purchasePrice : (member.week.prices[period - 1] ?? null);
+}
+/** Highest selling price first; on Sunday the cheapest purchase price is best. */
+function byPeriod<T extends SharedPlayerWeek>(players: T[], period: number): T[] {
+  return [...players].sort((left, right) => {
+    const a = reportedPrice(left, period);
+    const b = reportedPrice(right, period);
+    if (a === null)
+      return b === null ? left.player.displayName.localeCompare(right.player.displayName) : 1;
+    if (b === null) return -1;
+    return period === 0 ? a - b : b - a;
+  });
+}
+function islandName(member: SharedPlayerWeek, owner: string): string {
+  return member.player.id === owner ? 'Your island' : `${member.player.displayName}’s island`;
+}
+function weekLink(member: SharedPlayerWeek, owner: string): string {
+  return member.player.id === owner
+    ? '/'
+    : `/players/${member.player.id}/weeks/${member.week.weekStart}`;
 }
 export function PlayerAvatar({ name, small = false }: { name: string; small?: boolean }) {
   const letters = name
@@ -34,18 +54,58 @@ export function PlayerAvatar({ name, small = false }: { name: string; small?: bo
   );
 }
 
-function ForecastSummary({ week }: { week: WeekRecord }) {
-  const forecast = useMemo(() => predictWeek(week), [week]);
-  if (forecast.status === 'needs-input')
-    return <span className="member-forecast muted">No forecast yet</span>;
-  if (forecast.status === 'inconsistent')
+function ForecastSummary({ prediction }: { prediction: PredictionResult }) {
+  if (prediction.status === 'needs-input')
+    return <span className="member-forecast forecast-none">No forecast yet</span>;
+  if (prediction.status === 'inconsistent')
     return <span className="member-forecast forecast-unmatched">Prices don’t match a pattern</span>;
-  const likely = forecast.patterns[0];
+  const likely = prediction.patterns[0];
   return (
-    <span className="member-forecast">
-      <span className="pattern-dot" />
-      {likely.label}
-      <span className="muted">{Math.round(likely.probability * 100)}%</span>
+    <span className={`member-forecast${likely.id === 'decreasing' ? ' forecast-falling' : ''}`}>
+      {likely.label} · {Math.round(likely.probability * 100)}%
+    </span>
+  );
+}
+
+/** Upper bound shared by every sparkline in a list, so heights compare across players. */
+function sparkScale(members: ForecastMember[]): number {
+  return Math.max(
+    200,
+    ...members.flatMap(({ week, prediction }) => [
+      ...week.prices.map((price) => price ?? 0),
+      ...(prediction.status === 'possible' ? prediction.slots.map((slot) => slot.max) : []),
+    ]),
+  );
+}
+
+/** Twelve tiny columns: solid for reported prices, a floating range for forecasts. */
+export function PriceSparkline({
+  week,
+  prediction,
+  scale,
+}: {
+  week: WeekRecord;
+  prediction: PredictionResult;
+  scale: number;
+}) {
+  const height = (value: number) => `${Math.min(100, (value / scale) * 100)}%`;
+  return (
+    <span className="sparkline" aria-hidden="true">
+      {week.prices.map((price, index) => {
+        const range = prediction.status === 'possible' ? prediction.slots[index] : null;
+        return (
+          <span key={index} className="spark-column">
+            {price !== null ? (
+              <span className="spark-reported" style={{ height: height(price) }} />
+            ) : range ? (
+              <span
+                className="spark-predicted"
+                style={{ bottom: height(range.min), height: height(range.max - range.min) }}
+              />
+            ) : null}
+          </span>
+        );
+      })}
     </span>
   );
 }
@@ -83,81 +143,116 @@ function RefreshGroups({ data }: { data: GroupData }) {
   );
 }
 
-function MemberList({
-  players,
-  period,
-  owner,
-  compact = false,
-}: {
-  players: SharedPlayerWeek[];
-  period: number;
-  owner: string;
-  compact?: boolean;
-}) {
-  const sorted = useMemo(
-    () =>
-      [...players].sort((left, right) => {
-        const a = reportedPrice(left, period);
-        const b = reportedPrice(right, period);
-        if (a === null)
-          return b === null ? left.player.displayName.localeCompare(right.player.displayName) : 1;
-        if (b === null) return -1;
-        return period === 0 ? a - b : b - a;
-      }),
-    [players, period],
+function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: string }) {
+  const [period, setPeriod] = useState(initialPeriod);
+  const members = useMemo(
+    () => players.map((member) => ({ ...member, prediction: predictWeek(member.week) })),
+    [players],
   );
-  const entered = sorted.filter((member) => reportedPrice(member, period) !== null);
-  const best = entered.length > 1 ? reportedPrice(entered[0], period) : null;
+  const scale = useMemo(() => sparkScale(members), [members]);
+  const sorted = byPeriod(members, period);
+  const best = sorted.length > 0 && reportedPrice(sorted[0], period) !== null ? sorted[0] : null;
+  const rest = best ? sorted.slice(1) : sorted;
+  const yourPurchase = members.find((member) => member.player.id === owner)?.week.purchasePrice;
+  const bestPrice = best ? reportedPrice(best, period) : null;
+  const ratio =
+    best && bestPrice !== null && period > 0 && yourPurchase ? bestPrice / yourPurchase : null;
+  const nowPeriod = initialPeriod();
+  const tag =
+    period === 0
+      ? 'Cheapest Sunday price'
+      : period === nowPeriod
+        ? `Best price right now · until ${period % 2 ? 'noon' : '10 PM'}`
+        : `Best ${PERIODS[period]} price`;
   return (
-    <ul className={`friend-list${compact ? ' friend-list-compact' : ''}`}>
-      {sorted.map((member) => {
-        const price = reportedPrice(member, period);
-        const self = member.player.id === owner;
-        return (
-          <li className="friend-row" key={member.player.id}>
-            <PlayerAvatar name={member.player.displayName} />
-            <div className="friend-identity">
-              <Link
-                to={self ? '/' : `/players/${member.player.id}/weeks/${member.week.weekStart}`}
-                className="friend-name"
-              >
-                {member.player.displayName}
-                {self && <span className="you-label">you</span>}
-              </Link>
-              {!compact && <span className="friend-code">{member.player.friendCode}</span>}
-              <ForecastSummary week={member.week} />
+    <div className="right-now">
+      <label className="period-select">
+        Compare
+        <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
+          {PERIODS.map((label, index) => (
+            <option key={label} value={index}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </label>
+      {best && bestPrice !== null ? (
+        <section className="best-price-card" aria-label={tag}>
+          <span className="best-price-tag">
+            <Plane size={14} aria-hidden="true" />
+            {tag}
+          </span>
+          <div className="best-price-main">
+            <PlayerAvatar name={best.player.displayName} />
+            <div className="best-price-identity">
+              <strong>{islandName(best, owner)}</strong>
+              <ForecastSummary prediction={best.prediction} />
             </div>
-            <div className="friend-price">
-              <span
-                className={
-                  price !== null && price === best ? 'reported-price best-price' : 'reported-price'
-                }
-              >
-                {price ?? '—'}
-                {price !== null && <small> bells</small>}
-              </span>
-              <span className="friend-period">
-                {price === null ? 'Not entered' : PERIODS[period]}
-                {price !== null && price === best
-                  ? period === 0
-                    ? ' · Lowest'
-                    : ' · Highest'
-                  : ''}
-              </span>
+            <div className="best-price-value">
+              {bestPrice}
+              <small>bells</small>
             </div>
-            {!compact && (
-              <Link
-                className="friend-open"
-                to={self ? '/' : `/players/${member.player.id}/weeks/${member.week.weekStart}`}
-                aria-label={`View ${member.player.displayName}’s week`}
-              >
-                <ArrowRight size={18} />
-              </Link>
-            )}
-          </li>
-        );
-      })}
-    </ul>
+          </div>
+          <div className="best-price-detail">
+            <p>
+              {ratio === null
+                ? period === 0
+                  ? 'Lowest buy price in your groups.'
+                  : `Highest ${PERIODS[period]} price in your groups.`
+                : best.player.id === owner
+                  ? `That’s ${ratio.toFixed(1)}× what you paid.`
+                  : `${ratio.toFixed(1)}× what you paid for yours.`}
+            </p>
+            <PriceSparkline week={best.week} prediction={best.prediction} scale={scale} />
+          </div>
+          <Link className="button" to={weekLink(best, owner)}>
+            {best.player.id === owner ? 'Open your week' : `Open ${best.player.displayName}’s week`}
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </section>
+      ) : (
+        <p className="right-now-empty">Nobody has shared a {PERIODS[period]} price yet.</p>
+      )}
+      {rest.length > 0 && (
+        <>
+          <h3 className="friend-list-heading">{best ? 'Everyone else' : 'Everyone'}</h3>
+          <ul className="friend-list">
+            {rest.map((member) => {
+              const price = reportedPrice(member, period);
+              const self = member.player.id === owner;
+              return (
+                <li key={member.player.id}>
+                  <Link
+                    className={`friend-row${self ? ' friend-row-self' : ''}`}
+                    to={weekLink(member, owner)}
+                  >
+                    <PlayerAvatar name={member.player.displayName} />
+                    <span className="friend-identity">
+                      <span className="friend-name">
+                        {member.player.displayName}
+                        {self && <span className="you-label">you</span>}
+                      </span>
+                      <ForecastSummary prediction={member.prediction} />
+                    </span>
+                    <PriceSparkline
+                      week={member.week}
+                      prediction={member.prediction}
+                      scale={scale}
+                    />
+                    <span className="friend-price">
+                      <span className="reported-price">{price ?? '—'}</span>
+                      <span className="friend-period">
+                        {price === null ? 'Not entered' : PERIODS[period]}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -432,21 +527,57 @@ function ConnectionMessage({ data }: { data: GroupData }) {
 export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: WeekRecord }) {
   const identity = useApp();
   const data = useGroups(weekStart, identity.session, identity.status === 'ready');
-  const [period, setPeriod] = useState(initialPeriod);
+  const owner = identity.session?.player.id ?? '';
   const players = data.players.map((member) =>
-    week && member.player.id === identity.session?.player.id ? { ...member, week } : member,
+    week && member.player.id === owner ? { ...member, week } : member,
   );
+  const period = initialPeriod();
+  const self = players.find((member) => member.player.id === owner);
+  const mine = self ? reportedPrice(self, period) : null;
+  const purchase = self?.week.purchasePrice ?? null;
+  const [bestOther] = byPeriod(
+    players.filter(
+      (member) => member.player.id !== owner && reportedPrice(member, period) !== null,
+    ),
+    period,
+  );
+  const other = bestOther ? reportedPrice(bestOther, period) : null;
+  const friendCount = players.filter((member) => member.player.id !== owner).length;
+  let headline: string;
+  let detail: string;
+  if (bestOther && other !== null && period === 0) {
+    const cheaper = mine === null || other < mine;
+    headline = cheaper
+      ? `Daisy Mae is selling for ${other} on ${bestOther.player.displayName}’s island`
+      : `Your ${mine} is the best Sunday deal in your groups`;
+    detail = cheaper
+      ? mine === null
+        ? 'The lowest Sunday price in your groups.'
+        : `That’s ${mine - other} bells cheaper than yours.`
+      : `Next best: ${other} on ${bestOther.player.displayName}’s island.`;
+  } else if (bestOther && other !== null && (mine === null || other > mine)) {
+    headline = `${bestOther.player.displayName}’s island is buying at ${other}!`;
+    const deadline = period % 2 ? 'noon' : '10 PM';
+    detail = purchase
+      ? other >= purchase
+        ? `That’s ${(other / purchase).toFixed(1)}× what you paid — fly over before ${deadline}.`
+        : `That’s less than the ${purchase} you paid.`
+      : `The best ${PERIODS[period]} price in your groups.`;
+  } else if (bestOther && other !== null && mine !== null) {
+    headline = `Your ${mine} beats everyone right now!`;
+    detail = `Next best: ${other} on ${bestOther.player.displayName}’s island.`;
+  } else {
+    headline = `No friends have shared a ${PERIODS[period]} price yet`;
+    detail =
+      friendCount === 0
+        ? 'Share your group link to bring friends along.'
+        : `${friendCount} ${friendCount === 1 ? 'friend' : 'friends'} in your groups. Check back later.`;
+  }
   return (
     <section className="friends-panel" aria-labelledby="friends-panel-title">
-      <div className="section-heading">
-        <div>
-          <span className="section-eyebrow">YOUR GROUPS</span>
-          <h2 id="friends-panel-title">Friends’ prices</h2>
-        </div>
-        <Link className="text-link" to="/groups">
-          Your groups <ArrowRight size={16} />
-        </Link>
-      </div>
+      <h2 id="friends-panel-title" className="sr-only">
+        Friends’ prices
+      </h2>
       <ConnectionMessage data={data} />
       {data.status === 'loading' && !players.length && (
         <p className="muted" role="status">
@@ -454,42 +585,32 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
         </p>
       )}
       {data.status === 'ready' && !data.groups.length && (
-        <div className="friends-empty">
-          <span className="friends-empty-icon">
-            <Users size={25} />
+        <div className="friends-postcard friends-postcard-invite">
+          <span className="friends-postcard-icon">
+            <Users size={26} aria-hidden="true" />
           </span>
-          <div>
-            <h3>A good price is better shared.</h3>
+          <div className="friends-postcard-text">
+            <p className="friends-postcard-title">A good price is better shared.</p>
             <p>Start a group with friends to compare prices and forecasts.</p>
           </div>
           <Link className="button" to="/groups">
-            Create or join a group <ArrowRight size={16} />
+            Create or join a group <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
       )}
       {players.length > 0 && (
-        <>
-          <div className="friends-toolbar">
-            <span className="muted">Reported prices · {weekLabel(weekStart)}</span>
-            <label className="period-select">
-              Compare
-              <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
-                {PERIODS.map((label, index) => (
-                  <option key={label} value={index}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
+        <div className="friends-postcard">
+          <span className="friends-postcard-icon">
+            <Plane size={26} aria-hidden="true" />
+          </span>
+          <div className="friends-postcard-text">
+            <p className="friends-postcard-title">{headline}</p>
+            <p>{detail}</p>
           </div>
-          <MemberList
-            players={players}
-            period={period}
-            owner={identity.session?.player.id ?? ''}
-            compact
-          />
-          <RefreshGroups data={data} />
-        </>
+          <Link className="button button-light" to="/groups">
+            See the island board <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
       )}
     </section>
   );
@@ -510,6 +631,8 @@ export function Groups() {
   const [selectedGroup, setSelectedGroup] = useState(groupId ?? 'all');
   useEffect(() => setSelectedGroup(groupId ?? 'all'), [groupId]);
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useState<'now' | 'week'>('now');
+  const owner = identity.session?.player.id ?? '';
   const existingSelection = data.groups.some((group) => group.id === selectedGroup)
     ? selectedGroup
     : 'all';
@@ -524,6 +647,7 @@ export function Groups() {
       <div className="page-heading">
         <div>
           <h1>Friends</h1>
+          <p>Island board · {weekLabel(weekStart)}</p>
         </div>
         {hasGroups && (
           <Button secondary onClick={() => setShowForm(!showForm)}>
@@ -537,7 +661,7 @@ export function Groups() {
         <section className="group-create-card">
           <div className="section-heading">
             <div>
-              <span className="section-eyebrow">FRIENDS &amp; GROUPS</span>
+              <span className="section-eyebrow">Friends &amp; groups</span>
               <h2>
                 {linkCode
                   ? 'Join your friends'
@@ -546,7 +670,9 @@ export function Groups() {
                     : 'Bring your friends along'}
               </h2>
             </div>
-            <Users size={28} className="muted" />
+            <span className="group-badge">
+              <Users size={22} aria-hidden="true" />
+            </span>
           </div>
           <p className="muted">Compare your prices and find a good time to sell, together.</p>
           <GroupForm
@@ -567,16 +693,9 @@ export function Groups() {
       )}
       {hasGroups && (
         <>
-          <section className="friends-comparison" aria-labelledby="comparison-heading">
-            <div className="section-heading">
-              <div>
-                <span className="section-eyebrow">THIS WEEK</span>
-                <h2 id="comparison-heading">Prices at a glance</h2>
-              </div>
-              <span className="week-chip">{weekLabel(weekStart)}</span>
-            </div>
+          <section className="friends-comparison" aria-label="Friends’ prices this week">
             <div className="friends-toolbar">
-              <div className="group-filters" aria-label="Show group">
+              <div className="group-filters" role="group" aria-label="Show group">
                 <button
                   type="button"
                   aria-pressed={existingSelection === 'all'}
@@ -595,8 +714,24 @@ export function Groups() {
                   </button>
                 ))}
               </div>
+              <div className="segmented-control view-toggle" role="group" aria-label="Price view">
+                <button type="button" aria-pressed={view === 'now'} onClick={() => setView('now')}>
+                  Right now
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={view === 'week'}
+                  onClick={() => setView('week')}
+                >
+                  Full week
+                </button>
+              </div>
             </div>
-            <GroupPriceTable players={players} owner={identity.session?.player.id ?? ''} />
+            {view === 'now' ? (
+              <RightNow players={players} owner={owner} />
+            ) : (
+              <GroupPriceTable players={players} owner={owner} currentSlot={currentSlot(now)} />
+            )}
             <RefreshGroups data={data} />
           </section>
           <section className="your-groups" aria-labelledby="your-groups-title">
@@ -614,7 +749,7 @@ export function Groups() {
       )}
       {identity.session && (
         <div className="your-friend-code">
-          <Check size={15} />
+          <Check size={15} aria-hidden="true" />
           <span>
             Your friend code <strong>{identity.session.player.friendCode}</strong>
           </span>

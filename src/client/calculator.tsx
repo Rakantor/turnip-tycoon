@@ -1,13 +1,24 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { ArrowLeft, ArrowRight, Check, CloudOff, LoaderCircle, Sun, Moon } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CloudOff,
+  LoaderCircle,
+  Moon,
+  SlidersHorizontal,
+  Sun,
+} from 'lucide-react';
 import { predictWeek } from '../prediction';
 import { currentSlot, currentWeekStart, shiftWeek } from '../shared/calendar';
 import type { PatternId } from '../shared/week';
 import { useWeek } from './data/use-week';
 import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
-import { Forecast } from './forecast';
+import { Forecast, rangeLabel } from './forecast';
+import { Outlook } from './outlook';
+import { weekAdvice } from './advice';
 import { usePwaReloadGuard } from './pwa';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -70,8 +81,10 @@ function RefreshPrices({
 function PriceInput({
   value,
   label,
+  hint = '—',
   purchase = false,
   current = false,
+  best = false,
   readOnly = false,
   onCommit,
   onValidity,
@@ -79,8 +92,11 @@ function PriceInput({
 }: {
   value: number | null;
   label: string;
+  /** Placeholder for an empty box: the forecast range when there is one. */
+  hint?: string;
   purchase?: boolean;
   current?: boolean;
+  best?: boolean;
   readOnly?: boolean;
   onCommit: (price: number | null) => void;
   onValidity: (invalid: boolean) => void;
@@ -119,7 +135,9 @@ function PriceInput({
     onCommit(next);
   }
   return (
-    <div className={`price-field${current ? ' current-slot' : ''}`}>
+    <div
+      className={`price-field${purchase ? ' purchase-field' : ''}${current ? ' current-slot' : ''}${best ? ' best-slot' : ''}`}
+    >
       <input
         aria-label={label}
         aria-invalid={error ? true : undefined}
@@ -128,7 +146,7 @@ function PriceInput({
         autoComplete="off"
         type="text"
         value={draft}
-        placeholder="—"
+        placeholder={hint}
         maxLength={6}
         readOnly={readOnly}
         onFocus={() => {
@@ -262,6 +280,28 @@ function WeekCalculator({
               : status === 'conflict'
                 ? 'Changes need review'
                 : 'Couldn’t sync';
+  const advice = weekAdvice({
+    prediction,
+    prices: week.prices,
+    purchasePrice: week.purchasePrice,
+    slot,
+    isCurrent,
+  });
+  const bestSlot = advice.bestSlot;
+  // The current week has no selling half-day only on Sunday.
+  const sundayToday = isCurrent && slot === null;
+  const hintFor = (index: number) =>
+    prediction.status === 'possible' && week.prices[index] === null
+      ? rangeLabel(prediction.slots[index])
+      : '—';
+  const shortDate = (offset: number) =>
+    dateFromWeek(weekStart, offset).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+    });
+  const previousPatternLabel =
+    PATTERNS.find((pattern) => pattern.id === week.previousPattern)?.label ?? 'Unknown';
+  const firstBuyLabel = week.firstBuy === null ? 'Not sure' : week.firstBuy ? 'Yes' : 'No';
   return (
     <main id="main-content" className="page calculator-page">
       <div className="page-heading">
@@ -297,94 +337,119 @@ function WeekCalculator({
           Past weeks are read-only. <Link to="/">Return to this week</Link>
         </p>
       )}
+      <Outlook advice={advice} />
       <div className="calculator-layout">
         <section className="weekly-entry" aria-labelledby="prices-title">
-          <div className="purchase-row">
-            <div>
-              <span className="field-label">Sunday purchase price</span>
+          <div className="entry-heading">
+            <h2 id="prices-title">{isCurrent ? 'Your prices' : 'Prices'}</h2>
+            <div className="entry-status">
+              <span className={`save-status status-${editing ? 'editing' : status}`} role="status">
+                {editing ? null : status === 'saved' ? (
+                  <Check size={15} aria-hidden="true" />
+                ) : status === 'syncing' || status === 'loading' ? (
+                  <LoaderCircle className="spin" size={15} aria-hidden="true" />
+                ) : status === 'offline' ? (
+                  <CloudOff size={15} aria-hidden="true" />
+                ) : null}
+                {saveLabel}
+              </span>
+              <RefreshPrices
+                availableAt={refreshAvailableAt}
+                lastRefreshedAt={lastRefreshedAt}
+                disabled={
+                  identity.status !== 'ready' || status === 'syncing' || status === 'loading'
+                }
+                onRefresh={refresh}
+              />
             </div>
-            <PriceInput
-              key={inputGeneration}
-              label="Sunday purchase price in bells"
-              value={week.purchasePrice}
-              purchase
-              readOnly={readOnly}
-              onCommit={(purchasePrice) => update({ purchasePrice })}
-              onValidity={(invalid) => validity('purchase', invalid)}
-              onDraftChange={(dirty) => draftChanged('purchase', dirty)}
-            />
           </div>
-          <table className="price-table">
-            <caption className="sr-only">
-              Enter your Monday through Saturday selling prices in bells
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">Sell prices</th>
-                <th scope="col">
-                  <Sun size={14} aria-hidden="true" /> AM <span>before noon</span>
-                </th>
-                <th scope="col">
-                  <Moon size={14} aria-hidden="true" /> PM <span>after noon</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {DAYS.map((day, dayIndex) => (
-                <tr key={day}>
-                  <th scope="row">
-                    <span className="day-long">{day}</span>
-                    <span className="day-short">{day.slice(0, 3)}</span>
-                    <span className="day-date">
-                      {dateFromWeek(weekStart, dayIndex + 1).toLocaleDateString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
-                  </th>
-                  {[0, 1].map((period) => {
-                    const index = dayIndex * 2 + period;
-                    return (
-                      <td key={period}>
-                        <PriceInput
-                          key={inputGeneration}
-                          label={`${day} ${period ? 'PM' : 'AM'} sell price in bells`}
-                          value={week.prices[index]}
-                          readOnly={readOnly}
-                          current={index === slot}
-                          onCommit={(price) => {
-                            const prices = [...week.prices];
-                            prices[index] = price;
-                            update({ prices }, [index]);
-                          }}
-                          onValidity={(invalid) => validity(String(index), invalid)}
-                          onDraftChange={(dirty) => draftChanged(String(index), dirty)}
-                        />
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="save-row">
-            <span className={`save-status status-${editing ? 'editing' : status}`} role="status">
-              {editing ? null : status === 'saved' ? (
-                <Check size={15} aria-hidden="true" />
-              ) : status === 'syncing' || status === 'loading' ? (
-                <LoaderCircle className="spin" size={15} aria-hidden="true" />
-              ) : status === 'offline' ? (
-                <CloudOff size={15} aria-hidden="true" />
-              ) : null}
-              {saveLabel}
-            </span>
+          <div className="week-board">
+            <div className="period-headings" aria-hidden="true">
+              <span />
+              <span className="period-am">
+                <Sun size={14} /> Morning
+              </span>
+              <span className="period-pm">
+                <Moon size={14} /> Afternoon
+              </span>
+            </div>
+            <div className={`day-card day-card-sunday${sundayToday ? ' day-today has-tag' : ''}`}>
+              <div className="day-card-head">
+                <span className="day-name">Sun</span>
+                <span className="day-date">{shortDate(0)}</span>
+                <span className="day-sub">buy price</span>
+                {sundayToday && <span className="day-tag">Today</span>}
+              </div>
+              <div className="day-card-body">
+                <span className="purchase-label" aria-hidden="true">
+                  Bought from Daisy Mae
+                </span>
+                <PriceInput
+                  key={inputGeneration}
+                  label="Sunday purchase price in bells"
+                  value={week.purchasePrice}
+                  purchase
+                  readOnly={readOnly}
+                  onCommit={(purchasePrice) => update({ purchasePrice })}
+                  onValidity={(invalid) => validity('purchase', invalid)}
+                  onDraftChange={(dirty) => draftChanged('purchase', dirty)}
+                />
+              </div>
+            </div>
+            {DAYS.map((day, dayIndex) => {
+              const today = slot !== null && Math.floor(slot / 2) === dayIndex;
+              const best = bestSlot !== null && Math.floor(bestSlot / 2) === dayIndex;
+              const tag = today ? 'Today' : best ? (isCurrent ? 'Best bet' : 'Best price') : null;
+              return (
+                <div
+                  key={day}
+                  className={`day-card${today ? ' day-today' : ''}${best ? ' day-best' : ''}${tag ? ' has-tag' : ''}`}
+                >
+                  <div className="day-card-head">
+                    <span className="day-name">{day.slice(0, 3)}</span>
+                    <span className="day-date">{shortDate(dayIndex + 1)}</span>
+                    {tag && <span className="day-tag">{tag}</span>}
+                  </div>
+                  <div className="day-card-body">
+                    {[0, 1].map((period) => {
+                      const index = dayIndex * 2 + period;
+                      return (
+                        <div
+                          key={period}
+                          className={`period-slot ${period ? 'period-pm' : 'period-am'}`}
+                        >
+                          {period ? (
+                            <Moon size={16} aria-hidden="true" />
+                          ) : (
+                            <Sun size={16} aria-hidden="true" />
+                          )}
+                          <PriceInput
+                            key={inputGeneration}
+                            label={`${day} ${period ? 'PM' : 'AM'} sell price in bells`}
+                            value={week.prices[index]}
+                            hint={hintFor(index)}
+                            readOnly={readOnly}
+                            current={index === slot}
+                            best={index === bestSlot}
+                            onCommit={(price) => {
+                              const prices = [...week.prices];
+                              prices[index] = price;
+                              update({ prices }, [index]);
+                            }}
+                            onValidity={(invalid) => validity(String(index), invalid)}
+                            onDraftChange={(dirty) => draftChanged(String(index), dirty)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <RefreshPrices
-            availableAt={refreshAvailableAt}
-            lastRefreshedAt={lastRefreshedAt}
-            disabled={identity.status !== 'ready' || status === 'syncing' || status === 'loading'}
-            onRefresh={refresh}
-          />
+          {prediction.status === 'possible' && (
+            <p className="hint entry-hint">Empty boxes show what the price could be.</p>
+          )}
           {invalidFields.length > 0 && (
             <Notice>
               Correct the highlighted entries. The forecast uses your last valid prices.
@@ -475,49 +540,64 @@ function WeekCalculator({
               </div>
             </div>
           )}
-          <section className="prediction-inputs" aria-labelledby="prediction-details-title">
-            <div className="field">
-              <label htmlFor="first-buy">First Daisy Mae purchase on this island?</label>
-              <select
-                id="first-buy"
-                value={week.firstBuy === null ? 'unknown' : week.firstBuy ? 'yes' : 'no'}
-                disabled={readOnly}
-                onChange={(event) =>
-                  update({
-                    firstBuy:
-                      event.target.value === 'unknown' ? null : event.target.value === 'yes',
-                  })
-                }
-              >
-                <option value="unknown">Not sure</option>
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-              </select>
+          <details className="week-settings">
+            <summary>
+              <SlidersHorizontal size={16} aria-hidden="true" />
+              <span className="week-settings-title">Week settings</span>
+              <span className="week-settings-summary">
+                Last week: {previousPatternLabel} · First purchase: {firstBuyLabel}
+              </span>
+            </summary>
+            <div className="prediction-inputs">
+              <div className="field">
+                <label htmlFor="first-buy">First Daisy Mae purchase on this island?</label>
+                <select
+                  id="first-buy"
+                  value={week.firstBuy === null ? 'unknown' : week.firstBuy ? 'yes' : 'no'}
+                  disabled={readOnly}
+                  onChange={(event) =>
+                    update({
+                      firstBuy:
+                        event.target.value === 'unknown' ? null : event.target.value === 'yes',
+                    })
+                  }
+                >
+                  <option value="unknown">Not sure</option>
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="previous-pattern">Last week’s pattern</label>
+                <select
+                  id="previous-pattern"
+                  value={week.previousPattern ?? 'unknown'}
+                  disabled={readOnly}
+                  onChange={(event) =>
+                    update({
+                      previousPattern:
+                        event.target.value === 'unknown' ? null : (event.target.value as PatternId),
+                    })
+                  }
+                >
+                  <option value="unknown">Unknown</option>
+                  {PATTERNS.map((pattern) => (
+                    <option key={pattern.id} value={pattern.id}>
+                      {pattern.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="field">
-              <label htmlFor="previous-pattern">Last week’s pattern</label>
-              <select
-                id="previous-pattern"
-                value={week.previousPattern ?? 'unknown'}
-                disabled={readOnly}
-                onChange={(event) =>
-                  update({
-                    previousPattern:
-                      event.target.value === 'unknown' ? null : (event.target.value as PatternId),
-                  })
-                }
-              >
-                <option value="unknown">Unknown</option>
-                {PATTERNS.map((pattern) => (
-                  <option key={pattern.id} value={pattern.id}>
-                    {pattern.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </section>
+          </details>
         </section>
-        <Forecast prediction={prediction} prices={week.prices} />
+        <Forecast
+          prediction={prediction}
+          prices={week.prices}
+          purchasePrice={week.purchasePrice}
+          currentSlot={slot}
+          bestSlot={bestSlot}
+        />
       </div>
       {isCurrent && <FriendsPanel weekStart={weekStart} week={week} />}
     </main>

@@ -7,7 +7,7 @@ Run `pnpm icons:generate` from the repository root to regenerate the assets usin
 | Output                | Files                                                       | Format                                           |
 | --------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
 | Browser favicon       | `public/favicon.ico`; `public/icons/favicon-{32,48,96}.png` | ICO with 16/32/48px frames; optimized PNG        |
-| Website logo          | `public/icons/brand-{96,192}.webp`                          | Transparent WebP                                 |
+| Website logo          | `public/icons/brand-{96,192,384}.webp`                      | Transparent WebP                                 |
 | Apple touch icon      | `public/icons/apple-touch-icon.png`                         | Opaque 180×180 PNG                               |
 | PWA icons             | `public/icons/icon-{192,512}.png`                           | Opaque PNG, manifest purpose `any`               |
 | PWA maskable icons    | `public/icons/maskable-{192,512}.png`                       | Opaque PNG, manifest purpose `maskable`          |

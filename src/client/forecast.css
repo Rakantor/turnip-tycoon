@@ -1,106 +1,462 @@
-.forecast-chart-instructions {
-  margin: -5px 0 10px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.forecast-chart-wrap {
-  position: relative;
-}
-
-.forecast-chart-control {
-  cursor: crosshair;
-  border-radius: 8px;
-  touch-action: pan-y;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.forecast-chart-control .forecast-chart {
+.forecast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
   min-width: 0;
 }
-
-.chart-selection-guide {
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-dasharray: 3 4;
+.forecast-card {
+  flex: 999 1 520px;
+  padding: 24px 26px;
+}
+.pattern-card {
+  flex: 1 1 280px;
+  padding: 24px 26px;
+}
+.forecast-card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 4px;
+}
+.forecast-card-heading h2,
+.pattern-card h2 {
+  margin: 0;
+}
+.pattern-card h2 {
+  margin-bottom: 18px;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--leaf);
+  box-shadow: 0 0 0 1px var(--leaf);
+}
+.legend-range {
+  width: 10px;
+  height: 16px;
+  border: 2px solid var(--gold-line);
+  border-radius: 999px;
+  background: var(--gold-soft);
+}
+.legend-buy {
+  width: 18px;
+  border-top: 2px dashed #a27b5c;
 }
 
-.chart-selection-point {
-  fill: #fff;
-  stroke: var(--accent);
-  stroke-width: 2;
+/* Chart: a tooltip strip above twelve full-height half-day columns. */
+.forecast-chart {
+  --tip-half: 122px;
+  --plot: 250px;
 }
-
-.forecast-chart-tooltip {
+.chart-overlay {
   position: absolute;
   top: 0;
-  z-index: 1;
-  width: 172px;
-  max-width: calc(100% - 12px);
-  padding: 10px 12px;
-  transform: translateX(-50%);
-  border: 1px solid #e1d5ed;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 4px 16px #39234718;
+  right: 0;
+  bottom: 26px;
+  left: 0;
+  z-index: 3;
   pointer-events: none;
+}
+/* Taps pass through the tooltip to the half-day underneath; only Close catches them. */
+.chart-tooltip {
+  position: absolute;
+  z-index: 1;
+  width: calc(var(--tip-half) * 2);
+  padding: 8px 8px 12px 16px;
+  transform: translateX(-50%);
+  border: 2px solid var(--gold-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 24px #3a2a1c29;
   font-variant-numeric: tabular-nums;
 }
-
-.forecast-tooltip-day {
+.chart-tooltip-tail {
+  position: absolute;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-right: 2px solid var(--gold-line);
+  border-bottom: 2px solid var(--gold-line);
+  background: #fff;
+  transform: rotate(45deg);
+}
+.chart-tooltip-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 650;
 }
-
-.forecast-tooltip-day span {
-  font-size: 10px;
-  padding: 2px 5px;
-  border-radius: 5px;
-  background: #f0eaf7;
+.chart-tooltip-heading strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
 }
-
-.forecast-tooltip-range {
+.chart-tooltip-close {
+  pointer-events: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--heading);
+}
+.chart-tooltip-values {
+  display: flex;
+  align-items: flex-end;
   gap: 12px;
-  margin: 9px 0 1px;
+  margin: 0;
 }
-
-.forecast-tooltip-range dt {
+.chart-tooltip-values dt {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-
-.forecast-tooltip-range dd {
-  margin: 1px 0 0;
-  color: var(--text);
-  font-size: 20px;
-  font-weight: 650;
-  line-height: 1.15;
+.chart-tooltip-values dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.05;
 }
-
-.forecast-tooltip-unit {
+.chart-tooltip-values .value-high {
+  color: var(--sun);
+}
+.chart-tooltip-values .value-entered {
+  color: var(--leaf-dark);
+}
+.chart-tooltip-dash {
+  padding-bottom: 3px;
+  color: #a27b5c;
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+.chart-tooltip-note {
+  margin: 4px 0 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
 }
-
-.forecast-tooltip-reported {
+.chart-tooltip-note.note-up {
+  color: var(--leaf-dark);
+}
+.chart-tooltip-note.note-down {
+  color: var(--clay);
+}
+.chart-plot {
+  position: relative;
+  margin-top: 40px;
+}
+.chart-guides {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 26px;
+  left: 0;
+  z-index: 1;
+  border-bottom: 2px solid var(--border);
+  pointer-events: none;
+}
+.chart-gridline {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-top: 1px dashed #eadfc4;
+}
+.chart-gridline span {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  padding-bottom: 1px;
+  transform: translateY(-100%);
+  color: var(--subtle);
+  font-size: 11px;
+  font-weight: 700;
+}
+.chart-buy-line {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  border-top: 2px dashed #a27b5c;
+}
+.chart-columns {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.chart-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  font: inherit;
+}
+.chart-column:hover {
+  background: #fbf3dc80;
+}
+.chart-column.is-selected {
+  background: var(--gold-soft);
+}
+.chart-track {
+  position: relative;
   display: block;
-  margin-top: 6px;
+  height: var(--plot);
+}
+.chart-bar {
+  position: absolute;
+  right: max(18%, calc(50% - 15px));
+  left: max(18%, calc(50% - 15px));
+  min-height: 16px;
+  border: 2px solid var(--gold-line);
+  border-radius: 999px;
+  background: var(--gold-soft);
+}
+.is-best .chart-bar {
+  border-color: var(--gold-strong);
+  background: var(--gold);
+}
+.is-selected .chart-bar {
+  border-color: var(--gold-strong);
+  background: var(--gold-bright);
+}
+.chart-dot {
+  position: absolute;
+  left: 50%;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  margin: 0 0 -9px -9px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: var(--leaf);
+  box-shadow: 0 0 0 2px var(--leaf);
+}
+.chart-dot-label {
+  position: absolute;
+  right: -10px;
+  left: -10px;
+  margin-bottom: 14px;
+  color: var(--leaf-dark);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.chart-half {
+  display: block;
+  height: 26px;
   padding-top: 6px;
-  border-top: 1px solid var(--border);
-  color: var(--success);
-  font-size: 10px;
+  color: var(--subtle);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+.is-now .chart-half {
+  color: var(--leaf-dark);
+  text-decoration: underline 2px;
+  text-underline-offset: 3px;
+}
+.is-selected .chart-half {
+  color: var(--leaf-dark);
+}
+.chart-days {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: 2px;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+.chart-days span {
+  margin: 0 6px;
+  padding-top: 4px;
+  border-top: 2px solid var(--soft);
+}
+.chart-days .is-selected {
+  border-top-color: var(--gold-line);
+  color: var(--leaf-dark);
 }
 
-@media (max-width: 520px) {
-  .forecast-chart-wrap {
-    min-height: 160px;
+/* Pattern odds */
+.pattern-list {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.pattern-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 10px;
+  margin-bottom: 16px;
+}
+.pattern-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+.pattern-list strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.probability-track {
+  grid-column: 1 / -1;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--soft);
+}
+.probability-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--leaf);
+}
+.pattern-list li:not(:first-child) .probability-track span {
+  background: #8dbb7a;
+}
+.pattern-ruled-out .pattern-name {
+  color: var(--subtle);
+  text-decoration: line-through;
+}
+.pattern-ruled-out strong {
+  color: var(--subtle);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Empty forecast */
+.forecast-empty {
+  margin-top: 14px;
+  padding: 34px 20px 38px;
+  border: 2px dashed var(--border);
+  border-radius: 22px;
+  text-align: center;
+}
+.forecast-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background: var(--gold-soft);
+  color: var(--gold-text);
+}
+.forecast-empty p:not(.muted) {
+  margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 500;
+}
+.forecast-empty p:last-child {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 999px) {
+  .forecast-card,
+  .pattern-card {
+    padding: 18px;
+  }
+  .forecast-chart {
+    --tip-half: 110px;
+    --plot: 180px;
+  }
+  .chart-dot-label {
+    display: none;
+  }
+  .chart-bar {
+    right: 14%;
+    left: 14%;
+  }
+  .chart-column {
+    border-radius: 10px;
+  }
+  .chart-half {
+    font-size: 11px;
+  }
+  .chart-days {
+    font-size: 14px;
+  }
+  .chart-days span {
+    margin: 0 3px;
+  }
+}
+@media (max-width: 720px) {
+  .forecast {
+    gap: 18px;
+  }
+  .forecast-card,
+  .pattern-card {
+    flex-basis: 100%;
+    padding: 16px;
+  }
+  .chart-legend {
+    font-size: 12px;
+  }
+  .chart-tooltip {
+    padding: 6px 6px 10px 14px;
+  }
+  .chart-tooltip-heading strong {
+    font-size: 16px;
+  }
+  .chart-tooltip-values dd {
+    font-size: 25px;
+  }
+  .chart-tooltip-note {
+    font-size: 12px;
+  }
+  .chart-dot {
+    width: 14px;
+    height: 14px;
+    margin: 0 0 -7px -7px;
+    border-width: 2px;
+    box-shadow: 0 0 0 1.5px var(--leaf);
+  }
+  .chart-half {
+    font-size: 10px;
+  }
+}
+@media (max-width: 370px) {
+  .forecast-chart {
+    --tip-half: 100px;
+  }
+  .chart-bar {
+    right: 10%;
+    left: 10%;
   }
 }
