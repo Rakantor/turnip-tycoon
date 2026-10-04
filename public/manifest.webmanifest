@@ -7,6 +7,12 @@
   "display": "standalone",
   "theme_color": "#f4ebd3",
   "background_color": "#f4ebd3",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://rakantor.github.io/turnip-tycoon/manifest.webmanifest"
+    }
+  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",

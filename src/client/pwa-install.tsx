@@ -1,10 +1,15 @@
 import { useSyncExternalStore } from 'react';
-import { Download } from 'lucide-react';
+import { Link } from 'react-router';
+import { Download, LoaderCircle } from 'lucide-react';
 import { Button } from './ui';
 
 interface InstallPromptEvent extends Event {
   prompt(): Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
+
+type RelatedAppsNavigator = Navigator & {
+  getInstalledRelatedApps?: () => Promise<{ platform: string }[]>;
+};
 
 type InstallState = {
   available: boolean;
@@ -58,6 +63,18 @@ export function startInstallPromptCapture(): void {
   });
   updateDisplayMode();
   standalone.addEventListener('change', updateDisplayMode);
+  // Chromium on Android can report an installed copy even from a normal browser tab,
+  // using the manifest's related_applications entry.
+  const related = (navigator as RelatedAppsNavigator).getInstalledRelatedApps;
+  if (related)
+    void related
+      .call(navigator)
+      .then((apps) => {
+        if (!apps.some((app) => app.platform === 'webapp')) return;
+        installedThisVisit = true;
+        updateDisplayMode();
+      })
+      .catch(() => undefined);
   window.addEventListener('appinstalled', () => {
     installedThisVisit = true;
     installPrompt = null;
@@ -65,7 +82,7 @@ export function startInstallPromptCapture(): void {
   });
   window.addEventListener('beforeinstallprompt', (event) => {
     if (!('prompt' in event) || typeof event.prompt !== 'function') return;
-    // Only the Settings button may open a prompt; never interrupt price entry.
+    // Only an Install button the player taps may open the prompt; never interrupt price entry.
     event.preventDefault();
     if (state.installed) return;
     installPrompt = event as InstallPromptEvent;
@@ -128,5 +145,43 @@ export function InstallApp() {
         </>
       )}
     </section>
+  );
+}
+
+/** A phone header shortcut: the browser's prompt when offered, otherwise Settings' instructions. */
+export function HeaderInstallButton() {
+  const current = useSyncExternalStore(subscribe, snapshot);
+  if (current.installed) return null;
+  const content = (
+    <>
+      {current.busy ? (
+        <LoaderCircle size={19} className="spin" aria-hidden="true" />
+      ) : (
+        <Download size={19} aria-hidden="true" />
+      )}
+      <span className="install-label">Install</span>
+    </>
+  );
+  return current.available || current.busy ? (
+    <button
+      type="button"
+      className="icon-button install-link"
+      aria-label="Install Turnip Tycoon"
+      aria-busy={current.busy || undefined}
+      disabled={current.busy}
+      onClick={() => {
+        void install();
+      }}
+    >
+      {content}
+    </button>
+  ) : (
+    <Link
+      to="/settings#install-app"
+      className="icon-button install-link"
+      aria-label="Install Turnip Tycoon"
+    >
+      {content}
+    </Link>
   );
 }

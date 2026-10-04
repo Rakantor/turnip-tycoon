@@ -27,7 +27,7 @@ import { About } from './about';
 import { assetUrl, hashRouting } from './urls';
 import { startPwa, usePwa } from './pwa';
 import { UpdateNotice } from './pwa-ui';
-import { startInstallPromptCapture } from './pwa-install';
+import { HeaderInstallButton, startInstallPromptCapture } from './pwa-install';
 import './fonts.css';
 import './styles.css';
 
@@ -75,7 +75,7 @@ function App() {
               height={48}
               alt=""
             />
-            Turnip Tycoon
+            <span className="brand-name">Turnip Tycoon</span>
           </Link>
           <nav aria-label="Main navigation">
             <NavLink to="/" end>
@@ -91,6 +91,7 @@ function App() {
               History
             </NavLink>
           </nav>
+          <HeaderInstallButton />
           <NavLink
             to="/settings"
             className="settings-link icon-button"

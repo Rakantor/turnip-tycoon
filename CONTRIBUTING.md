@@ -144,7 +144,7 @@ Production Pages builds, including local Pages preview, generate a worker scoped
 
 Offline reopening needs one online visit to complete profile setup and reach **Settings → Offline access → Ready to open offline**. Cached own weeks, forecasts, and new local edits then work offline; uploads resume when connected with the app open. Friends require a connection. Closed-app background uploading is not promised.
 
-Settings provides installation, offline readiness, retry, and update checks. Installation is optional and uses the browser prompt or instructions, including Safari's **Share → Add to Home Screen**. Downloaded updates wait for **Update now** on a safe screen, flush valid local writes, and block on invalid drafts or an unrestorable profile. Pending uploads need not finish first. Only the requesting tab reloads.
+Settings provides installation, offline readiness, retry, and update checks. Installation is optional and uses the browser prompt or instructions, including Safari's **Share → Add to Home Screen**. On phones, an **Install** shortcut beside Settings opens the same prompt, or the Settings instructions when the browser offers none, and disappears once the app runs installed or Chromium reports an installed copy. Downloaded updates wait for **Update now** on a safe screen, flush valid local writes, and block on invalid drafts or an unrestorable profile. Pending uploads need not finish first. Only the requesting tab reloads.
 
 Using the local Pages preview:
 

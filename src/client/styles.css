@@ -190,6 +190,15 @@ p {
   flex-shrink: 0;
   object-fit: contain;
 }
+.brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The header install shortcut is for phones; larger screens use Settings. */
+.site-header .install-link {
+  display: none;
+}
 .site-header nav {
   display: flex;
   align-items: center;
@@ -1299,13 +1308,34 @@ summary {
   }
   .site-header {
     width: calc(100% - 32px);
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     padding: 14px 0 0;
-    gap: 12px;
+    gap: 8px;
   }
   .brand {
+    min-width: 0;
     font-size: 23px;
     gap: 8px;
+  }
+  .site-header .install-link {
+    display: inline-flex;
+    gap: 6px;
+    width: auto;
+    padding: 0 14px 0 12px;
+    border-color: var(--leaf-line);
+    background: var(--leaf-soft);
+    box-shadow: 0 3px 0 var(--leaf-line);
+    color: var(--leaf-dark);
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .install-link:hover {
+    background: #eef6e4;
+    color: var(--leaf-dark);
+  }
+  .install-link:active {
+    box-shadow: 0 1px 0 var(--leaf-line);
   }
   .brand-mark {
     width: 40px;
@@ -1448,9 +1478,22 @@ summary {
     gap: 15px;
   }
 }
+@media (max-width: 400px) {
+  .site-header .install-link {
+    width: 46px;
+    padding: 0;
+  }
+  .install-label {
+    display: none;
+  }
+}
 @media (max-width: 370px) {
   .brand {
     font-size: 20px;
+  }
+  .brand-mark {
+    width: 36px;
+    height: 36px;
   }
   .weekly-entry {
     padding: 12px;
