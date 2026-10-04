@@ -1,5 +1,10 @@
 export type PatternId = 'fluctuating' | 'large-spike' | 'decreasing' | 'small-spike';
 
+/** Daisy Mae's Sunday purchase price, in bells, inclusive. */
+export const PURCHASE_PRICE_RANGE = { min: 90, max: 110 } as const;
+/** Nook's Cranny selling price, in bells, inclusive. */
+export const SELLING_PRICE_RANGE = { min: 9, max: 660 } as const;
+
 export interface WeeklyInputs {
   purchasePrice: number | null;
   firstBuy: boolean | null;

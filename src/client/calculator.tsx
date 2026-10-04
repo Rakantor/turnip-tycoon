@@ -19,6 +19,7 @@ import { FriendsPanel } from './groups';
 import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
 import { weekAdvice } from './advice';
+import { canCompletePrice, parsePrice, priceRange } from './price-limits';
 import { usePwaReloadGuard } from './pwa';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -106,6 +107,9 @@ function PriceInput({
   const [error, setError] = useState('');
   const editing = useRef({ focused: false, dirty: false });
   const errorId = useId();
+  const rangeId = useId();
+  const kind = purchase ? 'purchase' : 'selling';
+  const { min, max } = priceRange(kind);
   useEffect(() => {
     if (!editing.current.focused && !editing.current.dirty) {
       setDraft(value?.toString() ?? '');
@@ -118,11 +122,9 @@ function PriceInput({
       setDraft(value?.toString() ?? '');
       return;
     }
-    const text = draft.trim();
-    const min = purchase ? 90 : 1;
-    const max = purchase ? 110 : 660;
-    if (text !== '' && (!/^\d+$/.test(text) || Number(text) < min || Number(text) > max)) {
-      setError(`${min}–${max} whole bells`);
+    const next = parsePrice(draft.trim(), kind);
+    if (next === undefined) {
+      setError(`${min}–${max} bells`);
       onValidity(true);
       return;
     }
@@ -130,7 +132,6 @@ function PriceInput({
     editing.current.dirty = false;
     onDraftChange(false);
     onValidity(false);
-    const next = text === '' ? null : Number(text);
     setDraft(next?.toString() ?? '');
     onCommit(next);
   }
@@ -141,21 +142,24 @@ function PriceInput({
       <input
         aria-label={label}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={error ? errorId : rangeId}
         inputMode="numeric"
         autoComplete="off"
         type="text"
         value={draft}
         placeholder={hint}
-        maxLength={6}
+        maxLength={String(max).length}
         readOnly={readOnly}
         onFocus={() => {
           editing.current.focused = true;
         }}
         onChange={(event) => {
+          // Keep only digits, and ignore keystrokes that can no longer reach the allowed range.
+          const next = event.target.value.replace(/\D/g, '');
+          if (!canCompletePrice(next, kind)) return;
           editing.current.dirty = true;
           onDraftChange(true);
-          setDraft(event.target.value);
+          setDraft(next);
         }}
         onBlur={commit}
         onKeyDown={(event) => {
@@ -165,6 +169,9 @@ function PriceInput({
           }
         }}
       />
+      <span id={rangeId} className="sr-only">
+        {min} to {max} bells
+      </span>
       {error && (
         <span id={errorId} className="input-error">
           {error}
