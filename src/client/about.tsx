@@ -1,0 +1,58 @@
+import { useState } from 'react';
+import './about.css';
+
+const LICENSE_ROOT = '/licenses/turnip-prophet';
+
+export function About() {
+  const [licenses, setLicenses] = useState<string | null>(null);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+
+  async function loadLicenses() {
+    if (status === 'loading' || status === 'ready') return;
+    setStatus('loading');
+    try {
+      const texts = await Promise.all(
+        ['NOTICE', 'LICENSE'].map(async (name) => {
+          const response = await fetch(`${LICENSE_ROOT}/${name}`);
+          if (!response.ok) throw new Error('Could not load the license.');
+          return response.text();
+        }),
+      );
+      setLicenses(texts.join('\n\n'));
+      setStatus('ready');
+    } catch {
+      setStatus('error');
+    }
+  }
+
+  return (
+    <footer className="about-footer">
+      <p>
+        Inspired by{' '}
+        <a href="https://turnipprophet.io" target="_blank" rel="noreferrer">
+          Turnip Prophet
+        </a>
+        . A fan project, not affiliated with Nintendo.
+      </p>
+      <details
+        onToggle={(event) => {
+          if (event.currentTarget.open) void loadLicenses();
+        }}
+      >
+        <summary>Licenses</summary>
+        {status === 'error' ? (
+          <p className="about-license-error" role="alert">
+            Could not load the licenses.{' '}
+            <button type="button" onClick={() => void loadLicenses()}>
+              Try again
+            </button>{' '}
+            or open the <a href={`${LICENSE_ROOT}/NOTICE`}>notice</a> and{' '}
+            <a href={`${LICENSE_ROOT}/LICENSE`}>license</a>.
+          </p>
+        ) : (
+          <pre aria-busy={status === 'loading'}>{licenses ?? 'Loading…'}</pre>
+        )}
+      </details>
+    </footer>
+  );
+}
