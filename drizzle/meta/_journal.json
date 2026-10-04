@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791115033966,
+      "tag": "0000_tranquil_weapon_omega",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791117793774,
+      "tag": "0001_generated_friend_codes",
+      "breakpoints": true
+    }
+  ]
+}

@@ -8,8 +8,11 @@
     "node": "^22.22.0 || ^24.0.0 || >=26.0.0"
   },
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "tsx scripts/dev.ts",
     "dev:app": "vite --host 127.0.0.1",
+    "db:local": "tsx scripts/local-db.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
     "typegen": "wrangler types",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.node.json",
     "build": "pnpm run typecheck && vite build",

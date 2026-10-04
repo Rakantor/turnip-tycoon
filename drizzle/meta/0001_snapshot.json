@@ -1,0 +1,767 @@
+{
+  "id": "7fb6a866-fd78-4072-834a-92fa413fb9d0",
+  "prevId": "f5e79531-6325-4059-87d4-eb144f242345",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "turnip_private.devices": {
+      "name": "devices",
+      "schema": "turnip_private",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "devices_player_idx": {
+          "name": "devices_player_idx",
+          "columns": [
+            {
+              "expression": "player_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "devices_player_id_players_id_fk": {
+          "name": "devices_player_id_players_id_fk",
+          "tableFrom": "devices",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "devices_token_hash_unique": {
+          "name": "devices_token_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token_hash"
+          ]
+        },
+        "devices_id_player_unique": {
+          "name": "devices_id_player_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "player_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "devices_name_length": {
+          "name": "devices_name_length",
+          "value": "char_length(\"turnip_private\".\"devices\".\"name\") between 1 and 60"
+        },
+        "devices_token_hash_format": {
+          "name": "devices_token_hash_format",
+          "value": "\"turnip_private\".\"devices\".\"token_hash\" ~ '^[0-9a-f]{64}$'"
+        },
+        "devices_expiry": {
+          "name": "devices_expiry",
+          "value": "\"turnip_private\".\"devices\".\"expires_at\" > \"turnip_private\".\"devices\".\"created_at\""
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.groups": {
+      "name": "groups",
+      "schema": "turnip_private",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "share_code": {
+          "name": "share_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "groups_share_code_unique": {
+          "name": "groups_share_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "share_code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "turnip_private.memberships": {
+      "name": "memberships",
+      "schema": "turnip_private",
+      "columns": {
+        "group_id": {
+          "name": "group_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "memberships_player_group_idx": {
+          "name": "memberships_player_group_idx",
+          "columns": [
+            {
+              "expression": "player_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "group_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "memberships_group_id_groups_id_fk": {
+          "name": "memberships_group_id_groups_id_fk",
+          "tableFrom": "memberships",
+          "tableTo": "groups",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "group_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "memberships_player_id_players_id_fk": {
+          "name": "memberships_player_id_players_id_fk",
+          "tableFrom": "memberships",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "memberships_group_id_player_id_pk": {
+          "name": "memberships_group_id_player_id_pk",
+          "columns": [
+            "group_id",
+            "player_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "turnip_private.mutations": {
+      "name": "mutations",
+      "schema": "turnip_private",
+      "columns": {
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mutation_id": {
+          "name": "mutation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resulting_revision": {
+          "name": "resulting_revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mutations_player_id_players_id_fk": {
+          "name": "mutations_player_id_players_id_fk",
+          "tableFrom": "mutations",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "mutations_player_id_mutation_id_pk": {
+          "name": "mutations_player_id_mutation_id_pk",
+          "columns": [
+            "player_id",
+            "mutation_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "mutations_revision_nonnegative": {
+          "name": "mutations_revision_nonnegative",
+          "value": "\"turnip_private\".\"mutations\".\"resulting_revision\" >= 0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.pairing_challenges": {
+      "name": "pairing_challenges",
+      "schema": "turnip_private",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "code_hash": {
+          "name": "code_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "claim_hash": {
+          "name": "claim_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "device_name": {
+          "name": "device_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "approved_by_device_id": {
+          "name": "approved_by_device_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "pairing_expiry_idx": {
+          "name": "pairing_expiry_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pairing_challenges_player_id_players_id_fk": {
+          "name": "pairing_challenges_player_id_players_id_fk",
+          "tableFrom": "pairing_challenges",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pairing_challenges_approved_by_device_id_player_id_devices_id_player_id_fk": {
+          "name": "pairing_challenges_approved_by_device_id_player_id_devices_id_player_id_fk",
+          "tableFrom": "pairing_challenges",
+          "tableTo": "devices",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "approved_by_device_id",
+            "player_id"
+          ],
+          "columnsTo": [
+            "id",
+            "player_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "pairing_challenges_code_hash_unique": {
+          "name": "pairing_challenges_code_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code_hash"
+          ]
+        },
+        "pairing_challenges_claim_hash_unique": {
+          "name": "pairing_challenges_claim_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "claim_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "pairing_approval_consistency": {
+          "name": "pairing_approval_consistency",
+          "value": "(\"turnip_private\".\"pairing_challenges\".\"player_id\" is null) = (\"turnip_private\".\"pairing_challenges\".\"approved_by_device_id\" is null)"
+        },
+        "pairing_device_name_length": {
+          "name": "pairing_device_name_length",
+          "value": "char_length(\"turnip_private\".\"pairing_challenges\".\"device_name\") between 1 and 60"
+        },
+        "pairing_code_hash_format": {
+          "name": "pairing_code_hash_format",
+          "value": "\"turnip_private\".\"pairing_challenges\".\"code_hash\" ~ '^[0-9a-f]{64}$'"
+        },
+        "pairing_claim_hash_format": {
+          "name": "pairing_claim_hash_format",
+          "value": "\"turnip_private\".\"pairing_challenges\".\"claim_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.players": {
+      "name": "players",
+      "schema": "turnip_private",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "island_name": {
+          "name": "island_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "friend_code": {
+          "name": "friend_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "players_friend_code_unique": {
+          "name": "players_friend_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "friend_code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "players_display_name_length": {
+          "name": "players_display_name_length",
+          "value": "char_length(\"turnip_private\".\"players\".\"display_name\") between 1 and 40"
+        },
+        "players_island_name_length": {
+          "name": "players_island_name_length",
+          "value": "\"turnip_private\".\"players\".\"island_name\" is null or char_length(\"turnip_private\".\"players\".\"island_name\") between 1 and 40"
+        },
+        "players_friend_code_format": {
+          "name": "players_friend_code_format",
+          "value": "\"turnip_private\".\"players\".\"friend_code\" ~ '^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.price_entries": {
+      "name": "price_entries",
+      "schema": "turnip_private",
+      "columns": {
+        "week_id": {
+          "name": "week_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day": {
+          "name": "day",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slot": {
+          "name": "slot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "price_entries_week_id_player_id_weeks_id_player_id_fk": {
+          "name": "price_entries_week_id_player_id_weeks_id_player_id_fk",
+          "tableFrom": "price_entries",
+          "tableTo": "weeks",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "week_id",
+            "player_id"
+          ],
+          "columnsTo": [
+            "id",
+            "player_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "price_entries_week_id_day_slot_pk": {
+          "name": "price_entries_week_id_day_slot_pk",
+          "columns": [
+            "week_id",
+            "day",
+            "slot"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "prices_selling_day": {
+          "name": "prices_selling_day",
+          "value": "\"turnip_private\".\"price_entries\".\"day\" between 1 and 6"
+        },
+        "prices_slot": {
+          "name": "prices_slot",
+          "value": "\"turnip_private\".\"price_entries\".\"slot\" in ('AM', 'PM')"
+        },
+        "prices_range": {
+          "name": "prices_range",
+          "value": "\"turnip_private\".\"price_entries\".\"price\" between 1 and 660"
+        },
+        "prices_revision_nonnegative": {
+          "name": "prices_revision_nonnegative",
+          "value": "\"turnip_private\".\"price_entries\".\"revision\" >= 0"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.recovery_credentials": {
+      "name": "recovery_credentials",
+      "schema": "turnip_private",
+      "columns": {
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code_hash": {
+          "name": "code_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "recovery_credentials_player_id_players_id_fk": {
+          "name": "recovery_credentials_player_id_players_id_fk",
+          "tableFrom": "recovery_credentials",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "recovery_credentials_code_hash_unique": {
+          "name": "recovery_credentials_code_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "recovery_hash_format": {
+          "name": "recovery_hash_format",
+          "value": "\"turnip_private\".\"recovery_credentials\".\"code_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": true
+    },
+    "turnip_private.weeks": {
+      "name": "weeks",
+      "schema": "turnip_private",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "week_start": {
+          "name": "week_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "purchase_price": {
+          "name": "purchase_price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_buy": {
+          "name": "first_buy",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "previous_pattern": {
+          "name": "previous_pattern",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "weeks_player_id_players_id_fk": {
+          "name": "weeks_player_id_players_id_fk",
+          "tableFrom": "weeks",
+          "tableTo": "players",
+          "schemaTo": "turnip_private",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "weeks_player_start_unique": {
+          "name": "weeks_player_start_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "player_id",
+            "week_start"
+          ]
+        },
+        "weeks_id_player_unique": {
+          "name": "weeks_id_player_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "player_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "weeks_start_sunday": {
+          "name": "weeks_start_sunday",
+          "value": "extract(dow from \"turnip_private\".\"weeks\".\"week_start\") = 0"
+        },
+        "weeks_purchase_range": {
+          "name": "weeks_purchase_range",
+          "value": "\"turnip_private\".\"weeks\".\"purchase_price\" is null or \"turnip_private\".\"weeks\".\"purchase_price\" between 90 and 110"
+        },
+        "weeks_previous_pattern": {
+          "name": "weeks_previous_pattern",
+          "value": "\"turnip_private\".\"weeks\".\"previous_pattern\" is null or \"turnip_private\".\"weeks\".\"previous_pattern\" in ('fluctuating', 'large-spike', 'decreasing', 'small-spike')"
+        },
+        "weeks_revision_nonnegative": {
+          "name": "weeks_revision_nonnegative",
+          "value": "\"turnip_private\".\"weeks\".\"revision\" >= 0"
+        }
+      },
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "turnip_private": "turnip_private"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -1,0 +1,2 @@
+# Optional: override the local Hyperdrive target when using your own local PostgreSQL.
+# CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE=postgresql://user:password@127.0.0.1:5432/turnip
