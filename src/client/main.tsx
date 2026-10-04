@@ -1,6 +1,15 @@
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router';
+import {
+  BrowserRouter,
+  HashRouter,
+  Link,
+  NavLink,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router';
 import {
   Settings as SettingsIcon,
   CalendarDays,
@@ -15,6 +24,7 @@ import { Connect, Recover, Settings } from './settings';
 import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
 import { About } from './about';
+import { assetUrl, hashRouting } from './urls';
 import './styles.css';
 
 function ScrollToPage() {
@@ -31,17 +41,30 @@ function ScrollToPage() {
 
 function App() {
   const identity = useIdentity();
+  const location = useLocation();
   return (
     <AppContext.Provider value={identity}>
-      <a href="#main-content" className="skip-link">
+      <Link
+        to={{ pathname: location.pathname, search: location.search, hash: '#main-content' }}
+        className="skip-link"
+        onClick={(event) => {
+          event.preventDefault();
+          const content = document.getElementById('main-content');
+          if (content) {
+            content.tabIndex = -1;
+            content.focus({ preventScroll: true });
+            content.scrollIntoView();
+          }
+        }}
+      >
         Skip to content
-      </a>
+      </Link>
       <header className="site-header">
         <Link to="/" className="brand">
           <img
             className="brand-mark"
-            src="/icons/brand-96.webp"
-            srcSet="/icons/brand-192.webp 2x"
+            src={assetUrl('icons/brand-96.webp')}
+            srcSet={`${assetUrl('icons/brand-192.webp')} 2x`}
             width={40}
             height={40}
             alt=""
@@ -112,8 +135,10 @@ function App() {
   );
 }
 
+const Router = hashRouting ? HashRouter : BrowserRouter;
+
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
+  <Router basename={hashRouting ? undefined : import.meta.env.BASE_URL}>
     <App />
-  </BrowserRouter>,
+  </Router>,
 );

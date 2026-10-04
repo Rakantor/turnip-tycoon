@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { assetUrl } from './urls';
 import './about.css';
 
-const LICENSE_ROOT = '/licenses/turnip-prophet';
+const LICENSE_ROOT = assetUrl('licenses/turnip-prophet');
 
 export function About() {
   const [licenses, setLicenses] = useState<string | null>(null);

@@ -5,6 +5,7 @@ dist/
 .dev.vars*
 .env*
 !.env.example
+!.env.pages.example
 !.dev.vars.example
 playwright-report/
 test-results/

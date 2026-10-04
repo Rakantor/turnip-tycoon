@@ -8,6 +8,7 @@ import type { WeekRecord } from '../shared/week';
 import { useGroups } from './data/use-groups';
 import { GroupPriceTable } from './group-price-table';
 import { Button, Field, messageOf, Notice, useApp, weekLabel } from './ui';
+import { appUrl } from './urls';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
@@ -274,7 +275,7 @@ function GroupDetails({ group, data }: { group: GroupSummary; data: GroupData })
   const [leaving, setLeaving] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
   async function share() {
-    const url = `${location.origin}/groups/join?code=${encodeURIComponent(group.code)}`;
+    const url = appUrl(`/groups/join?code=${encodeURIComponent(group.code)}`);
     if (navigator.share) {
       try {
         await navigator.share({

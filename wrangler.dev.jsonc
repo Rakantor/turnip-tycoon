@@ -1,20 +1,24 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "turnip-tycoon",
+  "name": "turnip-tycoon-local",
   "main": "src/server/index.ts",
   "compatibility_date": "2026-10-04",
   "compatibility_flags": ["nodejs_compat"],
-  "workers_dev": true,
+  "workers_dev": false,
   "secrets": { "required": [] },
   "vars": {
-    "AUTH_MODE": "bearer",
-    "FRONTEND_ORIGIN": "https://rakantor.github.io",
+    "AUTH_MODE": "cookie",
+    "FRONTEND_ORIGIN": "http://127.0.0.1:5173",
+  },
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
   },
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "5b3c343418a845358bce4ca55d10fc4e",
+      "id": "00000000000000000000000000000000",
       "localConnectionString": "postgresql://turnip:turnip-local-only@127.0.0.1:54329/turnip",
     },
   ],
