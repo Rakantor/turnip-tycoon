@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "turnip-club",
+  "main": "src/server/index.ts",
+  "compatibility_date": "2026-10-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      // Local-only placeholder. Replace with a configured, cache-disabled Hyperdrive ID before deploying.
+      "id": "00000000000000000000000000000000",
+      "localConnectionString": "postgresql://turnip:turnip-local-only@127.0.0.1:54329/turnip",
+    },
+  ],
+}

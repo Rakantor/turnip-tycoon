@@ -1,0 +1,21 @@
+# Keep the existing transitive esbuild override when importing the dependency graph.
+overrides:
+  '@esbuild-kit/core-utils>esbuild': ^0.28.2
+
+# Native tools needed by the local database and Cloudflare/Vite runtime.
+# pnpm installs only the PostgreSQL binary matching the current platform.
+onlyBuiltDependencies:
+  - '@embedded-postgres/darwin-arm64'
+  - '@embedded-postgres/darwin-x64'
+  - '@embedded-postgres/linux-arm'
+  - '@embedded-postgres/linux-arm64'
+  - '@embedded-postgres/linux-ia32'
+  - '@embedded-postgres/linux-ppc64'
+  - '@embedded-postgres/linux-x64'
+  - '@embedded-postgres/windows-x64'
+  - esbuild
+  - workerd
+
+# macOS file watching has a native optional fallback; normal Vite watching works without it.
+ignoredBuiltDependencies:
+  - fsevents
