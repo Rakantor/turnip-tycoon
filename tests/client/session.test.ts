@@ -33,6 +33,7 @@ function harness(vault: SessionVault, lock = serialLock()) {
   let credential: string | null = null;
   const broadcast = vi.fn();
   const currentResponse = vi.fn(() => true);
+  const attach = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
   const controller = new SessionController({
     vault,
     lock,
@@ -44,11 +45,11 @@ function harness(vault: SessionVault, lock = serialLock()) {
     currentResponse,
     invalidateResponses: () => undefined,
     publish: () => undefined,
-    attach: async () => undefined,
+    attach,
     broadcast,
     deviceName: () => 'Test device',
   });
-  return { controller, network, broadcast, currentResponse, credential: () => credential };
+  return { controller, network, broadcast, currentResponse, attach, credential: () => credential };
 }
 function defer<T>() {
   let resolve!: (value: T) => void;
@@ -134,6 +135,60 @@ describe('silent profile connection', () => {
     expect(h.credential()).toBeNull();
   });
 
+  it('reopens the cached profile offline and confirms access before resuming its edits', async () => {
+    const { db, vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    db.close();
+    await db.open();
+    const h = harness(new SessionVault(db, true));
+    h.network.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({
+      session: session('one'),
+      status: 'offline',
+      canReload: true,
+    });
+    expect(h.credential()).toBe(tokenA);
+    expect(h.attach).not.toHaveBeenCalled();
+
+    const entered = defer<void>();
+    const response = defer<SessionResponse>();
+    h.network.mockImplementationOnce(() => {
+      entered.resolve();
+      return response.promise;
+    });
+    const reconnecting = h.controller.retry();
+    await entered.promise;
+    expect(h.controller.state).toMatchObject({ status: 'connecting', canReload: false });
+    expect(h.attach).not.toHaveBeenCalled();
+    response.resolve(session('one'));
+    await reconnecting;
+    expect(h.controller.state).toMatchObject({ status: 'ready', canReload: true });
+    expect(h.attach).toHaveBeenCalledExactlyOnceWith('one');
+    expect(h.network.mock.calls.every(([, options]) => !options?.method)).toBe(true);
+  });
+
+  it('keeps a never-connected offline calculator anonymous until the API returns', async () => {
+    const { vault } = makeVault();
+    const h = harness(vault);
+    h.network.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({ session: null, status: 'offline', canReload: true });
+    expect(h.network).toHaveBeenCalledExactlyOnceWith('/session', undefined);
+    expect(h.attach).not.toHaveBeenCalled();
+    expect(await vault.read()).toMatchObject({ session: null, creating: false });
+
+    h.network
+      .mockRejectedValueOnce(unauthorized())
+      .mockResolvedValueOnce({ ...session('one'), sessionToken: tokenA });
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({ status: 'ready', session: session('one') });
+    expect(h.attach).toHaveBeenCalledExactlyOnceWith('one');
+    expect(h.network.mock.calls.filter(([, options]) => options?.method === 'POST')).toHaveLength(
+      1,
+    );
+  });
+
   it('does not create a replacement player for a revoked existing device', async () => {
     const { vault } = makeVault();
     await vault.save(session('one'), tokenA, null, () => true);
@@ -204,6 +259,7 @@ describe('silent profile connection', () => {
       .mockResolvedValueOnce({ ...session('one'), sessionToken: tokenA });
     await h.controller.retry();
     expect(h.controller.state).toMatchObject({ status: 'ready', session: session('one') });
+    expect(h.controller.state.canReload).toBe(false);
     expect(h.controller.state.error).toContain('could not save');
     expect(h.credential()).toBe(tokenA);
     h.network.mockResolvedValue(session('one'));
@@ -214,6 +270,7 @@ describe('silent profile connection', () => {
     );
     expect(await vault.read()).toMatchObject({ token: tokenA, session: session('one') });
     expect(h.controller.state.error).toBeNull();
+    expect(h.controller.state.canReload).toBe(true);
   });
 
   it('cannot let a delayed bootstrap overwrite explicitly recovered access', async () => {
@@ -244,6 +301,7 @@ describe('silent profile connection', () => {
     await h.controller.retry();
     vi.spyOn(vault, 'save').mockRejectedValueOnce(new DOMException('Full', 'QuotaExceededError'));
     await h.controller.adopt({ ...session('two'), sessionToken: tokenB });
+    expect(h.controller.state.canReload).toBe(false);
     const previous = await vault.read();
     const changed = session('one');
     changed.player.displayName = 'Renamed in another tab';
@@ -259,6 +317,7 @@ describe('silent profile connection', () => {
       session: session('two'),
     });
     expect(await vault.read()).toMatchObject({ token: tokenB, session: session('two') });
+    expect(h.controller.state.canReload).toBe(true);
   });
 
   it('lets newer recovery supersede a bootstrap disk commit that finished after cancellation', async () => {

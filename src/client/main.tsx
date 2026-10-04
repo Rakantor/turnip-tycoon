@@ -25,6 +25,9 @@ import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
 import { About } from './about';
 import { assetUrl, hashRouting } from './urls';
+import { startPwa, usePwa } from './pwa';
+import { UpdateNotice } from './pwa-ui';
+import { startInstallPromptCapture } from './pwa-install';
 import './styles.css';
 
 function ScrollToPage() {
@@ -41,101 +44,108 @@ function ScrollToPage() {
 
 function App() {
   const identity = useIdentity();
+  const pwa = usePwa();
   const location = useLocation();
   return (
     <AppContext.Provider value={identity}>
-      <Link
-        to={{ pathname: location.pathname, search: location.search, hash: '#main-content' }}
-        className="skip-link"
-        onClick={(event) => {
-          event.preventDefault();
-          const content = document.getElementById('main-content');
-          if (content) {
-            content.tabIndex = -1;
-            content.focus({ preventScroll: true });
-            content.scrollIntoView();
-          }
-        }}
-      >
-        Skip to content
-      </Link>
-      <header className="site-header">
-        <Link to="/" className="brand">
-          <img
-            className="brand-mark"
-            src={assetUrl('icons/brand-96.webp')}
-            srcSet={`${assetUrl('icons/brand-192.webp')} 2x`}
-            width={40}
-            height={40}
-            alt=""
-          />
-          Turnip Tycoon
-        </Link>
-        <nav aria-label="Main navigation">
-          <NavLink to="/" end>
-            <CalendarDays size={16} aria-hidden="true" />
-            Prices
-          </NavLink>
-          <NavLink to="/groups">
-            <Users size={16} aria-hidden="true" />
-            Friends
-          </NavLink>
-          <NavLink to="/history">
-            <HistoryIcon size={16} aria-hidden="true" />
-            History
-          </NavLink>
-        </nav>
-        <NavLink
-          to="/settings"
-          className="settings-link icon-button"
-          aria-label="Settings"
-          title="Settings"
+      <div inert={pwa.updating || undefined}>
+        <Link
+          to={{ pathname: location.pathname, search: location.search, hash: '#main-content' }}
+          className="skip-link"
+          onClick={(event) => {
+            event.preventDefault();
+            const content = document.getElementById('main-content');
+            if (content) {
+              content.tabIndex = -1;
+              content.focus({ preventScroll: true });
+              content.scrollIntoView();
+            }
+          }}
         >
-          <SettingsIcon size={19} aria-hidden="true" />
-        </NavLink>
-      </header>
-      <ScrollToPage />
-      <Routes>
-        <Route path="/" element={<Calculator />} />
-        <Route path="/weeks/:weekStart" element={<Calculator />} />
-        <Route
-          path="/groups"
-          element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/groups/join"
-          element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/groups/:groupId"
-          element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/players/:playerId/weeks/:weekStart"
-          element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/players/:playerId/history"
-          element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/history"
-          element={<History key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route
-          path="/settings"
-          element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
-        />
-        <Route path="/connect" element={<Connect />} />
-        <Route path="/recover" element={<Recover />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      <About />
+          Skip to content
+        </Link>
+        <header className="site-header">
+          <Link to="/" className="brand">
+            <img
+              className="brand-mark"
+              src={assetUrl('icons/brand-96.webp')}
+              srcSet={`${assetUrl('icons/brand-192.webp')} 2x`}
+              width={40}
+              height={40}
+              alt=""
+            />
+            Turnip Tycoon
+          </Link>
+          <nav aria-label="Main navigation">
+            <NavLink to="/" end>
+              <CalendarDays size={16} aria-hidden="true" />
+              Prices
+            </NavLink>
+            <NavLink to="/groups">
+              <Users size={16} aria-hidden="true" />
+              Friends
+            </NavLink>
+            <NavLink to="/history">
+              <HistoryIcon size={16} aria-hidden="true" />
+              History
+            </NavLink>
+          </nav>
+          <NavLink
+            to="/settings"
+            className="settings-link icon-button"
+            aria-label="Settings"
+            title="Settings"
+          >
+            <SettingsIcon size={19} aria-hidden="true" />
+          </NavLink>
+        </header>
+        <ScrollToPage />
+        <Routes>
+          <Route path="/" element={<Calculator />} />
+          <Route path="/weeks/:weekStart" element={<Calculator />} />
+          <Route
+            path="/groups"
+            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/groups/join"
+            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/groups/:groupId"
+            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/players/:playerId/weeks/:weekStart"
+            element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/players/:playerId/history"
+            element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/history"
+            element={<History key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route
+            path="/settings"
+            element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
+          />
+          <Route path="/connect" element={<Connect />} />
+          <Route path="/recover" element={<Recover />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <About />
+      </div>
+      <UpdateNotice />
     </AppContext.Provider>
   );
 }
 
 const Router = hashRouting ? HashRouter : BrowserRouter;
+
+startInstallPromptCapture();
+startPwa();
 
 createRoot(document.getElementById('root')!).render(
   <Router basename={hashRouting ? undefined : import.meta.env.BASE_URL}>

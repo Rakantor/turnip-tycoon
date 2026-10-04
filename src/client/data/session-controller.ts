@@ -13,6 +13,8 @@ export type IdentityState = {
   status: 'connecting' | 'ready' | 'offline' | 'error';
   error: string | null;
   creationInterrupted: boolean;
+  /** Reloading must not discard profile access held only in this tab. */
+  canReload: boolean;
 };
 type Dependencies = {
   vault: SessionVault;
@@ -44,6 +46,7 @@ export class SessionController {
     status: 'connecting',
     error: null,
     creationInterrupted: false,
+    canReload: false,
   };
   private stored: StoredSession = { ...EMPTY };
   private durable: StoredSession = { ...EMPTY };
@@ -54,11 +57,12 @@ export class SessionController {
 
   constructor(private deps: Dependencies) {}
 
-  private publish(next: Omit<IdentityState, 'creationInterrupted'>) {
+  private publish(next: Omit<IdentityState, 'creationInterrupted' | 'canReload'>) {
     this.state = {
       ...next,
       creationInterrupted:
         this.stored.creating && !this.stored.token && ['offline', 'error'].includes(next.status),
+      canReload: !this.unsaved && next.status !== 'connecting',
     };
     this.deps.publish(this.state);
   }

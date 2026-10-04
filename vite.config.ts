@@ -1,6 +1,38 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { cloudflare } from '@cloudflare/vite-plugin';
+import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
+
+export const pagesBase = '/turnip-tycoon/';
+
+export const pagesPwaOptions: Partial<VitePWAOptions> = {
+  strategies: 'generateSW',
+  filename: 'sw.js',
+  scope: pagesBase,
+  // The checked-in manifest and native registration retain control of their lifecycle.
+  manifest: false,
+  injectRegister: false,
+  registerType: 'prompt',
+  workbox: {
+    cacheId: 'turnip-tycoon',
+    cleanupOutdatedCaches: true,
+    clientsClaim: true,
+    skipWaiting: false,
+    globPatterns: [
+      'index.html',
+      'assets/**/*.{js,css,woff,woff2}',
+      'favicon.ico',
+      'manifest.webmanifest',
+      'icons/*.{png,webp}',
+      'licenses/turnip-prophet/{COPYRIGHT,LICENSE,NOTICE}',
+    ],
+    // Pages uses hash routes: only the app's entry document needs a fallback.
+    navigateFallback: 'index.html',
+    navigateFallbackAllowlist: [/^\/turnip-tycoon\/(?:index\.html)?(?:\?.*)?$/],
+    // User data stays in the existing IndexedDB store; API responses are never cached.
+    runtimeCaching: [],
+  },
+};
 
 export default defineConfig(({ mode }) => {
   const pages = mode === 'pages';
@@ -24,8 +56,11 @@ export default defineConfig(({ mode }) => {
       );
   }
   return {
-    base: pages ? '/turnip-tycoon/' : '/',
-    plugins: [react(), ...(pages ? [] : [cloudflare({ configPath: 'wrangler.dev.jsonc' })])],
+    base: pages ? pagesBase : '/',
+    plugins: [
+      react(),
+      ...(pages ? [VitePWA(pagesPwaOptions)] : [cloudflare({ configPath: 'wrangler.dev.jsonc' })]),
+    ],
     ...(pages ? { build: { outDir: 'dist/pages' } } : {}),
     server: { port: 5173, strictPort: true },
   };

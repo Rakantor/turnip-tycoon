@@ -3,6 +3,7 @@ dist
 .wrangler
 .local
 .playwright-cli
+.playwright-mcp
 output
 worker-configuration.d.ts
 drizzle/meta

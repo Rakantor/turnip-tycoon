@@ -54,6 +54,9 @@ const adopt = controller.adopt.bind(controller);
 const beginIdentityChange = () => controller.beginIdentityChange();
 const restartInterruptedCreation = () => controller.restartInterruptedCreation();
 
+/** Read current state after async local writes, rather than a stale render. */
+export const canReloadIdentity = () => controller.state.canReload;
+
 function start() {
   if (started) return;
   started = true;

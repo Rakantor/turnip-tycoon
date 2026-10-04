@@ -14,5 +14,6 @@ coverage/
 .DS_Store
 output/
 .playwright-cli/
+.playwright-mcp/
 .pnpm-store/
 pnpm-debug.log*

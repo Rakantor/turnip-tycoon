@@ -8,6 +8,7 @@ import { useWeek } from './data/use-week';
 import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
 import { Forecast } from './forecast';
+import { usePwaReloadGuard } from './pwa';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const PATTERNS: { id: PatternId; label: string }[] = [
@@ -241,6 +242,11 @@ function WeekCalculator({
     );
   }
   const editing = draftFields.length > 0;
+  usePwaReloadGuard(
+    editing || invalidFields.length > 0
+      ? 'Finish or correct your price entry before updating.'
+      : null,
+  );
   const saveLabel = editing
     ? 'Editing…'
     : status === 'saved'

@@ -1,7 +1,8 @@
 # Turnip Tycoon — Implementation Plan
 
 Updated: 4 October 2026  
-Status: Weekly-table calculator, silent access, weekly storage/sync, history, and friend groups are implemented. The visual refresh follows the sibling `turnipcc` prototype. Interactive forecast tooltips and a weekly group-price table with an optional day view are implemented. Full week opens by default at every width, with fixed names and probabilities while prices scroll. Forecast ranges and Prediction details now stay visible; new weeks can infer the immediately preceding week's unique pattern, and the footer follows `turnipcc`. This checkpoint passes all 124 tests across eight files, lint, all TypeScript checks, production build, formatting, and focused desktop/320-pixel browser checks. No deployment or deployment dry run was performed at this checkpoint. The prior groups checkpoint passed its deployment dry run. Nothing has been published; hosted Hyperdrive → Supabase configuration and installable/offline-opening PWA support remain outstanding.  
+Status: Weekly-table calculation, silent access, weekly storage/sync, history, and friend groups are implemented. The interface follows the sibling `turnipcc` prototype, with interactive chart tooltips, complete pattern probabilities, and mobile price tables that scroll independently of names and probabilities. GitHub Pages builds now include project-scoped service-worker caching, offline reopening, Settings installation controls, and user-controlled updates that preserve local writes. These PWA changes have not been deployed. Physical Android/iOS installation, recovery, and offline-use verification remain release checks.
+
 App name: Turnip Tycoon.
 
 ## 1. Purpose
@@ -76,9 +77,9 @@ If every connected device and the recovery code are lost, there is no email or s
 
 ### Backend responsibilities
 
-Use standard secure random tokens, hashed secret storage, and secure session cookies. Credential expiry metadata is allowed where needed; the decision to omit timestamps concerns price observations, not session or pairing mechanics.
+Use standard secure random tokens and hashed secret storage. Local development uses secure session cookies; GitHub Pages uses bearer sessions persisted encrypted in IndexedDB. Credential expiry metadata is allowed where needed; the decision to omit timestamps concerns price observations, not session or pairing mechanics.
 
-Authenticated browser requests include an expected-player assertion as well as the session cookie. The server rejects a mismatch so an older tab cannot upload one player's pending prices into a different identity after pairing or recovery changes the browser cookie. The assertion is a consistency check, never an authorization credential.
+Authenticated browser requests include an expected-player assertion as well as the device session credential. The server rejects a mismatch so an older tab cannot upload one player's pending prices into a different identity after pairing or recovery changes the active session. The assertion is a consistency check, never an authorization credential.
 
 The backend must verify:
 
@@ -199,9 +200,11 @@ Friends see the new value the next time they refresh. The app does not promise t
 
 ### Offline use and retry behaviour
 
-IndexedDB stores downloaded records and pending changes. The cached app and prediction engine should continue working offline after the first successful load.
+IndexedDB stores cached own records and pending changes. After an online visit completes silent profile setup and Settings reports that offline access is ready, the cached Pages app and prediction engine can reopen and work offline. First-time profile creation and friends’ prices still require a connection.
 
-Current implementation: IndexedDB storage, queued uploads, revision conflicts, and in-browser calculation are present. They support continued use while the loaded app is disconnected. Service-worker caching and reliable offline opening are still required; persistence alone does not make the app an offline-installable PWA.
+Current implementation: production Pages builds generate a service worker scoped to `/turnip-tycoon/`. It precaches the static app, icons, manifest, and licenses, with no runtime API caching. IndexedDB retains own records, credentials, pending uploads, and revision conflicts independently of the app cache. Local development does not install a service worker; use the Pages preview in `README.md` to exercise offline reopening.
+
+Settings exposes installation, offline readiness, setup retry, and update checks. Updates wait for an explicit Update now action on a safe screen. Valid local writes flush before reloading; invalid drafts and an unrestorable profile block the reload. Pending uploads can remain queued, and other open tabs are never force-reloaded. Installation remains optional and introduces no startup prompt.
 
 When connectivity returns, retry pending uploads while the app is running. Also resume pending uploads when the app is opened. Do not depend on mobile background execution while the app is closed.
 
@@ -247,7 +250,7 @@ The weekly-table structure and prototype-inspired visual direction are agreed. T
 | Language | TypeScript across frontend, backend, shared types, and prediction module. |
 | Frontend | React with Vite. |
 | Navigation | React Router used as a routing library. |
-| App delivery | Responsive web app with a manifest and regular/maskable install icons; service-worker support remains planned. |
+| App delivery | GitHub Pages PWA with a manifest, regular/maskable install icons, scoped static precaching, and user-controlled updates. |
 | Local data | IndexedDB through Dexie. |
 | API | Hono running on Cloudflare Workers. |
 | Database | Supabase-hosted PostgreSQL. |
@@ -258,7 +261,7 @@ The weekly-table structure and prototype-inspired visual direction are agreed. T
 | Tests | Vitest for calculations and backend behaviour; Playwright for browser flows. |
 | Deployment tooling | Cloudflare Vite plugin and Wrangler. |
 
-Serve the frontend assets and API under the same origin. Keep database credentials in backend configuration, never in the browser.
+Serve the frontend on GitHub Pages and the API on Cloudflare Workers. Production uses persisted bearer device sessions and an exact frontend-origin allowlist; local development retains same-origin cookies. Keep database credentials in backend configuration, never in the browser.
 
 Cloudflare documents the [React + Vite deployment model](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/) and [Drizzle with pg through Hyperdrive](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/). Connect Hyperdrive to the [Supabase direct PostgreSQL endpoint](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/supabase/).
 
@@ -402,7 +405,7 @@ Do not assume moving the API to Cloudflare removes Supabase's database egress ch
 
 ### Stage 1: Foundation and access
 
-Implementation checkpoint (4 October 2026): the React/Hono foundation, private PostgreSQL schema and migrations, independent device sessions, approval-based pairing, recovery rotation, and device revocation are implemented. The revised access model silently creates/reuses a player, uses an app-generated immutable friend code as the initial name, and creates recovery credentials only on request. A forward migration preserves existing custom names and history. The 36 API/schema tests cover access isolation, weekly saves, concurrency, idempotency, conflicts, history, identity switching, and migration. Integrated lint, TypeScript, production build, formatting, and deployment dry run pass. Browser flows verify silent creation, recovery and pairing from automatically created profiles, and protection against delayed session responses. A real hosted Supabase connection still needs service configuration. See `README.md` for local startup and that remaining checkpoint.
+Implementation checkpoint (4 October 2026): the React/Hono foundation, private PostgreSQL schema and migrations, independent device sessions, approval-based pairing, recovery rotation, and device revocation are implemented. The revised access model silently creates/reuses a player, uses an app-generated immutable friend code as the initial name, and creates recovery credentials only on request. A forward migration preserves existing custom names and history. The 36 API/schema tests cover access isolation, weekly saves, concurrency, idempotency, conflicts, history, identity switching, and migration. Integrated lint, TypeScript, production build, formatting, and deployment dry run pass. Browser flows verify silent creation, recovery and pairing from automatically created profiles, and protection against delayed session responses. See `README.md` for local startup, hosted Supabase/Hyperdrive configuration, and the separate Pages/API deployment procedures.
 
 - Set up React, Vite, TypeScript, React Router, and the Hono Worker.
 - Add the database schema and migrations.
@@ -414,7 +417,7 @@ Completion check: two devices can access the same player; a different player can
 
 ### Stage 2: Calculator and weekly records
 
-Implementation checkpoint: design A's table, forecast chart/ranges, optional prediction inputs, device-local weeks, IndexedDB persistence, revisioned weekly API, upload retries/conflict review, and historical views are implemented. At the calculator checkpoint, the full suite passed 92 tests, including 33 prediction regressions and 23 storage/calendar tests. Desktop and phone-size Chrome checks covered immediate entry, typing during bootstrap, saved values and blank clearing, reloads, offline reconnect, read-only history, conflict resolution, and retained input after browser-storage failures. PWA offline opening and independent current-game compatibility verification remain outstanding.
+Implementation checkpoint: design A's table, forecast chart/ranges, optional prediction inputs, device-local weeks, IndexedDB persistence, revisioned weekly API, upload retries/conflict review, and historical views are implemented. At the calculator checkpoint, the full suite passed 92 tests, including 33 prediction regressions and 23 storage/calendar tests. Desktop and phone-size Chrome checks covered immediate entry, typing during bootstrap, saved values and blank clearing, reloads, offline reconnect, read-only history, conflict resolution, and retained input after browser-storage failures. PWA offline opening is implemented in Stage 4. Independent current-game compatibility verification remains outstanding.
 
 Current chart update: click/tap and keyboard selection expose each half-day's potential minimum and maximum in a tooltip, with reported values shown when available. Targeted lint, strict TypeScript, production build, all 33 prediction tests, and formatting checks pass. Browser checks verify nearest-half-day click selection against exact engine values, arrow keys, Home, End, Escape, touch selection of the first and last periods, and the shared-member chart.
 
@@ -447,14 +450,17 @@ Completion check: an edit is stored once, becomes visible to friends on their ne
 
 ### Stage 4: Offline behaviour and PWA
 
-Icon preparation is complete: the supplied raccoon artwork is used for browser and website branding, Apple touch icons, and regular/maskable PWA icons. Optimized Apple App Store/Xcode and Google Play exports are retained outside the public web bundle. The manifest parses without browser errors; icon resources, retina rendering, and layouts at 320, 390, and 1280 pixels have been checked. Service-worker caching and real-device installation checks remain below. See [icon assets](assets/branding/README.md).
+Icon preparation is complete: the supplied raccoon artwork is used for browser and website branding, Apple touch icons, and regular/maskable PWA icons. Optimized Apple App Store/Xcode and Google Play exports are retained outside the public web bundle. The manifest parses without browser errors; icon resources, retina rendering, and layouts at 320, 390, and 1280 pixels have been checked. Pages-only service-worker caching and Settings installation controls are implemented. Real-device installation checks remain below. See [icon assets](assets/branding/README.md).
 
-- Cache the app for offline opening.
-- Retain and verify the IndexedDB records and pending-edit queue introduced in Stage 2.
-- Exercise the existing upload retries, idempotency, and conflict handling across offline reopening and service-worker updates.
-- Verify that late queued uploads complete after week rollover on real devices.
-- Verify installation, recovery, and offline use on Android and iOS.
-- Add data export, accessible controls, and attribution.
+- [x] Cache the static Pages app for offline reopening after initial online setup, without caching API responses.
+- [x] Retain IndexedDB records and the pending-edit queue across reopening and reconnection.
+- [x] Add safe, user-controlled updates that flush local writes, block invalid drafts, and leave other tabs open.
+- [x] Add Settings installation, offline-readiness, setup-retry, and update-check controls.
+- [x] Verify desktop browser offline reopening, reconnecting uploads, invalid-entry update blocking, offline updates, and retained drafts in other tabs; verify the Settings layout at 320 pixels.
+- [ ] Complete physical-device checks of retries, conflicts, and retained edits across offline reopening and updates.
+- [ ] Verify that late queued uploads complete after week rollover on real devices.
+- [ ] Verify installation, recovery, and offline use on Android and iOS.
+- [ ] Complete data export and remaining accessibility checks; bundled attribution is already available offline.
 
 Completion check: ordinary offline use does not lose entries, and pending changes remain clearly distinguished from synced data.
 

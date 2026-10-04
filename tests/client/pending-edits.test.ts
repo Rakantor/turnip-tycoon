@@ -167,6 +167,51 @@ describe('unsaved local edits', () => {
     expect(h.queue.snapshot(owner, week).edits).toHaveLength(1);
   });
 
+  it('waits for all local writes and newly queued weeks before allowing an app reload', async () => {
+    const h = harness();
+    let release!: () => void;
+    const blocked = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    h.persist.mockImplementation(async (...args) => {
+      await blocked;
+      return h.write(...args);
+    });
+    const first = h.queue.enqueue(owner, week, { purchasePrice: 100 });
+    const finished = vi.fn();
+    const flushing = h.queue.flushAll().then(finished);
+    const nextWeek = '2026-10-11';
+    const next = h.queue.enqueue(owner, nextWeek, { purchasePrice: 95 });
+    const other = h.queue.enqueue('another-player', week, { purchasePrice: 110 });
+    await Promise.resolve();
+    expect(finished).not.toHaveBeenCalled();
+    release();
+    await Promise.all([first, next, other, flushing]);
+
+    // A new store reads durable data; an app update need not wait for the API.
+    h.db.close();
+    await h.db.open();
+    expect((await h.db.weeks.get(weekKey(owner, week)))?.data.purchasePrice).toBe(100);
+    expect((await h.db.weeks.get(weekKey(owner, nextWeek)))?.data.purchasePrice).toBe(95);
+    expect((await h.db.weeks.get(weekKey('another-player', week)))?.data.purchasePrice).toBe(110);
+    expect(finished).toHaveBeenCalledTimes(1);
+  });
+
+  it('blocks reload on any failed local save and succeeds after storage recovers', async () => {
+    const h = harness();
+    const failure = new DOMException('Storage is full', 'QuotaExceededError');
+    h.persist.mockRejectedValue(failure);
+    await expect(h.queue.enqueue(owner, week, { purchasePrice: 100 })).rejects.toBe(failure);
+    await expect(h.queue.flushAll()).rejects.toBe(failure);
+    expect(h.queue.snapshot(owner, week)).toMatchObject({ error: LOCAL_SAVE_ERROR });
+    expect(h.queue.snapshot(owner, week).edits).toHaveLength(1);
+    expect(await h.db.weeks.get(weekKey(owner, week))).toBeUndefined();
+    h.persist.mockImplementation(h.write);
+    await h.queue.flushAll();
+    expect(h.queue.snapshot(owner, week)).toMatchObject({ edits: [], error: null });
+    expect((await h.db.weeks.get(weekKey(owner, week)))?.data.purchasePrice).toBe(100);
+  });
+
   it('prefers the live record once it has observed a durable edit and later server data', async () => {
     const h = harness();
     await h.queue.enqueue(owner, week, { purchasePrice: 100 });

@@ -12,6 +12,8 @@ import type {
 import { isCurrentIdentityResponse, request } from './data/api';
 import { Button, defaultDeviceName, Field, messageOf, Notice, useApp } from './ui';
 import { appUrl } from './urls';
+import { InstallApp } from './pwa-install';
+import { OfflineSettings } from './pwa-ui';
 
 function RecoveryCode({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -405,6 +407,8 @@ export function Settings() {
           </div>
         </>
       )}
+      <InstallApp />
+      <OfflineSettings />
     </main>
   );
 }

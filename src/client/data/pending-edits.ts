@@ -114,6 +114,25 @@ export class PendingEdits {
     }
   }
 
+  /** Save every retained edit locally before an intentional app reload. */
+  async flushAll(): Promise<void> {
+    while (true) {
+      const pending = [...this.owners.entries()].filter(
+        ([key]) => this.entries.get(key)?.edits.length || this.flights.has(key),
+      );
+      if (!pending.length) return;
+      // Wait for every started write even if one fails. No failed edit is removed,
+      // and a caller must keep the page open if durability cannot be established.
+      const results = await Promise.allSettled(
+        pending.map(([, { owner, weekStart }]) => this.flush(owner, weekStart)),
+      );
+      const failed = results.find((result) => result.status === 'rejected');
+      if (failed?.status === 'rejected') throw failed.reason;
+      // A blur or identity attachment may have queued another owner/week while
+      // the first batch was saving. Include those edits before resolving.
+    }
+  }
+
   /** Called before durable anonymous drafts attach to the confirmed identity. */
   async attachDrafts(owner: string): Promise<void> {
     if (owner === 'unassigned') return;
