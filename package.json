@@ -14,7 +14,7 @@
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.node.json",
     "build": "pnpm run typecheck && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "check": "pnpm run lint && pnpm run build && pnpm test",
