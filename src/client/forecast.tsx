@@ -1,4 +1,11 @@
-import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react';
 import { Sparkles, X } from 'lucide-react';
 import type { PatternId, PredictionResult, PriceRange } from '../prediction';
 import { Notice } from './ui';
@@ -331,6 +338,7 @@ export function Forecast({
   currentSlot = null,
   bestSlot = null,
   shared = false,
+  lead = null,
 }: {
   prediction: PredictionResult;
   prices: (number | null)[];
@@ -338,10 +346,13 @@ export function Forecast({
   currentSlot?: number | null;
   bestSlot?: number | null;
   shared?: boolean;
+  /** Shown first, across the full width, ahead of the chart. */
+  lead?: ReactNode;
 }) {
   const id = useId();
   return (
     <div className="forecast">
+      {lead}
       <section className="forecast-card" aria-labelledby={`${id}-title`}>
         <div className="forecast-card-heading">
           <h2 id={`${id}-title`}>How the week could go</h2>

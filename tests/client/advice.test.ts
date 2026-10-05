@@ -9,10 +9,13 @@ function possible(
   patterns: [PatternId, number][],
   slots: [number, number][] = Array.from({ length: 12 }, () => [60, 140]),
 ): PredictionResult {
+  const ranges = slots.map(([min, max]) => ({ min, max }));
   return {
     status: 'possible',
     patterns: patterns.map(([id, probability]) => ({ id, label: id, probability })),
-    slots: slots.map(([min, max]) => ({ min, max })),
+    slots: ranges,
+    // Each pattern stands in for one outcome spanning the whole summarized range.
+    outcomes: patterns.map(([pattern, probability]) => ({ pattern, probability, slots: ranges })),
     tolerance: 0,
   };
 }
@@ -43,7 +46,7 @@ describe('week advice', () => {
 
   it('asks for a first price before forecasting', () => {
     const advice = weekAdvice({
-      prediction: { status: 'needs-input', patterns: [], slots: [], tolerance: 0 },
+      prediction: { status: 'needs-input', patterns: [], slots: [], outcomes: [], tolerance: 0 },
       prices: prices(),
       purchasePrice: null,
       slot: null,
@@ -78,6 +81,28 @@ describe('week advice', () => {
       'Even the low end, 137, beats what you paid',
       'You paid 98',
     ]);
+  });
+
+  it('adds the odds of beating the current price after the pattern', () => {
+    const advise = (odds: { price: number; chance: number; certain: boolean }) =>
+      weekAdvice({
+        prediction: possible([['fluctuating', 1]]),
+        prices: prices(100, 120, 130, 75, 68, 104, 122, 128),
+        purchasePrice: 95,
+        slot: 7,
+        isCurrent: true,
+        odds,
+      }).chips.map(({ text }) => text);
+    expect(advise({ price: 128, chance: 0.104, certain: false })[1]).toBe(
+      '10% chance of more than 128',
+    );
+    expect(advise({ price: 128, chance: 0.997, certain: false })[1]).toBe(
+      '>99% chance of more than 128',
+    );
+    expect(advise({ price: 121, chance: 1, certain: true })[1]).toBe('A higher price is coming');
+    expect(advise({ price: 133, chance: 0, certain: false })).not.toContainEqual(
+      expect.stringMatching(/chance of more/),
+    );
   });
 
   it('ignores past half-days when looking for the peak', () => {

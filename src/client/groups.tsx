@@ -16,8 +16,18 @@ import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
 import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
+import { oddsPercent } from './advice';
 import { useGroups } from './data/use-groups';
 import { GroupPriceTable } from './group-price-table';
+import {
+  deadline,
+  groupOdds,
+  islandReason,
+  notCountedNote,
+  partOfDay,
+  type ForecastMember,
+  type GroupOdds,
+} from './odds';
 import {
   Button,
   Field,
@@ -33,7 +43,6 @@ import { appUrl } from './urls';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
-type ForecastMember = SharedPlayerWeek & { prediction: PredictionResult };
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 export const PERIODS = ['Sunday buy price', ...DAYS.flatMap((day) => [`${day} AM`, `${day} PM`])];
 function initialPeriod(): number {
@@ -177,6 +186,45 @@ function RefreshGroups({ data }: { data: GroupData }) {
   );
 }
 
+/** Inside the best-price card: the chance someone beats it before Saturday closes. */
+function BeatOdds({ odds, slot }: { odds: GroupOdds; slot: number }) {
+  const note = notCountedNote(odds);
+  return (
+    <div className="beat-odds">
+      <p className="beat-odds-head">
+        <strong>{odds.certain ? 'Certain' : oddsPercent(odds.chance)}</strong>
+        <span>
+          {odds.certain ? '' : 'chance '}someone beats {odds.price} {deadline(slot)}
+        </span>
+      </p>
+      <span className="beat-meter" aria-hidden="true">
+        <span style={{ width: `${odds.chance * 100}%` }} />
+      </span>
+      <ul className="beat-list" aria-label="Chance for each island">
+        {odds.islands.map((island) => (
+          <li key={island.member.player.id}>
+            <PlayerAvatar name={island.member.player.displayName} small />
+            <span className="beat-who">
+              <span className="beat-name">
+                {island.self ? 'You' : island.member.player.displayName}
+              </span>
+              <span className="beat-why">{islandReason(island)}</span>
+              {island.alreadyAbove !== null && island.alreadyAbove > 0 && (
+                <span className="beat-nudge">
+                  No price yet this {partOfDay(slot)}. {oddsPercent(island.alreadyAbove)} chance
+                  it’s already above {odds.price}.
+                </span>
+              )}
+            </span>
+            <span className="beat-chance">{oddsPercent(island.chance)}</span>
+          </li>
+        ))}
+      </ul>
+      {note && <p className="beat-note">{note}</p>}
+    </div>
+  );
+}
+
 function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: string }) {
   const [period, setPeriod] = useState(initialPeriod);
   const members = useMemo(
@@ -192,6 +240,8 @@ function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: stri
   const ratio =
     best && bestPrice !== null && period > 0 && yourPurchase ? bestPrice / yourPurchase : null;
   const nowPeriod = initialPeriod();
+  // Odds look ahead from now, so they only fit the current selling half-day.
+  const odds = period === nowPeriod && period > 0 ? groupOdds(members, owner, period - 1) : null;
   const tag =
     period === 0
       ? 'Cheapest Sunday price'
@@ -239,6 +289,7 @@ function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: stri
             </p>
             <PriceSparkline week={best.week} prediction={best.prediction} scale={scale} />
           </div>
+          {odds && <BeatOdds odds={odds} slot={period - 1} />}
           <Link className="button" to={weekLink(best, owner)}>
             {best.player.id === owner ? 'Open your week' : `Open ${best.player.displayName}’s week`}
             <ArrowRight size={17} aria-hidden="true" />

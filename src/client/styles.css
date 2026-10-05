@@ -45,6 +45,8 @@
   --clay: #8a3b2e;
   --sun: #8a5a12;
   --night: #57487a;
+  /* The friends line in the odds chart; checked against --leaf for colour-blind contrast. */
+  --friends: #6b55a8;
   /* Older names used across the components. */
   --accent: var(--leaf);
   --green: var(--leaf);
@@ -358,6 +360,7 @@ p {
 .weekly-entry,
 .forecast-card,
 .pattern-card,
+.odds-card,
 .settings-section,
 .history-table-scroll,
 .empty-history,

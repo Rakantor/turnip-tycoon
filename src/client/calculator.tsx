@@ -19,6 +19,8 @@ import { FriendsPanel } from './groups';
 import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
 import { weekAdvice } from './advice';
+import { islandOdds } from './odds';
+import { HoldOrSell } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
 import { usePwaReloadGuard } from './pwa';
 
@@ -287,12 +289,17 @@ function WeekCalculator({
               : status === 'conflict'
                 ? 'Changes need review'
                 : 'Couldn’t sync';
+  const own = isCurrent ? islandOdds(week, prediction, slot) : null;
   const advice = weekAdvice({
     prediction,
     prices: week.prices,
     purchasePrice: week.purchasePrice,
     slot,
     isCurrent,
+    odds:
+      own?.odds && own.price !== null
+        ? { price: own.price, chance: own.odds.chance, certain: own.odds.certain }
+        : null,
   });
   const bestSlot = advice.bestSlot;
   // The current week has no selling half-day only on Sunday.
@@ -601,6 +608,11 @@ function WeekCalculator({
           purchasePrice={week.purchasePrice}
           currentSlot={slot}
           bestSlot={bestSlot}
+          lead={
+            isCurrent && (
+              <HoldOrSell weekStart={weekStart} week={week} prediction={prediction} slot={slot} />
+            )
+          }
         />
       </div>
       {isCurrent && <FriendsPanel weekStart={weekStart} week={week} />}

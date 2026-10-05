@@ -28,6 +28,11 @@ export function percent(probability: number): string {
   return rounded === 0 && probability > 0 ? '<1%' : `${rounded}%`;
 }
 
+/** Never rounds an uncertain chance up to 100%; certainty is said in words instead. */
+export function oddsPercent(chance: number): string {
+  return chance >= 0.995 && chance < 1 ? '>99%' : percent(chance);
+}
+
 function eyebrowFor(slot: number | null): string {
   return slot === null ? 'Sunday forecast' : `${slotName(slot)} forecast`;
 }
@@ -46,6 +51,7 @@ export function weekAdvice({
   purchasePrice,
   slot,
   isCurrent,
+  odds = null,
 }: {
   prediction: PredictionResult;
   prices: (number | null)[];
@@ -53,6 +59,8 @@ export function weekAdvice({
   /** The current half-day, or null on Sunday and for past weeks. */
   slot: number | null;
   isCurrent: boolean;
+  /** The chance of beating the price you can get now, once it is entered. */
+  odds?: { price: number; chance: number; certain: boolean } | null;
 }): Advice {
   const base = { highlight: '', trail: '', chips: [], bestSlot: null };
   if (!isCurrent) return pastAdvice(prediction, prices, purchasePrice);
@@ -74,6 +82,17 @@ export function weekAdvice({
     text: `${percent(top.probability)} ${top.label.toLowerCase()}`,
     tone: 'leaf' as const,
   };
+  const oddsChips: Advice['chips'] =
+    odds === null || odds.chance === 0
+      ? []
+      : [
+          {
+            text: odds.certain
+              ? 'A higher price is coming'
+              : `${oddsPercent(odds.chance)} chance of more than ${odds.price}`,
+            tone: 'gold',
+          },
+        ];
   const upcoming = prices
     .map((price, index) => ({ price, index }))
     .filter(({ price, index }) => price === null && (slot === null || index >= slot))
@@ -119,6 +138,7 @@ export function weekAdvice({
 
   const peakChips = (): Advice['chips'] => [
     patternChip,
+    ...oddsChips,
     peakSlots.length > 1
       ? { text: 'Peak day still open', tone: 'gold' }
       : purchasePrice !== null && floor >= purchasePrice
@@ -137,6 +157,7 @@ export function weekAdvice({
       trail: ' beats waiting.',
       chips: [
         patternChip,
+        ...oddsChips,
         { text: `Small chance of up to ${peak}`, tone: 'gold' },
         ...boughtChip(purchasePrice),
       ],

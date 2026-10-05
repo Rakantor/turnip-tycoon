@@ -19,11 +19,21 @@ export interface PriceRange {
   max: number;
 }
 
+/** One way the week can still go: a pattern with fixed phase lengths. */
+export interface WeekOutcome {
+  pattern: PatternId;
+  probability: number;
+  /** Twelve ranges, Monday AM through Saturday PM, if the week goes this way. */
+  slots: PriceRange[];
+}
+
 export interface PredictionResult {
   status: 'needs-input' | 'possible' | 'inconsistent';
   patterns: { id: PatternId; label: string; probability: number }[];
   /** Twelve ranges when possible; empty when no forecast can be made. */
   slots: PriceRange[];
+  /** Every outcome still possible; `patterns` and `slots` summarize these. */
+  outcomes: WeekOutcome[];
   /** Upstream's numeric tolerance, in bells; never modifies the input. */
   tolerance: number;
 }
@@ -50,6 +60,7 @@ export function predictWeek(input: PredictionInput): PredictionResult {
     status,
     patterns: [],
     slots: [],
+    outcomes: [],
     tolerance: 0,
   });
 
@@ -79,13 +90,14 @@ export function predictWeek(input: PredictionInput): PredictionResult {
       ? null
       : PATTERNS.findIndex((pattern) => pattern.id === input.previousPattern);
   const predictor = new Predictor(prices, input.firstBuy === true, previous);
-  const outcomes = predictor.analyze_possibilities();
-  const possibilities = outcomes.filter(
-    (outcome) =>
-      outcome.pattern_number < 4 &&
-      Number.isFinite(outcome.probability) &&
-      (outcome.probability ?? 0) > 0,
-  );
+  const possibilities = predictor
+    .analyze_possibilities()
+    .filter(
+      (outcome) =>
+        outcome.pattern_number < 4 &&
+        Number.isFinite(outcome.probability) &&
+        (outcome.probability ?? 0) > 0,
+    );
   if (possibilities.length === 0) return empty('inconsistent');
 
   const patterns = PATTERNS.map((pattern, index) => ({
@@ -102,5 +114,11 @@ export function predictWeek(input: PredictionInput): PredictionResult {
     max: Math.max(...possibilities.map((outcome) => outcome.prices[index + 2].max)),
   }));
 
-  return { status: 'possible', patterns, slots, tolerance: predictor.fudge_factor };
+  const outcomes = possibilities.map((outcome) => ({
+    pattern: PATTERNS[outcome.pattern_number].id,
+    probability: outcome.probability ?? 0,
+    slots: outcome.prices.slice(2).map(({ min, max }) => ({ min, max })),
+  }));
+
+  return { status: 'possible', patterns, slots, outcomes, tolerance: predictor.fudge_factor };
 }

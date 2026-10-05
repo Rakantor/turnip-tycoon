@@ -150,6 +150,7 @@ describe('Turnip Prophet adapter', () => {
       status: 'inconsistent',
       patterns: [],
       slots: [],
+      outcomes: [],
       tolerance: 0,
     });
     expect(values).toEqual(saved);
