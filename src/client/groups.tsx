@@ -857,7 +857,6 @@ export function Groups() {
           <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
             <div className="section-heading">
               <h2 id="your-groups-title">Your groups</h2>
-              <span className="muted">Share a link to add a friend</span>
             </div>
             <div className="group-card-grid">
               {data.groups.map((group) => (

@@ -89,7 +89,6 @@ function SharedWeekLoading() {
         <div className="shared-prices-card">
           <div className="card-heading">
             <h2>Weekly prices</h2>
-            <span className="muted">Bells per turnip</span>
           </div>
           <div className="shared-buy-price">
             <div>
@@ -168,7 +167,6 @@ function SharedWeekContent({
         <section className="shared-prices-card" aria-labelledby="shared-prices-title">
           <div className="card-heading">
             <h2 id="shared-prices-title">Weekly prices</h2>
-            <span className="muted">Bells per turnip</span>
           </div>
           <div className="shared-buy-price">
             <div>
@@ -213,14 +211,10 @@ function SharedWeekContent({
               ))}
             </tbody>
           </table>
-          <p className="hint">“—” means this player hasn’t entered a price.</p>
           <section
             className="shared-input-details"
             aria-labelledby="shared-prediction-details-title"
           >
-            <h3 id="shared-prediction-details-title" className="forecast-section-heading">
-              Prediction details
-            </h3>
             <dl>
               <div>
                 <dt>First purchase on their island</dt>

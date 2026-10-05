@@ -320,9 +320,6 @@ function PatternOdds({ prediction }: { prediction: PredictionResult }) {
           These matches allow a {prediction.tolerance}-bell rounding difference.
         </p>
       )}
-      <p className="hint">
-        Ranges show possible outcomes, not a guarantee. Each new price helps narrow them down.
-      </p>
     </section>
   );
 }

@@ -454,9 +454,6 @@ function WeekCalculator({
               );
             })}
           </div>
-          {prediction.status === 'possible' && (
-            <p className="hint entry-hint">Empty boxes show what the price could be.</p>
-          )}
           {invalidFields.length > 0 && (
             <Notice>
               Correct the highlighted entries. The forecast uses your last valid prices.
