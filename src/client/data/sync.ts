@@ -1,6 +1,7 @@
 import { emptyOwnWeek, inputsOf, type OwnWeeklyInputs, type WeekMutation } from '../../shared/week';
 import { ApiError } from './api';
 import { type LocalWeek, ownWeek, type StoredWeek, TurnipDatabase } from './database';
+import { mergeWeek, sameEntries, sameTrades } from './merge';
 import { shiftWeek } from '../../shared/calendar';
 import { inferPreviousPattern } from '../../prediction/previous-pattern';
 
@@ -30,10 +31,50 @@ function mergeTouched(target: StoredWeek, local: LocalWeek): StoredWeek {
   for (const slot of local.slots) data.prices[slot] = local.data.prices[slot];
   return data;
 }
-/** Trades this device never edited follow the server, whichever version is kept. */
-function inConflict(row: LocalWeek, remote: StoredWeek): void {
-  row.conflict = remote;
-  if (!row.fields.includes('trades')) row.data = { ...row.data, trades: remote.trades };
+/** Unsent edits start from the version this device last read from the server. */
+function startEdits(row: LocalWeek): void {
+  if (row.dirty) return;
+  if (row.hydrated) row.base = { ...row.data, prices: [...row.data.prices] };
+  else delete row.base;
+}
+/** Combined trades that differ from the server's must be sent with the next save. */
+function sendTradesIfChanged(row: LocalWeek, remote: StoredWeek): void {
+  if (
+    !row.fields.includes('trades') &&
+    !sameTrades(ownWeek(row.data).trades, ownWeek(remote).trades)
+  )
+    row.fields.push('trades');
+}
+/**
+ * Another device saved this week while this one had unsent edits. Entries only one of
+ * them changed combine; the player chooses only where both changed the same entry.
+ */
+function reconcile(row: LocalWeek, remote: StoredWeek): void {
+  if (!row.base) {
+    // Edits saved before this device kept a base: the whole week is one choice, except
+    // trades this device never edited, which follow the server either way.
+    row.conflict = remote;
+    if (!row.fields.includes('trades')) row.data = { ...row.data, trades: remote.trades };
+    return;
+  }
+  const merged = mergeWeek(ownWeek(row.base), ownWeek(row.data), ownWeek(remote), 'local');
+  delete row.pending;
+  row.version++;
+  if (merged.conflicts.length) {
+    // Shows this device's side, everything else combined, until the player chooses.
+    row.data = { ...merged.week, revision: row.data.revision };
+    row.conflict = remote;
+    return;
+  }
+  row.data = merged.week;
+  row.base = remote;
+  if (sameEntries(merged.week, ownWeek(remote))) {
+    row.dirty = false;
+    row.fields = [];
+    row.slots = [];
+    row.syncedAt = Date.now();
+    delete row.base;
+  } else sendTradesIfChanged(row, remote);
 }
 
 /** A pending mutation is immutable until acknowledged, including across page reloads. */
@@ -75,6 +116,7 @@ export class WeekStore {
       const row =
         (await this.db.weeks.get(weekKey(owner, weekStart))) ??
         (await this.freshWithDefaults(owner, weekStart));
+      startEdits(row);
       for (const field of ['purchasePrice', 'firstBuy', 'previousPattern', 'trades'] as const) {
         if (
           field in patch &&
@@ -105,6 +147,7 @@ export class WeekStore {
         const target =
           (await this.db.weeks.get(weekKey(owner, draft.weekStart))) ??
           (await this.freshWithDefaults(owner, draft.weekStart));
+        startEdits(target);
         target.data = mergeTouched(target.data, draft);
         target.fields = [...new Set([...target.fields, ...draft.fields])];
         target.slots = [...new Set([...target.slots, ...draft.slots])];
@@ -169,13 +212,17 @@ export class WeekStore {
           row.data = mergeTouched(defaults, row);
           row.hydrated = true;
           row.syncedAt = Date.now();
+          // Edits made before the first read now sit on top of the server's version.
+          if (row.dirty) row.base = defaults;
         } else if (!row.dirty) {
           row.data = defaults;
           row.syncedAt = Date.now();
-        } else if (remote.revision !== row.data.revision) inConflict(row, remote);
+        } else if (remote.revision !== row.data.revision) reconcile(row, remote);
         await this.db.weeks.put(row);
       });
     }
+    // Each combined retry follows another device's save; stop after a few in a row.
+    let combined = 0;
     while (this.transport.isActive(owner)) {
       const pending = await this.db.transaction('rw', this.db.weeks, async () => {
         const current = await this.db.weeks.get(key);
@@ -209,18 +256,33 @@ export class WeekStore {
             current.dirty = false;
             current.fields = [];
             current.slots = [];
+            delete current.base;
+          } else if (current.base) {
+            // Later edits now sit on top of what the server just accepted.
+            current.base = {
+              ...current.base,
+              purchasePrice: pending.purchasePrice,
+              firstBuy: pending.firstBuy,
+              previousPattern: pending.previousPattern,
+              prices: [...pending.prices],
+              ...(pending.trades ? { trades: pending.trades } : {}),
+              revision: result.revision,
+            };
           }
           await this.db.weeks.put(current);
         });
       } catch (error) {
         if (error instanceof ApiError && error.code === 'REVISION_CONFLICT' && error.week) {
           const remote = error.week;
-          await this.db.transaction('rw', this.db.weeks, async () => {
+          const resolved = await this.db.transaction('rw', this.db.weeks, async () => {
             const current = await this.db.weeks.get(key);
-            if (!current) return;
-            inConflict(current, remote);
+            if (current?.pending?.mutationId !== pending.mutationId) return false;
+            reconcile(current, remote);
             await this.db.weeks.put(current);
+            return !current.conflict;
           });
+          // Combined without a conflict: save the result on top of the other device's.
+          if (resolved && ++combined < 3) continue;
           return;
         }
         throw error;
@@ -232,15 +294,35 @@ export class WeekStore {
     await this.db.transaction('rw', this.db.weeks, async () => {
       const row = await this.db.weeks.get(weekKey(owner, weekStart));
       if (!row?.conflict) return;
-      row.data =
-        choice === 'remote' ? row.conflict : { ...row.data, revision: row.conflict.revision };
-      row.dirty = choice === 'local';
+      if (row.base) {
+        // Only the entries both devices changed take the chosen side.
+        const merged = mergeWeek(
+          ownWeek(row.base),
+          ownWeek(row.data),
+          ownWeek(row.conflict),
+          choice,
+        );
+        row.data = merged.week;
+        row.dirty = !sameEntries(merged.week, ownWeek(row.conflict));
+        if (row.dirty) {
+          row.base = row.conflict;
+          sendTradesIfChanged(row, row.conflict);
+        } else {
+          row.fields = [];
+          row.slots = [];
+          delete row.base;
+        }
+      } else {
+        row.data =
+          choice === 'remote' ? row.conflict : { ...row.data, revision: row.conflict.revision };
+        row.dirty = choice === 'local';
+        if (choice === 'remote') {
+          row.fields = [];
+          row.slots = [];
+        }
+      }
       row.hydrated = true;
       row.version++;
-      if (choice === 'remote') {
-        row.fields = [];
-        row.slots = [];
-      }
       delete row.pending;
       delete row.conflict;
       await this.db.weeks.put(row);

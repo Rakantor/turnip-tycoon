@@ -5,7 +5,8 @@ import { predictWeek } from '../prediction';
 import { uniquePattern } from '../prediction/previous-pattern';
 import { currentSlot, currentWeekStart, isEditableWeek, shiftWeek } from '../shared/calendar';
 import type { Trade } from '../shared/ledger';
-import type { OwnWeeklyInputs, PatternId } from '../shared/week';
+import type { OwnWeeklyInputs, OwnWeekRecord, PatternId } from '../shared/week';
+import type { WeekEntry } from './data/merge';
 import { useWeek } from './data/use-week';
 import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
@@ -127,17 +128,61 @@ function PriceInput({
   );
 }
 
+function describeTrade(trade: Trade): string {
+  return (
+    `${trade.quantity.toLocaleString()} at ${trade.price}` +
+    (trade.kind === 'sell' ? ` on ${slotShortName(trade.slot)}` : '')
+  );
+}
+
 /** One kind of trade for the conflict comparison, such as "4,000 at 98, 6,000 at 94". */
 function tradeList(trades: readonly Trade[], kind: Trade['kind']): string {
-  const listed = trades.flatMap((trade) =>
-    trade.kind !== kind
-      ? []
-      : [
-          `${trade.quantity.toLocaleString()} at ${trade.price}` +
-            (trade.kind === 'sell' ? ` on ${slotShortName(trade.slot)}` : ''),
-        ],
-  );
+  const listed = trades.filter((trade) => trade.kind === kind).map(describeTrade);
   return listed.length ? listed.join(', ') : '—';
+}
+
+/** An entry both devices changed: what it is, and each device's value. */
+function describeEntry(
+  entry: WeekEntry,
+  mine: OwnWeekRecord,
+  theirs: OwnWeekRecord,
+): { label: string; mine: string; theirs: string } {
+  const pattern = (week: OwnWeekRecord) =>
+    PATTERNS.find((item) => item.id === week.previousPattern)?.label ?? 'Unknown';
+  const firstBuy = (week: OwnWeekRecord) =>
+    week.firstBuy === null ? 'Not sure' : week.firstBuy ? 'Yes' : 'No';
+  const both = (value: (week: OwnWeekRecord) => string) => ({
+    mine: value(mine),
+    theirs: value(theirs),
+  });
+  if (entry === 'purchasePrice')
+    return {
+      label: 'Sunday buy price',
+      ...both((week) => String(week.purchasePrice ?? '—')),
+    };
+  if (entry === 'firstBuy') return { label: 'First Daisy Mae purchase', ...both(firstBuy) };
+  if (entry === 'previousPattern') return { label: 'Last week’s pattern', ...both(pattern) };
+  if (entry === 'trades')
+    return {
+      label: 'Trades',
+      ...both(
+        (week) => `Bought ${tradeList(week.trades, 'buy')}; sold ${tradeList(week.trades, 'sell')}`,
+      ),
+    };
+  if (entry.startsWith('price:')) {
+    const slot = Number(entry.slice('price:'.length));
+    return { label: slotShortName(slot), ...both((week) => String(week.prices[slot] ?? '—')) };
+  }
+  const id = entry.slice('trade:'.length);
+  const find = (week: OwnWeekRecord) => week.trades.find((trade) => trade.id === id);
+  const kind = (find(mine) ?? find(theirs))?.kind;
+  return {
+    label: kind === 'buy' ? 'Purchase' : 'Sale',
+    ...both((week) => {
+      const trade = find(week);
+      return trade ? describeTrade(trade) : 'Removed';
+    }),
+  };
 }
 
 /** After an edit to last week identifies its pattern, offer it to this week's forecast. */
@@ -225,11 +270,8 @@ function WeekCalculator({
   editable: boolean;
 }) {
   const identity = useApp();
-  const { week, status, error, update, retry, conflict, resolveConflict } = useWeek(
-    weekStart,
-    identity.session,
-    identity.status === 'ready',
-  );
+  const { week, status, error, update, retry, conflict, conflictEntries, resolveConflict } =
+    useWeek(weekStart, identity.session, identity.status === 'ready');
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [draftFields, setDraftFields] = useState<string[]>([]);
   const [inputGeneration, setInputGeneration] = useState(0);
@@ -491,7 +533,54 @@ function WeekCalculator({
             </div>
           )}
           {identity.status === 'ready' && identity.error && <Notice>{identity.error}</Notice>}
-          {conflict && (
+          {conflict && conflictEntries && (
+            <div className="conflict-panel" role="alert">
+              <h3>Another device changed the same entries</h3>
+              <p>Everything else from both devices is combined. Choose which of these to keep.</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Entry</th>
+                    <th>This device</th>
+                    <th>Other device</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {conflictEntries.map((entry) => {
+                    const described = describeEntry(entry, week, conflict);
+                    return (
+                      <tr key={entry}>
+                        <th>{described.label}</th>
+                        <td>{described.mine}</td>
+                        <td>{described.theirs}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div className="button-row">
+                <Button
+                  onClick={() => {
+                    setPendingRemoteReset(false);
+                    void resolveConflict('local');
+                  }}
+                >
+                  Keep this device’s entries
+                </Button>
+                <Button
+                  secondary
+                  onClick={() => {
+                    setPendingRemoteReset(true);
+                    void resolveConflict('remote');
+                  }}
+                >
+                  Use other device’s entries
+                </Button>
+              </div>
+            </div>
+          )}
+          {/* Edits saved before this device kept a base are compared as whole weeks. */}
+          {conflict && !conflictEntries && (
             <div className="conflict-panel" role="alert">
               <h3>Another device changed this week</h3>
               <p>Choose which entries to keep. Yours are still here until you choose.</p>

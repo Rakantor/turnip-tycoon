@@ -297,7 +297,7 @@ describe('durable weekly sync', () => {
   });
 
   it.each(['local', 'remote'] as const)(
-    'preserves a conflict until the user chooses %s',
+    'combines other entries and asks only about the half-day both devices changed (%s kept)',
     async (choice) => {
       const original = {
         ...emptyWeek(owner, week),
@@ -318,7 +318,8 @@ describe('durable weekly sync', () => {
       await h.store.sync(owner, week);
       expect(h.transport.put).not.toHaveBeenCalled();
       const conflict = await h.db.weeks.get(weekKey(owner, week));
-      expect(conflict?.data.prices).toEqual(prices(90, 85));
+      // The other device's purchase price and Tuesday morning are already combined.
+      expect(conflict?.data).toMatchObject({ purchasePrice: 105, prices: prices(90, 85, 82) });
       expect(conflict?.conflict).toEqual(changedElsewhere);
       await h.store.sync(owner, week);
       expect(h.transport.put).not.toHaveBeenCalled();
@@ -328,13 +329,13 @@ describe('durable weekly sync', () => {
       expect(result?.conflict).toBeUndefined();
       expect(result?.dirty).toBe(false);
       if (choice === 'remote') {
-        expect(result?.data).toEqual(changedElsewhere);
+        expect(result?.data).toMatchObject(changedElsewhere);
         expect(h.transport.put).not.toHaveBeenCalled();
       } else {
         expect(h.transport.put.mock.calls[0][1]).toMatchObject({
           baseRevision: 2,
-          purchasePrice: 100,
-          prices: prices(90, 85),
+          purchasePrice: 105,
+          prices: prices(90, 85, 82),
         });
         expect(result?.data.revision).toBe(3);
       }
@@ -525,7 +526,7 @@ describe('durable weekly sync', () => {
       },
     );
 
-    it('adopts the other device’s trades when an upload meets a conflict', async () => {
+    it('combines a price saved here with a trade another device saved during the upload', async () => {
       const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
       await h.store.sync(owner, week);
       const commit = h.transport.put.getMockImplementation()!;
@@ -539,10 +540,90 @@ describe('durable weekly sync', () => {
       });
       await h.store.edit(owner, week, { purchasePrice: 100 });
       await h.store.sync(owner, week);
-      expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
-        conflict: { revision: 2 },
-        data: { purchasePrice: 100, trades: [...bought, sold] },
+      expect(h.transport.put).toHaveBeenCalledTimes(2);
+      expect(h.transport.put.mock.calls[1][1]).not.toHaveProperty('trades');
+      expect(h.remote.get(week)).toMatchObject({
+        revision: 3,
+        purchasePrice: 100,
+        trades: [...bought, sold],
       });
+      const saved = await h.db.weeks.get(weekKey(owner, week));
+      expect(saved).toMatchObject({ dirty: false, data: { revision: 3, purchasePrice: 100 } });
+      expect(saved?.conflict).toBeUndefined();
+    });
+
+    it('keeps both devices’ trades when each logged a different one', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+      await h.store.sync(owner, week);
+      await h.store.edit(owner, week, { trades: [...bought, sold] });
+      const purchase: Trade = { id: 'buy-2', kind: 'buy', quantity: 6000, price: 94 };
+      h.remote.set(week, {
+        ...emptyOwnWeek(owner, week),
+        revision: 2,
+        trades: [...bought, purchase],
+      });
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1]).toMatchObject({
+        baseRevision: 2,
+        trades: [...bought, sold, purchase],
+      });
+      expect(h.remote.get(week)?.trades).toEqual([...bought, sold, purchase]);
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.conflict).toBeUndefined();
+    });
+
+    it('asks only about a trade both devices changed, and keeps this device’s other edits', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: [...bought, sold] });
+      await h.store.sync(owner, week);
+      await h.store.edit(owner, week, {
+        prices: prices(87),
+        trades: [...bought, { ...sold, quantity: 2000 }],
+      });
+      h.remote.set(week, {
+        ...emptyOwnWeek(owner, week),
+        revision: 2,
+        trades: [...bought, { ...sold, price: 170 }],
+      });
+      await h.store.sync(owner, week);
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.conflict).toBeDefined();
+      expect(h.transport.put).not.toHaveBeenCalled();
+
+      await h.store.resolve(owner, week, 'remote');
+      await h.store.sync(owner, week);
+      expect(h.remote.get(week)).toMatchObject({
+        revision: 3,
+        prices: prices(87),
+        trades: [...bought, { ...sold, price: 170 }],
+      });
+    });
+  });
+
+  it('combines another device’s save with edits made while an upload was in flight', async () => {
+    const h = harness({ ...emptyOwnWeek(owner, week), revision: 1 });
+    await h.store.sync(owner, week);
+    const commit = h.transport.put.getMockImplementation()!;
+    h.transport.put
+      .mockImplementationOnce(async (weekStart, body) => {
+        await h.store.edit(owner, week, { prices: prices(90, 85) }, [1]);
+        return commit(weekStart, body);
+      })
+      .mockImplementationOnce(async (weekStart, body) => {
+        // Another device read revision 2, with Monday morning, and saved Wednesday morning.
+        h.remote.set(week, {
+          ...h.remote.get(week)!,
+          revision: 3,
+          prices: prices(90, null, null, null, 140),
+        });
+        return commit(weekStart, body);
+      });
+    await h.store.edit(owner, week, { prices: prices(90) }, [0]);
+    await h.store.sync(owner, week);
+    expect(h.remote.get(week)).toMatchObject({
+      revision: 4,
+      prices: prices(90, 85, null, null, 140),
+    });
+    expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
+      dirty: false,
+      data: { revision: 4 },
     });
   });
 });

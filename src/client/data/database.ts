@@ -22,6 +22,8 @@ export interface LocalWeek {
   slots: number[];
   pending?: WeekMutation & { version: number };
   conflict?: StoredWeek;
+  /** The server version this device's unsent edits started from, to combine other devices' edits. */
+  base?: StoredWeek;
   /** When this week last matched the server, so a ledger fetched earlier counts it from here. */
   syncedAt?: number;
 }

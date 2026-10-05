@@ -6,6 +6,7 @@ import { ApiError } from './api';
 import { database, type LocalWeek, ownWeek } from './database';
 import { activeIdentity, weekStore } from './runtime';
 import { weekKey } from './sync';
+import { mergeWeek } from './merge';
 import { pendingEdits, withPendingEdits } from './pending-edits';
 
 export type SaveStatus =
@@ -84,6 +85,21 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     }
   }, [connected, owner, key, weekStart, reportFailure]);
 
+  // Returning to the app reads the week again, within the same once-a-minute limit, so
+  // another device's saves appear before anything is typed here.
+  const [shownAt, setShownAt] = useState(0);
+  useEffect(() => {
+    const shown = () => {
+      if (document.visibilityState === 'visible') setShownAt(Date.now());
+    };
+    document.addEventListener('visibilitychange', shown);
+    window.addEventListener('focus', shown);
+    return () => {
+      document.removeEventListener('visibilitychange', shown);
+      window.removeEventListener('focus', shown);
+    };
+  }, []);
+
   // Reconnect and each committed edit resume the durable queue; no periodic polling.
   // Opening or reloading the page reads the server at most once a minute, silently;
   // anything still waiting to upload always syncs straight away.
@@ -110,7 +126,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
       }
       await retry();
     })();
-  }, [retry, key, owner, weekStart, version, pending.sequence]);
+  }, [retry, key, owner, weekStart, version, pending.sequence, shownAt]);
 
   const update = useCallback(
     (patch: Partial<OwnWeeklyInputs>, changedSlots?: number[]) => {
@@ -143,9 +159,20 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
   );
 
   const storedConflict = row?.conflict;
+  const storedBase = row?.base;
+  const storedData = row?.data;
   const conflict = useMemo(
     () => (storedConflict ? ownWeek(storedConflict) : null),
     [storedConflict],
+  );
+  // Only the entries both devices changed; null for edits saved before this device kept a base.
+  const conflictEntries = useMemo(
+    () =>
+      storedConflict && storedBase && storedData
+        ? mergeWeek(ownWeek(storedBase), ownWeek(storedData), ownWeek(storedConflict), 'local')
+            .conflicts
+        : null,
+    [storedConflict, storedBase, storedData],
   );
   const relevantFailure = failure?.key === key ? failure : null;
   const status: SaveStatus = pending.error
@@ -176,6 +203,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     update,
     retry,
     conflict: conflict as OwnWeekRecord | null,
+    conflictEntries,
     resolveConflict,
   };
 }

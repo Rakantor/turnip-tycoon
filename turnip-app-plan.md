@@ -179,7 +179,7 @@ Use a simple local timestamp to calculate availability. There is:
 - No server-side cooldown enforcement.
 - No periodic polling.
 - No WebSocket connection or push subscription.
-- No automatic group refetch merely because a tab regains focus.
+- No automatic group refetch merely because a tab regains focus. Prices does re-read its own week when the app is shown or focused again, within the same once-a-minute limit.
 - No global cooldown synchronised between devices.
 
 The refresh updates memberships and the relevant current-week prices, with players deduplicated across several groups. Each profile keeps the latest current-week response in IndexedDB, including group codes, so friends' prices open instantly and stay readable offline; the opening refresh replaces it. A new week starts empty until its first refresh. A failed access check (401/403) or a rejected device session deletes the saved copy and clears the shared view; leaving a group removes it locally straight away.
@@ -212,6 +212,8 @@ When connectivity returns, retry pending uploads while the app is running. Also 
 Use idempotent mutation identifiers and ordered updates so retrying an upload does not duplicate data or overwrite a newer local edit with an older queued value.
 
 A refresh must not silently discard pending local edits. If two paired devices change the same entry, retain the pending value and surface the conflict rather than silently losing it. An opaque revision number can support this without introducing price timestamps.
+
+Implemented 5 October 2026: each device keeps the server version its unsent edits started from. When another device saved in between, entries only one device changed combine automatically, trade by trade for trades, and the result uploads on top. Only an entry both devices changed to different values asks the player, and the panel lists just those entries; combined trades that no longer add up are offered as one choice. Edits saved before this change still compare whole weeks.
 
 Clear errors and a Waiting to sync state should distinguish local edits from confirmed server data.
 
