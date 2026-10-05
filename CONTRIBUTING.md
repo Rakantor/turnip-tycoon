@@ -158,6 +158,8 @@ Persistent-profile Chromium checks passed for offline reopening/reconnection, do
 
 ## Assets and licensing
 
+Original project materials are licensed under the [Apache License, Version 2.0](LICENSE). Contributions are accepted under the same license. Third-party components retain their respective licenses and notices; see [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md).
+
 The mascot's optimized website assets live in `public/icons`. App Store/Xcode and Google Play exports live in `exports/app-icons`, outside the public web bundle. Run `pnpm icons:generate` to regenerate them from the retained source. See [icon assets and platform requirements](assets/branding/README.md).
 
 The prediction engine is adapted from [Turnip Prophet](https://github.com/mikebryant/ac-nh-turnip-prices), pinned to `c7b7ab3614faf61686da3c535cf204ef568d4cdb`. Preserve its Apache 2.0 license, NOTICE, and copyright attribution in the distributed app. The [engine audit](src/prediction/UPSTREAM_AUDIT.md) documents small-spike fixes, input conventions, and remaining approximation limits; [third-party notices](THIRD_PARTY_NOTICES.md) record attribution. Compatibility with the current game version is not yet independently verified.

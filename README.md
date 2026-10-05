@@ -24,4 +24,6 @@ Settings also lets you change your name, connect another device, and create a re
 
 [Contributing & development](CONTRIBUTING.md) · Inspired by [Turnip Prophet](https://turnipprophet.io)
 
+Copyright 2026 Rakantor. Licensed under the [Apache License, Version 2.0](LICENSE), except for third-party components, which retain their respective licenses. See [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md) for attribution and exceptions.
+
 A fan project, not affiliated with Nintendo.

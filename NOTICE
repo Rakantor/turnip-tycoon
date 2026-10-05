@@ -1,0 +1,18 @@
+Turnip Tycoon
+Copyright 2026 Rakantor
+
+Original project materials are licensed under the Apache License, Version 2.0.
+See LICENSE for the full terms. Third-party components retain their respective
+licenses and notices; see THIRD_PARTY_NOTICES.md.
+
+This product includes modified code from Turnip Prophet:
+Copyright 2020 Mike Bryant
+Originally developed by Mike Bryant, with great thanks to Ninji
+
+Original project location: https://github.com/mikebryant/ac-nh-turnip-prices
+
+Turnip Prophet is licensed under the Apache License, Version 2.0. Its original
+LICENSE, NOTICE, and COPYRIGHT are preserved in public/licenses/turnip-prophet/.
+
+The bundled Fredoka and Nunito fonts are licensed under the SIL Open Font
+License, Version 1.1. Their notices and terms are in public/licenses/fonts/.

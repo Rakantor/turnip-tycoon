@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import projectNotice from '../../NOTICE?raw';
 import { assetUrl } from './urls';
 import './about.css';
 
@@ -19,7 +20,7 @@ export function About() {
           return response.text();
         }),
       );
-      setLicenses(texts.join('\n\n'));
+      setLicenses([projectNotice, ...texts].join('\n\n'));
       setStatus('ready');
     } catch {
       setStatus('error');
@@ -41,6 +42,13 @@ export function About() {
         }}
       >
         <summary>Licenses</summary>
+        <p>
+          Turnip Tycoon is licensed under the{' '}
+          <a href={`${LICENSE_ROOT}/LICENSE`}>Apache License, Version 2.0</a>. Third-party
+          components retain their respective licenses, including the{' '}
+          <a href={assetUrl('licenses/fonts/Fredoka-OFL.txt')}>Fredoka</a> and{' '}
+          <a href={assetUrl('licenses/fonts/Nunito-OFL.txt')}>Nunito</a> fonts.
+        </p>
         {status === 'error' ? (
           <p className="about-license-error" role="alert">
             Could not load the licenses.{' '}
