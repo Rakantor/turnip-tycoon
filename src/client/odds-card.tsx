@@ -3,8 +3,9 @@ import { Link } from 'react-router';
 import { ArrowRight, ChartSpline } from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { combineChances, oddsAbove } from '../prediction/odds';
-import type { WeekRecord } from '../shared/week';
-import { oddsPercent, type ChipTone } from './advice';
+import { totalsOf, unsold, type Trade } from '../shared/ledger';
+import type { OwnWeekRecord } from '../shared/week';
+import { oddsPercent } from './advice';
 import { useGroups } from './data/use-groups';
 import { PlayerAvatar } from './groups';
 import {
@@ -15,6 +16,7 @@ import {
   type GroupOdds,
   type IslandOdds,
 } from './odds';
+import { bells, TURNIPS_ID, WeekTurnips } from './turnips';
 import { useApp } from './ui';
 import './odds.css';
 
@@ -22,10 +24,10 @@ function bestCaseFrom(prediction: PredictionResult, fromSlot: number): number {
   return Math.max(0, ...prediction.slots.slice(fromSlot).map((range) => range.max));
 }
 
-function verdict(chance: number): { text: string; tone: ChipTone } {
-  if (chance < 0.25) return { text: 'Selling now looks good', tone: 'leaf' };
-  if (chance > 0.75) return { text: 'Holding looks good', tone: 'gold' };
-  return { text: 'Could go either way', tone: 'sand' };
+function verdict(chance: number): string {
+  if (chance < 0.25) return 'Selling now looks good';
+  if (chance > 0.75) return 'Holding looks good';
+  return 'Could go either way';
 }
 
 function OddsRing({ chance }: { chance: number }) {
@@ -296,19 +298,21 @@ function OddsExplorer({
 
 /**
  * The chance of a better price later this week, on your island and among
- * friends, beside the forecast. Only shown for the current week.
+ * friends, with the turnips you hold. Only shown for the current week.
  */
 export function HoldOrSell({
   weekStart,
   week,
   prediction,
   slot,
+  onTrades,
 }: {
   weekStart: string;
-  week: WeekRecord;
+  week: OwnWeekRecord;
   prediction: PredictionResult;
   /** The current half-day, or null on Sunday. */
   slot: number | null;
+  onTrades: (trades: Trade[]) => void;
 }) {
   const id = useId();
   const identity = useApp();
@@ -332,7 +336,9 @@ export function HoldOrSell({
     [members, owner, slot],
   );
   const own = useMemo(() => islandOdds(week, prediction, slot), [week, prediction, slot]);
-  if (prediction.status !== 'possible') return null;
+  // Without a forecast, the card still holds this week's turnips.
+  const possible = prediction.status === 'possible';
+  const held = unsold(totalsOf(week.trades));
 
   const { price, odds, fromSlot } = own;
   const showGroup = group !== null && group.islands.some((island) => !island.self);
@@ -349,72 +355,85 @@ export function HoldOrSell({
       slot === null
         ? `No price this week will beat the ${price} you paid.`
         : 'This is the highest price your island can reach this week. Sell today.';
-  const ring = message === null ? odds : null;
-  const best = fromSlot <= 11 && !odds?.impossible ? bestCaseFrom(prediction, fromSlot) : null;
-  const chip = ring && slot !== null ? verdict(ring.chance) : null;
+  // The ring shows whenever there are odds; a certain or impossible outcome is said in words beside it.
+  const ring = price !== null ? odds : null;
+  // Sunday has nothing to sell yet, so no verdict.
+  const lead = message === null && ring && slot !== null ? verdict(ring.chance) : null;
   return (
-    <section className="odds-card" aria-labelledby={`${id}-title`}>
-      <div className="odds-heading">
-        <h2 id={`${id}-title`}>Hold or sell?</h2>
-        {chip && <span className={`chip chip-${chip.tone}`}>{chip.text}</span>}
-      </div>
-      <div className="odds-summary">
-        <div className="odds-own">
-          {ring ? (
-            <div className="odds-main">
-              <OddsRing chance={ring.chance} />
-              <p>
-                {slot === null ? (
-                  <>
-                    chance you can sell for more than the <strong>{price}</strong> you paid this
-                    week.
-                  </>
-                ) : (
-                  <>
-                    chance of more than <strong>{price}</strong> on your island before Nook’s Cranny
-                    closes on Saturday.
-                  </>
-                )}
-              </p>
-            </div>
-          ) : (
-            <p className="odds-message">{message}</p>
-          )}
-          {best !== null && (
-            <p className="odds-best">
-              Best case this week: <strong>{best}</strong>
-              {slot !== null && price !== null && best > price
-                ? `, ${best - price} more than now.`
-                : '.'}
-            </p>
-          )}
-          {prediction.tolerance > 0 && price !== null && (
-            <p className="hint">
-              Some prices are a little off the usual patterns, so treat this as a rough guide.
-            </p>
-          )}
+    <section className="odds-card" id={TURNIPS_ID} tabIndex={-1} aria-labelledby={`${id}-title`}>
+      <div
+        className={`odds-layout${week.trades.length ? ' has-trades' : ''}${possible ? '' : ' no-forecast'}`}
+      >
+        <div className="odds-heading">
+          <h2 id={`${id}-title`}>
+            {held > 0
+              ? `Hold or sell your ${bells(held)} turnips?`
+              : possible
+                ? 'Hold or sell?'
+                : 'Your turnips'}
+          </h2>
         </div>
-        {group && showGroup && <FriendsOdds group={group} />}
+        {possible && (
+          <div className="odds-own">
+            {ring ? (
+              <div className="odds-main">
+                <OddsRing chance={ring.chance} />
+                {message !== null ? (
+                  <p className="odds-message">{message}</p>
+                ) : (
+                  <p>
+                    {lead && (
+                      <span className="odds-verdict">
+                        <mark>{lead}</mark>
+                      </span>
+                    )}
+                    <span className="sr-only">{oddsPercent(ring.chance)} </span>
+                    {slot === null ? (
+                      <>
+                        chance you can sell for more than the <strong>{price}</strong> you paid this
+                        week.
+                      </>
+                    ) : (
+                      <>
+                        chance of more than <strong>{price}</strong> on your island before Nook’s
+                        Cranny closes on Saturday.
+                      </>
+                    )}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="odds-message">{message}</p>
+            )}
+            {prediction.tolerance > 0 && price !== null && (
+              <p className="hint">
+                Some prices are a little off the usual patterns, so treat this as a rough guide.
+              </p>
+            )}
+          </div>
+        )}
+        <WeekTurnips week={week} slot={slot} onTrades={onTrades} />
+        {possible && group && showGroup && <FriendsOdds group={group} />}
+        {possible && fromSlot <= 11 && (
+          <details
+            className="odds-explorer"
+            onToggle={(event) => setExplorerOpen(event.currentTarget.open)}
+          >
+            <summary>
+              <ChartSpline size={16} aria-hidden="true" />
+              Odds explorer
+            </summary>
+            {explorerOpen && (
+              <OddsExplorer
+                prediction={prediction}
+                own={own}
+                group={showGroup ? group : null}
+                slot={slot}
+              />
+            )}
+          </details>
+        )}
       </div>
-      {fromSlot <= 11 && (
-        <details
-          className="odds-explorer"
-          onToggle={(event) => setExplorerOpen(event.currentTarget.open)}
-        >
-          <summary>
-            <ChartSpline size={16} aria-hidden="true" />
-            Odds explorer
-          </summary>
-          {explorerOpen && (
-            <OddsExplorer
-              prediction={prediction}
-              own={own}
-              group={showGroup ? group : null}
-              slot={slot}
-            />
-          )}
-        </details>
-      )}
     </section>
   );
 }

@@ -223,4 +223,26 @@ describe('week advice', () => {
     expect(advice.trail).toBe(' on Thursday morning.');
     expect(advice.bestSlot).toBe(6);
   });
+
+  it('states a certain past pattern plainly', () => {
+    const certain = weekAdvice({
+      prediction: possible([['fluctuating', 1]]),
+      prices: prices(104, 112, 78, 73, 118, 125, 132),
+      purchasePrice: 101,
+      slot: null,
+      isCurrent: false,
+    });
+    expect(certain.lead).toBe('This was a fluctuating week. Your best price was ');
+    const likely = weekAdvice({
+      prediction: possible([
+        ['fluctuating', 0.9],
+        ['small-spike', 0.1],
+      ]),
+      prices: prices(104),
+      purchasePrice: 101,
+      slot: null,
+      isCurrent: false,
+    });
+    expect(likely.lead).toBe('This was most likely a fluctuating week (90%). Your best price was ');
+  });
 });

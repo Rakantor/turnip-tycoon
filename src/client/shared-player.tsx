@@ -445,7 +445,12 @@ export function SharedHistory() {
               </table>
             </div>
           )}
-          {loading && !shown && <HistoryLoading label="Loading shared history…" />}
+          {loading && !shown && (
+            <HistoryLoading
+              label="Loading shared history…"
+              columns={['Week', 'Bought for', 'Best entered', 'Entries']}
+            />
+          )}
           {shown && !loading && !error && shown.weeks.length === 0 && (
             <div className="empty-history">
               <p>No past weeks yet.</p>

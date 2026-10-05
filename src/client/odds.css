@@ -1,15 +1,19 @@
-/* Hold or sell?: the chance of a better price later this week. It spans the
-   forecast's full width, so its own width decides whether parts sit side by side. */
+/* Hold or sell?: the chance of a better price later this week, with the turnips you
+   hold. It spans the forecast's full width, so its own width decides whether parts sit
+   side by side. Narrow, everything stacks: the forecast, your turnips, the log buttons,
+   the trades, then friends. */
 .odds-card {
-  display: grid;
   flex: 1 1 100%;
-  gap: 14px;
   padding: 24px 26px;
   container-type: inline-size;
+  /* The Sunday card's turnips field scrolls here. */
+  scroll-margin-top: 16px;
 }
-.odds-summary {
+.odds-layout {
   display: grid;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
 }
 .odds-own {
   display: grid;
@@ -65,13 +69,14 @@
   font-weight: 500;
   line-height: 1.3;
 }
-.odds-best {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-.odds-best strong {
-  color: var(--text);
+/* The verdict leads the forecast sentence, marked like the advice bubble's highlight. */
+.odds-verdict {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 /* The friends row links to the island board. */
@@ -271,11 +276,40 @@
   fill: var(--friends);
 }
 
+/* Wide: the title beside the log buttons, the forecast beside your turnips (or, before
+   any trade, beside friends), then the trades and friends across the card. */
 @container (min-width: 640px) {
-  .odds-summary {
+  .odds-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 28px;
+    gap: 18px 28px;
+  }
+  .odds-layout > * {
+    grid-column: 1 / -1;
+  }
+  .odds-layout > .odds-heading {
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: flex-start;
+  }
+  .odds-layout > .turnips-actions {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+  }
+  .odds-layout > .odds-own {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: center;
+  }
+  .odds-layout > .turnips-tiles,
+  .odds-layout:not(.has-trades) > .odds-friends {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+  }
+  .odds-layout.no-forecast > .turnips-tiles {
+    grid-column: 1 / -1;
   }
   /* Controls stack on the left; the last row takes whatever height the chart adds. */
   .odds-explorer-body {

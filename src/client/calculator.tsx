@@ -17,6 +17,8 @@ import { islandOdds } from './odds';
 import { HoldOrSell } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
 import { usePwaReloadGuard } from './pwa';
+import { BellBag, Turnip } from './icons';
+import { PastTurnips, SundayTurnips } from './turnips';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const PATTERNS: { id: PatternId; label: string }[] = [
@@ -417,19 +419,27 @@ function WeekCalculator({
                 {sundayToday && <span className="day-tag">Today</span>}
               </div>
               <div className="day-card-body">
-                <span className="purchase-label" aria-hidden="true">
-                  Bought from Daisy Mae
-                </span>
-                <PriceInput
-                  key={inputGeneration}
-                  label="Sunday purchase price in bells"
-                  value={week.purchasePrice}
-                  purchase
-                  readOnly={readOnly}
-                  onCommit={(purchasePrice) => edit({ purchasePrice })}
-                  onValidity={(invalid) => validity('purchase', invalid)}
-                  onDraftChange={(dirty) => draftChanged('purchase', dirty)}
-                />
+                <div className="period-slot sunday-slot">
+                  <BellBag className="icon-bells" size={16} aria-hidden="true" />
+                  <PriceInput
+                    key={inputGeneration}
+                    label="Sunday purchase price in bells"
+                    value={week.purchasePrice}
+                    purchase
+                    readOnly={readOnly}
+                    onCommit={(purchasePrice) => edit({ purchasePrice })}
+                    onValidity={(invalid) => validity('purchase', invalid)}
+                    onDraftChange={(dirty) => draftChanged('purchase', dirty)}
+                  />
+                </div>
+                <div className="period-slot sunday-slot">
+                  <Turnip className="icon-turnip" size={16} aria-hidden="true" />
+                  <SundayTurnips
+                    week={week}
+                    editable={editable}
+                    onTrades={(trades) => edit({ trades })}
+                  />
+                </div>
               </div>
             </div>
             <div className="period-headings" aria-hidden="true">
@@ -694,8 +704,21 @@ function WeekCalculator({
           currentSlot={slot}
           bestSlot={bestSlot}
           lead={
-            isCurrent && (
-              <HoldOrSell weekStart={weekStart} week={week} prediction={prediction} slot={slot} />
+            isCurrent ? (
+              <HoldOrSell
+                weekStart={weekStart}
+                week={week}
+                prediction={prediction}
+                slot={slot}
+                onTrades={(trades) => edit({ trades })}
+              />
+            ) : (
+              <PastTurnips
+                week={week}
+                lastWeek={lastWeek}
+                editable={editable}
+                onTrades={(trades) => edit({ trades })}
+              />
             )
           }
         />

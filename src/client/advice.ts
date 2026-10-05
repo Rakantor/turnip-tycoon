@@ -215,10 +215,13 @@ function pastAdvice(
   const best = entered.length
     ? entered.reduce((top, entry) => (entry.price > top.price ? entry : top))
     : null;
-  const lead =
-    prediction.status === 'possible'
-      ? `This was most likely a ${prediction.patterns[0].label.toLowerCase()} week (${percent(prediction.patterns[0].probability)}).`
-      : 'These prices didn’t match any pattern.';
+  const top = prediction.status === 'possible' ? prediction.patterns[0] : null;
+  // A pattern shown as 100% is stated plainly, without "most likely".
+  const lead = !top
+    ? 'These prices didn’t match any pattern.'
+    : percent(top.probability) === '100%'
+      ? `This was a ${top.label.toLowerCase()} week.`
+      : `This was most likely a ${top.label.toLowerCase()} week (${percent(top.probability)}).`;
   if (!best) return { ...base, lead, chips };
   return {
     ...base,

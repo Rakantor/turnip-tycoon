@@ -626,7 +626,8 @@ summary {
   font-weight: 500;
   line-height: 1.24;
 }
-.outlook-message mark {
+.outlook-message mark,
+.odds-verdict mark {
   padding: 0 2px;
   background: linear-gradient(transparent 58%, var(--gold-bright) 58%);
   color: inherit;
@@ -803,12 +804,6 @@ summary {
   flex: 1;
   min-width: 0;
 }
-.purchase-label {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.35;
-}
 .day-card-sunday .day-card-head {
   background: var(--pink-soft);
 }
@@ -849,6 +844,46 @@ summary {
   border-color: var(--pink-line);
   background: var(--pink-faint);
   color: var(--clay);
+}
+/* Sunday: the buy price in bells, then the turnips bought, each marked by an icon
+   in the colours the other days use for morning and afternoon. */
+.icon-bells {
+  color: var(--sun);
+}
+.icon-turnip {
+  color: var(--night);
+}
+/* The turnips bought are read-only, shaped like the buy price box. */
+.sunday-turnips {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  /* Price boxes keep the inputs' minimum height at every width, so this does too. */
+  height: 46px;
+  min-height: 46px;
+  padding: 6px;
+  border: 2px solid var(--pink-line);
+  border-radius: var(--field-radius);
+  background: var(--pink-faint);
+  color: var(--clay);
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+button.sunday-turnips:hover {
+  background: var(--pink-soft);
+}
+.sunday-turnips.is-empty,
+span.sunday-turnips {
+  color: var(--subtle);
+}
+/* A six-figure count still fits a phone's box. */
+.sunday-turnips.is-long {
+  font-size: 16px;
 }
 .best-slot input:not(:focus) {
   border-color: var(--gold-line);
@@ -1280,7 +1315,6 @@ summary {
     display: inline;
   }
   .day-tag,
-  .purchase-label,
   .period-slot > svg {
     display: none;
   }
@@ -1294,8 +1328,22 @@ summary {
     padding-bottom: 10px;
     border-bottom: 2px dashed var(--border);
   }
-  .day-card-sunday .day-card-body {
-    grid-template-columns: minmax(0, 1fr);
+  /* Sunday has no column headings, so its icons stay, inside the boxes. */
+  .sunday-slot {
+    position: relative;
+  }
+  .day-card-sunday .period-slot > svg {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    left: 9px;
+    margin: 0;
+    pointer-events: none;
+  }
+  .day-card-sunday .price-field input,
+  .sunday-turnips {
+    padding-left: 25px;
   }
   .day-card-sunday .day-date {
     display: none;
@@ -1306,7 +1354,8 @@ summary {
     font-size: 11px;
     font-weight: 800;
   }
-  .price-field input {
+  .price-field input,
+  .sunday-turnips {
     height: 44px;
   }
   .prediction-inputs {
@@ -1461,9 +1510,13 @@ summary {
   .day-card-sunday {
     padding-bottom: 8px;
   }
-  .price-field input {
+  .price-field input,
+  .sunday-turnips {
     height: 40px;
     font-size: 20px;
+  }
+  .sunday-turnips.is-long {
+    font-size: 16px;
   }
   .prediction-inputs {
     padding: 0;

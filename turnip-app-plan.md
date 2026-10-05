@@ -607,6 +607,15 @@ Designed 5 October 2026 on the Turnip Ledger canvas, direction C.
 - **History:** an all-time profit summary with weeks traded, best week, and turnips rotted. The table's columns are Week, Bought for and Sold for (average bells per turnip), Turnips (with any rotted), and Profit; Entries is removed. Averages show one decimal only when they are not whole. A week without trades shows dashes.
 - **Advice:** a past week whose pattern is certain reads "This was a fluctuating week", without "most likely" or the percentage.
 
+Implemented 5 October 2026, with these details settled while building:
+
+- The hold-or-sell card follows direction C at every width: wide, the title sits beside the log buttons, the forecast beside the tiles (or beside friends before any trade), then the week's trades on one line each and friends across the card; narrow, everything stacks in that order with the sale button first. The odds ring now also shows when a higher price is certain or impossible, with that outcome in words beside it. Otherwise the verdict ("Holding looks good") is the first line of the sentence beside the ring, marked like the advice bubble's highlight rather than a chip, and the card no longer shows a best case.
+- The Sunday card matches the other days: the buy price has a bell-bag icon (the in-game bag, tied with a ribbon, star on the front), and below it a read-only box with a turnip icon shows the turnips bought. Each icon is one colour, the bag in the morning's and the turnip in the afternoon's. Empty, the box opens Log a purchase; otherwise it moves to the hold-or-sell card (or last week's turnips). On phones both boxes sit side by side, icons inside, lined up with the morning and afternoon columns.
+- Before a forecast exists, or when prices match no pattern, the card is titled "Your turnips" and still offers logging. Selling isn't offered on Sunday or with nothing held.
+- Last week without trades shows "No turnips logged" with Log a purchase; older weeks without trades show no card.
+- Made so far, week results, and profits turn clay when negative.
+- On phones, History shows each week on two lines, the week and its profit first, so Profit never scrolls out of view. Friends' history keeps its own columns.
+
 ### Edge cases
 
 - A sale cannot exceed the turnips still held, and a purchase cannot be removed or reduced below what has been sold. The app explains why instead of saving.
@@ -621,7 +630,7 @@ Designed 5 October 2026 on the Turnip Ledger canvas, direction C.
 2. The `Trade` type and ledger calculations, with unit tests. Done.
 3. Migration, week API, and `GET /api/ledger`. Tests cover validation and limits, saves without trades, retries and conflicts, absence of trades from every shared read, and ledger totals. Done; production still needs `pnpm db:migrate:prod` before this is pushed.
 4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests. Done.
-5. The screens as designed, including the Sunday label and certain-pattern advice. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
+5. The screens as designed, including the Sunday label and certain-pattern advice. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict. Done.
 6. Release: run `pnpm db:migrate:prod` before pushing, because the API Worker deploys automatically when server code changes. Update the README features, CONTRIBUTING's data rules, and sections 2, 5, and 13 of this plan.
 
 ### Acceptance checks
