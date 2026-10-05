@@ -3,11 +3,12 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
-import type {
-  AccessResponse,
-  Device,
-  PairingResponse,
-  SessionResponse,
+import {
+  defaultDisplayName,
+  type AccessResponse,
+  type Device,
+  type PairingResponse,
+  type SessionResponse,
 } from '../../src/shared/api';
 import { createTestDatabase } from '../helpers/database';
 import { Browser, createPlayer, expectError, pairingCookie, sessionCookie } from './browser';
@@ -78,7 +79,7 @@ describe('Account-free player access over the API', () => {
     const access = (await response.json()) as SessionResponse;
     expect(access.player).toEqual({
       id: expect.any(String),
-      displayName: access.player.friendCode,
+      displayName: defaultDisplayName(access.player.friendCode),
       islandName: null,
       friendCode: expect.stringMatching(/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/),
     });
@@ -147,8 +148,13 @@ describe('Account-free player access over the API', () => {
       }),
       400,
     );
+    await expectError(
+      await browser.request('PATCH', '/api/profile', { displayName: 'x'.repeat(11) }),
+      400,
+    );
     const reset = await browser.request('PATCH', '/api/profile', { displayName: ' ' });
     expect(await reset.json()).toEqual({ player: session.player });
+    expect(session.player.displayName).toBe(session.player.friendCode.slice(0, 4));
     const generated = await browser.request('POST', '/api/recovery/rotate', {});
     expect(generated.status).toBe(200);
     const recovery = (await generated.json()) as { recoveryCode: string };
@@ -206,7 +212,9 @@ describe('Account-free player access over the API', () => {
         'select display_name from turnip_private.players where id = $1',
         [temporary.player.id],
       );
-      expect(retained.rows).toEqual([{ display_name: temporary.player.friendCode }]);
+      expect(retained.rows).toEqual([
+        { display_name: defaultDisplayName(temporary.player.friendCode) },
+      ]);
       expect(
         ((await (await newcomer.request('GET', '/api/session')).json()) as SessionResponse).player
           .id,
@@ -349,12 +357,10 @@ describe('Account-free player access over the API', () => {
     });
     expect(listed.find((device) => device.id === access.deviceId)?.current).toBe(true);
     expect(
-      (await laptop.request('PATCH', '/api/profile', { displayName: 'Shared Maple' })).status,
+      (await laptop.request('PATCH', '/api/profile', { displayName: 'Maple Twin' })).status,
     ).toBe(200);
     const phoneSession = await phone.request('GET', '/api/session');
-    expect(((await phoneSession.json()) as SessionResponse).player.displayName).toBe(
-      'Shared Maple',
-    );
+    expect(((await phoneSession.json()) as SessionResponse).player.displayName).toBe('Maple Twin');
   });
 
   it('requires the originating browser claim and prevents code-only completion', async () => {
@@ -481,7 +487,7 @@ describe('Account-free player access over the API', () => {
     await expectError(await laptop.request('GET', '/api/session'), 401);
     laptop.cookies.set(sessionCookie, oldToken);
     await expectError(
-      await laptop.request('PATCH', '/api/profile', { displayName: 'Revoked edit' }),
+      await laptop.request('PATCH', '/api/profile', { displayName: 'Revoked' }),
       401,
     );
     const active = await phone.request('GET', '/api/session');

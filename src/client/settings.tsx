@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, Check, Copy } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import type {
-  AccessResponse,
-  Device,
-  PairingResponse,
-  Player,
-  SessionResponse,
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  defaultDisplayName,
+  type AccessResponse,
+  type Device,
+  type PairingResponse,
+  type Player,
+  type SessionResponse,
 } from '../shared/api';
 import { isCurrentIdentityResponse, request } from './data/api';
 import {
@@ -97,8 +99,9 @@ function Profile() {
           value={displayName}
           onChange={(event) => setDisplayName(event.target.value)}
           disabled={busy}
-          maxLength={40}
+          maxLength={DISPLAY_NAME_MAX_LENGTH}
           autoComplete="nickname"
+          hint={`Up to ${DISPLAY_NAME_MAX_LENGTH} characters. Leave it empty to go by ${defaultDisplayName(session.player.friendCode)}.`}
         />
         <Field
           label="Friend code"

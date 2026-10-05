@@ -391,7 +391,68 @@ function GroupForm({
   );
 }
 
-function GroupDetails({ group, data }: { group: GroupSummary; data: GroupData }) {
+/**
+ * One seat per place in the group: members first (you, then by name), then open
+ * seats that share the group link. Four to a row, three on the narrowest phones.
+ */
+function GroupSeats({
+  group,
+  players,
+  owner,
+  onInvite,
+}: {
+  group: GroupSummary;
+  players: SharedPlayerWeek[];
+  owner: string;
+  onInvite: () => void;
+}) {
+  const members = players
+    .filter((member) => member.groupIds.includes(group.id))
+    .sort(
+      (left, right) =>
+        Number(right.player.id === owner) - Number(left.player.id === owner) ||
+        left.player.displayName.localeCompare(right.player.displayName),
+    );
+  const open = Math.max(0, group.capacity - Math.max(group.memberCount, members.length));
+  return (
+    <ul className="group-seats" aria-label={`${group.name} players`}>
+      {members.map((member) => {
+        const self = member.player.id === owner;
+        return (
+          <li key={member.player.id} className={self ? 'group-seat-self' : undefined}>
+            <Link
+              to={weekLink(member, owner)}
+              aria-label={self ? 'Your week' : `${member.player.displayName}’s week`}
+            >
+              <PlayerAvatar name={member.player.displayName} />
+              <span className="group-seat-name">{self ? 'You' : member.player.displayName}</span>
+            </Link>
+          </li>
+        );
+      })}
+      {Array.from({ length: open }, (_, index) => (
+        <li key={`open-${index}`} className="group-seat-open">
+          <button type="button" onClick={onInvite} aria-label={`Invite a player to ${group.name}`}>
+            <span className="group-seat-invite">
+              <Plus size={18} aria-hidden="true" />
+            </span>
+            <span className="group-seat-name">Invite</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function GroupDetails({
+  group,
+  data,
+  owner,
+}: {
+  group: GroupSummary;
+  data: GroupData;
+  owner: string;
+}) {
   const [message, setMessage] = useState('');
   const [fallbackLink, setFallbackLink] = useState('');
   const [leaving, setLeaving] = useState(false);
@@ -451,6 +512,14 @@ function GroupDetails({ group, data }: { group: GroupSummary; data: GroupData })
           <Users size={18} />
         </span>
       </div>
+      <GroupSeats
+        group={group}
+        players={data.players}
+        owner={owner}
+        onInvite={() => {
+          void share();
+        }}
+      />
       <div className="group-code-line">
         <span>Group code</span>
         <code>{group.code}</code>
@@ -871,7 +940,7 @@ export function Groups() {
             </div>
             <div className="group-card-grid">
               {data.groups.map((group) => (
-                <GroupDetails key={group.id} group={group} data={data} />
+                <GroupDetails key={group.id} group={group} data={data} owner={owner} />
               ))}
             </div>
           </section>

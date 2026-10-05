@@ -610,6 +610,86 @@
   font-size: 13px;
   font-weight: 700;
 }
+/* Seats: one per place in the group, four to a row (three on the narrowest phones). */
+.group-seats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 6px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+.group-seats a,
+.group-seats button {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-decoration: none;
+}
+.group-seats a:hover,
+.group-seats button:hover {
+  background: var(--soft);
+}
+.group-seats .player-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+.group-seats li:nth-child(4n + 1) .player-avatar {
+  background: #cde3f5;
+}
+.group-seats li:nth-child(4n + 2) .player-avatar {
+  background: var(--pink-soft);
+}
+.group-seats li:nth-child(4n + 3) .player-avatar {
+  background: #d7ebcf;
+}
+.group-seats li:nth-child(4n + 4) .player-avatar {
+  background: var(--gold-bright);
+}
+.group-seat-self .player-avatar {
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--leaf);
+}
+/* Names are capped to fit; “…” is the last resort for unusually wide ones. */
+.group-seat-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.group-seat-self .group-seat-name {
+  color: var(--leaf-dark);
+}
+.group-seat-invite {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px dashed var(--subtle);
+  border-radius: 50%;
+  color: var(--subtle);
+}
+.group-seat-open .group-seat-name {
+  color: var(--muted);
+}
+@media (max-width: 370px) {
+  .group-seats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 .group-code-line {
   display: flex;
   align-items: center;

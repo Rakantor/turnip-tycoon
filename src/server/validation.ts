@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
 import { normalizeCode } from './secrets';
 
 export const profileInput = z
   .object({
-    displayName: z.string().trim().max(40),
+    displayName: z.string().trim().max(DISPLAY_NAME_MAX_LENGTH),
   })
   .strict();
 export const deviceInput = z.object({ deviceName: z.string().trim().min(1).max(60) }).strict();

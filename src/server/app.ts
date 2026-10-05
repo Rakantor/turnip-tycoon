@@ -3,6 +3,7 @@ import { Hono, type Context } from 'hono';
 import { connectDatabase, transaction, type Database } from '../db/connection';
 import { devices, pairingChallenges, players, recoveryCredentials } from '../db/schema';
 import { findSession, lockPlayer, newDevice, sessionHash, withSession } from './auth';
+import { defaultDisplayName } from '../shared/api';
 import { ApiError } from './errors';
 import {
   checkOrigin,
@@ -131,7 +132,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
         const friendCode = formatCode(randomCode(12));
         const [player] = await tx
           .insert(players)
-          .values({ displayName: friendCode, friendCode })
+          .values({ displayName: defaultDisplayName(friendCode), friendCode })
           .onConflictDoNothing({ target: players.friendCode })
           .returning();
         if (player) return { player, ...(await newDevice(tx, player.id, deviceName)) };
@@ -161,7 +162,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
     const player = await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
       const [updated] = await tx
         .update(players)
-        .set({ displayName: profile.displayName || session.player.friendCode })
+        .set({ displayName: profile.displayName || defaultDisplayName(session.player.friendCode) })
         .where(eq(players.id, session.player.id))
         .returning();
       return updated;

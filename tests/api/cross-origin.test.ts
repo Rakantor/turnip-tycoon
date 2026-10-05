@@ -2,11 +2,12 @@ import { createHash, randomUUID } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
-import type {
-  AccessResponse,
-  PairingResponse,
-  SessionCredentialsResponse,
-  SessionResponse,
+import {
+  defaultDisplayName,
+  type AccessResponse,
+  type PairingResponse,
+  type SessionCredentialsResponse,
+  type SessionResponse,
 } from '../../src/shared/api';
 import type { GroupSummary, SharedPlayerWeek } from '../../src/shared/groups';
 import type { WeekMutation, WeekRecord } from '../../src/shared/week';
@@ -173,7 +174,7 @@ describe('Bearer access from GitHub Pages', () => {
   it('creates and reuses the same identity, returning the credential only when starting a session', async () => {
     const session = await start();
     const { sessionToken, ...metadata } = session;
-    expect(metadata.player.displayName).toBe(metadata.player.friendCode);
+    expect(metadata.player.displayName).toBe(defaultDisplayName(metadata.player.friendCode));
     expect(metadata.hasRecoveryCode).toBe(false);
     const stored = await client.query(
       'select token_hash from turnip_private.devices where id = $1',

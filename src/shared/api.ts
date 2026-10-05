@@ -1,3 +1,11 @@
+/** Names fit one line in a group card's seat on every screen. */
+export const DISPLAY_NAME_MAX_LENGTH = 10;
+
+/** A player who hasn't chosen a name goes by the first block of their friend code. */
+export function defaultDisplayName(friendCode: string): string {
+  return friendCode.slice(0, 4);
+}
+
 export interface Player {
   id: string;
   displayName: string;
