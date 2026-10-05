@@ -616,7 +616,7 @@ Designed 5 October 2026 on the Turnip Ledger canvas, direction C.
 ### Build order
 
 1. Previous-week editing for prices, with the pattern offer. Done.
-2. The `Trade` type and ledger calculations, with unit tests.
+2. The `Trade` type and ledger calculations, with unit tests. Done.
 3. Migration, week API, and `GET /api/ledger`. Tests cover validation and limits, saves without trades, retries and conflicts, absence of trades from every shared read, and ledger totals.
 4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests.
 5. The screens as designed, including the Sunday label and certain-pattern advice. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
