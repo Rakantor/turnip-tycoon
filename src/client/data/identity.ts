@@ -12,6 +12,7 @@ import { activeIdentity, resumeWeeks, weekStore } from './runtime';
 import { pendingEdits } from './pending-edits';
 import { SessionController } from './session-controller';
 import { SessionVault } from './session-vault';
+import { forgetSharedGroups } from './use-groups';
 
 const listeners = new Set<() => void>();
 let started = false;
@@ -39,6 +40,7 @@ const controller = new SessionController({
       void resumeWeeks(owner).catch(() => undefined);
     }
   },
+  forget: forgetSharedGroups,
   broadcast: () => channel?.postMessage({ type: 'identity' }),
 });
 

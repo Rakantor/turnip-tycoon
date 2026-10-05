@@ -6,7 +6,7 @@ import type { WeekRecord } from '../shared/week';
 import { currentWeekStart } from '../shared/calendar';
 import { predictWeek } from '../prediction';
 import { ApiError, request } from './data/api';
-import { clearSharedGroups } from './data/use-groups';
+import { forgetSharedPlayer, savedPlayerWeek } from './data/use-groups';
 import { PlayerAvatar } from './groups';
 import { Forecast } from './forecast';
 import { HistoryLoading } from './history';
@@ -39,9 +39,12 @@ function isWeek(value: string) {
     value <= currentWeekStart()
   );
 }
-function sharedError(error: unknown, owner: string) {
-  if (error instanceof ApiError && [403, 404].includes(error.status)) {
-    clearSharedGroups(owner);
+function accessLost(error: unknown): boolean {
+  return error instanceof ApiError && [403, 404].includes(error.status);
+}
+function sharedError(error: unknown, owner: string, playerId: string) {
+  if (accessLost(error)) {
+    void forgetSharedPlayer(owner, playerId).catch(() => undefined);
     return 'This player is no longer available through your groups.';
   }
   return messageOf(error);
@@ -246,54 +249,73 @@ export function SharedPlayer() {
   const { playerId = '', weekStart = '' } = useParams();
   const owner = identity.session?.player.id ?? '';
   const key = `${owner}:${playerId}:${weekStart}`;
-  const [result, setResult] = useState<{
-    key: string;
-    data: SharedWeekResponse;
-  } | null>(null);
-  const [error, setError] = useState('');
+  const valid = isWeek(weekStart);
+  const [result, setResult] = useState<{ key: string; data: SharedWeekResponse } | null>(null);
+  const [checked, setChecked] = useState('');
+  const [error, setError] = useState<{ key: string; message: string } | null>(null);
   const [reload, setReload] = useState(0);
   useEffect(() => {
-    setResult(null);
-    setError('');
-    if (!isWeek(weekStart)) {
-      setError('This week is not available.');
-      return;
-    }
-    if (identity.status !== 'ready' || !owner) return;
+    setError(null);
+    if (!valid || !owner) return;
     let active = true;
-    void request<SharedWeekResponse>(`/players/${encodeURIComponent(playerId)}/weeks/${weekStart}`)
-      .then((data) => {
-        if (active) setResult({ key, data });
+    let denied = false;
+    // This week's saved copy shows straight away, including offline.
+    void savedPlayerWeek(owner, weekStart, playerId)
+      .then((saved) => {
+        if (!active) return;
+        if (saved && !denied)
+          setResult((current) => (current?.key === key ? current : { key, data: saved }));
+        setChecked(key);
       })
-      .catch((error: unknown) => {
-        if (active) setError(sharedError(error, owner));
+      .catch(() => {
+        if (active) setChecked(key);
       });
+    if (identity.status === 'ready') {
+      void request<SharedWeekResponse>(
+        `/players/${encodeURIComponent(playerId)}/weeks/${weekStart}`,
+      )
+        .then((data) => {
+          if (active) setResult({ key, data });
+        })
+        .catch((error: unknown) => {
+          if (!active) return;
+          if (accessLost(error)) {
+            denied = true;
+            setResult(null);
+          }
+          setError({ key, message: sharedError(error, owner, playerId) });
+        });
+    }
     return () => {
       active = false;
     };
-  }, [identity.status, key, owner, playerId, weekStart, reload]);
-  const shown = identity.status === 'ready' && result?.key === key ? result.data : null;
+  }, [identity.status, key, owner, playerId, weekStart, reload, valid]);
+  const shown = result?.key === key ? result.data : null;
+  const failed = !valid ? 'This week is not available.' : error?.key === key ? error.message : '';
   const disconnected = identity.status === 'offline' || identity.status === 'error';
-  const reveal = useReveal(!disconnected && !error && !shown);
+  const loading = !shown && !failed && (!disconnected || checked !== key);
+  const reveal = useReveal(loading);
   return (
     <main className="page shared-player-page" id="main-content">
       <Link className="text-link back-to-friends" to="/groups">
         <ArrowLeft size={16} />
         Back to friends
       </Link>
-      {disconnected ? (
-        <ConnectionNeeded />
-      ) : error ? (
-        <div className="shared-error">
-          <Notice>{error}</Notice>
-          <Button secondary onClick={() => setReload((value) => value + 1)}>
-            Try again
-          </Button>
-        </div>
-      ) : shown ? (
+      {shown ? (
         <SharedWeekContent {...shown} className={reveal} />
-      ) : (
+      ) : failed ? (
+        <div className="shared-error">
+          <Notice>{failed}</Notice>
+          {valid && (
+            <Button secondary onClick={() => setReload((value) => value + 1)}>
+              Try again
+            </Button>
+          )}
+        </div>
+      ) : loading ? (
         <SharedWeekLoading />
+      ) : (
+        <ConnectionNeeded />
       )}
     </main>
   );
@@ -304,10 +326,7 @@ export function SharedHistory() {
   const { playerId = '' } = useParams();
   const owner = identity.session?.player.id ?? '';
   const key = `${owner}:${playerId}`;
-  const [result, setResult] = useState<{
-    key: string;
-    data: SharedHistoryResponse;
-  } | null>(null);
+  const [result, setResult] = useState<{ key: string; data: SharedHistoryResponse } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
@@ -325,7 +344,7 @@ export function SharedHistory() {
         if (attempt === generation.current) setResult({ key, data });
       })
       .catch((error: unknown) => {
-        if (attempt === generation.current) setError(sharedError(error, owner));
+        if (attempt === generation.current) setError(sharedError(error, owner, playerId));
       })
       .finally(() => {
         if (attempt === generation.current) setLoading(false);
@@ -364,7 +383,7 @@ export function SharedHistory() {
       );
     } catch (error) {
       if (attempt === generation.current) {
-        setError(sharedError(error, owner));
+        setError(sharedError(error, owner, playerId));
         setResult(null);
       }
     } finally {

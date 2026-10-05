@@ -90,7 +90,7 @@ Groups allow eight equal members and unlimited memberships. Store prices once, d
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
 - Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review.
-- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval. Membership never grants editing rights or lasting offline access.
+- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval. Membership never grants editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
 
 The `turnip_private` schema enables RLS without public policies and must stay outside the Supabase Data API. Use a trusted database role that owns the tables, or has explicit privileges plus BYPASSRLS. Never expose database credentials or a Supabase service key to browsers.
@@ -140,16 +140,16 @@ Open **http://localhost:4174/turnip-tycoon/**. With the checked-in local connect
 
 ## Offline and update verification
 
-Production Pages builds, including local Pages preview, generate a worker scoped to `/turnip-tycoon/`. Normal development does not install it. Precache only the static app, icons, manifest, and licenses; scope cache cleanup to the project. API responses, credentials, and friends' data must never enter Cache Storage. Own records and queued edits stay in IndexedDB.
+Production Pages builds, including local Pages preview, generate a worker scoped to `/turnip-tycoon/`. Normal development does not install it. Precache only the static app, icons, manifest, and licenses; scope cache cleanup to the project. API responses, credentials, and friends' data must never enter Cache Storage. Own records, queued edits, and the latest copy of friends' current-week prices stay in IndexedDB.
 
-Offline reopening needs one online visit to complete profile setup and reach **Settings → Offline access → Ready to open offline**. Cached own weeks, forecasts, and new local edits then work offline; uploads resume when connected with the app open. Friends require a connection. Closed-app background uploading is not promised.
+Offline reopening needs one online visit to complete profile setup and reach **Settings → Offline access → Ready to open offline**. Cached own weeks, forecasts, and new local edits then work offline; uploads resume when connected with the app open. Friends show this week's prices from the last online visit; refreshing, joining, and leaving need a connection. Closed-app background uploading is not promised.
 
 Settings provides installation, offline readiness, retry, and update checks. Installation is optional and uses the browser prompt or instructions, including Safari's **Share → Add to Home Screen**. On phones, an **Install** shortcut beside Settings opens the same prompt, or the Settings instructions when the browser offers none, and disappears once the app runs installed or Chromium reports an installed copy. Downloaded updates wait for **Update now** on a safe screen, flush valid local writes, and block on invalid drafts or an unrestorable profile. Pending uploads need not finish first. Only the requesting tab reloads.
 
 Using the local Pages preview:
 
 1. Open online, save a price, and wait for offline readiness. Inspect the worker scope and verify Cache Storage contains only static project files.
-2. Go offline, close/reopen, edit a price, and reopen again. Confirm forecasts work, the edit remains queued, and Friends needs a connection.
+2. Go offline, close/reopen, edit a price, and reopen again. Confirm forecasts work, the edit remains queued, and Friends still shows this week's shared prices with Refresh disabled.
 3. Reconnect and confirm uploads finish and survive reload. Check conflicts using a second profile/device.
 4. Keep two tabs open. Make a visible source change, rebuild with the local API origin, check for updates, and apply from Prices. Confirm the new version, retained queued edits, and no reload in the other tab. Repeat with an invalid draft and with a downloaded update while offline.
 5. On physical Android/iOS devices, test installation, standalone launch, recovery, offline reopening, reconnection, and queued uploads after rollover.

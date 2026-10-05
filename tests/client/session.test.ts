@@ -34,6 +34,7 @@ function harness(vault: SessionVault, lock = serialLock()) {
   const broadcast = vi.fn();
   const currentResponse = vi.fn(() => true);
   const attach = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
+  const forget = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
   const controller = new SessionController({
     vault,
     lock,
@@ -46,10 +47,19 @@ function harness(vault: SessionVault, lock = serialLock()) {
     invalidateResponses: () => undefined,
     publish: () => undefined,
     attach,
+    forget,
     broadcast,
     deviceName: () => 'Test device',
   });
-  return { controller, network, broadcast, currentResponse, attach, credential: () => credential };
+  return {
+    controller,
+    network,
+    broadcast,
+    currentResponse,
+    attach,
+    forget,
+    credential: () => credential,
+  };
 }
 function defer<T>() {
   let resolve!: (value: T) => void;
@@ -198,6 +208,17 @@ describe('silent profile connection', () => {
     await h.controller.retry();
     expect(h.network.mock.calls.every(([, options]) => !options?.method)).toBe(true);
     expect(h.controller.state).toMatchObject({ status: 'error', session: session('one') });
+    expect(h.forget).toHaveBeenCalledWith('one');
+  });
+
+  it('keeps friends’ saved prices when the device is only offline', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    await h.controller.retry();
+    expect(h.controller.state.status).toBe('offline');
+    expect(h.forget).not.toHaveBeenCalled();
   });
 
   it('does not create accounts when storage is unavailable', async () => {

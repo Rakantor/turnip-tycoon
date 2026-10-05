@@ -1,14 +1,17 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import type { SessionResponse } from '../../shared/api';
-import type { GroupSummary, GroupsResponse } from '../../shared/groups';
-import { request } from './api';
+import type { GroupSummary, GroupsResponse, SharedPlayerWeek } from '../../shared/groups';
+import { ApiError, request } from './api';
 import { database } from './database';
 import { activeIdentity } from './runtime';
+import type { IdentityState } from './session-controller';
+import { SharedGroupsCache, withoutGroup, withoutPlayer } from './shared-groups';
 
 type GroupState = GroupsResponse & {
   status: 'loading' | 'ready' | 'offline' | 'error';
   error: string | null;
-  lastRefreshedAt: number | null;
+  /** The device copy has been read, whether or not one existed. */
+  hydrated: boolean;
   refreshAvailableAt: number;
 };
 interface GroupStore {
@@ -17,19 +20,22 @@ interface GroupStore {
   state: GroupState;
   loaded: boolean;
   generation: number;
+  /** Bumped by every server response or removal, so a slower device read can't undo it. */
+  version: number;
+  hydrating: Promise<void> | null;
   pending: Promise<void> | null;
   listeners: Set<() => void>;
 }
 const stores = new Map<string, GroupStore>();
+const cache = new SharedGroupsCache(database);
 const empty: GroupState = {
   groups: [],
   players: [],
   status: 'loading',
   error: null,
-  lastRefreshedAt: null,
+  hydrated: false,
   refreshAvailableAt: 0,
 };
-const offline: GroupState = { ...empty, status: 'offline' };
 const cooldownKey = (owner: string) => `groups-refresh:${owner}`;
 function storeFor(owner: string, weekStart: string): GroupStore {
   const key = `${owner}:${weekStart}`;
@@ -41,6 +47,8 @@ function storeFor(owner: string, weekStart: string): GroupStore {
       state: empty,
       loaded: false,
       generation: 0,
+      version: 0,
+      hydrating: null,
       pending: null,
       listeners: new Set(),
     };
@@ -58,14 +66,63 @@ function assertOwner(owner: string) {
   }
 }
 
-/** Shared prices are never stored offline as proof of continuing group access. */
-export function clearSharedGroups(owner: string) {
+function hydrate(store: GroupStore): Promise<void> {
+  store.hydrating ??= (async () => {
+    const version = store.version;
+    let saved: GroupsResponse | null = null;
+    try {
+      saved = await cache.read(store.owner, store.weekStart);
+    } catch {
+      /* Without browser storage, friends' prices load online only. */
+    }
+    publish(
+      store,
+      version === store.version && saved ? { ...saved, hydrated: true } : { hydrated: true },
+    );
+  })();
+  return store.hydrating;
+}
+
+/** Returning to a shared view re-checks membership, but keeps showing what we have. */
+function invalidate(store: GroupStore) {
+  store.loaded = false;
+  store.generation++;
+}
+
+/** Lost access must never leave another player's prices visible, even offline. */
+async function forget(owner: string, failed?: GroupStore): Promise<void> {
   for (const store of stores.values()) {
     if (store.owner !== owner) continue;
-    store.loaded = false;
-    store.generation++;
-    publish(store, { groups: [], players: [], status: 'loading', error: null });
+    // The request that discovered the loss must not retry itself.
+    if (store === failed) store.loaded = false;
+    else invalidate(store);
+    store.version++;
+    publish(store, { groups: [], players: [], hydrated: true });
   }
+  await cache.forget(owner);
+}
+export const forgetSharedGroups = (owner: string) => forget(owner);
+
+/** A friend who is no longer reachable through any group disappears straight away. */
+export async function forgetSharedPlayer(owner: string, playerId: string): Promise<void> {
+  for (const store of stores.values()) {
+    if (store.owner !== owner) continue;
+    invalidate(store);
+    store.version++;
+    publish(store, withoutPlayer(store.state, playerId));
+  }
+  await cache.update(owner, (data) => withoutPlayer(data, playerId));
+}
+
+/** This week's saved entry for one friend, for reading their week offline. */
+export async function savedPlayerWeek(
+  owner: string,
+  weekStart: string,
+  playerId: string,
+): Promise<SharedPlayerWeek | null> {
+  const store = storeFor(owner, weekStart);
+  await hydrate(store);
+  return store.state.players.find((entry) => entry.player.id === playerId) ?? null;
 }
 
 async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
@@ -92,21 +149,26 @@ async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
       const result = await request<GroupsResponse>(`/groups?weekStart=${store.weekStart}`);
       assertOwner(store.owner);
       if (generation !== store.generation) return;
-      const now = Date.now();
-      const available = Math.max(previous, now + 60_000);
+      const available = Math.max(previous, Date.now() + 60_000);
       // A player shared through two groups appears once in the combined list.
       const players = [
         ...new Map(result.players.map((entry) => [entry.player.id, entry])).values(),
       ];
       store.loaded = true;
+      store.version++;
       publish(store, {
         groups: result.groups,
         players,
         status: 'ready',
         error: null,
-        lastRefreshedAt: now,
+        hydrated: true,
         refreshAvailableAt: available,
       });
+      try {
+        await cache.write(store.owner, store.weekStart, { groups: result.groups, players });
+      } catch {
+        /* Friends then stay available online only. */
+      }
       try {
         await database.meta.put({ key: cooldownKey(store.owner), value: available });
       } catch {
@@ -115,13 +177,17 @@ async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
     } catch (error) {
       if (generation !== store.generation) return;
       store.loaded = false;
-      // A failed authorization check must never leave another player's prices visible.
-      publish(store, {
-        groups: [],
-        players: [],
-        status: navigator.onLine ? 'error' : 'offline',
-        error: error instanceof Error ? error.message : 'Could not load your groups.',
-      });
+      const message = error instanceof Error ? error.message : 'Could not load your groups.';
+      if (error instanceof ApiError && [401, 403].includes(error.status)) {
+        await forget(store.owner, store).catch(() => undefined);
+        publish(store, { status: 'error', error: message });
+        return;
+      }
+      // Without a connection, the prices already on screen stay readable.
+      publish(
+        store,
+        navigator.onLine ? { status: 'error', error: message } : { status: 'offline', error: null },
+      );
     }
   })();
   try {
@@ -139,8 +205,13 @@ async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
   }
 }
 
-export function useGroups(weekStart: string, session: SessionResponse | null, connected: boolean) {
+export function useGroups(
+  weekStart: string,
+  session: SessionResponse | null,
+  identity: IdentityState['status'],
+) {
   const owner = session?.player.id ?? '';
+  const connected = identity === 'ready';
   const store = storeFor(owner, weekStart);
   const state = useSyncExternalStore(
     (listener) => {
@@ -149,34 +220,43 @@ export function useGroups(weekStart: string, session: SessionResponse | null, co
         store.listeners.delete(listener);
       };
     },
-    () => (connected ? store.state : session ? offline : empty),
+    () => store.state,
   );
   useEffect(() => {
-    if (connected && owner && !store.loaded) void fetchGroups(store);
-    if (!connected && owner) clearSharedGroups(owner);
-    return () => {
-      // Returning to a shared view must re-establish membership, including after
-      // a profile switch performed while the Settings route was open.
-      if (owner) clearSharedGroups(owner);
-    };
+    if (!owner) return;
+    void hydrate(store);
+    if (connected && !store.loaded) void fetchGroups(store);
+    if (!connected) invalidate(store);
+    return () => invalidate(store);
   }, [connected, owner, store]);
 
-  async function change(path: string, method: string, body?: unknown) {
+  async function change(path: string, method: string, body?: unknown, left?: string) {
     assertOwner(owner);
     const result = await request<{ group: GroupSummary }>(path, { method, body });
     assertOwner(owner);
-    clearSharedGroups(owner);
+    invalidate(store);
+    if (left) {
+      store.version++;
+      publish(store, withoutGroup(store.state, left));
+      await cache.update(owner, (data) => withoutGroup(data, left)).catch(() => undefined);
+    }
     if (store.pending) await store.pending;
     if (!store.loaded) await fetchGroups(store);
     return result.group;
   }
+  const status: GroupState['status'] = connected
+    ? state.status
+    : identity === 'connecting' || (owner && !state.hydrated)
+      ? 'loading'
+      : 'offline';
   return {
     ...state,
+    ...(connected ? {} : { status, error: null }),
     refresh: () => fetchGroups(store, true),
     create: (name: string) => change('/groups', 'POST', { name }),
     join: (code: string) => change('/groups/join', 'POST', { code }),
     leave: async (id: string) => {
-      await change(`/groups/${id}/membership`, 'DELETE');
+      await change(`/groups/${id}/membership`, 'DELETE', undefined, id);
     },
   };
 }

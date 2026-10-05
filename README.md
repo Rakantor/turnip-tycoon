@@ -16,7 +16,7 @@ Enter your Sunday buy price and the morning and afternoon prices you know. Leave
 - **Compare with friends.** Create or join a group to see everyone’s prices and forecasts together.
 - **Keep your history.** Look back at your past weeks.
 - **Use it anywhere.** Enjoy a layout made for phones and desktops, or install the app from Settings.
-- **Keep going offline.** Once Settings shows **Ready to open offline**, your prices and forecasts stay available. Edits sync when you reconnect; friends’ prices need a connection.
+- **Keep going offline.** Once Settings shows **Ready to open offline**, your prices and forecasts stay available. Edits sync when you reconnect, and friends’ prices from your last online visit this week stay readable.
 
 Settings also lets you change your name, connect another device, and create a recovery code.
 

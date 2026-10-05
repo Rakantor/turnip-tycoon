@@ -25,6 +25,8 @@ type Dependencies = {
   invalidateResponses: () => void;
   publish: (state: IdentityState) => void;
   attach: (owner: string) => Promise<void>;
+  /** Removes friends' prices kept for a profile this device can no longer use. */
+  forget: (owner: string) => Promise<void>;
   broadcast: () => void;
   deviceName: () => string;
 };
@@ -193,6 +195,8 @@ export class SessionController {
         } catch (error) {
           if (!(error instanceof ApiError) || error.status !== 401) throw error;
           if (attempt !== this.generation) return;
+          const lost = this.stored.session?.player.id;
+          if (lost) await this.deps.forget(lost).catch(() => undefined);
           if (this.deps.vault.bearer) {
             if (this.stored.token || this.stored.session) {
               throw new Error(

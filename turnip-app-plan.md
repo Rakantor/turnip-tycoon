@@ -181,9 +181,9 @@ Use a simple local timestamp to calculate availability. There is:
 - No automatic group refetch merely because a tab regains focus.
 - No global cooldown synchronised between devices.
 
-The refresh updates memberships and the relevant current-week prices, with players deduplicated across several groups. Shared prices are kept in memory while connected and are not persisted as offline proof of continuing membership. A failed access check clears the shared view.
+The refresh updates memberships and the relevant current-week prices, with players deduplicated across several groups. Each profile keeps the latest current-week response in IndexedDB, including group codes, so friends' prices open instantly and stay readable offline; the opening refresh replaces it. A new week starts empty until its first refresh. A failed access check (401/403) or a rejected device session deletes the saved copy and clears the shared view; leaving a group removes it locally straight away.
 
-Show the device's last successful refresh time. This describes when the device pulled data, not when a friend observed or entered a price.
+Do not show when friends' prices were last refreshed. While loading for the first time, draw the cards with placeholders instead of loading text.
 
 ### Uploading edits
 
@@ -200,9 +200,9 @@ Friends see the new value the next time they refresh. The app does not promise t
 
 ### Offline use and retry behaviour
 
-IndexedDB stores cached own records and pending changes. After an online visit completes silent profile setup and Settings reports that offline access is ready, the cached Pages app and prediction engine can reopen and work offline. First-time profile creation and friends’ prices still require a connection.
+IndexedDB stores cached own records and pending changes. After an online visit completes silent profile setup and Settings reports that offline access is ready, the cached Pages app and prediction engine can reopen and work offline. First-time profile creation and refreshing friends’ prices still require a connection; the latest current-week copy of friends’ prices stays readable offline.
 
-Current implementation: production Pages builds generate a service worker scoped to `/turnip-tycoon/`. It precaches the static app, icons, manifest, and licenses, with no runtime API caching. IndexedDB retains own records, credentials, pending uploads, and revision conflicts independently of the app cache. Local development does not install a service worker; use the Pages preview in [CONTRIBUTING.md](CONTRIBUTING.md) to exercise offline reopening.
+Current implementation: production Pages builds generate a service worker scoped to `/turnip-tycoon/`. It precaches the static app, icons, manifest, and licenses, with no runtime API caching. IndexedDB retains own records, credentials, pending uploads, revision conflicts, and the latest friends' prices independently of the app cache. Local development does not install a service worker; use the Pages preview in [CONTRIBUTING.md](CONTRIBUTING.md) to exercise offline reopening.
 
 Settings exposes installation, offline readiness, setup retry, and update checks. Updates wait for an explicit Update now action on a safe screen. Valid local writes flush before reloading; invalid drafts and an unrestorable profile block the reload. Pending uploads can remain queued, and other open tabs are never force-reloaded. Installation remains optional and introduces no startup prompt.
 
@@ -279,6 +279,7 @@ React PWA
   ├─ Prediction engine
   ├─ Dexie / IndexedDB
   │    ├─ Downloaded records
+  │    ├─ Friends' current-week prices
   │    ├─ Pending edits
   │    └─ Local refresh timestamp
   └─ HTTPS requests
@@ -446,6 +447,8 @@ The Full week default and fixed probability grid pass lint, strict TypeScript, p
 
 Island Ledger checkpoint (4 October 2026): the redesign replaces the Full week default and By day view described above with Right now and Full week, removes the Forecast ranges table, and moves the selected-period comparison from the calculator to Friends. The suite passes 200 tests, including advice regressions for likely spikes, tied peaks, selling now, confident declines, cautious early weeks, completed weeks, and past weeks. Lint, strict TypeScript, production and Pages builds, and formatting pass; the Pages worker precaches the four font files and the 384-pixel mascot. Browser checks at 320, 390, 860, and 1280 pixels cover day tickets and the phone grid with every weekday visible above the tab bar at 390×844, a full-width tab bar, the Sunday Today marker, anchored tooltips by click and keyboard that stay within the card and pass taps through, Right now and Full week with three profiles, shared weeks, Settings, History, empty and past weeks, and no page overflow.
 
+Offline friends checkpoint (5 October 2026): each profile keeps the latest current-week groups response, codes included, in IndexedDB. Friends' prices then open instantly, refresh in the background, and stay readable offline, including a friend's current week. First loads draw the real cards with placeholders that appear after 200 ms, and content fades in only after visible placeholders. The suite passes 211 tests, including saved-copy storage and session forgetting. Lint, strict TypeScript, production and Pages builds, and formatting pass. Browser checks with slowed and failing API calls cover placeholders on Prices, Friends, History, shared weeks, and Settings at 320, 390, 860, and 1280 pixels without overflow; offline Friends with Refresh and Leave disabled; and deletion of the saved copy after a rejected session or a 403, with refilling once access returns. They also cover local removal of a group after leaving it.
+
 - Implement unlimited group creation and joining by code.
 - Enforce the configurable eight-member limit.
 - Add Share, Leave, and empty-group deletion.
@@ -508,6 +511,7 @@ Completion check: calculation regressions, access controls, sync behaviour, and 
 - [x] No player time zone is stored or shared; the frontend uses local device time.
 - [x] The interface edits only the current week; the backend applies no historical-week lock.
 - [x] Opening validates shared membership; manual Refresh follows the local 60-second cooldown.
+- [x] Friends' current-week prices stay readable offline and are deleted when access is lost.
 - [x] The cooldown persists in IndexedDB and has no server-side enforcement.
 - [x] No polling, WebSockets, Durable Objects, or background group refetch is introduced.
 - [x] Edits upload immediately when online, regardless of the pull cooldown.

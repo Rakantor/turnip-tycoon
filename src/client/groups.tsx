@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { ArrowRight, Check, Copy, Plane, Plus, RefreshCw, Share2, Users, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Check,
+  CloudOff,
+  Copy,
+  Plane,
+  Plus,
+  RefreshCw,
+  Share2,
+  Users,
+  X,
+} from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
 import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
@@ -110,10 +121,7 @@ export function PriceSparkline({
             ) : range ? (
               <span
                 className="spark-predicted"
-                style={{
-                  bottom: height(range.min),
-                  height: height(range.max - range.min),
-                }}
+                style={{ bottom: height(range.min), height: height(range.max - range.min) }}
               />
             ) : null}
           </span>
@@ -133,24 +141,37 @@ function RefreshGroups({ data }: { data: GroupData }) {
     return () => window.clearTimeout(timeout);
   }, [data.refreshAvailableAt]);
   const waiting = clock < data.refreshAvailableAt;
+  const offline = data.status === 'offline';
   return (
     <div className="group-refresh">
-      <span className="muted">
-        {data.lastRefreshedAt
-          ? `Updated ${new Date(data.lastRefreshedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
-          : 'Prices shared with your groups'}
-      </span>
+      <span className="muted">Prices shared with your groups</span>
       <button
         className="text-button refresh-button"
         type="button"
-        disabled={waiting || data.status === 'loading'}
+        disabled={offline || waiting || data.status === 'loading'}
         onClick={() => {
           void data.refresh();
         }}
-        title={waiting ? 'Refresh is available once a minute' : 'Refresh shared prices'}
+        title={
+          offline
+            ? 'Connect to refresh shared prices'
+            : waiting
+              ? 'Refresh is available once a minute'
+              : 'Refresh shared prices'
+        }
       >
-        <RefreshCw size={14} aria-hidden="true" />
-        {data.status === 'loading' ? 'Updating…' : waiting ? 'Up to date' : 'Refresh'}
+        {offline ? (
+          <CloudOff size={14} aria-hidden="true" />
+        ) : (
+          <RefreshCw size={14} aria-hidden="true" />
+        )}
+        {offline
+          ? 'Offline'
+          : data.status === 'loading'
+            ? 'Updating…'
+            : waiting
+              ? 'Up to date'
+              : 'Refresh'}
       </button>
     </div>
   );
@@ -159,11 +180,7 @@ function RefreshGroups({ data }: { data: GroupData }) {
 function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: string }) {
   const [period, setPeriod] = useState(initialPeriod);
   const members = useMemo(
-    () =>
-      players.map((member) => ({
-        ...member,
-        prediction: predictWeek(member.week),
-      })),
+    () => players.map((member) => ({ ...member, prediction: predictWeek(member.week) })),
     [players],
   );
   const scale = useMemo(() => sparkScale(members), [members]);
@@ -466,7 +483,12 @@ function GroupDetails({ group, data }: { group: GroupSummary; data: GroupData })
           <Share2 size={15} />
           {group.memberCount >= group.capacity ? 'Group full' : 'Share group link'}
         </Button>
-        <button className="text-button muted" type="button" onClick={() => setConfirmLeave(true)}>
+        <button
+          className="text-button muted"
+          type="button"
+          disabled={data.status === 'offline'}
+          onClick={() => setConfirmLeave(true)}
+        >
           Leave group
         </button>
       </div>
@@ -510,7 +532,7 @@ function GroupDetails({ group, data }: { group: GroupSummary; data: GroupData })
 
 function ConnectionMessage({ data }: { data: GroupData }) {
   const identity = useApp();
-  if (data.status === 'offline')
+  if (data.status === 'offline' && !data.players.length)
     return (
       <div className="group-connection">
         <p>Connect to see your friends’ shared prices.</p>
@@ -625,7 +647,7 @@ function IslandBoardLoading() {
 
 export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: WeekRecord }) {
   const identity = useApp();
-  const data = useGroups(weekStart, identity.session, identity.status === 'ready');
+  const data = useGroups(weekStart, identity.session, identity.status);
   const owner = identity.session?.player.id ?? '';
   const players = data.players.map((member) =>
     week && member.player.id === owner ? { ...member, week } : member,
@@ -724,7 +746,7 @@ export function Groups() {
   }, []);
   const weekStart = currentWeekStart(now);
   const { groupId } = useParams();
-  const data = useGroups(weekStart, identity.session, identity.status === 'ready');
+  const data = useGroups(weekStart, identity.session, identity.status);
   const [selectedGroup, setSelectedGroup] = useState(groupId ?? 'all');
   useEffect(() => setSelectedGroup(groupId ?? 'all'), [groupId]);
   const [showForm, setShowForm] = useState(false);
