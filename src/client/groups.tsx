@@ -7,6 +7,7 @@ import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
 import { oddsPercent } from './advice';
 import { useGroups } from './data/use-groups';
+import { useWeek } from './data/use-week';
 import { GroupPriceTable } from './group-price-table';
 import {
   deadline,
@@ -51,6 +52,15 @@ function byPeriod<T extends SharedPlayerWeek>(players: T[], period: number): T[]
     if (b === null) return -1;
     return period === 0 ? a - b : b - a;
   });
+}
+/** Your island as this device has it, which can be newer than the board's saved copy. */
+function withOwnWeek<T extends SharedPlayerWeek>(
+  players: T[],
+  owner: string,
+  week: WeekRecord | null | undefined,
+): T[] {
+  if (!week) return players;
+  return players.map((member) => (member.player.id === owner ? { ...member, week } : member));
 }
 function islandName(member: SharedPlayerWeek, owner: string): string {
   return member.player.id === owner ? 'Your island' : `${member.player.displayName}’s island`;
@@ -721,9 +731,7 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
   const identity = useApp();
   const data = useGroups(weekStart, identity.session, identity.status);
   const owner = identity.session?.player.id ?? '';
-  const players = data.players.map((member) =>
-    week && member.player.id === owner ? { ...member, week } : member,
-  );
+  const players = withOwnWeek(data.players, owner, week);
   const period = initialPeriod();
   const self = players.find((member) => member.player.id === owner);
   const mine = self ? reportedPrice(self, period) : null;
@@ -826,13 +834,16 @@ export function Groups() {
   const [showForm, setShowForm] = useState(false);
   const [view, setView] = useState<'now' | 'week'>('now');
   const owner = identity.session?.player.id ?? '';
+  // The board's copy can be a minute old; your own prices come from this device.
+  const own = useWeek(weekStart, identity.session, identity.status === 'ready');
+  const shared = withOwnWeek(data.players, owner, own.stored ? own.week : null);
   const existingSelection = data.groups.some((group) => group.id === selectedGroup)
     ? selectedGroup
     : 'all';
   const players =
     existingSelection === 'all'
-      ? data.players
-      : data.players.filter((member) => member.groupIds.includes(existingSelection));
+      ? shared
+      : shared.filter((member) => member.groupIds.includes(existingSelection));
   const hasGroups = data.groups.length > 0;
   const loading = data.status === 'loading' && !hasGroups;
   const reveal = useReveal(loading);

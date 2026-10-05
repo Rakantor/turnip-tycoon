@@ -164,6 +164,8 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
                 : 'local';
   return {
     week: displayedWeek,
+    /** This device holds the week or edits to it, rather than an empty placeholder. */
+    stored: Boolean(row) || pending.edits.length > 0,
     status,
     error: pending.error ?? relevantFailure?.message ?? null,
     update,
