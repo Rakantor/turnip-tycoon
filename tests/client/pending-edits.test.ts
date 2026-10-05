@@ -7,7 +7,8 @@ import {
   withPendingEdits,
 } from '../../src/client/data/pending-edits';
 import { WeekStore, weekKey } from '../../src/client/data/sync';
-import { emptyWeek, type WeeklyInputs } from '../../src/shared/week';
+import type { Trade } from '../../src/shared/ledger';
+import { emptyWeek, type OwnWeeklyInputs } from '../../src/shared/week';
 
 const owner = 'player-one';
 const week = '2026-10-04';
@@ -28,7 +29,7 @@ function harness() {
   const write = async (
     id: string,
     start: string,
-    patch: Partial<WeeklyInputs>,
+    patch: Partial<OwnWeeklyInputs>,
     slots?: number[],
   ) => {
     await store.edit(id, start, patch, slots);
@@ -220,5 +221,25 @@ describe('unsaved local edits', () => {
     expect(withPendingEdits(remote, persisted.version, h.queue.snapshot(owner, week))).toEqual(
       remote,
     );
+  });
+
+  it('shows retained trade edits above the saved week', () => {
+    const trades: Trade[] = [{ id: 'buy-1', kind: 'buy', quantity: 4000, price: 98 }];
+    const retained = { edits: [{ sequence: 1, patch: { trades } }], sequence: 1, error: null };
+    expect(withPendingEdits(emptyWeek(owner, week), -1, retained).trades).toEqual(trades);
+    expect(
+      withPendingEdits(emptyWeek(owner, week), -1, { edits: [], sequence: 0, error: null }).trades,
+    ).toEqual([]);
+  });
+
+  it('queues a copy of the trades, unaffected by later changes to the list', async () => {
+    const h = harness();
+    const trades: Trade[] = [{ id: 'buy-1', kind: 'buy', quantity: 4000, price: 98 }];
+    const queued = h.queue.enqueue(owner, week, { trades });
+    trades.push({ id: 'buy-2', kind: 'buy', quantity: 10, price: 98 });
+    await queued;
+    const saved = await h.db.weeks.get(weekKey(owner, week));
+    expect(saved?.data.trades).toHaveLength(1);
+    expect(saved?.fields).toEqual(['trades']);
   });
 });

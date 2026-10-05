@@ -21,6 +21,11 @@ export interface WeekRecord extends WeeklyInputs {
   revision: number;
 }
 
+/** What the owner edits: the inputs friends see, plus the trades only the owner sees. */
+export interface OwnWeeklyInputs extends WeeklyInputs {
+  trades: Trade[];
+}
+
 /** The owner's own week: everything friends see, plus the trades only the owner sees. */
 export interface OwnWeekRecord extends WeekRecord {
   trades: Trade[];

@@ -4,13 +4,14 @@ import { ArrowLeft, ArrowRight, Check, CloudOff, LoaderCircle, Moon, Sun } from 
 import { predictWeek } from '../prediction';
 import { uniquePattern } from '../prediction/previous-pattern';
 import { currentSlot, currentWeekStart, isEditableWeek, shiftWeek } from '../shared/calendar';
-import type { PatternId, WeeklyInputs } from '../shared/week';
+import type { Trade } from '../shared/ledger';
+import type { OwnWeeklyInputs, PatternId } from '../shared/week';
 import { useWeek } from './data/use-week';
 import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
 import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
-import { weekAdvice } from './advice';
+import { slotShortName, weekAdvice } from './advice';
 import { islandOdds } from './odds';
 import { HoldOrSell } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
@@ -126,6 +127,19 @@ function PriceInput({
   );
 }
 
+/** One kind of trade for the conflict comparison, such as "4,000 at 98, 6,000 at 94". */
+function tradeList(trades: readonly Trade[], kind: Trade['kind']): string {
+  const listed = trades.flatMap((trade) =>
+    trade.kind !== kind
+      ? []
+      : [
+          `${trade.quantity.toLocaleString()} at ${trade.price}` +
+            (trade.kind === 'sell' ? ` on ${slotShortName(trade.slot)}` : ''),
+        ],
+  );
+  return listed.length ? listed.join(', ') : '—';
+}
+
 /** After an edit to last week identifies its pattern, offer it to this week's forecast. */
 function PatternOffer({ weekStart, pattern }: { weekStart: string; pattern: PatternId }) {
   const identity = useApp();
@@ -236,7 +250,7 @@ function WeekCalculator({
   // made here prompts the offer, so a pattern chosen on purpose is never questioned.
   const [patternBefore, setPatternBefore] = useState<PatternId | null>();
   const implied = uniquePattern(prediction);
-  function edit(patch: Partial<WeeklyInputs>, changedSlots?: number[]) {
+  function edit(patch: Partial<OwnWeeklyInputs>, changedSlots?: number[]) {
     if (lastWeek && patternBefore === undefined) setPatternBefore(implied);
     update(patch, changedSlots);
   }
@@ -480,13 +494,13 @@ function WeekCalculator({
           {conflict && (
             <div className="conflict-panel" role="alert">
               <h3>Another device changed this week</h3>
-              <p>Choose which prices to keep. Your entries are still here until you choose.</p>
+              <p>Choose which entries to keep. Yours are still here until you choose.</p>
               <details>
-                <summary>Compare prices</summary>
+                <summary>Compare entries</summary>
                 <table>
                   <thead>
                     <tr>
-                      <th>Price</th>
+                      <th>Entry</th>
                       <th>This device</th>
                       <th>Other device</th>
                     </tr>
@@ -508,6 +522,16 @@ function WeekCalculator({
                         </tr>
                       )),
                     )}
+                    <tr>
+                      <th>Bought</th>
+                      <td>{tradeList(week.trades, 'buy')}</td>
+                      <td>{tradeList(conflict.trades, 'buy')}</td>
+                    </tr>
+                    <tr>
+                      <th>Sold</th>
+                      <td>{tradeList(week.trades, 'sell')}</td>
+                      <td>{tradeList(conflict.trades, 'sell')}</td>
+                    </tr>
                   </tbody>
                 </table>
               </details>
@@ -518,7 +542,7 @@ function WeekCalculator({
                     void resolveConflict('local');
                   }}
                 >
-                  Keep this device’s prices
+                  Keep this device’s entries
                 </Button>
                 <Button
                   secondary
@@ -527,7 +551,7 @@ function WeekCalculator({
                     void resolveConflict('remote');
                   }}
                 >
-                  Use other device’s prices
+                  Use other device’s entries
                 </Button>
               </div>
             </div>

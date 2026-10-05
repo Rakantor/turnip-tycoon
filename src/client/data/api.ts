@@ -1,4 +1,4 @@
-import type { WeekRecord } from '../../shared/week';
+import type { StoredWeek } from './database';
 import { apiOrigin } from './api-config';
 
 export class ApiError extends Error {
@@ -6,7 +6,7 @@ export class ApiError extends Error {
     public status: number,
     public code: string,
     message: string,
-    public week?: WeekRecord,
+    public week?: StoredWeek,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -78,7 +78,7 @@ export async function request<T>(
   });
   const body = (await response.json()) as T & {
     error?: { code: string; message: string };
-    week?: WeekRecord;
+    week?: StoredWeek;
     pairingToken?: string;
     expiresAt?: string;
   };

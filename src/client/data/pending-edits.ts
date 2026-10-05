@@ -1,5 +1,5 @@
-import type { WeekRecord, WeeklyInputs } from '../../shared/week';
-import type { LocalWeek } from './database';
+import type { OwnWeekRecord, OwnWeeklyInputs } from '../../shared/week';
+import { type LocalWeek, ownWeek, type StoredWeek } from './database';
 import { weekStore } from './runtime';
 import { weekKey } from './sync';
 
@@ -8,7 +8,7 @@ export const LOCAL_SAVE_ERROR =
 
 interface PendingEdit {
   sequence: number;
-  patch: Partial<WeeklyInputs>;
+  patch: Partial<OwnWeeklyInputs>;
   priceSlots?: number[];
 }
 
@@ -24,7 +24,7 @@ const EMPTY: PendingSnapshot = { edits: [], sequence: 0, error: null };
 type Persist = (
   owner: string,
   weekStart: string,
-  patch: Partial<WeeklyInputs>,
+  patch: Partial<OwnWeeklyInputs>,
   priceSlots?: number[],
 ) => Promise<LocalWeek | undefined>;
 
@@ -57,7 +57,7 @@ export class PendingEdits {
   enqueue(
     owner: string,
     weekStart: string,
-    patch: Partial<WeeklyInputs>,
+    patch: Partial<OwnWeeklyInputs>,
     priceSlots?: number[],
   ): Promise<void> {
     const key = weekKey(owner, weekStart);
@@ -71,7 +71,11 @@ export class PendingEdits {
         ...current.edits,
         {
           sequence,
-          patch: { ...patch, ...(patch.prices ? { prices: [...patch.prices] } : {}) },
+          patch: {
+            ...patch,
+            ...(patch.prices ? { prices: [...patch.prices] } : {}),
+            ...(patch.trades ? { trades: [...patch.trades] } : {}),
+          },
           ...(priceSlots ? { priceSlots: [...priceSlots] } : {}),
         },
       ],
@@ -168,15 +172,15 @@ export class PendingEdits {
 
 /** Apply retained intent over the newest known local record without changing it. */
 export function withPendingEdits(
-  base: WeekRecord,
+  base: StoredWeek,
   localVersion: number,
   pending: PendingSnapshot,
-): WeekRecord {
+): OwnWeekRecord {
   const saved =
     pending.durable && pending.durable.version > localVersion ? pending.durable.data : base;
-  const result = { ...saved, prices: [...saved.prices] };
+  const result = { ...ownWeek(saved), prices: [...saved.prices] };
   for (const edit of pending.edits) {
-    for (const field of ['purchasePrice', 'firstBuy', 'previousPattern'] as const) {
+    for (const field of ['purchasePrice', 'firstBuy', 'previousPattern', 'trades'] as const) {
       if (field in edit.patch) Object.assign(result, { [field]: edit.patch[field] });
     }
     if (edit.patch.prices)

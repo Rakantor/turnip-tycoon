@@ -1,17 +1,11 @@
-import {
-  emptyWeek,
-  inputsOf,
-  type WeekRecord,
-  type WeeklyInputs,
-  type WeekMutation,
-} from '../../shared/week';
+import { emptyOwnWeek, inputsOf, type OwnWeeklyInputs, type WeekMutation } from '../../shared/week';
 import { ApiError } from './api';
-import { type LocalWeek, TurnipDatabase } from './database';
+import { type LocalWeek, ownWeek, type StoredWeek, TurnipDatabase } from './database';
 import { shiftWeek } from '../../shared/calendar';
 import { inferPreviousPattern } from '../../prediction/previous-pattern';
 
 export interface WeekTransport {
-  get(weekStart: string): Promise<WeekRecord>;
+  get(weekStart: string): Promise<StoredWeek>;
   put(weekStart: string, body: WeekMutation): Promise<{ revision: number }>;
   isActive(owner: string): boolean;
 }
@@ -22,7 +16,7 @@ function fresh(owner: string, weekStart: string): LocalWeek {
     key: weekKey(owner, weekStart),
     owner,
     weekStart,
-    data: emptyWeek(owner, weekStart),
+    data: emptyOwnWeek(owner, weekStart),
     hydrated: false,
     version: 0,
     dirty: false,
@@ -30,11 +24,16 @@ function fresh(owner: string, weekStart: string): LocalWeek {
     slots: [],
   };
 }
-function mergeTouched(target: WeekRecord, local: LocalWeek): WeekRecord {
+function mergeTouched(target: StoredWeek, local: LocalWeek): StoredWeek {
   const data = { ...target, prices: [...target.prices] };
   for (const field of local.fields) Object.assign(data, { [field]: local.data[field] });
   for (const slot of local.slots) data.prices[slot] = local.data.prices[slot];
   return data;
+}
+/** Trades this device never edited follow the server, whichever version is kept. */
+function inConflict(row: LocalWeek, remote: StoredWeek): void {
+  row.conflict = remote;
+  if (!row.fields.includes('trades')) row.data = { ...row.data, trades: remote.trades };
 }
 
 /** A pending mutation is immutable until acknowledged, including across page reloads. */
@@ -69,17 +68,17 @@ export class WeekStore {
   async edit(
     owner: string,
     weekStart: string,
-    patch: Partial<WeeklyInputs>,
+    patch: Partial<OwnWeeklyInputs>,
     priceSlots?: number[],
   ): Promise<void> {
     await this.db.transaction('rw', this.db.weeks, async () => {
       const row =
         (await this.db.weeks.get(weekKey(owner, weekStart))) ??
         (await this.freshWithDefaults(owner, weekStart));
-      for (const field of ['purchasePrice', 'firstBuy', 'previousPattern'] as const) {
+      for (const field of ['purchasePrice', 'firstBuy', 'previousPattern', 'trades'] as const) {
         if (
           field in patch &&
-          (patch[field] !== row.data[field] || field === 'previousPattern') &&
+          (patch[field] !== row.data[field] || field === 'previousPattern' || field === 'trades') &&
           !row.fields.includes(field)
         )
           row.fields.push(field);
@@ -169,8 +168,11 @@ export class WeekStore {
         if (!row.hydrated) {
           row.data = mergeTouched(defaults, row);
           row.hydrated = true;
-        } else if (!row.dirty) row.data = defaults;
-        else if (remote.revision !== row.data.revision) row.conflict = remote;
+          row.syncedAt = Date.now();
+        } else if (!row.dirty) {
+          row.data = defaults;
+          row.syncedAt = Date.now();
+        } else if (remote.revision !== row.data.revision) inConflict(row, remote);
         await this.db.weeks.put(row);
       });
     }
@@ -181,6 +183,8 @@ export class WeekStore {
         if (!current.pending) {
           current.pending = {
             ...inputsOf(current.data),
+            // Untouched trades are left out, so the server keeps whatever it holds.
+            ...(current.fields.includes('trades') ? { trades: ownWeek(current.data).trades } : {}),
             mutationId: crypto.randomUUID(),
             baseRevision: current.data.revision,
             version: current.version,
@@ -199,6 +203,7 @@ export class WeekStore {
           if (current?.pending?.mutationId !== pending.mutationId) return;
           current.data.revision = result.revision;
           current.hydrated = true;
+          current.syncedAt = Date.now();
           delete current.pending;
           if (current.version === version) {
             current.dirty = false;
@@ -209,7 +214,13 @@ export class WeekStore {
         });
       } catch (error) {
         if (error instanceof ApiError && error.code === 'REVISION_CONFLICT' && error.week) {
-          await this.db.weeks.update(key, { conflict: error.week });
+          const remote = error.week;
+          await this.db.transaction('rw', this.db.weeks, async () => {
+            const current = await this.db.weeks.get(key);
+            if (!current) return;
+            inConflict(current, remote);
+            await this.db.weeks.put(current);
+          });
           return;
         }
         throw error;

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { liveQuery } from 'dexie';
 import type { SessionResponse } from '../../shared/api';
-import { emptyWeek, type WeeklyInputs, type WeekRecord } from '../../shared/week';
+import { emptyOwnWeek, type OwnWeeklyInputs, type OwnWeekRecord } from '../../shared/week';
 import { ApiError } from './api';
-import { database, type LocalWeek } from './database';
+import { database, type LocalWeek, ownWeek } from './database';
 import { activeIdentity, weekStore } from './runtime';
 import { weekKey } from './sync';
 import { pendingEdits, withPendingEdits } from './pending-edits';
@@ -23,7 +23,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     pendingEdits.snapshot(owner, weekStart),
   );
   const displayedWeek = withPendingEdits(
-    row?.data ?? emptyWeek(owner, weekStart),
+    row?.data ?? emptyOwnWeek(owner, weekStart),
     row?.version ?? -1,
     pending,
   );
@@ -113,7 +113,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
   }, [retry, key, owner, weekStart, version, pending.sequence]);
 
   const update = useCallback(
-    (patch: Partial<WeeklyInputs>, changedSlots?: number[]) => {
+    (patch: Partial<OwnWeeklyInputs>, changedSlots?: number[]) => {
       const editOwner = owner === 'unassigned' ? (activeIdentity.owner ?? owner) : owner;
       // A second field can blur before React has received the first IndexedDB write.
       // Apply only slots changed against this rendered snapshot, preserving that write.
@@ -142,6 +142,11 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     [owner, weekStart, retry, reportFailure],
   );
 
+  const storedConflict = row?.conflict;
+  const conflict = useMemo(
+    () => (storedConflict ? ownWeek(storedConflict) : null),
+    [storedConflict],
+  );
   const relevantFailure = failure?.key === key ? failure : null;
   const status: SaveStatus = pending.error
     ? 'error'
@@ -170,7 +175,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     error: pending.error ?? relevantFailure?.message ?? null,
     update,
     retry,
-    conflict: row?.conflict ?? (null as WeekRecord | null),
+    conflict: conflict as OwnWeekRecord | null,
     resolveConflict,
   };
 }

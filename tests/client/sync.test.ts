@@ -1,9 +1,11 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../../src/client/data/api';
-import { TurnipDatabase } from '../../src/client/data/database';
+import { TurnipDatabase, type StoredWeek } from '../../src/client/data/database';
+import { withPendingEdits } from '../../src/client/data/pending-edits';
 import { WeekStore, weekKey, type WeekTransport } from '../../src/client/data/sync';
-import { emptyWeek, type WeekMutation, type WeekRecord } from '../../src/shared/week';
+import type { Trade } from '../../src/shared/ledger';
+import { emptyOwnWeek, emptyWeek, type WeekMutation, type WeekRecord } from '../../src/shared/week';
 
 const owner = 'player-one';
 const week = '2026-10-04';
@@ -21,15 +23,15 @@ function prices(...known: (number | null)[]): (number | null)[] {
   return [...known, ...Array<number | null>(12 - known.length).fill(null)];
 }
 
-function harness(initial = emptyWeek(owner, week)) {
+function harness(initial: StoredWeek = emptyWeek(owner, week)) {
   const db = new TurnipDatabase(`sync-test-${crypto.randomUUID()}`);
   databases.push(db);
-  const remote = new Map<string, WeekRecord>([[initial.weekStart, structuredClone(initial)]]);
+  const remote = new Map<string, StoredWeek>([[initial.weekStart, structuredClone(initial)]]);
   const receipts = new Map<string, { revision: number }>();
   let active = owner;
   const transport = {
     isActive: vi.fn((id: string) => active === id),
-    get: vi.fn(async (weekStart: string): Promise<WeekRecord> =>
+    get: vi.fn(async (weekStart: string): Promise<StoredWeek> =>
       structuredClone(remote.get(weekStart) ?? emptyWeek(owner, weekStart)),
     ),
     put: vi.fn(async (weekStart: string, body: WeekMutation): Promise<{ revision: number }> => {
@@ -44,6 +46,8 @@ function harness(initial = emptyWeek(owner, week)) {
         firstBuy: body.firstBuy,
         previousPattern: body.previousPattern,
         prices: [...body.prices],
+        // Left out, the server keeps the trades it holds.
+        ...(body.trades ? { trades: structuredClone(body.trades) } : {}),
         revision: current.revision + 1,
       };
       remote.set(weekStart, updated);
@@ -402,5 +406,143 @@ describe('durable weekly sync', () => {
     await h.store.sync(owner, week);
     expect(h.transport.put.mock.calls.at(-1)?.[1].mutationId).toBe(old?.pending?.mutationId);
     expect(h.remote.get(week)?.prices).toEqual(prices(90));
+  });
+
+  describe('trades', () => {
+    const bought: Trade[] = [{ id: 'buy-1', kind: 'buy', quantity: 4000, price: 98 }];
+    const sold: Trade = { id: 'sell-1', kind: 'sell', quantity: 3000, price: 165, slot: 4 };
+
+    it('sends trades only once this device edits them', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+      await h.store.sync(owner, week);
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.data.trades).toEqual(bought);
+
+      await h.store.edit(owner, week, { prices: prices(87) }, [0]);
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1]).not.toHaveProperty('trades');
+      expect(h.remote.get(week)?.trades).toEqual(bought);
+
+      await h.store.edit(owner, week, { trades: [...bought, sold] });
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[1][1].trades).toEqual([...bought, sold]);
+      expect(h.remote.get(week)).toMatchObject({
+        revision: 3,
+        prices: prices(87),
+        trades: [...bought, sold],
+      });
+      expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
+        dirty: false,
+        fields: [],
+        data: { revision: 3, trades: [...bought, sold] },
+      });
+    });
+
+    it('keeps the server’s trades under prices entered offline', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+      h.setActive('offline');
+      await h.store.edit(owner, week, { purchasePrice: 98 });
+      h.setActive(owner);
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1]).not.toHaveProperty('trades');
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.data).toMatchObject({
+        purchasePrice: 98,
+        trades: bought,
+        revision: 2,
+      });
+    });
+
+    it('reads a week saved before trades existed as having none, without clearing the server’s', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+      // A row from an earlier app version: no trades, and a price waiting to upload.
+      await h.db.weeks.put({
+        key: weekKey(owner, week),
+        owner,
+        weekStart: week,
+        data: { ...emptyWeek(owner, week), revision: 1, purchasePrice: 99 },
+        hydrated: true,
+        version: 1,
+        dirty: true,
+        fields: ['purchasePrice'],
+        slots: [],
+      });
+      const legacy = (await h.db.weeks.get(weekKey(owner, week)))!;
+      expect(
+        withPendingEdits(legacy.data, legacy.version, { edits: [], sequence: 0, error: null })
+          .trades,
+      ).toEqual([]);
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1]).not.toHaveProperty('trades');
+      expect(h.remote.get(week)).toMatchObject({ purchasePrice: 99, trades: bought });
+    });
+
+    it.each(['local', 'remote'] as const)(
+      'lets trades this device never edited follow the other device (%s kept)',
+      async (choice) => {
+        const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+        await h.store.sync(owner, week);
+        await h.store.edit(owner, week, { purchasePrice: 100 });
+        const elsewhere = {
+          ...emptyOwnWeek(owner, week),
+          revision: 2,
+          purchasePrice: 105,
+          trades: [...bought, sold],
+        };
+        h.remote.set(week, elsewhere);
+        await h.store.sync(owner, week);
+        const conflicted = await h.db.weeks.get(weekKey(owner, week));
+        expect(conflicted?.conflict).toEqual(elsewhere);
+        expect(conflicted?.data).toMatchObject({ purchasePrice: 100, trades: [...bought, sold] });
+
+        await h.store.resolve(owner, week, choice);
+        await h.store.sync(owner, week);
+        expect(h.remote.get(week)).toMatchObject({
+          purchasePrice: choice === 'local' ? 100 : 105,
+          trades: [...bought, sold],
+        });
+        if (choice === 'local')
+          expect(h.transport.put.mock.calls[0][1]).not.toHaveProperty('trades');
+      },
+    );
+
+    it.each(['local', 'remote'] as const)(
+      'keeps trades edited here only when this device’s entries are kept (%s kept)',
+      async (choice) => {
+        const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+        await h.store.sync(owner, week);
+        await h.store.edit(owner, week, { trades: [...bought, sold] });
+        h.remote.set(week, { ...emptyOwnWeek(owner, week), revision: 2, trades: [] });
+        await h.store.sync(owner, week);
+        expect((await h.db.weeks.get(weekKey(owner, week)))?.data.trades).toEqual([
+          ...bought,
+          sold,
+        ]);
+
+        await h.store.resolve(owner, week, choice);
+        await h.store.sync(owner, week);
+        const expected = choice === 'local' ? [...bought, sold] : [];
+        expect(h.remote.get(week)?.trades).toEqual(expected);
+        expect((await h.db.weeks.get(weekKey(owner, week)))?.data.trades).toEqual(expected);
+      },
+    );
+
+    it('adopts the other device’s trades when an upload meets a conflict', async () => {
+      const h = harness({ ...emptyOwnWeek(owner, week), revision: 1, trades: bought });
+      await h.store.sync(owner, week);
+      const commit = h.transport.put.getMockImplementation()!;
+      h.transport.put.mockImplementationOnce(async (weekStart, body) => {
+        h.remote.set(week, {
+          ...emptyOwnWeek(owner, week),
+          revision: 2,
+          trades: [...bought, sold],
+        });
+        return commit(weekStart, body);
+      });
+      await h.store.edit(owner, week, { purchasePrice: 100 });
+      await h.store.sync(owner, week);
+      expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
+        conflict: { revision: 2 },
+        data: { purchasePrice: 100, trades: [...bought, sold] },
+      });
+    });
   });
 });

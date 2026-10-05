@@ -1,15 +1,21 @@
+import type { LedgerResponse } from '../../shared/ledger';
 import { request } from './api';
-import { database } from './database';
+import { database, type StoredWeek } from './database';
+import { LedgerCache } from './ledger-cache';
 import { WeekStore } from './sync';
-import type { WeekRecord } from '../../shared/week';
 
 export const activeIdentity: { owner: string | null; connected: boolean } = {
   owner: null,
   connected: false,
 };
 export const weekStore = new WeekStore(database, {
-  get: async (weekStart) => (await request<{ week: WeekRecord }>(`/weeks/${weekStart}`)).week,
+  get: async (weekStart) => (await request<{ week: StoredWeek }>(`/weeks/${weekStart}`)).week,
   put: (weekStart, body) => request(`/weeks/${weekStart}`, { method: 'PUT', body }),
+  isActive: (owner) => activeIdentity.connected && activeIdentity.owner === owner,
+});
+
+export const ledgerCache = new LedgerCache(database, {
+  get: () => request<LedgerResponse>('/ledger'),
   isActive: (owner) => activeIdentity.connected && activeIdentity.owner === owner,
 });
 

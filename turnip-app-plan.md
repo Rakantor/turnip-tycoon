@@ -592,8 +592,8 @@ A week holds at most 40 entries, and its sales never exceed its purchases. The a
 
 - `src/shared/ledger.ts` defines `Trade`, its limits and validation, and the calculations: week totals, average cost, held turnips, made so far, week result, and overall profit.
 - `src/shared/week.ts` adds `OwnWeekRecord`, the owner's week with its `trades`, while shared reads keep `WeekRecord`. `emptyOwnWeek` starts with none, and cached rows from before the change read as none.
-- The week store treats `trades` as one touched field edited as a whole list. Pending edits, draft attachment, and the conflict panel handle it; the panel lists both devices' trades.
-- The ledger response is kept in IndexedDB `meta` per profile. History refreshes it on opening at most once a minute and after own uploads. Weeks held locally with unsent or newer edits, and the current week, replace their server rows with local calculations, so overall profit works offline and includes unsent edits.
+- The week store treats `trades` as one touched field edited as a whole list. A save sends trades only after this device edits them, so an untouched list never overwrites another device's. In a conflict, trades this device never edited follow the other device whichever entries are kept; the panel compares both devices' purchases and sales. Weeks cached before trades existed read as having none, without an IndexedDB upgrade that would close the database under other open tabs.
+- The ledger response is kept in IndexedDB `meta` per profile with the time its request started. History refreshes it on opening at most once a minute. Weeks with unsent trade edits, or synced since that request started, replace their server rows with local totals, so overall profit works offline and includes this device's latest trades without refetching after every upload.
 
 ### Screens
 
@@ -618,7 +618,7 @@ Designed 5 October 2026 on the Turnip Ledger canvas, direction C.
 1. Previous-week editing for prices, with the pattern offer. Done.
 2. The `Trade` type and ledger calculations, with unit tests. Done.
 3. Migration, week API, and `GET /api/ledger`. Tests cover validation and limits, saves without trades, retries and conflicts, absence of trades from every shared read, and ledger totals. Done; production still needs `pnpm db:migrate:prod` before this is pushed.
-4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests.
+4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests. Done.
 5. The screens as designed, including the Sunday label and certain-pattern advice. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
 6. Release: run `pnpm db:migrate:prod` before pushing, because the API Worker deploys automatically when server code changes. Update the README features, CONTRIBUTING's data rules, and sections 2, 5, and 13 of this plan.
 
