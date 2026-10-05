@@ -699,23 +699,6 @@ summary {
 .status-error {
   color: var(--gold-text);
 }
-.refresh-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.refresh-row .text-button {
-  min-height: 36px;
-  padding: 4px 0;
-  font-size: 13px;
-}
-.refresh-row .text-button:disabled {
-  text-decoration: none;
-}
-.refresh-row .hint {
-  margin: 0;
-  font-size: 13px;
-}
 .entry-hint {
   margin-top: 14px;
 }
@@ -845,7 +828,8 @@ summary {
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
-.price-field input::placeholder {
+/* An empty box takes the hint's type, so the browser centres the hint like a value. */
+.price-field input:placeholder-shown {
   font-family: 'Nunito Variable', 'Nunito', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -865,41 +849,11 @@ summary {
 }
 
 /* Week settings */
-.week-settings {
-  margin-top: 18px;
-}
-.week-settings summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  width: fit-content;
-  max-width: 100%;
-  min-height: 44px;
-  padding: 8px 18px;
-  border: 2px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: 0 3px 0 var(--border);
-  color: var(--heading);
-  list-style: none;
-}
-.week-settings summary::-webkit-details-marker {
-  display: none;
-}
-.week-settings-summary {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-}
-.week-settings[open] summary {
-  margin-bottom: 14px;
-}
 .prediction-inputs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
-  max-width: 720px;
+  margin-top: 18px;
   padding: 18px;
   border: 2px solid var(--border);
   border-radius: 22px;
@@ -1487,12 +1441,8 @@ summary {
   .entry-heading h2 {
     font-size: 21px;
   }
-  .save-status,
-  .refresh-row .text-button {
+  .save-status {
     font-size: 12.5px;
-  }
-  .refresh-row .hint {
-    display: none;
   }
   .week-board {
     gap: 5px;
@@ -1503,6 +1453,12 @@ summary {
   .price-field input {
     height: 40px;
     font-size: 20px;
+  }
+  .prediction-inputs {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
   }
   .settings-section {
     padding: 20px;
@@ -1561,7 +1517,7 @@ summary {
     grid-template-columns: 50px minmax(0, 1fr) minmax(0, 1fr);
     font-size: 12px;
   }
-  .price-field input::placeholder {
+  .price-field input:placeholder-shown {
     font-size: 12px;
   }
 }

@@ -13,9 +13,7 @@ export type SaveStatus =
 export function useWeek(weekStart: string, session: SessionResponse | null, connected: boolean) {
   const owner = session?.player.id ?? 'unassigned';
   const key = weekKey(owner, weekStart);
-  const [local, setLocal] = useState<{ key: string; row?: LocalWeek; lastRefreshedAt?: number }>({
-    key,
-  });
+  const [local, setLocal] = useState<{ key: string; row?: LocalWeek }>({ key });
   const [failure, setFailure] = useState<{ key: string; message: string; network: boolean } | null>(
     null,
   );
@@ -47,13 +45,10 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
   );
 
   useEffect(() => {
-    const subscription = liveQuery(async () => {
-      const [row, refresh] = await Promise.all([
-        database.weeks.get(key),
-        database.meta.get(`refresh:${key}`),
-      ]);
-      return { key, row, lastRefreshedAt: typeof refresh?.value === 'number' ? refresh.value : 0 };
-    }).subscribe({
+    const subscription = liveQuery(async () => ({
+      key,
+      row: await database.weeks.get(key),
+    })).subscribe({
       next: (value) => {
         setLocal(value);
       },
@@ -90,24 +85,32 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
   }, [connected, owner, key, weekStart, reportFailure]);
 
   // Reconnect and each committed edit resume the durable queue; no periodic polling.
+  // Opening or reloading the page reads the server at most once a minute, silently;
+  // anything still waiting to upload always syncs straight away.
   const version = row?.version;
   useEffect(() => {
-    void retry();
-  }, [retry, version, pending.sequence]);
-
-  const lastRefreshedAt = local.key === key ? (local.lastRefreshedAt ?? 0) : 0;
-  const refreshAvailableAt = lastRefreshedAt ? lastRefreshedAt + 60_000 : 0;
-  const refresh = useCallback(async () => {
-    try {
-      if (!pendingEdits.snapshot(owner, weekStart).edits.length) {
-        const latest = await database.meta.get(`refresh:${key}`);
-        if (typeof latest?.value === 'number' && Date.now() < latest.value + 60_000) return;
+    void (async () => {
+      try {
+        if (!pendingEdits.snapshot(owner, weekStart).edits.length) {
+          const [current, latest] = await Promise.all([
+            database.weeks.get(key),
+            database.meta.get(`refresh:${key}`),
+          ]);
+          const settled =
+            current?.hydrated && !current.dirty && !current.pending && !current.conflict;
+          // A read stamped in the future means the clock moved back; read again.
+          const recent =
+            typeof latest?.value === 'number' &&
+            latest.value <= Date.now() &&
+            Date.now() < latest.value + 60_000;
+          if (settled && recent) return;
+        }
+      } catch {
+        // An unreadable cache is a reason to sync, not to skip it.
       }
       await retry();
-    } catch (error) {
-      reportFailure(error);
-    }
-  }, [key, owner, weekStart, retry, reportFailure]);
+    })();
+  }, [retry, key, owner, weekStart, version, pending.sequence]);
 
   const update = useCallback(
     (patch: Partial<WeeklyInputs>, changedSlots?: number[]) => {
@@ -165,9 +168,6 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
     error: pending.error ?? relevantFailure?.message ?? null,
     update,
     retry,
-    refresh,
-    refreshAvailableAt,
-    lastRefreshedAt,
     conflict: row?.conflict ?? (null as WeekRecord | null),
     resolveConflict,
   };

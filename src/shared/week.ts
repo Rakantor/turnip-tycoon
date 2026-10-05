@@ -30,7 +30,8 @@ export function emptyWeek(playerId: string, weekStart: string): WeekRecord {
     weekStart,
     revision: 0,
     purchasePrice: null,
-    firstBuy: null,
+    // Most weeks are not an island's first Daisy Mae purchase; a saved choice still wins.
+    firstBuy: false,
     previousPattern: null,
     prices: Array<number | null>(12).fill(null),
   };

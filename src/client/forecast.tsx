@@ -48,6 +48,9 @@ function ForecastChart({
   const columns = useRef<(HTMLButtonElement | null)[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [focusable, setFocusable] = useState(currentSlot ?? 0);
+  // A mouse shows details on hover; taps and keys toggle them instead.
+  const [hovering, setHovering] = useState(false);
+  const lastPointer = useRef('');
   const ceiling =
     Math.ceil(
       Math.max(
@@ -154,7 +157,14 @@ function ForecastChart({
         Select a half-day to see its possible range. Use the arrow keys to move between half-days,
         Home or End to jump to the first or last, and Escape to close the details.
       </p>
-      <div className="chart-plot">
+      <div
+        className="chart-plot"
+        onPointerLeave={(event) => {
+          if (event.pointerType !== 'mouse') return;
+          setHovering(false);
+          setSelected(null);
+        }}
+      >
         <div className="chart-guides" aria-hidden="true">
           {[ceiling / 2, ceiling].map((tick) => (
             <span key={tick} className="chart-gridline" style={{ bottom: height(tick) }}>
@@ -192,7 +202,21 @@ function ForecastChart({
                 aria-label={describe(index)}
                 aria-pressed={selected === index}
                 tabIndex={index === focusable ? 0 : -1}
-                onClick={() => (selected === index ? setSelected(null) : select(index))}
+                onPointerEnter={(event) => {
+                  if (event.pointerType !== 'mouse') return;
+                  setHovering(true);
+                  select(index);
+                }}
+                onPointerDown={(event) => {
+                  lastPointer.current = event.pointerType;
+                }}
+                onClick={() => {
+                  const mouse = lastPointer.current === 'mouse';
+                  lastPointer.current = '';
+                  if (mouse) select(index);
+                  else if (selected === index) setSelected(null);
+                  else select(index);
+                }}
                 onKeyDown={(event) => onKeyDown(event, index)}
               >
                 <span className="chart-track">
@@ -229,17 +253,19 @@ function ForecastChart({
                   <strong>
                     {DAYS[Math.floor(selected / 2)]} {selected % 2 ? 'PM' : 'AM'}
                   </strong>
-                  <button
-                    type="button"
-                    className="chart-tooltip-close"
-                    aria-label="Close half-day details"
-                    onClick={() => {
-                      setSelected(null);
-                      columns.current[selected]?.focus();
-                    }}
-                  >
-                    <X size={14} aria-hidden="true" />
-                  </button>
+                  {!hovering && (
+                    <button
+                      type="button"
+                      className="chart-tooltip-close"
+                      aria-label="Close half-day details"
+                      onClick={() => {
+                        setSelected(null);
+                        columns.current[selected]?.focus();
+                      }}
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  )}
                 </div>
                 {activePrice !== null ? (
                   <dl className="chart-tooltip-values">

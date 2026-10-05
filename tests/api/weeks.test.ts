@@ -179,8 +179,10 @@ describe('Owned weekly prices and revisioned saves', () => {
     expect((await maple.browser.request('PUT', `/api/weeks/${weekStart}`, cleared)).status).toBe(
       200,
     );
+    // A saved "Not sure" stays a choice, unlike the unsaved default of "No".
     expect(await read(maple.browser)).toEqual({
       ...emptyWeek(maple.session.player.id, weekStart),
+      firstBuy: null,
       revision: 2,
     });
     expect((await client.query('select * from turnip_private.price_entries')).rows).toHaveLength(0);
