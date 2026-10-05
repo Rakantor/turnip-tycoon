@@ -1,17 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import {
-  ArrowRight,
-  Check,
-  CloudOff,
-  Copy,
-  Plane,
-  Plus,
-  RefreshCw,
-  Share2,
-  Users,
-  X,
-} from 'lucide-react';
+import { ArrowRight, Check, Copy, Plane, Plus, Share2, Users, X } from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
 import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
@@ -140,52 +129,6 @@ export function PriceSparkline({
   );
 }
 
-function RefreshGroups({ data }: { data: GroupData }) {
-  const [clock, setClock] = useState(Date.now());
-  useEffect(() => {
-    const timeout = window.setTimeout(
-      () => setClock(Date.now()),
-      Math.max(0, data.refreshAvailableAt - Date.now()) + 20,
-    );
-    return () => window.clearTimeout(timeout);
-  }, [data.refreshAvailableAt]);
-  const waiting = clock < data.refreshAvailableAt;
-  const offline = data.status === 'offline';
-  return (
-    <div className="group-refresh">
-      <span className="muted">Prices shared with your groups</span>
-      <button
-        className="text-button refresh-button"
-        type="button"
-        disabled={offline || waiting || data.status === 'loading'}
-        onClick={() => {
-          void data.refresh();
-        }}
-        title={
-          offline
-            ? 'Connect to refresh shared prices'
-            : waiting
-              ? 'Refresh is available once a minute'
-              : 'Refresh shared prices'
-        }
-      >
-        {offline ? (
-          <CloudOff size={14} aria-hidden="true" />
-        ) : (
-          <RefreshCw size={14} aria-hidden="true" />
-        )}
-        {offline
-          ? 'Offline'
-          : data.status === 'loading'
-            ? 'Updating…'
-            : waiting
-              ? 'Up to date'
-              : 'Refresh'}
-      </button>
-    </div>
-  );
-}
-
 /** Inside the best-price card: the chance someone beats it before Saturday closes. */
 function BeatOdds({ odds, slot }: { odds: GroupOdds; slot: number }) {
   const note = notCountedNote(odds);
@@ -225,8 +168,18 @@ function BeatOdds({ odds, slot }: { odds: GroupOdds; slot: number }) {
   );
 }
 
-function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: string }) {
-  const [period, setPeriod] = useState(initialPeriod);
+function RightNow({
+  players,
+  owner,
+  period,
+  nowPeriod,
+}: {
+  players: SharedPlayerWeek[];
+  owner: string;
+  /** The half-day compared: 0 is Sunday's buy price, then Monday AM onward. */
+  period: number;
+  nowPeriod: number;
+}) {
   const members = useMemo(
     () => players.map((member) => ({ ...member, prediction: predictWeek(member.week) })),
     [players],
@@ -239,7 +192,6 @@ function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: stri
   const bestPrice = best ? reportedPrice(best, period) : null;
   const ratio =
     best && bestPrice !== null && period > 0 && yourPurchase ? bestPrice / yourPurchase : null;
-  const nowPeriod = initialPeriod();
   // Odds look ahead from now, so they only fit the current selling half-day.
   const odds = period === nowPeriod && period > 0 ? groupOdds(members, owner, period - 1) : null;
   const tag =
@@ -250,16 +202,6 @@ function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: stri
         : `Best ${PERIODS[period]} price`;
   return (
     <div className="right-now">
-      <label className="period-select">
-        Compare
-        <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
-          {PERIODS.map((label, index) => (
-            <option key={label} value={index}>
-              {label}
-            </option>
-          ))}
-        </select>
-      </label>
       {best && bestPrice !== null ? (
         <section className="best-price-card" aria-label={tag}>
           <span className="best-price-tag">
@@ -604,7 +546,7 @@ function ConnectionMessage({ data }: { data: GroupData }) {
         <Button
           secondary
           onClick={() => {
-            void data.refresh();
+            void data.retry();
           }}
         >
           Try again
@@ -643,10 +585,11 @@ function IslandBoardLoading() {
           <Placeholder className="placeholder-control" width={120} />
           <Placeholder className="placeholder-control" width={150} />
         </div>
+      </div>
+      <div className="view-bar">
         <Placeholder className="placeholder-control view-toggle-placeholder" />
       </div>
       <div className="right-now">
-        <Placeholder className="placeholder-control" width={230} />
         <div className="best-price-card">
           <Placeholder className="best-price-tag-placeholder" />
           <div className="best-price-main">
@@ -796,6 +739,8 @@ export function Groups() {
     return () => window.clearInterval(timer);
   }, []);
   const weekStart = currentWeekStart(now);
+  // Compare is hidden for now, so the board always shows the current half-day.
+  const period = (currentSlot(now) ?? -1) + 1;
   const { groupId } = useParams();
   const data = useGroups(weekStart, identity.session, identity.status);
   const [selectedGroup, setSelectedGroup] = useState(groupId ?? 'all');
@@ -885,6 +830,8 @@ export function Groups() {
                   </button>
                 ))}
               </div>
+            </div>
+            <div className="view-bar">
               <div className="segmented-control view-toggle" role="group" aria-label="Price view">
                 <button type="button" aria-pressed={view === 'now'} onClick={() => setView('now')}>
                   Right now
@@ -897,13 +844,26 @@ export function Groups() {
                   Full week
                 </button>
               </div>
+              {/* Compare is hidden for now. To bring it back, keep a chosen period in state
+                  (null meaning the current half-day), pass it to RightNow, and restore:
+              {view === 'now' && (
+                <label className="period-select">
+                  Compare
+                  <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
+                    {PERIODS.map((label, index) => (
+                      <option key={label} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )} */}
             </div>
             {view === 'now' ? (
-              <RightNow players={players} owner={owner} />
+              <RightNow players={players} owner={owner} period={period} nowPeriod={period} />
             ) : (
               <GroupPriceTable players={players} owner={owner} currentSlot={currentSlot(now)} />
             )}
-            <RefreshGroups data={data} />
           </section>
           <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
             <div className="section-heading">

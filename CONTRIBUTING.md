@@ -82,7 +82,7 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 
 Keep launch focused on price entry with silent identity creation and app-generated friend codes. Weeks use the device's local calendar, start Sunday, and retain unknown observations. Historical screens are read-only, but queued edits must upload after rollover. Infer the previous pattern only from the immediately preceding week when unique; otherwise use Unknown and preserve saved/manual choices.
 
-Groups allow eight equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Shared refresh has a 60-second client cooldown; own uploads bypass it. Display observations separately from predictions and order all pattern probabilities highest first.
+Groups allow eight equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Opening Prices or Friends reads the server at most once a minute, silently, with no refresh button; own uploads, group changes and error retries bypass that limit. Display observations separately from predictions and order all pattern probabilities highest first.
 
 ### Access and security invariants
 
@@ -149,7 +149,7 @@ Settings provides installation, offline readiness, retry, and update checks. Ins
 Using the local Pages preview:
 
 1. Open online, save a price, and wait for offline readiness. Inspect the worker scope and verify Cache Storage contains only static project files.
-2. Go offline, close/reopen, edit a price, and reopen again. Confirm forecasts work, the edit remains queued, and Friends still shows this week's shared prices with Refresh disabled.
+2. Go offline, close/reopen, edit a price, and reopen again. Confirm forecasts work, the edit remains queued, and Friends still shows this week's shared prices.
 3. Reconnect and confirm uploads finish and survive reload. Check conflicts using a second profile/device.
 4. Keep two tabs open. Make a visible source change, rebuild with the local API origin, check for updates, and apply from Prices. Confirm the new version, retained queued edits, and no reload in the other tab. Repeat with an invalid draft and with a downloaded update while offline.
 5. On physical Android/iOS devices, test installation, standalone launch, recovery, offline reopening, reconnection, and queued uploads after rollover.

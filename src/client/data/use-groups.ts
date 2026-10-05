@@ -12,7 +12,6 @@ type GroupState = GroupsResponse & {
   error: string | null;
   /** The device copy has been read, whether or not one existed. */
   hydrated: boolean;
-  refreshAvailableAt: number;
 };
 interface GroupStore {
   owner: string;
@@ -23,6 +22,8 @@ interface GroupStore {
   /** Bumped by every server response or removal, so a slower device read can't undo it. */
   version: number;
   hydrating: Promise<void> | null;
+  /** Prices on screen came from this device's copy or a server response. */
+  saved: boolean;
   pending: Promise<void> | null;
   listeners: Set<() => void>;
 }
@@ -34,7 +35,6 @@ const empty: GroupState = {
   status: 'loading',
   error: null,
   hydrated: false,
-  refreshAvailableAt: 0,
 };
 const cooldownKey = (owner: string) => `groups-refresh:${owner}`;
 function storeFor(owner: string, weekStart: string): GroupStore {
@@ -49,6 +49,7 @@ function storeFor(owner: string, weekStart: string): GroupStore {
       generation: 0,
       version: 0,
       hydrating: null,
+      saved: false,
       pending: null,
       listeners: new Set(),
     };
@@ -75,6 +76,7 @@ function hydrate(store: GroupStore): Promise<void> {
     } catch {
       /* Without browser storage, friends' prices load online only. */
     }
+    if (version === store.version && saved) store.saved = true;
     publish(
       store,
       version === store.version && saved ? { ...saved, hydrated: true } : { hydrated: true },
@@ -97,6 +99,7 @@ async function forget(owner: string, failed?: GroupStore): Promise<void> {
     if (store === failed) store.loaded = false;
     else invalidate(store);
     store.version++;
+    store.saved = false;
     publish(store, { groups: [], players: [], hydrated: true });
   }
   await cache.forget(owner);
@@ -125,14 +128,16 @@ export async function savedPlayerWeek(
   return store.state.players.find((entry) => entry.player.id === playerId) ?? null;
 }
 
-async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
+/**
+ * Opening a shared view reads the server at most once a minute, silently, while
+ * saved prices can be shown instead. Group changes and retries always read now.
+ */
+async function fetchGroups(store: GroupStore, quiet = false): Promise<void> {
   if (store.pending) return store.pending;
-  if (manual && store.loaded && Date.now() < store.state.refreshAvailableAt) return;
   const generation = store.generation;
   store.pending = (async () => {
     try {
       assertOwner(store.owner);
-      publish(store, { status: 'loading', error: null });
       let previous = 0;
       try {
         const record = await database.meta.get(cooldownKey(store.owner));
@@ -140,21 +145,27 @@ async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
       } catch {
         /* Read-only sharing also works when browser storage is unavailable. */
       }
-      if (manual && store.loaded && Date.now() < previous) {
-        publish(store, { status: 'ready', refreshAvailableAt: previous });
-        return;
+      // A limit further ahead than a minute means the clock moved back; ignore it.
+      if (quiet && Date.now() < previous && previous <= Date.now() + 60_000) {
+        await hydrate(store);
+        if (store.saved) {
+          publish(store, { status: 'ready', error: null });
+          return;
+        }
       }
+      publish(store, { status: 'loading', error: null });
       assertOwner(store.owner);
       if (generation !== store.generation) return;
       const result = await request<GroupsResponse>(`/groups?weekStart=${store.weekStart}`);
       assertOwner(store.owner);
       if (generation !== store.generation) return;
-      const available = Math.max(previous, Date.now() + 60_000);
+      const available = Date.now() + 60_000;
       // A player shared through two groups appears once in the combined list.
       const players = [
         ...new Map(result.players.map((entry) => [entry.player.id, entry])).values(),
       ];
       store.loaded = true;
+      store.saved = true;
       store.version++;
       publish(store, {
         groups: result.groups,
@@ -162,7 +173,6 @@ async function fetchGroups(store: GroupStore, manual = false): Promise<void> {
         status: 'ready',
         error: null,
         hydrated: true,
-        refreshAvailableAt: available,
       });
       try {
         await cache.write(store.owner, store.weekStart, { groups: result.groups, players });
@@ -225,7 +235,7 @@ export function useGroups(
   useEffect(() => {
     if (!owner) return;
     void hydrate(store);
-    if (connected && !store.loaded) void fetchGroups(store);
+    if (connected && !store.loaded) void fetchGroups(store, true);
     if (!connected) invalidate(store);
     return () => invalidate(store);
   }, [connected, owner, store]);
@@ -252,7 +262,8 @@ export function useGroups(
   return {
     ...state,
     ...(connected ? {} : { status, error: null }),
-    refresh: () => fetchGroups(store, true),
+    /** Reads the server now, past the once-a-minute limit, e.g. after an error. */
+    retry: () => fetchGroups(store),
     create: (name: string) => change('/groups', 'POST', { name }),
     join: (code: string) => change('/groups/join', 'POST', { code }),
     leave: async (id: string) => {

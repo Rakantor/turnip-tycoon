@@ -154,19 +154,39 @@
   margin-bottom: 34px;
 }
 .friends-toolbar {
+  margin-bottom: 14px;
+}
+/* The view switcher sits directly above the board, with room on the right for Compare. */
+.view-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
+/* One row of groups that scrolls sideways once there are more than fit. */
 .group-filters {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  /* Room for focus rings and shadows, which a scroll area would clip. */
+  margin: -6px;
+  padding: 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+@media (pointer: coarse) {
+  .group-filters {
+    scrollbar-width: none;
+  }
+  .group-filters::-webkit-scrollbar {
+    display: none;
+  }
 }
 .group-filters button {
+  flex: none;
+  white-space: nowrap;
   min-height: 40px;
   padding: 0 14px;
   border: 2px solid var(--border);
@@ -206,9 +226,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-.right-now > .period-select {
-  align-self: flex-start;
 }
 .best-price-card {
   display: grid;
@@ -557,23 +574,6 @@
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
-}
-.group-refresh {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 2px dashed var(--border);
-  font-size: 13px;
-  font-weight: 700;
-}
-.refresh-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
 }
 
 /* Your groups */
@@ -946,7 +946,7 @@
     align-items: stretch;
     gap: 14px;
   }
-  .friends-toolbar {
+  .view-bar {
     flex-direction: column;
     align-items: stretch;
   }

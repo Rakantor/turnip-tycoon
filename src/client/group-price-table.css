@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 18px;
-  margin-bottom: 14px;
+  margin-top: 14px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 700;
@@ -22,16 +22,6 @@
 }
 .price-key-predicted {
   border: 1.5px dashed var(--gold-strong);
-}
-.price-table-scroll-hint {
-  display: none;
-  align-items: center;
-  gap: 7px;
-  margin: -4px 0 12px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.5;
 }
 .group-price-scroll {
   position: relative;
@@ -215,11 +205,6 @@
 .group-price-missing {
   color: var(--subtle);
   font-weight: 700;
-}
-@media (max-width: 1050px) {
-  .price-table-scroll-hint {
-    display: flex;
-  }
 }
 @media (max-width: 640px) {
   .price-pattern-probabilities {

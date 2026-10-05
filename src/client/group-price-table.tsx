@@ -1,6 +1,5 @@
 import { Fragment, useId, useMemo } from 'react';
 import { Link } from 'react-router';
-import { ArrowLeftRight } from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
 import type { SharedPlayerWeek } from '../shared/groups';
 import './group-price-table.css';
@@ -91,26 +90,11 @@ export function GroupPriceTable({
   const slots = Array.from({ length: 12 }, (_, index) => index);
   return (
     <div className="group-price-overview">
-      <div className="price-table-legend" id={`${id}-legend`}>
-        <span>
-          <i className="price-key-reported" />
-          Reported
-        </span>
-        <span>
-          <i className="price-key-predicted" />
-          Could be (min–max)
-        </span>
-        <span>— Unavailable</span>
-      </div>
-      <p className="price-table-scroll-hint" id={`${id}-scroll`}>
-        <ArrowLeftRight size={14} aria-hidden="true" />
-        Swipe through the week. Names and pattern odds stay in place.
-      </p>
       <div
         className="group-price-scroll"
         role="region"
         aria-label="Full week group prices"
-        aria-describedby={`${id}-legend ${id}-scroll`}
+        aria-describedby={`${id}-legend`}
         tabIndex={0}
       >
         <table className="group-price-table">
@@ -227,6 +211,17 @@ export function GroupPriceTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="price-table-legend" id={`${id}-legend`}>
+        <span>
+          <i className="price-key-reported" />
+          Reported
+        </span>
+        <span>
+          <i className="price-key-predicted" />
+          Could be (min–max)
+        </span>
+        <span>— Unavailable</span>
       </div>
     </div>
   );
