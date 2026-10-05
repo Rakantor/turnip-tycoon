@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { ArrowRight, Check, Copy, Plane, Plus, Share2, Users, X } from 'lucide-react';
 import { predictWeek, type PredictionResult } from '../prediction';
@@ -29,6 +29,7 @@ import {
   weekLabel,
 } from './ui';
 import { appUrl } from './urls';
+import { clearWelcomeJoin, isWelcomeJoin } from './welcome-join';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
@@ -298,6 +299,14 @@ function GroupForm({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState('');
+  // Someone who chose “Save and join” in the welcome dialog joins without a second tap.
+  const autoJoin = useRef(Boolean(initialCode) && isWelcomeJoin(initialCode));
+  useEffect(() => {
+    if (!autoJoin.current || data.status !== 'ready') return;
+    autoJoin.current = false;
+    clearWelcomeJoin();
+    void submit();
+  });
   async function submit() {
     setBusy(true);
     setError('');

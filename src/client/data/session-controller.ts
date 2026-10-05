@@ -15,6 +15,8 @@ export type IdentityState = {
   creationInterrupted: boolean;
   /** Reloading must not discard profile access held only in this tab. */
   canReload: boolean;
+  /** No profile on this device yet: the welcome dialog decides how to start one. */
+  needsProfile: boolean;
 };
 type Dependencies = {
   vault: SessionVault;
@@ -49,8 +51,12 @@ export class SessionController {
     error: null,
     creationInterrupted: false,
     canReload: false,
+    needsProfile: false,
   };
   private stored: StoredSession = { ...EMPTY };
+  /** The welcome dialog's answer; a profile is only created once there is one. */
+  private answer: { displayName?: string } | null = null;
+  private awaitingAnswer = false;
   private durable: StoredSession = { ...EMPTY };
   private unsaved = false;
   private generation = 0;
@@ -59,12 +65,13 @@ export class SessionController {
 
   constructor(private deps: Dependencies) {}
 
-  private publish(next: Omit<IdentityState, 'creationInterrupted' | 'canReload'>) {
+  private publish(next: Omit<IdentityState, 'creationInterrupted' | 'canReload' | 'needsProfile'>) {
     this.state = {
       ...next,
       creationInterrupted:
         this.stored.creating && !this.stored.token && ['offline', 'error'].includes(next.status),
-      canReload: !this.unsaved && next.status !== 'connecting',
+      canReload: !this.unsaved && (next.status !== 'connecting' || this.awaitingAnswer),
+      needsProfile: this.awaitingAnswer,
     };
     this.deps.publish(this.state);
   }
@@ -124,6 +131,7 @@ export class SessionController {
     }
     if (attempt !== this.generation) return;
     this.stored = { session, token, revision, creating: false };
+    this.awaitingAnswer = false;
     this.deps.credential(token);
     this.publish({ session, status: 'ready', error: warning });
     // Only anonymous drafts can be attached; another profile's edits remain its own.
@@ -197,13 +205,20 @@ export class SessionController {
           if (attempt !== this.generation) return;
           const lost = this.stored.session?.player.id;
           if (lost) await this.deps.forget(lost).catch(() => undefined);
+          if (this.deps.vault.bearer && (this.stored.token || this.stored.session)) {
+            throw new Error(
+              'This device is no longer connected. Connect your profile again or use a recovery code in Settings.',
+              { cause: error },
+            );
+          }
+          // A new profile waits for the welcome dialog: a name, a skip, or connecting
+          // an existing profile instead, which then leaves no empty profile behind.
+          if (!this.answer) {
+            this.awaitingAnswer = true;
+            this.publish({ session: null, status: 'connecting', error: null });
+            return;
+          }
           if (this.deps.vault.bearer) {
-            if (this.stored.token || this.stored.session) {
-              throw new Error(
-                'This device is no longer connected. Connect your profile again or use a recovery code in Settings.',
-                { cause: error },
-              );
-            }
             this.stored.revision = await this.deps.vault.beginCreation(
               this.stored.revision,
               () => attempt === this.generation,
@@ -212,14 +227,24 @@ export class SessionController {
             this.durable = { ...this.stored };
             if (attempt !== this.generation) return;
           }
+          const { displayName } = this.answer;
           session = await this.deps.request<CredentialResponse>('/session', {
             method: 'POST',
-            body: { deviceName: this.deps.deviceName() },
+            body: { deviceName: this.deps.deviceName(), ...(displayName ? { displayName } : {}) },
           });
+          this.answer = null;
         }
         await this.apply(session, attempt, false);
       } catch (error) {
         if (attempt !== this.generation) return;
+        // Opening for the first time while offline still shows the welcome dialog.
+        if (
+          error instanceof TypeError &&
+          !this.stored.session &&
+          !this.stored.token &&
+          !this.answer
+        )
+          this.awaitingAnswer = true;
         this.publish({
           ...this.state,
           status: error instanceof TypeError ? 'offline' : 'error',
@@ -245,6 +270,18 @@ export class SessionController {
     this.publish({ ...this.state, status: 'connecting', error: null });
     if (this.bootstrap) this.refreshRequested = true;
     else void this.retry();
+  }
+
+  /**
+   * The welcome dialog's answer: a name, or null to skip and go by the friend
+   * code's first block. Creation resumes at once, or when the device reconnects.
+   */
+  answerWelcome(displayName: string | null): Promise<void> {
+    this.answer = displayName?.trim() ? { displayName: displayName.trim() } : {};
+    if (!this.awaitingAnswer) return Promise.resolve();
+    this.awaitingAnswer = false;
+    this.publish({ session: this.state.session, status: this.state.status, error: null });
+    return this.retry();
   }
 
   beginIdentityChange() {

@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, Check, Copy } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
 import {
   DISPLAY_NAME_MAX_LENGTH,
   defaultDisplayName,
   type AccessResponse,
   type Device,
-  type PairingResponse,
   type Player,
-  type SessionResponse,
 } from '../shared/api';
 import { isCurrentIdentityResponse, request } from './data/api';
 import {
@@ -23,8 +20,8 @@ import {
   useApp,
   useReveal,
 } from './ui';
-import { appUrl } from './urls';
 import { InstallApp } from './pwa-install';
+import { PairingCode } from './pairing';
 import { OfflineSettings } from './pwa-ui';
 
 function RecoveryCode({ code }: { code: string }) {
@@ -457,59 +454,21 @@ function AccessPage({ title, children }: { title: string; children: ReactNode })
 }
 
 export function Connect() {
-  const { adopt, beginIdentityChange } = useApp();
   const navigate = useNavigate();
-  const [pairing, setPairing] = useState<PairingResponse | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  async function begin(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    setBusy(true);
-    setError('');
-    try {
-      beginIdentityChange();
-      setPairing(
-        await request<PairingResponse>('/pairing', {
-          method: 'POST',
-          body: { deviceName: form.get('deviceName') },
-        }),
-      );
-    } catch (error) {
-      setError(messageOf(error));
-    } finally {
-      setBusy(false);
-    }
-  }
-  async function complete() {
-    setBusy(true);
-    setError('');
-    try {
-      beginIdentityChange();
-      const result = await request<SessionResponse>('/pairing/complete', {
-        method: 'POST',
-        body: {},
-      });
-      await adopt(result);
-      await navigate('/');
-    } catch (error) {
-      setError(messageOf(error));
-    } finally {
-      setBusy(false);
-    }
-  }
-  const url = pairing ? appUrl(`/settings?pair=${encodeURIComponent(pairing.code)}`) : '';
+  const [deviceName, setDeviceName] = useState<string | null>(null);
   return (
     <AccessPage title="Connect an existing profile">
       <p>
         Use another connected device to bring that profile’s prices here. Switching profiles does
         not merge prices.
       </p>
-      {!pairing ? (
+      {deviceName === null ? (
         <form
           className="access-form"
           onSubmit={(event) => {
-            void begin(event);
+            event.preventDefault();
+            const value = new FormData(event.currentTarget).get('deviceName');
+            setDeviceName(typeof value === 'string' ? value : defaultDeviceName());
           }}
         >
           <Field
@@ -519,59 +478,19 @@ export function Connect() {
             required
             maxLength={60}
           />
-          <Button busy={busy} type="submit">
-            Get a connection code
-          </Button>
+          <Button type="submit">Get a connection code</Button>
         </form>
       ) : (
-        <div className="pairing-content">
+        <>
           <p>On your connected device, open Settings and choose “Approve another device”.</p>
-          <div className="pairing-code">
-            <span className="field-label">Connection code</span>
-            <strong>{pairing.code}</strong>
-          </div>
-          <div className="qr-row">
-            <QRCodeSVG
-              value={url}
-              size={120}
-              title="Scan this code on your connected device to approve the connection"
-            />
-            <div>
-              <p>Or scan this code on your connected device.</p>
-              <p className="hint">
-                Expires at{' '}
-                {new Date(pairing.expiresAt).toLocaleTimeString(undefined, {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-                . Keep this page open.
-              </p>
-            </div>
-          </div>
-          <div className="button-row">
-            <Button
-              busy={busy}
-              onClick={() => {
-                void complete();
-              }}
-            >
-              Finish connecting
-            </Button>
-            <button
-              className="text-button"
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                setPairing(null);
-                setError('');
-              }}
-            >
-              Get a new code
-            </button>
-          </div>
-        </div>
+          <PairingCode
+            deviceName={deviceName}
+            onConnected={() => {
+              void navigate('/');
+            }}
+          />
+        </>
       )}
-      {error && <Notice>{error}</Notice>}
       <p className="access-alternative">
         <Link to="/recover">Use a recovery code instead</Link>
       </p>

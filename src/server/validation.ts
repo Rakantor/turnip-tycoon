@@ -8,6 +8,10 @@ export const profileInput = z
   })
   .strict();
 export const deviceInput = z.object({ deviceName: z.string().trim().min(1).max(60) }).strict();
+/** Starting a profile may carry the name chosen in the welcome dialog. */
+export const sessionInput = deviceInput
+  .extend({ displayName: z.string().trim().min(1).max(DISPLAY_NAME_MAX_LENGTH).optional() })
+  .strict();
 export const pairingApprovalInput = z
   .object({
     code: z

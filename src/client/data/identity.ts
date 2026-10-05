@@ -55,6 +55,7 @@ const retry = () => controller.retry();
 const adopt = controller.adopt.bind(controller);
 const beginIdentityChange = () => controller.beginIdentityChange();
 const restartInterruptedCreation = () => controller.restartInterruptedCreation();
+const answerWelcome = (displayName: string | null) => controller.answerWelcome(displayName);
 
 /** Read current state after async local writes, rather than a stale render. */
 export const canReloadIdentity = () => controller.state.canReload;
@@ -76,5 +77,12 @@ function start() {
 export function useIdentity() {
   const current = useSyncExternalStore(subscribe, snapshot);
   useEffect(start, []);
-  return { ...current, retry, adopt, beginIdentityChange, restartInterruptedCreation };
+  return {
+    ...current,
+    retry,
+    adopt,
+    beginIdentityChange,
+    restartInterruptedCreation,
+    answerWelcome,
+  };
 }

@@ -20,6 +20,7 @@ import { formatCode, hashSecret, randomCode, randomToken } from './secrets';
 import {
   deviceIdInput,
   deviceInput,
+  sessionInput,
   emptyInput,
   pairingApprovalInput,
   profileInput,
@@ -113,7 +114,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
   });
 
   const startSession = async (c: Context<AppEnvironment>) => {
-    const { deviceName } = await readJson(c, deviceInput);
+    const { deviceName, displayName } = await readJson(c, sessionInput);
     const token = readCredential(c, 'session');
     if (token) {
       try {
@@ -132,7 +133,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
         const friendCode = formatCode(randomCode(12));
         const [player] = await tx
           .insert(players)
-          .values({ displayName: defaultDisplayName(friendCode), friendCode })
+          .values({ displayName: displayName || defaultDisplayName(friendCode), friendCode })
           .onConflictDoNothing({ target: players.friendCode })
           .returning();
         if (player) return { player, ...(await newDevice(tx, player.id, deviceName)) };

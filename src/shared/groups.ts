@@ -15,6 +15,12 @@ export interface SharedPlayerWeek {
   groupIds: string[];
 }
 
+/** What an invite code shows before joining: the group and its players' names. */
+export interface GroupPreview {
+  group: { name: string; memberCount: number; capacity: number };
+  members: string[];
+}
+
 export interface GroupsResponse {
   groups: GroupSummary[];
   players: SharedPlayerWeek[];

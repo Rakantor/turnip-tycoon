@@ -1,0 +1,124 @@
+/* Welcome dialog: centred on larger screens, a bottom sheet on phones. */
+.welcome-dialog {
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
+  padding: 0;
+  overflow: auto;
+  border: 2px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--surface);
+  box-shadow: 0 6px 0 var(--border);
+  color: var(--text);
+  overscroll-behavior: contain;
+}
+.welcome-dialog::backdrop {
+  background: rgb(58 42 28 / 0.42);
+}
+.welcome-body {
+  padding: 22px 24px 24px;
+}
+.welcome-form {
+  display: grid;
+  gap: 14px;
+}
+.welcome-form h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.welcome-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.welcome-heading img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+}
+.welcome-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.welcome-text strong {
+  color: var(--text);
+}
+.welcome-dialog .welcome-field {
+  margin: 0;
+}
+/* Beats the general field label rule, which loads after this file. */
+.welcome-dialog .welcome-field label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.welcome-count {
+  color: var(--subtle);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.welcome-form > .button {
+  width: 100%;
+}
+.welcome-switch {
+  justify-self: center;
+  font-size: 14px;
+}
+.welcome-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  justify-self: start;
+  font-size: 14px;
+}
+
+/* The preview reuses the group card's seats, without links. */
+.welcome-seats {
+  margin: 0;
+  padding: 10px 6px;
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+}
+.welcome-seat {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 2px 0;
+}
+/* Neutral placeholders, not the group cards' rotating avatar colours. */
+.group-seats.welcome-seats .welcome-seat-blank .player-avatar {
+  background: var(--soft);
+}
+.welcome-seat-bar {
+  width: 70%;
+  height: 10px;
+  margin-top: 2px;
+  border-radius: 5px;
+  background: var(--soft);
+}
+
+@media (max-width: 720px) {
+  .welcome-dialog {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100% - 24px);
+    margin: auto 0 0;
+    border-width: 2px 0 0;
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -6px 0 var(--border);
+  }
+  .welcome-body {
+    padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  }
+  .welcome-form h2 {
+    font-size: 22px;
+  }
+}
+
+/* Inside the dialog, the connection code follows the text without the page's extra space. */
+.welcome-form .pairing-content {
+  margin-top: 0;
+}

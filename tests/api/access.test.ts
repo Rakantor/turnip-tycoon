@@ -134,6 +134,24 @@ describe('Account-free player access over the API', () => {
     await expectError(await browser.request('GET', '/api/session'), 401);
   });
 
+  it('starts a profile with the name chosen in the welcome dialog', async () => {
+    const browser = new Browser(app);
+    const named = await browser.request('POST', '/api/session', {
+      deviceName: 'Phone',
+      displayName: '  Rosalind  ',
+    });
+    expect(named.status).toBe(201);
+    expect(((await named.json()) as SessionResponse).player.displayName).toBe('Rosalind');
+    for (const displayName of [' ', 'x'.repeat(11)])
+      await expectError(
+        await new Browser(app).request('POST', '/api/session', {
+          deviceName: 'Phone',
+          displayName,
+        }),
+        400,
+      );
+  });
+
   it('creates recovery only on request and keeps the public friend code immutable', async () => {
     const browser = new Browser(app);
     const started = await browser.request('POST', '/api/session', { deviceName: 'Phone' });

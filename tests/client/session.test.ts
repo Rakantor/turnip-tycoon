@@ -27,7 +27,8 @@ function serialLock() {
     return result;
   };
 }
-function harness(vault: SessionVault, lock = serialLock()) {
+/** Most tests start from an answered welcome dialog (a skip), as before deferral. */
+function harness(vault: SessionVault, lock = serialLock(), answered = true) {
   const network =
     vi.fn<(path: string, options?: { method?: string; body?: unknown }) => Promise<unknown>>();
   let credential: string | null = null;
@@ -51,6 +52,7 @@ function harness(vault: SessionVault, lock = serialLock()) {
     broadcast,
     deviceName: () => 'Test device',
   });
+  if (answered) void controller.answerWelcome(null);
   return {
     controller,
     network,
@@ -109,6 +111,68 @@ describe('device credential storage', () => {
     const { vault } = makeVault();
     const revision = await vault.save(session('one'), tokenA, null, () => true);
     expect(await vault.save(session('one'), tokenA, revision, () => true)).toBe(revision);
+  });
+});
+
+describe('welcome dialog', () => {
+  it('waits for a name before creating a profile, then sends it along', async () => {
+    const { vault } = makeVault();
+    const h = harness(vault, serialLock(), false);
+    h.network.mockRejectedValue(unauthorized());
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({
+      needsProfile: true,
+      session: null,
+      canReload: true,
+    });
+    expect(h.network.mock.calls.some(([, options]) => options?.method === 'POST')).toBe(false);
+
+    h.network
+      .mockReset()
+      .mockRejectedValueOnce(unauthorized())
+      .mockResolvedValueOnce({ ...session('one'), sessionToken: tokenA });
+    await h.controller.answerWelcome('  Rosalind ');
+    expect(h.network).toHaveBeenLastCalledWith('/session', {
+      method: 'POST',
+      body: { deviceName: 'Test device', displayName: 'Rosalind' },
+    });
+    expect(h.controller.state).toMatchObject({ status: 'ready', needsProfile: false });
+  });
+
+  it('creates no profile when the visitor connects an existing one instead', async () => {
+    const { vault } = makeVault();
+    const h = harness(vault, serialLock(), false);
+    h.network.mockRejectedValue(unauthorized());
+    await h.controller.retry();
+    expect(h.controller.state.needsProfile).toBe(true);
+    await h.controller.adopt({ ...session('two'), sessionToken: tokenB });
+    expect(h.controller.state).toMatchObject({
+      status: 'ready',
+      needsProfile: false,
+      session: session('two'),
+    });
+    expect(h.network.mock.calls.some(([, options]) => options?.method === 'POST')).toBe(false);
+  });
+
+  it('asks on a first open offline and creates the skipped profile once connected', async () => {
+    const { vault } = makeVault();
+    const h = harness(vault, serialLock(), false);
+    h.network.mockRejectedValue(new TypeError('Failed to fetch'));
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({ needsProfile: true, status: 'offline' });
+    await h.controller.answerWelcome(null);
+    expect(h.controller.state).toMatchObject({ needsProfile: false, status: 'offline' });
+
+    h.network
+      .mockReset()
+      .mockRejectedValueOnce(unauthorized())
+      .mockResolvedValueOnce({ ...session('one'), sessionToken: tokenA });
+    await h.controller.retry();
+    expect(h.network).toHaveBeenLastCalledWith('/session', {
+      method: 'POST',
+      body: { deviceName: 'Test device' },
+    });
+    expect(h.controller.state.status).toBe('ready');
   });
 });
 

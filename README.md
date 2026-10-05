@@ -10,7 +10,7 @@
   <a href="https://rakantor.github.io/turnip-tycoon/"><strong>Open Turnip Tycoon →</strong></a>
 </p>
 
-Enter your Sunday buy price and the morning and afternoon prices you know. Leave the rest blank. Your profile is created automatically, so you can get straight to your week.
+Enter your Sunday buy price and the morning and afternoon prices you know. Leave the rest blank. The first time you open it, pick the name your friends will see, or skip that and go by your friend code’s first four characters. If you already play on another device, connect that profile instead.
 
 - **Explore forecasts.** Tap the chart for possible price ranges and see each selling pattern’s probability.
 - **Compare with friends.** Create or join a group to see everyone’s prices and forecasts together.

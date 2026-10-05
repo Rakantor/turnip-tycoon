@@ -115,6 +115,29 @@ describe('Groups and shared player prices', () => {
     expect((await detail(friend.browser, group)).group.code).toBe(group.code);
   });
 
+  it('previews an invite’s group and names for a visitor without a profile', async () => {
+    const owner = await player();
+    const friend = await player();
+    const group = await create(owner.browser, 'Odds crew');
+    await join(friend.browser, group);
+    await owner.browser.request('PATCH', '/api/profile', { displayName: 'Rosa' });
+    await friend.browser.request('PATCH', '/api/profile', { displayName: 'Mika' });
+    const visitor = new Browser(app);
+    const code = encodeURIComponent(group.code.toLowerCase());
+    const response = await visitor.request('GET', `/api/groups/preview?code=${code}`);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      group: { name: 'Odds crew', memberCount: 2, capacity: 8 },
+      members: ['Mika', 'Rosa'],
+    });
+    await expectError(await visitor.request('GET', '/api/groups/preview?code=ABCD-EFGH-JKMN'), 404);
+    await expectError(await visitor.request('GET', '/api/groups/preview?code=nope'), 404);
+    expect(
+      (await client.query('select count(*)::int as count from turnip_private.players')).rows[0]
+        .count,
+    ).toBe(2);
+  });
+
   it('deduplicates shared players across groups and stores each week only once', async () => {
     const owner = await player();
     const friend = await player();

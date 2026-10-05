@@ -24,6 +24,7 @@ import { Connect, Recover, Settings } from './settings';
 import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
 import { About } from './about';
+import { WelcomeDialog } from './welcome';
 import { assetUrl, hashRouting } from './urls';
 import { startPwa, usePwa } from './pwa';
 import { UpdateNotice } from './pwa-ui';
@@ -138,6 +139,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <About />
+        <WelcomeDialog />
       </div>
       <UpdateNotice />
     </AppContext.Provider>

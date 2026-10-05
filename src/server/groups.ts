@@ -4,7 +4,7 @@ import type { Hono } from 'hono';
 import { z } from 'zod';
 import type { Transaction } from '../db/connection';
 import { groups, memberships, players, weeks } from '../db/schema';
-import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
+import type { GroupPreview, GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import { emptyWeek } from '../shared/week';
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
@@ -211,6 +211,39 @@ export function registerGroupRoutes(app: Hono<AppEnvironment>): void {
       return summary(record, total + 1);
     });
     return c.json({ group });
+  });
+
+  // An invite code may show who is in its group before the visitor has a profile:
+  // the code already lets them join, and the preview shows only names.
+  app.get('/api/groups/preview', async (c) => {
+    const code = joinInput.shape.code.safeParse(c.req.query('code') ?? '');
+    const notFound = new ApiError(
+      404,
+      'GROUP_UNAVAILABLE',
+      'This group code is not available. Check the code and try again.',
+    );
+    if (!code.success) throw notFound;
+    const db = c.get('db');
+    const [record] = await db
+      .select()
+      .from(groups)
+      .where(eq(groups.shareCode, formatCode(code.data)));
+    if (!record) throw notFound;
+    const members = await db
+      .select({ name: players.displayName })
+      .from(memberships)
+      .innerJoin(players, eq(players.id, memberships.playerId))
+      .where(eq(memberships.groupId, record.id))
+      .orderBy(asc(players.displayName), asc(players.id));
+    const preview: GroupPreview = {
+      group: {
+        name: record.name || 'Friend group',
+        memberCount: members.length,
+        capacity: GROUP_CAPACITY,
+      },
+      members: members.map((member) => member.name),
+    };
+    return c.json(preview);
   });
 
   app.get('/api/groups/:id', async (c) => {
