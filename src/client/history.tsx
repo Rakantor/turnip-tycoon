@@ -4,11 +4,58 @@ import { ArrowRight } from 'lucide-react';
 import { currentWeekStart } from '../shared/calendar';
 import type { WeekRecord } from '../shared/week';
 import { request } from './data/api';
-import { Button, messageOf, Notice, useApp, weekLabel } from './ui';
+import {
+  Button,
+  Loading,
+  messageOf,
+  Notice,
+  Placeholder,
+  useApp,
+  useReveal,
+  weekLabel,
+} from './ui';
 
 interface HistoryResponse {
   weeks: WeekRecord[];
   nextCursor: string | null;
+}
+
+/** The history table's frame, with a few rows waiting for their weeks. */
+export function HistoryLoading({ label }: { label: string }) {
+  return (
+    <Loading label={label}>
+      <div className="history-table-scroll">
+        <table className="history-table">
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Bought for</th>
+              <th>Best entered</th>
+              <th>Entries</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[0, 1, 2, 3].map((row) => (
+              <tr key={row}>
+                <th>
+                  <Placeholder width="8.5em" />
+                </th>
+                <td>
+                  <Placeholder width="1.8em" />
+                </td>
+                <td>
+                  <Placeholder width="1.8em" />
+                </td>
+                <td>
+                  <Placeholder width="2.2em" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Loading>
+  );
 }
 
 export function History() {
@@ -39,6 +86,7 @@ export function History() {
       current = false;
     };
   }, [identity.status, identity.session, refreshCount]);
+  const reveal = useReveal(loading && weeks.length === 0);
   async function more() {
     if (!nextCursor) return;
     setLoading(true);
@@ -93,7 +141,7 @@ export function History() {
             </>
           )}
           {weeks.length > 0 && (
-            <div className="history-table-scroll">
+            <div className={`history-table-scroll ${reveal}`}>
               <table className="history-table">
                 <caption className="sr-only">Past weekly prices</caption>
                 <thead>
@@ -122,11 +170,7 @@ export function History() {
               </table>
             </div>
           )}
-          {loading && (
-            <p className="muted" role="status">
-              Loading saved weeks…
-            </p>
-          )}
+          {loading && weeks.length === 0 && <HistoryLoading label="Loading saved weeks…" />}
           {!loading && !error && weeks.length === 0 && (
             <div className="empty-history">
               <p>No past weeks yet.</p>

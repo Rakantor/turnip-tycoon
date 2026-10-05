@@ -759,6 +759,51 @@
   gap: 4px;
 }
 
+/* Placeholders while friends' prices load. Rules repeat .placeholder so they win over
+   the base shape, which loads later. */
+.loading .friends-postcard {
+  --placeholder: rgb(255 255 255 / 0.22);
+}
+.loading .best-price-card {
+  --placeholder: rgb(107 66 38 / 0.14);
+  /* Fixed-width bars must not widen the card on narrow screens. */
+  grid-template-columns: minmax(0, 1fr);
+}
+.loading .best-price-identity {
+  align-items: stretch;
+}
+.placeholder.postcard-button-placeholder {
+  width: 220px;
+}
+.placeholder.view-toggle-placeholder {
+  width: 214px;
+}
+.placeholder.best-price-tag-placeholder {
+  width: 200px;
+  height: 26px;
+}
+.placeholder.best-price-avatar-placeholder,
+.placeholder.shared-avatar-placeholder {
+  width: 56px;
+  height: 56px;
+}
+.placeholder.friend-avatar-placeholder {
+  width: 44px;
+  height: 44px;
+}
+.placeholder.member-forecast-placeholder {
+  width: 110px;
+  height: 18px;
+}
+.placeholder.week-chip-placeholder {
+  width: 190px;
+  height: 30px;
+}
+.placeholder.forecast-chart-placeholder {
+  height: 290px;
+  margin-top: 18px;
+}
+
 @media (max-width: 999px) {
   .friend-list {
     grid-template-columns: minmax(0, 1fr);
@@ -864,9 +909,25 @@
   .shared-prices-card {
     padding: 18px;
   }
-  .shared-player-identity .player-avatar {
+  .shared-player-identity .player-avatar,
+  .placeholder.shared-avatar-placeholder {
     width: 48px;
     height: 48px;
+  }
+  .placeholder.postcard-button-placeholder,
+  .placeholder.view-toggle-placeholder {
+    width: 100%;
+  }
+  .placeholder.best-price-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+  }
+  .placeholder.friend-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+  }
+  .placeholder.forecast-chart-placeholder {
+    height: 240px;
   }
 }
 @media (max-width: 370px) {

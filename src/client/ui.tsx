@@ -2,7 +2,11 @@ import {
   createContext,
   useContext,
   useId,
+  useLayoutEffect,
+  useRef,
+  useState,
   type ButtonHTMLAttributes,
+  type CSSProperties,
   type InputHTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -69,6 +73,67 @@ export function Notice({ children, success = false }: { children: ReactNode; suc
       {children}
     </p>
   );
+}
+
+/** Placeholders stay invisible this long, so quick responses never flash. */
+const PLACEHOLDER_DELAY = 200;
+
+/** A shape standing in for a value that hasn't loaded; sized in ems to match its text. */
+export function Placeholder({
+  width,
+  height,
+  round = false,
+  className,
+}: {
+  width?: CSSProperties['width'];
+  height?: CSSProperties['height'];
+  round?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`placeholder${round ? ' placeholder-round' : ''}${className ? ` ${className}` : ''}`}
+      style={{ width, height }}
+    />
+  );
+}
+
+/** Draws a component's frame while its data loads; assistive tech hears only the label. */
+export function Loading({
+  label,
+  className,
+  children,
+}: {
+  label: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={`loading${className ? ` ${className}` : ''}`}>
+      <span className="sr-only" role="status">
+        {label}
+      </span>
+      <div className="loading-frame" aria-hidden="true">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** A class that fades content in when it replaces placeholders someone actually saw. */
+export function useReveal(placeholder: boolean): string {
+  const since = useRef<number | null>(null);
+  const [reveal, setReveal] = useState(false);
+  useLayoutEffect(() => {
+    if (placeholder) {
+      since.current ??= performance.now();
+      setReveal(false);
+    } else if (since.current !== null) {
+      setReveal(performance.now() - since.current >= PLACEHOLDER_DELAY);
+      since.current = null;
+    }
+  }, [placeholder]);
+  return reveal ? 'reveal' : '';
 }
 
 export function dateFromWeek(weekStart: string, offset = 0): Date {

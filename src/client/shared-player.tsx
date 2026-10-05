@@ -9,7 +9,18 @@ import { ApiError, request } from './data/api';
 import { clearSharedGroups } from './data/use-groups';
 import { PlayerAvatar } from './groups';
 import { Forecast } from './forecast';
-import { Button, dateFromWeek, messageOf, Notice, useApp, weekLabel } from './ui';
+import { HistoryLoading } from './history';
+import {
+  Button,
+  dateFromWeek,
+  Loading,
+  messageOf,
+  Notice,
+  Placeholder,
+  useApp,
+  useReveal,
+  weekLabel,
+} from './ui';
 
 interface SharedWeekResponse {
   player: Player;
@@ -52,10 +63,84 @@ function ConnectionNeeded() {
   );
 }
 
-function SharedWeekContent({ player, week }: SharedWeekResponse) {
+function SharedWeekLoading() {
+  return (
+    <Loading label="Loading shared prices…">
+      <div className="page-heading shared-player-heading">
+        <div className="shared-player-identity">
+          <Placeholder round className="shared-avatar-placeholder" />
+          <div>
+            <h1>
+              <Placeholder width="5em" />
+            </h1>
+            <p className="friend-code">
+              <Placeholder width="12em" />
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="shared-week-label">
+        <Placeholder className="week-chip-placeholder" />
+      </div>
+      <div className="calculator-layout shared-calculator-layout">
+        <div className="shared-prices-card">
+          <div className="card-heading">
+            <h2>Weekly prices</h2>
+            <span className="muted">Bells per turnip</span>
+          </div>
+          <div className="shared-buy-price">
+            <div>
+              <span className="section-eyebrow">SUNDAY</span>
+              <h3>Bought for</h3>
+            </div>
+            <strong>
+              <Placeholder width="1.6em" />
+            </strong>
+          </div>
+          <table className="shared-price-table">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>AM</th>
+                <th>PM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {DAYS.map((day) => (
+                <tr key={day}>
+                  <th>{day}</th>
+                  <td>
+                    <Placeholder width="1.6em" />
+                  </td>
+                  <td>
+                    <Placeholder width="1.6em" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="forecast">
+          <div className="forecast-card">
+            <div className="forecast-card-heading">
+              <h2>How the week could go</h2>
+            </div>
+            <Placeholder className="placeholder-block forecast-chart-placeholder" />
+          </div>
+        </div>
+      </div>
+    </Loading>
+  );
+}
+
+function SharedWeekContent({
+  player,
+  week,
+  className,
+}: SharedWeekResponse & { className?: string }) {
   const prediction = useMemo(() => predictWeek(week), [week]);
   return (
-    <>
+    <div className={className}>
       <div className="page-heading shared-player-heading">
         <div className="shared-player-identity">
           <PlayerAvatar name={player.displayName} />
@@ -152,7 +237,7 @@ function SharedWeekContent({ player, week }: SharedWeekResponse) {
           shared
         />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -161,7 +246,10 @@ export function SharedPlayer() {
   const { playerId = '', weekStart = '' } = useParams();
   const owner = identity.session?.player.id ?? '';
   const key = `${owner}:${playerId}:${weekStart}`;
-  const [result, setResult] = useState<{ key: string; data: SharedWeekResponse } | null>(null);
+  const [result, setResult] = useState<{
+    key: string;
+    data: SharedWeekResponse;
+  } | null>(null);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
   useEffect(() => {
@@ -185,13 +273,15 @@ export function SharedPlayer() {
     };
   }, [identity.status, key, owner, playerId, weekStart, reload]);
   const shown = identity.status === 'ready' && result?.key === key ? result.data : null;
+  const disconnected = identity.status === 'offline' || identity.status === 'error';
+  const reveal = useReveal(!disconnected && !error && !shown);
   return (
     <main className="page shared-player-page" id="main-content">
       <Link className="text-link back-to-friends" to="/groups">
         <ArrowLeft size={16} />
         Back to friends
       </Link>
-      {identity.status === 'offline' || identity.status === 'error' ? (
+      {disconnected ? (
         <ConnectionNeeded />
       ) : error ? (
         <div className="shared-error">
@@ -201,11 +291,9 @@ export function SharedPlayer() {
           </Button>
         </div>
       ) : shown ? (
-        <SharedWeekContent {...shown} />
+        <SharedWeekContent {...shown} className={reveal} />
       ) : (
-        <p className="muted" role="status">
-          Loading shared prices…
-        </p>
+        <SharedWeekLoading />
       )}
     </main>
   );
@@ -216,7 +304,10 @@ export function SharedHistory() {
   const { playerId = '' } = useParams();
   const owner = identity.session?.player.id ?? '';
   const key = `${owner}:${playerId}`;
-  const [result, setResult] = useState<{ key: string; data: SharedHistoryResponse } | null>(null);
+  const [result, setResult] = useState<{
+    key: string;
+    data: SharedHistoryResponse;
+  } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
@@ -244,6 +335,7 @@ export function SharedHistory() {
     };
   }, [identity.status, key, owner, playerId, reload]);
   const shown = identity.status === 'ready' && result?.key === key ? result.data : null;
+  const reveal = useReveal(loading && !shown);
   async function more() {
     if (!shown?.nextCursor) return;
     const attempt = generation.current;
@@ -309,7 +401,7 @@ export function SharedHistory() {
             </>
           )}
           {shown && shown.weeks.length > 0 && (
-            <div className="history-table-scroll">
+            <div className={`history-table-scroll ${reveal}`}>
               <table className="history-table">
                 <caption className="sr-only">Shared past weekly prices</caption>
                 <thead>
@@ -340,11 +432,7 @@ export function SharedHistory() {
               </table>
             </div>
           )}
-          {loading && (
-            <p className="muted" role="status">
-              Loading shared history…
-            </p>
-          )}
+          {loading && !shown && <HistoryLoading label="Loading shared history…" />}
           {shown && !loading && !error && shown.weeks.length === 0 && (
             <div className="empty-history">
               <p>No past weeks yet.</p>

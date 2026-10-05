@@ -10,7 +10,17 @@ import type {
   SessionResponse,
 } from '../shared/api';
 import { isCurrentIdentityResponse, request } from './data/api';
-import { Button, defaultDeviceName, Field, messageOf, Notice, useApp } from './ui';
+import {
+  Button,
+  defaultDeviceName,
+  Field,
+  Loading,
+  messageOf,
+  Notice,
+  Placeholder,
+  useApp,
+  useReveal,
+} from './ui';
 import { appUrl } from './urls';
 import { InstallApp } from './pwa-install';
 import { OfflineSettings } from './pwa-ui';
@@ -119,6 +129,7 @@ function Devices({ refreshCount }: { refreshCount: number }) {
   const [busyId, setBusyId] = useState('');
   const [confirmId, setConfirmId] = useState('');
   const [removed, setRemoved] = useState('');
+  const reveal = useReveal(loading && !devices.length);
   const refresh = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -150,10 +161,27 @@ function Devices({ refreshCount }: { refreshCount: number }) {
   return (
     <>
       <h3>Connected devices</h3>
-      {loading ? (
-        <p className="muted">Loading devices…</p>
+      {loading && !devices.length ? (
+        <Loading label="Loading devices…">
+          <ul className="device-list">
+            {[0, 1].map((row) => (
+              <li key={row}>
+                <div className="device-row">
+                  <div>
+                    <strong>
+                      <Placeholder width="7em" />
+                    </strong>
+                    <span className="hint">
+                      <Placeholder width="11em" />
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Loading>
       ) : (
-        <ul className="device-list">
+        <ul className={`device-list ${reveal}`}>
           {devices.map((device) => (
             <li key={device.id}>
               <div className="device-row">

@@ -7,7 +7,17 @@ import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
 import { useGroups } from './data/use-groups';
 import { GroupPriceTable } from './group-price-table';
-import { Button, Field, messageOf, Notice, useApp, weekLabel } from './ui';
+import {
+  Button,
+  Field,
+  Loading,
+  messageOf,
+  Notice,
+  Placeholder,
+  useApp,
+  useReveal,
+  weekLabel,
+} from './ui';
 import { appUrl } from './urls';
 import './groups.css';
 
@@ -100,7 +110,10 @@ export function PriceSparkline({
             ) : range ? (
               <span
                 className="spark-predicted"
-                style={{ bottom: height(range.min), height: height(range.max - range.min) }}
+                style={{
+                  bottom: height(range.min),
+                  height: height(range.max - range.min),
+                }}
               />
             ) : null}
           </span>
@@ -146,7 +159,11 @@ function RefreshGroups({ data }: { data: GroupData }) {
 function RightNow({ players, owner }: { players: SharedPlayerWeek[]; owner: string }) {
   const [period, setPeriod] = useState(initialPeriod);
   const members = useMemo(
-    () => players.map((member) => ({ ...member, prediction: predictWeek(member.week) })),
+    () =>
+      players.map((member) => ({
+        ...member,
+        prediction: predictWeek(member.week),
+      })),
     [players],
   );
   const scale = useMemo(() => sparkScale(members), [members]);
@@ -524,6 +541,88 @@ function ConnectionMessage({ data }: { data: GroupData }) {
   return null;
 }
 
+function FriendsPostcardLoading() {
+  return (
+    <Loading label="Loading your groups…">
+      <div className="friends-postcard">
+        <span className="friends-postcard-icon">
+          <Plane size={26} />
+        </span>
+        <div className="friends-postcard-text">
+          <p className="friends-postcard-title">
+            <Placeholder width="24em" />
+          </p>
+          <p>
+            <Placeholder width="20em" />
+          </p>
+        </div>
+        <Placeholder className="placeholder-button postcard-button-placeholder" />
+      </div>
+    </Loading>
+  );
+}
+
+function IslandBoardLoading() {
+  return (
+    <Loading label="Loading your groups…" className="friends-comparison">
+      <div className="friends-toolbar">
+        <div className="group-filters">
+          <Placeholder className="placeholder-control" width={120} />
+          <Placeholder className="placeholder-control" width={150} />
+        </div>
+        <Placeholder className="placeholder-control view-toggle-placeholder" />
+      </div>
+      <div className="right-now">
+        <Placeholder className="placeholder-control" width={230} />
+        <div className="best-price-card">
+          <Placeholder className="best-price-tag-placeholder" />
+          <div className="best-price-main">
+            <Placeholder round className="best-price-avatar-placeholder" />
+            <div className="best-price-identity">
+              <strong>
+                <Placeholder width="8em" />
+              </strong>
+              <Placeholder className="member-forecast-placeholder" />
+            </div>
+            <div className="best-price-value">
+              <Placeholder width="1.7em" />
+            </div>
+          </div>
+          <div className="best-price-detail">
+            <p>
+              <Placeholder width="14em" />
+            </p>
+          </div>
+          <Placeholder className="placeholder-button" width="100%" />
+        </div>
+        <h3 className="friend-list-heading">
+          <Placeholder width="6em" />
+        </h3>
+        <ul className="friend-list">
+          {[0, 1].map((index) => (
+            <li key={index}>
+              <div className="friend-row">
+                <Placeholder round className="friend-avatar-placeholder" />
+                <span className="friend-identity">
+                  <span className="friend-name">
+                    <Placeholder width="6em" />
+                  </span>
+                  <Placeholder className="member-forecast-placeholder" />
+                </span>
+                <span className="friend-price">
+                  <span className="reported-price">
+                    <Placeholder width="1.6em" />
+                  </span>
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Loading>
+  );
+}
+
 export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: WeekRecord }) {
   const identity = useApp();
   const data = useGroups(weekStart, identity.session, identity.status === 'ready');
@@ -543,6 +642,8 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
   );
   const other = bestOther ? reportedPrice(bestOther, period) : null;
   const friendCount = players.filter((member) => member.player.id !== owner).length;
+  const loading = data.status === 'loading' && !players.length;
+  const reveal = useReveal(loading);
   let headline: string;
   let detail: string;
   if (bestOther && other !== null && period === 0) {
@@ -579,13 +680,9 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
         Friends’ prices
       </h2>
       <ConnectionMessage data={data} />
-      {data.status === 'loading' && !players.length && (
-        <p className="muted" role="status">
-          Loading your groups…
-        </p>
-      )}
+      {loading && <FriendsPostcardLoading />}
       {data.status === 'ready' && !data.groups.length && (
-        <div className="friends-postcard friends-postcard-invite">
+        <div className={`friends-postcard friends-postcard-invite ${reveal}`}>
           <span className="friends-postcard-icon">
             <Users size={26} aria-hidden="true" />
           </span>
@@ -599,7 +696,7 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
         </div>
       )}
       {players.length > 0 && (
-        <div className="friends-postcard">
+        <div className={`friends-postcard ${reveal}`}>
           <span className="friends-postcard-icon">
             <Plane size={26} aria-hidden="true" />
           </span>
@@ -641,6 +738,8 @@ export function Groups() {
       ? data.players
       : data.players.filter((member) => member.groupIds.includes(existingSelection));
   const hasGroups = data.groups.length > 0;
+  const loading = data.status === 'loading' && !hasGroups;
+  const reveal = useReveal(loading);
   const formOpen = linkCode || showForm || (!hasGroups && data.status === 'ready');
   return (
     <main className="page groups-page" id="main-content">
@@ -686,14 +785,13 @@ export function Groups() {
           />
         </section>
       )}
-      {data.status === 'loading' && !hasGroups && (
-        <p className="muted" role="status">
-          Loading your groups…
-        </p>
-      )}
+      {loading && <IslandBoardLoading />}
       {hasGroups && (
         <>
-          <section className="friends-comparison" aria-label="Friends’ prices this week">
+          <section
+            className={`friends-comparison ${reveal}`}
+            aria-label="Friends’ prices this week"
+          >
             <div className="friends-toolbar">
               <div className="group-filters" role="group" aria-label="Show group">
                 <button
@@ -734,7 +832,7 @@ export function Groups() {
             )}
             <RefreshGroups data={data} />
           </section>
-          <section className="your-groups" aria-labelledby="your-groups-title">
+          <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
             <div className="section-heading">
               <h2 id="your-groups-title">Your groups</h2>
               <span className="muted">Share a link to add a friend</span>
