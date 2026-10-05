@@ -103,7 +103,7 @@ Frontend: `https://rakantor.github.io/turnip-tycoon/`. API: `https://turnip-tyco
 
 ### Supabase and Hyperdrive
 
-1. Put the hosted migration connection in the ignored `.env` as `DATABASE_URL`, then run `pnpm db:migrate`. On an IPv4-only computer, use Supabase's complete **Session pooler** connection string on port **5432**; its username and hostname differ from Direct. Use verified TLS with `sslmode=verify-full` and `sslrootcert` pointing to the downloaded Supabase CA certificate.
+1. Put the hosted migration connection in the ignored `.env.production` as `DATABASE_URL` (see [.env.production.example](.env.production.example)), then run `pnpm db:migrate:prod`. Only that command reads `.env.production`; `pnpm dev` and `pnpm db:migrate` never do. On an IPv4-only computer, use Supabase's complete **Session pooler** connection string on port **5432**; its username and hostname differ from Direct. Use verified TLS with `sslmode=verify-full` and `sslrootcert` pointing to the downloaded Supabase CA certificate.
 2. Connect Hyperdrive to Supabase's **Direct connection** endpoint on port **5432**. Disable query caching so authentication, membership, revocation, and saved-price reads stay current. Hyperdrive handles pooling; the local migration pooler choice does not change this connection.
 3. Run `pnpm exec wrangler login`, then `pnpm check` and `pnpm deploy:check`. Publish the API with `pnpm deploy:api` and retain its Worker origin.
 
@@ -115,7 +115,7 @@ Frontend: `https://rakantor.github.io/turnip-tycoon/`. API: `https://turnip-tyco
 4. API deployment remains manual. To use **Deploy API Worker**, configure a scoped `CLOUDFLARE_API_TOKEN` Actions secret and the `CLOUDFLARE_ACCOUNT_ID` repository variable. The workflow uses the `production` environment, which can have deployment protection rules.
 5. After deploying, check `/api/health`, silent bootstrap, price saves/reloads, groups, pairing, recovery, and revocation. Complete the offline and mobile checks below before release.
 
-Only public `VITE_` configuration enters the frontend build. `.env` is for migration tooling. Both Worker configurations set `secrets.required` to an empty list so Wrangler does not infer migration credentials as Worker secrets or generated bindings.
+Only public `VITE_` configuration enters the frontend build. `.env` and `.env.production` are for migration tooling. Both Worker configurations set `secrets.required` to an empty list so Wrangler does not infer migration credentials as Worker secrets or generated bindings.
 
 Documentation: [Cloudflare with Supabase](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/supabase/), [Hyperdrive caching](https://developers.cloudflare.com/hyperdrive/concepts/query-caching/), [Supabase connections](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL](https://supabase.com/docs/guides/platform/ssl-enforcement), [GitHub Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
