@@ -9,9 +9,12 @@ import { oddsPercent } from './advice';
 import { useGroups } from './data/use-groups';
 import { PlayerAvatar } from './groups';
 import {
+  afterClosing,
+  beforeOpening,
   groupOdds,
   islandOdds,
   partOfDay,
+  reportedWhen,
   type ForecastMember,
   type GroupOdds,
   type IslandOdds,
@@ -52,10 +55,10 @@ function OddsRing({ chance }: { chance: number }) {
   );
 }
 
-function FriendsOdds({ group }: { group: GroupOdds }) {
-  const target = group.yours
-    ? `your ${group.price}`
-    : `${group.holder.player.displayName}’s ${group.price}`;
+function FriendsOdds({ group, slot }: { group: GroupOdds; slot: number }) {
+  const target =
+    (group.yours ? `your ${group.price}` : `${group.holder.player.displayName}’s ${group.price}`) +
+    (group.priceSlot === slot ? '' : ` from ${reportedWhen(group.priceSlot, slot)}`);
   const friends = group.islands.filter((island) => !island.self).slice(0, 3);
   return (
     <Link className="odds-friends" to="/groups">
@@ -96,22 +99,31 @@ function OddsExplorer({
   prediction,
   own,
   group,
-  slot,
+  sellNow,
+  groupNow,
 }: {
   prediction: PredictionResult;
   own: IslandOdds;
   group: GroupOdds | null;
-  slot: number | null;
+  /** Your price to beat can be sold at right now. */
+  sellNow: boolean;
+  /** So can the group's best price. */
+  groupNow: boolean;
 }) {
   const id = useId();
   const svg = useRef<SVGSVGElement>(null);
-  // On Sunday the purchase price is a preset, but nobody can sell at it now.
-  const ownNow = slot === null ? null : own.price;
+  // What was paid, or an earlier half-day's price, is a preset, but nobody can sell at it now.
+  const ownNow = sellNow ? own.price : null;
   const presets = useMemo(
     () => [
       ...(own.price === null
         ? []
-        : [{ label: `${slot === null ? 'You paid' : 'Your'} ${own.price}`, price: own.price }]),
+        : [
+            {
+              label: `${own.priceSlot === null ? 'You paid' : 'Your'} ${own.price}`,
+              price: own.price,
+            },
+          ]),
       ...(group?.bestFriend
         ? [
             {
@@ -121,7 +133,7 @@ function OddsExplorer({
           ]
         : []),
     ],
-    [own.price, group, slot],
+    [own.price, own.priceSlot, group],
   );
   const ownBest = bestCaseFrom(prediction, own.fromSlot);
   const {
@@ -151,7 +163,7 @@ function OddsExplorer({
       );
       if (group)
         friends.push(
-          price < group.price
+          groupNow && price < group.price
             ? 1
             : combineChances(
                 group.islands.map(
@@ -162,7 +174,7 @@ function OddsExplorer({
         );
     }
     return { low, high, own: ownCurve, friends };
-  }, [prediction, own.fromSlot, group, ownNow, ownBest, presets]);
+  }, [prediction, own.fromSlot, group, groupNow, ownNow, ownBest, presets]);
   const clamp = (value: number) => Math.min(high, Math.max(low, Math.round(value)));
   const [chosen, setChosen] = useState(() => group?.price ?? own.price ?? low);
   // New prices can move the range while the explorer is open.
@@ -238,9 +250,9 @@ function OddsExplorer({
             <span className="odds-key">
               <i className="odds-key-friends" /> With friends
             </span>
-            <strong>{price < group.price ? 'Now' : oddsPercent(friendsChance)}</strong>
+            <strong>{groupNow && price < group.price ? 'Now' : oddsPercent(friendsChance)}</strong>
             <span>
-              {price < group.price
+              {groupNow && price < group.price
                 ? `${holder} ${group.price} right now`
                 : friendsChance === 0
                   ? 'Out of reach this week'
@@ -304,12 +316,14 @@ export function HoldOrSell({
   weekStart,
   week,
   prediction,
+  now,
   slot,
   onTrades,
 }: {
   weekStart: string;
   week: OwnWeekRecord;
   prediction: PredictionResult;
+  now: Date;
   /** The current half-day, or null on Sunday. */
   slot: number | null;
   onTrades: (trades: Trade[]) => void;
@@ -331,16 +345,27 @@ export function HoldOrSell({
     () => (self ? [...friends, { ...self, week, prediction }] : friends),
     [friends, self, week, prediction],
   );
+  const closed = afterClosing(now);
   const group = useMemo(
-    () => (slot === null ? null : groupOdds(members, owner, slot)),
-    [members, owner, slot],
+    () => (slot === null ? null : groupOdds(members, owner, slot, closed)),
+    [members, owner, slot, closed],
   );
-  const own = useMemo(() => islandOdds(week, prediction, slot), [week, prediction, slot]);
+  const own = useMemo(
+    () => islandOdds(week, prediction, slot, closed),
+    [week, prediction, slot, closed],
+  );
   // Without a forecast, the card still holds this week's turnips.
   const possible = prediction.status === 'possible';
   const held = unsold(totalsOf(week.trades));
 
-  const { price, odds, fromSlot } = own;
+  const { price, priceSlot, odds, fromSlot } = own;
+  // This half-day's price is in and Nook's Cranny is buying: the odds are about selling now.
+  const sellNow = slot !== null && priceSlot === slot && !closed;
+  // Otherwise the price to beat is named: what was paid, or when it was seen.
+  const known =
+    slot === null || priceSlot === null
+      ? `the ${price} you paid`
+      : `${reportedWhen(priceSlot, slot)}’s ${price}`;
   const showGroup = group !== null && group.islands.some((island) => !island.self);
   let message: string | null = null;
   if (price === null)
@@ -348,17 +373,26 @@ export function HoldOrSell({
       slot === null
         ? 'Enter what Daisy Mae charged to see your odds.'
         : `Enter this ${partOfDay(slot)}’s price to see your odds.`;
-  else if (!odds) message = 'Last chance: Nook’s Cranny closes at 10 PM.';
+  else if (!odds)
+    message = closed
+      ? 'Nook’s Cranny has closed for the week.'
+      : 'Last chance: Nook’s Cranny closes at 10 PM.';
   else if (odds.certain) message = 'A higher price is coming. Hold on to your turnips!';
   else if (odds.impossible)
-    message =
-      slot === null
-        ? `No price this week will beat the ${price} you paid.`
-        : 'This is the highest price your island can reach this week. Sell today.';
+    message = sellNow
+      ? 'This is the highest price your island can reach this week. Sell today.'
+      : `No price left this week will beat ${known}.`;
   // The ring shows whenever there are odds; a certain or impossible outcome is said in words beside it.
   const ring = price !== null ? odds : null;
-  // Sunday has nothing to sell yet, so no verdict.
-  const lead = message === null && ring && slot !== null ? verdict(ring.chance) : null;
+  // A verdict needs a price you can sell at now.
+  const lead = message === null && ring && sellNow ? verdict(ring.chance) : null;
+  // Until this half-day's price is in, the forecast compares with an earlier one.
+  const missing =
+    slot !== null && priceSlot !== slot && !closed && price !== null
+      ? beforeOpening(now)
+        ? 'Nook’s Cranny opens at 8 AM.'
+        : `Enter this ${partOfDay(slot)}’s price to see whether to sell now.`
+      : null;
   return (
     <section className="odds-card" id={TURNIPS_ID} tabIndex={-1} aria-labelledby={`${id}-title`}>
       <div
@@ -388,15 +422,20 @@ export function HoldOrSell({
                       </span>
                     )}
                     <span className="sr-only">{oddsPercent(ring.chance)} </span>
-                    {slot === null ? (
+                    {slot === null || priceSlot === null ? (
                       <>
                         chance you can sell for more than the <strong>{price}</strong> you paid this
                         week.
                       </>
-                    ) : (
+                    ) : sellNow ? (
                       <>
                         chance of more than <strong>{price}</strong> on your island before Nook’s
                         Cranny closes on Saturday.
+                      </>
+                    ) : (
+                      <>
+                        chance of beating {reportedWhen(priceSlot, slot)}’s <strong>{price}</strong>{' '}
+                        before Nook’s Cranny closes on Saturday.
                       </>
                     )}
                   </p>
@@ -405,6 +444,7 @@ export function HoldOrSell({
             ) : (
               <p className="odds-message">{message}</p>
             )}
+            {missing && <p className="hint">{missing}</p>}
             {prediction.tolerance > 0 && price !== null && (
               <p className="hint">
                 Some prices are a little off the usual patterns, so treat this as a rough guide.
@@ -413,7 +453,9 @@ export function HoldOrSell({
           </div>
         )}
         <WeekTurnips week={week} slot={slot} onTrades={onTrades} />
-        {possible && group && showGroup && <FriendsOdds group={group} />}
+        {possible && group && showGroup && slot !== null && (
+          <FriendsOdds group={group} slot={slot} />
+        )}
         {possible && fromSlot <= 11 && (
           <details
             className="odds-explorer"
@@ -428,7 +470,8 @@ export function HoldOrSell({
                 prediction={prediction}
                 own={own}
                 group={showGroup ? group : null}
-                slot={slot}
+                sellNow={sellNow}
+                groupNow={group?.priceSlot === slot && !closed}
               />
             )}
           </details>

@@ -8,6 +8,7 @@ import {
   islandOdds,
   islandReason,
   notCountedNote,
+  reportedWhen,
   type ForecastMember,
 } from '../../src/client/odds';
 
@@ -53,9 +54,27 @@ describe('your island’s odds', () => {
     expect(own.odds?.chance).toBeCloseTo(0.104, 2);
   });
 
-  it('waits for this half-day’s price, keeping it open', () => {
+  it('compares with the latest price until this half-day’s is in, keeping it open', () => {
     const own = islandOdds(jun.week, jun.prediction, THURSDAY_PM);
-    expect(own).toMatchObject({ price: null, fromSlot: THURSDAY_PM, odds: null });
+    expect(own).toMatchObject({ price: 61, priceSlot: 6, fromSlot: THURSDAY_PM });
+    expect(own.odds?.chance).toBeGreaterThan(0);
+  });
+
+  it('closes an unreported half-day after 10 PM', () => {
+    const own = islandOdds(jun.week, jun.prediction, THURSDAY_PM, true);
+    expect(own).toMatchObject({ price: 61, priceSlot: 6, fromSlot: 8 });
+    const reported = islandOdds(you.week, you.prediction, THURSDAY_PM, true);
+    expect(reported).toMatchObject({ price: 128, priceSlot: THURSDAY_PM, fromSlot: 8 });
+  });
+
+  it('compares with what you paid before any selling price', () => {
+    const own = islandOdds(mika.week, mika.prediction, 1);
+    expect(own).toMatchObject({ price: 101, priceSlot: null, fromSlot: 1 });
+    expect(own.odds).not.toBeNull();
+  });
+
+  it('has nothing to compare with before any price', () => {
+    expect(islandOdds(sam.week, sam.prediction, 0)).toMatchObject({ price: null, odds: null });
   });
 
   it('compares with what you paid on Sunday', () => {
@@ -77,6 +96,7 @@ describe('group odds', () => {
 
   it('beats the best price anyone has right now', () => {
     expect(odds?.price).toBe(141);
+    expect(odds?.priceSlot).toBe(THURSDAY_PM);
     expect(odds?.holder.player.id).toBe('rosa');
     expect(odds?.yours).toBe(false);
     expect(odds?.bestFriend?.price).toBe(141);
@@ -121,8 +141,24 @@ describe('group odds', () => {
     );
   });
 
-  it('needs someone to have reported this half-day', () => {
-    expect(groupOdds([jun, mika], 'you', THURSDAY_PM)).toBeNull();
+  it('beats the latest best price until someone reports this half-day', () => {
+    const earlier = groupOdds([jun, mika], 'you', THURSDAY_PM);
+    expect(earlier).toMatchObject({ price: 61, priceSlot: 6 });
+    expect(earlier?.holder.player.id).toBe('jun');
+    expect(earlier?.islands.every((island) => island.fromSlot === THURSDAY_PM)).toBe(true);
+    expect(groupOdds([sam, member('lee', 99)], 'you', THURSDAY_PM)).toBeNull();
+  });
+
+  it('closes unreported half-days after 10 PM', () => {
+    const late = groupOdds([you, rosa, jun, mika, sam], 'you', THURSDAY_PM, true)!;
+    expect(late.islands.every((island) => island.fromSlot === 8)).toBe(true);
+    expect(late.islands.every((island) => island.alreadyAbove === null)).toBe(true);
+    expect(groupOdds([you, rosa], 'you', 11, true)).toBeNull();
+  });
+
+  it('says when an earlier price was reported', () => {
+    expect(reportedWhen(6, THURSDAY_PM)).toBe('this morning');
+    expect(reportedWhen(5, THURSDAY_PM)).toBe('Wednesday afternoon');
   });
 
   it('notices when the best price is yours', () => {

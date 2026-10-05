@@ -13,7 +13,7 @@ import { FriendsPanel } from './groups';
 import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
 import { slotShortName, weekAdvice } from './advice';
-import { islandOdds } from './odds';
+import { afterClosing, islandOdds } from './odds';
 import { HoldOrSell } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
 import { usePwaReloadGuard } from './pwa';
@@ -333,15 +333,16 @@ function WeekCalculator({
               : status === 'conflict'
                 ? 'Changes need review'
                 : 'Couldn’t sync';
-  const own = isCurrent ? islandOdds(week, prediction, slot) : null;
+  const own = isCurrent ? islandOdds(week, prediction, slot, afterClosing(now)) : null;
   const advice = weekAdvice({
     prediction,
     prices: week.prices,
     purchasePrice: week.purchasePrice,
     slot,
     isCurrent,
+    // The advice quotes the odds for the price you can get now: on Sunday, what you paid.
     odds:
-      own?.odds && own.price !== null
+      own?.odds && own.price !== null && own.priceSlot === slot
         ? { price: own.price, chance: own.odds.chance, certain: own.odds.certain }
         : null,
   });
@@ -709,6 +710,7 @@ function WeekCalculator({
                 weekStart={weekStart}
                 week={week}
                 prediction={prediction}
+                now={now}
                 slot={slot}
                 onTrades={(trades) => edit({ trades })}
               />

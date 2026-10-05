@@ -10,6 +10,7 @@ import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
 import { GroupPriceTable } from './group-price-table';
 import {
+  afterClosing,
   deadline,
   groupOdds,
   islandReason,
@@ -184,12 +185,15 @@ function RightNow({
   owner,
   period,
   nowPeriod,
+  closed,
 }: {
   players: SharedPlayerWeek[];
   owner: string;
   /** The half-day compared: 0 is Sunday's buy price, then Monday AM onward. */
   period: number;
   nowPeriod: number;
+  /** After 10 PM, tonight's half-day is over. */
+  closed: boolean;
 }) {
   const members = useMemo(
     () => players.map((member) => ({ ...member, prediction: predictWeek(member.week) })),
@@ -197,23 +201,30 @@ function RightNow({
   );
   const scale = useMemo(() => sparkScale(members), [members]);
   const sorted = byPeriod(members, period);
-  const best = sorted.length > 0 && reportedPrice(sorted[0], period) !== null ? sorted[0] : null;
-  const rest = best ? sorted.slice(1) : sorted;
+  const reported = sorted.length > 0 && reportedPrice(sorted[0], period) !== null;
+  const rest = reported ? sorted.slice(1) : sorted;
+  // Odds look ahead from now, so they only fit the current selling half-day.
+  const odds =
+    period === nowPeriod && period > 0 ? groupOdds(members, owner, period - 1, closed) : null;
+  // Until anyone shares this half-day's price, the card shows the latest one shared.
+  const shown = reported ? period : odds ? odds.priceSlot + 1 : null;
+  const best = reported ? sorted[0] : (odds?.holder ?? null);
   const yourPurchase = members.find((member) => member.player.id === owner)?.week.purchasePrice;
-  const bestPrice = best ? reportedPrice(best, period) : null;
+  const bestPrice = best && shown !== null ? reportedPrice(best, shown) : null;
   const ratio =
     best && bestPrice !== null && period > 0 && yourPurchase ? bestPrice / yourPurchase : null;
-  // Odds look ahead from now, so they only fit the current selling half-day.
-  const odds = period === nowPeriod && period > 0 ? groupOdds(members, owner, period - 1) : null;
   const tag =
-    period === 0
+    shown === 0
       ? 'Cheapest Sunday price'
-      : period === nowPeriod
+      : shown === nowPeriod && !closed
         ? `Best price right now · until ${period % 2 ? 'noon' : '10 PM'}`
-        : `Best ${PERIODS[period]} price`;
+        : `Best ${PERIODS[shown ?? period]} price`;
   return (
     <div className="right-now">
-      {best && bestPrice !== null ? (
+      {!reported && (
+        <p className="right-now-empty">Nobody has shared a {PERIODS[period]} price yet.</p>
+      )}
+      {best && bestPrice !== null && shown !== null && (
         <section className="best-price-card" aria-label={tag}>
           <span className="best-price-tag">
             <Plane size={14} aria-hidden="true" />
@@ -233,9 +244,9 @@ function RightNow({
           <div className="best-price-detail">
             <p>
               {ratio === null
-                ? period === 0
+                ? shown === 0
                   ? 'Lowest buy price in your groups.'
-                  : `Highest ${PERIODS[period]} price in your groups.`
+                  : `Highest ${PERIODS[shown]} price in your groups.`
                 : best.player.id === owner
                   ? `That’s ${ratio.toFixed(1)}× what you paid.`
                   : `${ratio.toFixed(1)}× what you paid for yours.`}
@@ -248,12 +259,10 @@ function RightNow({
             <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </section>
-      ) : (
-        <p className="right-now-empty">Nobody has shared a {PERIODS[period]} price yet.</p>
       )}
       {rest.length > 0 && (
         <>
-          <h3 className="friend-list-heading">{best ? 'Everyone else' : 'Everyone'}</h3>
+          <h3 className="friend-list-heading">{reported ? 'Everyone else' : 'Everyone'}</h3>
           <ul className="friend-list">
             {rest.map((member) => {
               const price = reportedPrice(member, period);
@@ -949,7 +958,13 @@ export function Groups() {
               )} */}
             </div>
             {view === 'now' ? (
-              <RightNow players={players} owner={owner} period={period} nowPeriod={period} />
+              <RightNow
+                players={players}
+                owner={owner}
+                period={period}
+                nowPeriod={period}
+                closed={afterClosing(now)}
+              />
             ) : (
               <GroupPriceTable players={players} owner={owner} currentSlot={currentSlot(now)} />
             )}
