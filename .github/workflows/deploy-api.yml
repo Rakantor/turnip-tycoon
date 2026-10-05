@@ -1,5 +1,17 @@
 name: Deploy API Worker
 on:
+  push:
+    branches: [main]
+    # Everything bundled into the Worker, plus its configuration and dependencies.
+    paths:
+      - src/server/**
+      - src/db/**
+      - src/shared/**
+      - src/prediction/**
+      - wrangler.jsonc
+      - package.json
+      - pnpm-lock.yaml
+      - .github/workflows/deploy-api.yml
   workflow_dispatch:
 permissions:
   contents: read
