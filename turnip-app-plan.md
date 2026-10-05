@@ -1,7 +1,7 @@
 # Turnip Tycoon — Implementation Plan
 
-Updated: 4 October 2026  
-Status: Weekly-table calculation, silent access, weekly storage/sync, history, and friend groups are implemented. The interface uses the Island Ledger design chosen from a three-direction exploration: a sand-and-cream look drawn from the raccoon mascot, the mascot's weekly advice, a week board with forecast-range placeholders, a half-day bar chart with anchored tooltips, and Right now / Full week friend comparisons. GitHub Pages builds now include project-scoped service-worker caching, offline reopening, Settings installation controls, and user-controlled updates that preserve local writes. These PWA changes have not been deployed. Physical Android/iOS installation, recovery, and offline-use verification remain release checks.
+Updated: 5 October 2026  
+Status: Weekly-table calculation, silent access, weekly storage/sync, history, and friend groups are implemented. The interface uses the Island Ledger design chosen from a three-direction exploration: a sand-and-cream look drawn from the raccoon mascot, the mascot's weekly advice, a week board with forecast-range placeholders, a half-day bar chart with anchored tooltips, and Right now / Full week friend comparisons. GitHub Pages builds now include project-scoped service-worker caching, offline reopening, Settings installation controls, and user-controlled updates that preserve local writes. These PWA changes have not been deployed. Physical Android/iOS installation, recovery, and offline-use verification remain release checks. Previous-week editing is implemented; the turnip ledger is planned in [section 14](#14-turnip-ledger).
 
 App name: Turnip Tycoon.
 
@@ -29,7 +29,8 @@ This document consolidates the final decisions from planning. The implementation
 | Invitations | No Invite Users button, recipient selection, invitation records, or approval workflow. |
 | Leaving | Leaving removes the player's prices and history from that group's available data. |
 | Deletion | Users cannot manually delete a group. Delete an empty group automatically when its last member leaves. |
-| History | Retain previous weeks. Historical prices are read-only in the interface. |
+| History | Retain previous weeks. The interface edits the current and previous weeks; older weeks are read-only. |
+| Turnip ledger | Each player privately logs the turnips they buy and sell each week, at the prices paid and received, and sees their overall profit on Prices. Planned; see section 14. |
 | Refresh | Pull on opening and through a manual Refresh button with a 60-second cooldown. |
 | Cooldown | Store a timestamp in IndexedDB and enforce the cooldown only in the interface. |
 | Uploads | Upload a player's edits immediately when online, independently of the pull cooldown. |
@@ -153,7 +154,7 @@ An individual selling-price entry is identified by player, week, day, and AM/PM 
 
 ### Historical weeks
 
-The interface permits editing only the current week, including filling earlier slots within that week. Previous weeks are read-only.
+The interface permits editing the current week, including filling earlier slots within that week, and the previous week, so a forgotten entry can be fixed during the following week. Older weeks are read-only. Once the turnip ledger ships, the same window applies to trades; see section 14.
 
 This is an interface rule only. The backend does not reject an otherwise authorised price edit because its week has passed. An offline edit queued while a week was current can finish uploading after rollover.
 
@@ -509,7 +510,7 @@ Completion check: calculation regressions, access controls, sync behaviour, and 
 - [x] Twelve AM/PM selling slots and a separate Sunday purchase input are supported.
 - [x] Price records use calendar dates and slots, without exact observation timestamps.
 - [x] No player time zone is stored or shared; the frontend uses local device time.
-- [x] The interface edits only the current week; the backend applies no historical-week lock.
+- [x] The interface edits the current and previous weeks only; the backend applies no historical-week lock.
 - [x] Opening validates shared membership; manual Refresh follows the local 60-second cooldown.
 - [x] Friends' current-week prices stay readable offline and are deleted when access is lost.
 - [x] The cooldown persists in IndexedDB and has no server-side enforcement.
@@ -523,7 +524,113 @@ Completion check: calculation regressions, access controls, sync behaviour, and 
 - [x] Turnip Prophet attribution, license, and notices are included.
 - [ ] Independently verify compatibility with the current game version before claiming it.
 
-## 14. Deferred scope
+## 14. Turnip ledger
+
+Decided 5 October 2026. Previous-week editing is implemented; the ledger itself is not. Players log the turnips they buy and sell each week, at whatever prices they paid and received, and see their overall profit on the Prices page.
+
+| Area | Decision |
+|---|---|
+| Owner | Each player keeps their own ledger. Profit is never pooled across a group. |
+| Privacy | Trades are private. No shared week, history, or group response includes them. An opt-in group leaderboard may follow later. |
+| Purchases | Bought on Sunday, on the player's own island or a friend's, in bunches of 10 at 90–110 bells each. A purchase never changes the week's Sunday purchase price, which stays the own-island forecast input. |
+| Sales | Sold Monday to Saturday in bunches of 10 at 9–660 bells each, with the half-day of the sale. A week can hold several purchases and sales, each at its own price. |
+| Location | Not recorded. |
+| Editing | The current and previous weeks are editable, prices and trades alike. Older weeks are read-only. As before, this is an interface rule only. |
+
+### Calculation
+
+Each week is a closed batch: Daisy Mae sells only on Sunday, Nook's Cranny buys only Monday to Saturday, and unsold turnips rot when the next week starts.
+
+- **Week result** = bells earned from sales − bells spent on purchases. Unsold turnips therefore count as a loss at what they cost.
+- **Mixed prices:** purchases pool at their average cost. Because every turnip in a week rots at the same time, the week result is the same whichever purchase a sale is counted against; the average only affects the mid-week figure.
+- **Made so far** (current week) = earned − turnips sold × average cost. Turnips still held are shown separately and not counted yet.
+- **Overall profit** = the results of every finished week + this week's made so far.
+
+| Entry | Turnips | Price | Bells |
+|---|---|---|---|
+| Buy, own island | 4,000 | 98 | −392,000 |
+| Buy, friend's island | 6,000 | 94 | −564,000 |
+| Average cost | | 95.6 | −956,000 |
+| Sell, Tuesday AM | 3,000 | 142 | +426,000: made so far +139,200, 7,000 held |
+| Sell, Thursday PM | 7,000 | 488 | +3,416,000 |
+| Week result | | | +2,886,000 |
+
+Had only 6,000 sold on Thursday, the 1,000 left over would rot: they cost 95,600 and bring in nothing, so the week result would be +2,398,000.
+
+### Editing the previous week
+
+Implemented 5 October 2026 for prices.
+
+- A forgotten entry, such as Saturday's sale or price, can be fixed during the following week without reopening older history.
+- The calculator edits a week when it starts on or after the previous Sunday and titles that page Last week. A page left open across Sunday locks the week that drops out of the window.
+- Editing last week's prices can make a different pattern inferable. This week's saved Last week's pattern is never changed silently. When an edit on Last week changes the pattern its prices identify, that page offers to use it in this week's forecast; reopening the page without an edit shows no offer, so a pattern chosen on purpose is never questioned.
+- Once the ledger ships, the previous week's position is closed: unsold turnips appear as rotted, with a prompt to log a forgotten sale.
+- The backend is unchanged. It still accepts any own week, so queued edits upload after rollover.
+
+### Data and API
+
+A new `turnip_private.trades` table belongs to a weekly record, like `price_entries`:
+
+| Column | Contents |
+|---|---|
+| `id` | UUID generated on the device, unique within the week, so an entry keeps its identity across edits and retries. |
+| `week_id`, `player_id` | Composite foreign key to `weeks`, cascading on delete. |
+| `position` | Order within the week's list. |
+| `kind` | `buy` or `sell`. |
+| `quantity` | A multiple of 10, from 10 to 100,000. |
+| `price` | Bells per turnip: 90–110 for purchases, 9–660 for sales. |
+| `day`, `slot` | Sales only: 1–6 and `AM`/`PM`. Null for purchases. |
+| `revision` | The week revision that wrote the entry. |
+
+A week holds at most 40 entries, and its sales never exceed its purchases. The app and API both check this.
+
+- `PUT /api/weeks/:weekStart` accepts an optional `trades` list. When present, it replaces the week's list under the same revision, mutation ID, and payload hash as the rest of the week. When absent, saved trades are kept, so installed app versions from before the ledger keep saving prices without erasing them.
+- The owner's reads include trades: `GET /api/weeks/:weekStart`, `GET /api/weeks`, and the revision-conflict response. Shared reads never do. Group and member reads reuse `readWeek`, `readHistory`, and `attachPrices` today, so trades attach only on the owner's path, shared records use a type without a `trades` field, and tests cover every shared endpoint.
+- `GET /api/ledger` returns one row per own week with trades: `weekStart`, `bought`, `spent`, `sold`, and `earned`, summed as `bigint`. At about 52 rows a year it needs no paging.
+
+### App
+
+- `src/shared/week.ts` adds a `Trade` type and `trades` on own week records; `emptyWeek` starts with none, and cached rows from before the change read as none.
+- `src/shared/ledger.ts` holds the calculations: week totals, average cost, held turnips, made so far, week result, and overall profit.
+- The week store treats `trades` as one touched field edited as a whole list. Pending edits, draft attachment, and the conflict panel handle it; the panel lists both devices' trades.
+- The ledger response is kept in IndexedDB `meta` per profile. Prices refreshes it on opening at most once a minute and after own uploads. Weeks held locally with unsent or newer edits, and the current week, replace their server rows with local calculations, so overall profit works offline and includes unsent edits.
+
+### Screens
+
+To be designed. Planned contents:
+
+- **Prices:** a small overall-profit card (all-time, with this week's figure beneath) and this week's trades: log a purchase (pre-filled with the Sunday price), log a sale (pre-filled with the current half-day and its entered price), edit or remove entries, held turnips, and made so far.
+- **Last week:** the same controls, still editable, with unsold turnips shown as rotted.
+- **History:** a profit column; older weeks show their trades read-only.
+- **Later:** the hold-or-sell card can use the held count, for example "selling your 7,000 now locks in +2.7M".
+
+### Edge cases
+
+- A sale cannot exceed the turnips still held, and a purchase cannot be removed or reduced below what has been sold. The app explains why instead of saving.
+- In the current week, a sale cannot be dated later than the current half-day.
+- Average cost is fractional. Only displayed figures and made so far round to whole bells; week results are exact.
+- Large figures use grouped digits; the small card may abbreviate them (2.9M).
+- A week can have trades without a Sunday price, and the reverse.
+
+### Build order
+
+1. Previous-week editing for prices, with the pattern offer. Done.
+2. The `Trade` type and ledger calculations, with unit tests.
+3. Migration, week API, and `GET /api/ledger`. Tests cover validation and limits, saves without trades, retries and conflicts, absence of trades from every shared read, and ledger totals.
+4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests.
+5. A design pass, then the screens. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
+6. Release: run `pnpm db:migrate:prod` before pushing, because the API Worker deploys automatically when server code changes. Update the README features, CONTRIBUTING's data rules, and sections 2, 5, and 13 of this plan.
+
+### Acceptance checks
+
+- [ ] Purchases and sales at different prices give the week result and overall profit shown in the worked example.
+- [ ] Unsold turnips count as a loss once their week ends.
+- [ ] Trades never appear in a shared week, history, or group response.
+- [ ] Saves without trades leave saved trades unchanged.
+- [ ] Trades can be logged offline, upload with the week, and count towards overall profit before uploading.
+- [x] The current and previous weeks are editable and older weeks are read-only; the backend still applies no historical-week lock.
+
+## 15. Deferred scope
 
 The following are not required for the first release:
 
@@ -540,7 +647,7 @@ The following are not required for the first release:
 
 The product name, domain, production service configuration, and exact dependency versions remain implementation-time choices. The accepted visual direction is Island Ledger: the weekly table and full-week phone grid with sand, cream, leaf green, gold, chunky rounded cards, and the mascot's advice. Immediate price entry and optional friend groups remain the product model.
 
-## 15. Additional implementation references
+## 16. Additional implementation references
 
 - [Hono on Cloudflare Workers](https://hono.dev/docs/getting-started/cloudflare-workers)
 - [React Router modes](https://reactrouter.com/start/modes)
