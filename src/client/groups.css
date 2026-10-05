@@ -930,6 +930,20 @@
   color: var(--text);
   text-transform: capitalize;
 }
+/* Beside the chart and pattern cards, the prices card runs their full height;
+   the week's rows share the extra room. */
+@media (min-width: 721px) {
+  .calculator-layout.shared-calculator-layout {
+    align-items: stretch;
+  }
+  .shared-prices-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .shared-price-table {
+    flex: 1 1 auto;
+  }
+}
 .shared-error {
   display: grid;
   justify-items: start;

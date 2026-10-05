@@ -10,7 +10,9 @@
   padding: 24px 26px;
 }
 .pattern-card {
+  display: flex;
   flex: 1 1 280px;
+  flex-direction: column;
   padding: 24px 26px;
 }
 .forecast-card-heading {
@@ -309,8 +311,14 @@
 }
 
 /* Pattern odds */
+/* When the card matches the chart's height, the patterns spread over it. */
 .pattern-list {
-  margin: 0 0 16px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -318,7 +326,9 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 7px 10px;
-  margin-bottom: 16px;
+}
+.pattern-card > .hint {
+  margin-top: 16px;
 }
 .pattern-name {
   font-size: 16px;
