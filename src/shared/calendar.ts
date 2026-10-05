@@ -15,6 +15,12 @@ export function shiftWeek(weekStart: string, offset: number): string {
   return calendarDate(date);
 }
 
+/** The interface edits this week and last week, so a forgotten entry can still be fixed. */
+export function isEditableWeek(weekStart: string, date = new Date()): boolean {
+  const current = currentWeekStart(date);
+  return weekStart <= current && weekStart >= shiftWeek(current, -1);
+}
+
 export function currentSlot(date = new Date()): number | null {
   return date.getDay() === 0 ? null : (date.getDay() - 1) * 2 + (date.getHours() < 12 ? 0 : 1);
 }

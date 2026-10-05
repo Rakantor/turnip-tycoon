@@ -559,6 +559,17 @@ summary {
 .sync-message p {
   margin-bottom: 10px;
 }
+.pattern-offer {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 2px solid var(--leaf-line);
+  border-radius: 18px;
+  background: var(--leaf-soft);
+  font-size: 14px;
+}
+.pattern-offer p {
+  margin-bottom: 10px;
+}
 
 /* Prices: the mascot's advice */
 .outlook {

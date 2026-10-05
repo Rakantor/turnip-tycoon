@@ -1,6 +1,11 @@
 import { execFileSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
-import { currentSlot, currentWeekStart, shiftWeek } from '../../src/shared/calendar';
+import {
+  currentSlot,
+  currentWeekStart,
+  isEditableWeek,
+  shiftWeek,
+} from '../../src/shared/calendar';
 
 describe('island calendar helpers', () => {
   it('rolls the local week at Sunday midnight', () => {
@@ -16,6 +21,22 @@ describe('island calendar helpers', () => {
     expect(currentSlot(new Date(2026, 9, 5, 12, 0))).toBe(1);
     expect(currentSlot(new Date(2026, 9, 10, 11, 59))).toBe(10);
     expect(currentSlot(new Date(2026, 9, 10, 12, 0))).toBe(11);
+  });
+
+  it('keeps this week and last week editable until the next local Sunday', () => {
+    const saturday = new Date(2026, 9, 3, 23, 59, 59);
+    expect(isEditableWeek('2026-09-27', saturday)).toBe(true);
+    expect(isEditableWeek('2026-09-20', saturday)).toBe(true);
+    expect(isEditableWeek('2026-09-13', saturday)).toBe(false);
+
+    const sunday = new Date(2026, 9, 4, 0, 0, 0);
+    expect(isEditableWeek('2026-10-04', sunday)).toBe(true);
+    expect(isEditableWeek('2026-09-27', sunday)).toBe(true);
+    expect(isEditableWeek('2026-09-20', sunday)).toBe(false);
+    expect(isEditableWeek('2026-10-11', sunday)).toBe(false);
+
+    // Last week stays editable across a year boundary.
+    expect(isEditableWeek('2025-12-28', new Date(2026, 0, 4, 9))).toBe(true);
   });
 
   it('shifts calendar weeks through month and year boundaries', () => {

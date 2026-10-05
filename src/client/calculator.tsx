@@ -2,8 +2,9 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, ArrowRight, Check, CloudOff, LoaderCircle, Moon, Sun } from 'lucide-react';
 import { predictWeek } from '../prediction';
-import { currentSlot, currentWeekStart, shiftWeek } from '../shared/calendar';
-import type { PatternId } from '../shared/week';
+import { uniquePattern } from '../prediction/previous-pattern';
+import { currentSlot, currentWeekStart, isEditableWeek, shiftWeek } from '../shared/calendar';
+import type { PatternId, WeeklyInputs } from '../shared/week';
 import { useWeek } from './data/use-week';
 import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
@@ -125,6 +126,43 @@ function PriceInput({
   );
 }
 
+/** After an edit to last week identifies its pattern, offer it to this week's forecast. */
+function PatternOffer({ weekStart, pattern }: { weekStart: string; pattern: PatternId }) {
+  const identity = useApp();
+  const { week, stored, update } = useWeek(
+    weekStart,
+    identity.session,
+    identity.status === 'ready',
+  );
+  const [applied, setApplied] = useState(false);
+  const label = PATTERNS.find((item) => item.id === pattern)!.label.toLowerCase();
+  if (applied)
+    return (
+      <Notice success>
+        This week’s forecast now uses {label} as last week’s pattern.{' '}
+        <Link to="/">See this week</Link>
+      </Notice>
+    );
+  // This week's saved setting is never changed silently, and needs no offer once it agrees.
+  if (!stored || week.previousPattern === pattern) return null;
+  return (
+    <div className="pattern-offer" role="status">
+      <p>
+        These prices now point to a <strong>{label}</strong> week. Use that in this week’s forecast?
+      </p>
+      <Button
+        secondary
+        onClick={() => {
+          update({ previousPattern: pattern });
+          setApplied(true);
+        }}
+      >
+        Use for this week
+      </Button>
+    </div>
+  );
+}
+
 export function Calculator() {
   const identity = useApp();
   const params = useParams();
@@ -155,6 +193,7 @@ export function Calculator() {
       weekStart={weekStart}
       now={now}
       isCurrent={weekStart === currentWeek}
+      editable={isEditableWeek(weekStart, now)}
     />
   );
 }
@@ -163,10 +202,13 @@ function WeekCalculator({
   weekStart,
   now,
   isCurrent,
+  editable,
 }: {
   weekStart: string;
   now: Date;
   isCurrent: boolean;
+  /** This week or last week; older weeks are read-only. */
+  editable: boolean;
 }) {
   const identity = useApp();
   const { week, status, error, update, retry, conflict, resolveConflict } = useWeek(
@@ -188,7 +230,16 @@ function WeekCalculator({
   }, [conflict, pendingRemoteReset]);
   const prediction = useMemo(() => predictWeek(week), [week]);
   const slot = isCurrent ? currentSlot(now) : null;
-  const readOnly = !isCurrent;
+  const readOnly = !editable;
+  const lastWeek = editable && !isCurrent;
+  // What last week's prices identified before this visit's first edit. Only a change
+  // made here prompts the offer, so a pattern chosen on purpose is never questioned.
+  const [patternBefore, setPatternBefore] = useState<PatternId | null>();
+  const implied = uniquePattern(prediction);
+  function edit(patch: Partial<WeeklyInputs>, changedSlots?: number[]) {
+    if (lastWeek && patternBefore === undefined) setPatternBefore(implied);
+    update(patch, changedSlots);
+  }
   function validity(field: string, invalid: boolean) {
     setInvalidFields((fields) =>
       invalid
@@ -252,7 +303,7 @@ function WeekCalculator({
     <main id="main-content" className="page calculator-page">
       <div className="page-heading">
         <div>
-          <h1>{isCurrent ? 'This week' : 'Past week'}</h1>
+          <h1>{isCurrent ? 'This week' : lastWeek ? 'Last week' : 'Past week'}</h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
         <div className="week-navigation">
@@ -278,7 +329,7 @@ function WeekCalculator({
           )}
         </div>
       </div>
-      {!isCurrent && (
+      {readOnly && (
         <p className="history-note">
           Past weeks are read-only. <Link to="/">Return to this week</Link>
         </p>
@@ -287,7 +338,7 @@ function WeekCalculator({
       <div className="calculator-layout">
         <section className="weekly-entry" aria-labelledby="prices-title">
           <div className="entry-heading">
-            <h2 id="prices-title">{isCurrent ? 'Your prices' : 'Prices'}</h2>
+            <h2 id="prices-title">{editable ? 'Your prices' : 'Prices'}</h2>
             <div className="entry-status">
               <span className={`save-status status-${editing ? 'editing' : status}`} role="status">
                 {editing ? null : status === 'saved' ? (
@@ -319,7 +370,7 @@ function WeekCalculator({
                   value={week.purchasePrice}
                   purchase
                   readOnly={readOnly}
-                  onCommit={(purchasePrice) => update({ purchasePrice })}
+                  onCommit={(purchasePrice) => edit({ purchasePrice })}
                   onValidity={(invalid) => validity('purchase', invalid)}
                   onDraftChange={(dirty) => draftChanged('purchase', dirty)}
                 />
@@ -372,7 +423,7 @@ function WeekCalculator({
                             onCommit={(price) => {
                               const prices = [...week.prices];
                               prices[index] = price;
-                              update({ prices }, [index]);
+                              edit({ prices }, [index]);
                             }}
                             onValidity={(invalid) => validity(String(index), invalid)}
                             onDraftChange={(dirty) => draftChanged(String(index), dirty)}
@@ -390,6 +441,12 @@ function WeekCalculator({
               Correct the highlighted entries. The forecast uses your last valid prices.
             </Notice>
           )}
+          {lastWeek &&
+            patternBefore !== undefined &&
+            implied !== null &&
+            implied !== patternBefore && (
+              <PatternOffer key={implied} weekStart={shiftWeek(weekStart, 1)} pattern={implied} />
+            )}
           {(status === 'error' || status === 'offline') && (
             <div className="sync-message">
               <p>{error ?? 'Your changes will sync when the connection is restored.'}</p>
@@ -483,7 +540,7 @@ function WeekCalculator({
                 value={week.previousPattern ?? 'unknown'}
                 disabled={readOnly}
                 onChange={(event) =>
-                  update({
+                  edit({
                     previousPattern:
                       event.target.value === 'unknown' ? null : (event.target.value as PatternId),
                   })
@@ -504,7 +561,7 @@ function WeekCalculator({
                 value={week.firstBuy === null ? 'unknown' : week.firstBuy ? 'yes' : 'no'}
                 disabled={readOnly}
                 onChange={(event) =>
-                  update({
+                  edit({
                     firstBuy:
                       event.target.value === 'unknown' ? null : event.target.value === 'yes',
                   })

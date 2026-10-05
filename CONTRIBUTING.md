@@ -80,7 +80,7 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | `tests/build`      | Generated service-worker behavior                                   |
 | `public/licenses`  | Distributed upstream licenses and notices                           |
 
-Keep launch focused on price entry with silent identity creation and app-generated friend codes. Weeks use the device's local calendar, start Sunday, and retain unknown observations. Historical screens are read-only, but queued edits must upload after rollover. Infer the previous pattern only from the immediately preceding week when unique; otherwise use Unknown and preserve saved/manual choices.
+Keep launch focused on price entry with silent identity creation and app-generated friend codes. Weeks use the device's local calendar, start Sunday, and retain unknown observations. The interface edits the current and previous weeks; older weeks are read-only, and queued edits must upload after rollover. Infer the previous pattern only from the immediately preceding week when unique; otherwise use Unknown and preserve saved/manual choices. When an edit to the previous week changes the pattern it identifies, offer it to the current week rather than changing a saved choice.
 
 Groups allow eight equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Opening Prices or Friends reads the server at most once a minute, silently, with no refresh button; own uploads, group changes and error retries bypass that limit. Display observations separately from predictions and order all pattern probabilities highest first.
 
