@@ -30,7 +30,7 @@ This document consolidates the final decisions from planning. The implementation
 | Leaving | Leaving removes the player's prices and history from that group's available data. |
 | Deletion | Users cannot manually delete a group. Delete an empty group automatically when its last member leaves. |
 | History | Retain previous weeks. The interface edits the current and previous weeks; older weeks are read-only. |
-| Turnip ledger | Each player privately logs the turnips they buy and sell each week, at the prices paid and received, and sees their overall profit on Prices. Planned; see section 14. |
+| Turnip ledger | Each player privately logs the turnips they buy and sell each week, at the prices paid and received, and sees their overall profit in History. Planned; see section 14. |
 | Refresh | Pull on opening and through a manual Refresh button with a 60-second cooldown. |
 | Cooldown | Store a timestamp in IndexedDB and enforce the cooldown only in the interface. |
 | Uploads | Upload a player's edits immediately when online, independently of the pull cooldown. |
@@ -526,7 +526,7 @@ Completion check: calculation regressions, access controls, sync behaviour, and 
 
 ## 14. Turnip ledger
 
-Decided 5 October 2026. Previous-week editing is implemented; the ledger itself is not. Players log the turnips they buy and sell each week, at whatever prices they paid and received, and see their overall profit on the Prices page.
+Decided 5 October 2026. Previous-week editing is implemented; the ledger itself is not. Players log the turnips they buy and sell each week, at whatever prices they paid and received. Prices shows this week's position; History shows each week's result and the overall profit.
 
 | Area | Decision |
 |---|---|
@@ -590,26 +590,27 @@ A week holds at most 40 entries, and its sales never exceed its purchases. The a
 
 ### App
 
-- `src/shared/week.ts` adds a `Trade` type and `trades` on own week records; `emptyWeek` starts with none, and cached rows from before the change read as none.
-- `src/shared/ledger.ts` holds the calculations: week totals, average cost, held turnips, made so far, week result, and overall profit.
+- `src/shared/ledger.ts` defines `Trade`, its limits and validation, and the calculations: week totals, average cost, held turnips, made so far, week result, and overall profit.
+- `src/shared/week.ts` adds `trades` on own week records; `emptyWeek` starts with none, and cached rows from before the change read as none.
 - The week store treats `trades` as one touched field edited as a whole list. Pending edits, draft attachment, and the conflict panel handle it; the panel lists both devices' trades.
-- The ledger response is kept in IndexedDB `meta` per profile. Prices refreshes it on opening at most once a minute and after own uploads. Weeks held locally with unsent or newer edits, and the current week, replace their server rows with local calculations, so overall profit works offline and includes unsent edits.
+- The ledger response is kept in IndexedDB `meta` per profile. History refreshes it on opening at most once a minute and after own uploads. Weeks held locally with unsent or newer edits, and the current week, replace their server rows with local calculations, so overall profit works offline and includes unsent edits.
 
 ### Screens
 
-To be designed. Planned contents:
+Designed 5 October 2026 on the Turnip Ledger canvas, direction C.
 
-- **Prices:** a small overall-profit card (all-time, with this week's figure beneath) and this week's trades: log a purchase (pre-filled with the Sunday price), log a sale (pre-filled with the current half-day and its entered price), edit or remove entries, held turnips, and made so far.
-- **Last week:** the same controls, still editable, with unsold turnips shown as rotted.
-- **History:** a profit column; older weeks show their trades read-only.
-- **Later:** the hold-or-sell card can use the held count, for example "selling your 7,000 now locks in +2.7M".
+- **Prices:** no all-time figure; that lives in History. The hold-or-sell card carries the week's position: "Hold or sell your 7,000 turnips?", then Sell all now (bells at the current price and the resulting week total), Made so far, and Holding with its cost. Log a sale and Log a purchase buttons follow, then this week's trades, each with an edit button. Under the Sunday price, "10,000 bought" opens the purchases. The Sunday card loses its "Bought from Daisy Mae" label.
+- **Log a trade:** a sheet with a Sold/Bought switch. A sale picks its half-day, up to the current one; a purchase is always Sunday. Turnips have ±100 steppers and number-only quick amounts: for a sale, everything held, 4,000, and 3,000, defaulting to everything held, with amounts above the holding left out and repeats merged; for a purchase, 8,000, 6,000, 4,000, and 3,000, defaulting to 4,000. Bells per turnip starts at that half-day's entered price or the Sunday price, with no hint text. A summary shows the bells, what those turnips cost, the profit on them, and the turnips held afterwards. Errors block saving.
+- **Last week:** the week result, bought, sold, and rotted turnips, the trades, and, when turnips rotted, "Sold them and forgot to log it?" with Log a sale.
+- **History:** an all-time profit summary with weeks traded, best week, and turnips rotted. The table's columns are Week, Bought for and Sold for (average bells per turnip), Turnips (with any rotted), and Profit; Entries is removed. Averages show one decimal only when they are not whole. A week without trades shows dashes.
+- **Advice:** a past week whose pattern is certain reads "This was a fluctuating week", without "most likely" or the percentage.
 
 ### Edge cases
 
 - A sale cannot exceed the turnips still held, and a purchase cannot be removed or reduced below what has been sold. The app explains why instead of saving.
 - In the current week, a sale cannot be dated later than the current half-day.
 - Average cost is fractional. Only displayed figures and made so far round to whole bells; week results are exact.
-- Large figures use grouped digits; the small card may abbreviate them (2.9M).
+- Large figures use grouped digits.
 - A week can have trades without a Sunday price, and the reverse.
 
 ### Build order
@@ -618,7 +619,7 @@ To be designed. Planned contents:
 2. The `Trade` type and ledger calculations, with unit tests.
 3. Migration, week API, and `GET /api/ledger`. Tests cover validation and limits, saves without trades, retries and conflicts, absence of trades from every shared read, and ledger totals.
 4. Device storage, sync, pending edits, conflict review, and the cached summary, with storage and sync tests.
-5. A design pass, then the screens. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
+5. The screens as designed, including the Sunday label and certain-pattern advice. Browser checks at 320, 390, 860, and 1280 pixels cover logging offline and a two-device conflict.
 6. Release: run `pnpm db:migrate:prod` before pushing, because the API Worker deploys automatically when server code changes. Update the README features, CONTRIBUTING's data rules, and sections 2, 5, and 13 of this plan.
 
 ### Acceptance checks
