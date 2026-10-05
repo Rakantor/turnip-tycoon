@@ -194,4 +194,56 @@ describe('PostgreSQL ownership and history constraints', () => {
       await client.query('rollback');
     }
   });
+
+  it('keeps trades on their own week with valid kinds, amounts, prices, and half-days', async () => {
+    const owner = await player();
+    const outsider = await player();
+    const weekId = await week(owner, '2026-09-13');
+    const trade = (values: Partial<Record<string, string | number | null>> = {}) =>
+      client.query(
+        'insert into turnip_private.trades (week_id, player_id, id, position, kind, quantity, price, day, slot) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+        [
+          weekId,
+          values.playerId ?? owner,
+          values.id ?? randomUUID(),
+          values.position ?? 0,
+          values.kind ?? 'buy',
+          values.quantity ?? 100,
+          values.price ?? 100,
+          values.day ?? null,
+          values.slot ?? null,
+        ],
+      );
+    const id = randomUUID();
+    await trade({ id });
+    await trade({ position: 1, kind: 'sell', price: 600, day: 6, slot: 'PM' });
+    await expect(trade({ position: 0 })).rejects.toMatchObject({ code: '23505' });
+    await expect(trade({ id, position: 2 })).rejects.toMatchObject({ code: '23505' });
+    await expect(trade({ position: 2, playerId: outsider })).rejects.toMatchObject({
+      code: '23503',
+    });
+    for (const values of [
+      { kind: 'gift' },
+      { quantity: 0 },
+      { quantity: 15 },
+      { quantity: 100010 },
+      { price: 89 },
+      { price: 111 },
+      { kind: 'sell', price: 661, day: 1, slot: 'AM' },
+      { kind: 'sell', price: 8, day: 1, slot: 'AM' },
+      { day: 1, slot: 'AM' },
+      { kind: 'sell' },
+      { kind: 'sell', day: 1 },
+      { kind: 'sell', day: 7, slot: 'AM' },
+      { kind: 'sell', day: 1, slot: 'noon' },
+      { position: 40 },
+    ])
+      await expect(trade({ position: 2, ...values })).rejects.toMatchObject({ code: '23514' });
+
+    await client.query('delete from turnip_private.weeks where id = $1', [weekId]);
+    const left = await client.query('select * from turnip_private.trades where week_id = $1', [
+      weekId,
+    ]);
+    expect(left.rows).toHaveLength(0);
+  });
 });

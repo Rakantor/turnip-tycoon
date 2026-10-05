@@ -10,7 +10,7 @@ import {
   type SessionResponse,
 } from '../../src/shared/api';
 import type { GroupSummary, SharedPlayerWeek } from '../../src/shared/groups';
-import type { WeekMutation, WeekRecord } from '../../src/shared/week';
+import type { OwnWeekRecord, WeekMutation } from '../../src/shared/week';
 import { createTestDatabase } from '../helpers/database';
 import { Browser, expectError, pairingCookie, sessionCookie } from './browser';
 
@@ -404,8 +404,11 @@ describe('Bearer access from GitHub Pages', () => {
     });
     const { members } = (await shared.json()) as { members: SharedPlayerWeek[] };
     const own = await send('GET', `/api/weeks/${weekStart}`, { token: owner.sessionToken });
-    const { week } = (await own.json()) as { week: WeekRecord };
-    expect(members.find((member) => member.player.id === owner.player.id)?.week).toEqual(week);
+    const { week } = (await own.json()) as { week: OwnWeekRecord };
+    // Friends see the same week, without the owner's trades.
+    const { trades, ...visible } = week;
+    expect(trades).toEqual([]);
+    expect(members.find((member) => member.player.id === owner.player.id)?.week).toEqual(visible);
     expect(JSON.stringify(members)).not.toMatch(/sessionToken|tokenHash|recoveryCode/);
   });
 });

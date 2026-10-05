@@ -3,7 +3,13 @@ import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
 import type { SessionResponse } from '../../src/shared/api';
-import { emptyWeek, inputsOf, type WeekMutation, type WeekRecord } from '../../src/shared/week';
+import {
+  emptyOwnWeek,
+  inputsOf,
+  type OwnWeekRecord,
+  type WeekMutation,
+} from '../../src/shared/week';
+import { overallProfit, type LedgerResponse, type Trade } from '../../src/shared/ledger';
 import { createTestDatabase } from '../helpers/database';
 import { Browser, expectError, sessionCookie } from './browser';
 
@@ -48,12 +54,12 @@ describe('Owned weekly prices and revisioned saves', () => {
   async function read(browser: Browser, date = weekStart) {
     const response = await browser.request('GET', `/api/weeks/${date}`);
     expect(response.status).toBe(200);
-    return ((await response.json()) as { week: WeekRecord }).week;
+    return ((await response.json()) as { week: OwnWeekRecord }).week;
   }
 
   it('returns an empty owned week without inserting a historical record', async () => {
     const { browser, session } = await player();
-    expect(await read(browser)).toEqual(emptyWeek(session.player.id, weekStart));
+    expect(await read(browser)).toEqual(emptyOwnWeek(session.player.id, weekStart));
     expect((await client.query('select * from turnip_private.weeks')).rows).toEqual([]);
     const history = await browser.request('GET', '/api/weeks');
     expect(await history.json()).toEqual({ weeks: [], nextCursor: null });
@@ -73,10 +79,10 @@ describe('Owned weekly prices and revisioned saves', () => {
     // The preceding record's previousPattern describes the week before it;
     // infer the preceding week's actual pattern from its observations instead.
     expect(await read(maple.browser)).toEqual({
-      ...emptyWeek(maple.session.player.id, weekStart),
+      ...emptyOwnWeek(maple.session.player.id, weekStart),
       previousPattern: 'large-spike',
     });
-    expect(await read(cherry.browser)).toEqual(emptyWeek(cherry.session.player.id, weekStart));
+    expect(await read(cherry.browser)).toEqual(emptyOwnWeek(cherry.session.player.id, weekStart));
     const history = await maple.browser.request('GET', '/api/weeks');
     expect(await history.json()).toEqual({
       weeks: [await read(maple.browser, '2026-09-27')],
@@ -114,7 +120,7 @@ describe('Owned weekly prices and revisioned saves', () => {
           )
         ).status,
       ).toBe(200);
-      expect(await read(browser)).toEqual(emptyWeek(session.player.id, weekStart));
+      expect(await read(browser)).toEqual(emptyOwnWeek(session.player.id, weekStart));
     },
   );
 
@@ -131,7 +137,7 @@ describe('Owned weekly prices and revisioned saves', () => {
         ).status,
       ).toBe(200);
     }
-    expect(await read(browser)).toEqual(emptyWeek(session.player.id, weekStart));
+    expect(await read(browser)).toEqual(emptyOwnWeek(session.player.id, weekStart));
   });
 
   it.each([null, 'fluctuating'] as const)(
@@ -167,8 +173,9 @@ describe('Owned weekly prices and revisioned saves', () => {
       playerId: maple.session.player.id,
       weekStart,
       revision: 1,
+      trades: [],
     });
-    expect(await read(cherry.browser)).toEqual(emptyWeek(cherry.session.player.id, weekStart));
+    expect(await read(cherry.browser)).toEqual(emptyOwnWeek(cherry.session.player.id, weekStart));
     const cleared = mutation({
       baseRevision: 1,
       purchasePrice: null,
@@ -181,7 +188,7 @@ describe('Owned weekly prices and revisioned saves', () => {
     );
     // A saved "Not sure" stays a choice, unlike the unsaved default of "No".
     expect(await read(maple.browser)).toEqual({
-      ...emptyWeek(maple.session.player.id, weekStart),
+      ...emptyOwnWeek(maple.session.player.id, weekStart),
       firstBuy: null,
       revision: 2,
     });
@@ -265,7 +272,7 @@ describe('Owned weekly prices and revisioned saves', () => {
       expect((await browser.request('PUT', `/api/weeks/${date}`, mutation())).status).toBe(200);
     await read(browser, '2020-03-15');
     const first = await browser.request('GET', '/api/weeks?limit=2');
-    const page = (await first.json()) as { weeks: WeekRecord[]; nextCursor: string | null };
+    const page = (await first.json()) as { weeks: OwnWeekRecord[]; nextCursor: string | null };
     expect(page.weeks.map((week) => week.weekStart)).toEqual(['2020-04-05', '2020-03-29']);
     expect(page.nextCursor).toBe('2020-03-29');
     const second = await browser.request('GET', `/api/weeks?limit=2&before=${page.nextCursor}`);
@@ -352,5 +359,171 @@ describe('Owned weekly prices and revisioned saves', () => {
       ).status,
     ).toBe(200);
     expect(await read(newPlayer.browser)).toMatchObject({ revision: 1 });
+  });
+
+  const purchases = (): Trade[] => [
+    { id: randomUUID(), kind: 'buy', quantity: 4000, price: 98 },
+    { id: randomUUID(), kind: 'buy', quantity: 6000, price: 94 },
+  ];
+  const sale = (quantity = 3000, price = 165, slot = 4): Trade => ({
+    id: randomUUID(),
+    kind: 'sell',
+    quantity,
+    price,
+    slot,
+  });
+
+  it('saves trades with the week and keeps them through saves that leave them out', async () => {
+    const { browser } = await player();
+    const trades = [...purchases(), sale(), sale(2000, 400, 11)];
+    expect(
+      (await browser.request('PUT', `/api/weeks/${weekStart}`, mutation({ trades }))).status,
+    ).toBe(200);
+    expect(await read(browser)).toMatchObject({ revision: 1, trades });
+    const rows = await client.query(
+      'select position, kind, quantity, price, day, slot, revision from turnip_private.trades order by position',
+    );
+    expect(rows.rows).toEqual([
+      { position: 0, kind: 'buy', quantity: 4000, price: 98, day: null, slot: null, revision: 1 },
+      { position: 1, kind: 'buy', quantity: 6000, price: 94, day: null, slot: null, revision: 1 },
+      { position: 2, kind: 'sell', quantity: 3000, price: 165, day: 3, slot: 'AM', revision: 1 },
+      { position: 3, kind: 'sell', quantity: 2000, price: 400, day: 6, slot: 'PM', revision: 1 },
+    ]);
+
+    // App versions from before trades send none, and the saved trades stay.
+    expect(
+      (
+        await browser.request(
+          'PUT',
+          `/api/weeks/${weekStart}`,
+          mutation({ baseRevision: 1, purchasePrice: 98 }),
+        )
+      ).status,
+    ).toBe(200);
+    expect(await read(browser)).toMatchObject({ revision: 2, purchasePrice: 98, trades });
+    const history = await browser.request('GET', '/api/weeks');
+    expect(((await history.json()) as { weeks: OwnWeekRecord[] }).weeks[0].trades).toEqual(trades);
+
+    // An empty list removes them.
+    expect(
+      (
+        await browser.request(
+          'PUT',
+          `/api/weeks/${weekStart}`,
+          mutation({ baseRevision: 2, trades: [] }),
+        )
+      ).status,
+    ).toBe(200);
+    expect(await read(browser)).toMatchObject({ revision: 3, trades: [] });
+    expect((await client.query('select * from turnip_private.trades')).rows).toHaveLength(0);
+  });
+
+  it('rejects invalid trades without saving the week', async () => {
+    const { browser } = await player();
+    const bought = purchases();
+    for (const trades of [
+      [{ ...bought[0], id: 'not-a-uuid' }],
+      [{ ...bought[0], kind: 'gift' }],
+      [{ ...bought[0], slot: 2 }],
+      [...bought, { id: randomUUID(), kind: 'sell', quantity: 10, price: 100 }],
+      [{ ...bought[0], quantity: 15 }],
+      [{ ...bought[0], quantity: '4000' }],
+      [{ ...bought[0], price: 89 }],
+      [...bought, sale(10, 661)],
+      [...bought, sale(10, 100, 12)],
+      [bought[0], { ...bought[1], id: bought[0].id }],
+      Array.from({ length: 41 }, () => ({ ...bought[0], id: randomUUID(), quantity: 10 })),
+      'not-a-list',
+    ])
+      await expectError(
+        await browser.request('PUT', `/api/weeks/${weekStart}`, { ...mutation(), trades }),
+        400,
+      );
+    const oversold = await expectError(
+      await browser.request(
+        'PUT',
+        `/api/weeks/${weekStart}`,
+        mutation({ trades: [...bought, sale(10010)] }),
+      ),
+      400,
+    );
+    expect(oversold.error.message).toBe('A week can’t sell more turnips than it bought.');
+    expect((await client.query('select * from turnip_private.weeks')).rows).toHaveLength(0);
+  });
+
+  it('replays a trade save and rejects reusing its mutation for other trades', async () => {
+    const { browser } = await player();
+    const first = mutation({ trades: [...purchases(), sale()] });
+    expect((await browser.request('PUT', `/api/weeks/${weekStart}`, first)).status).toBe(200);
+    const replay = await browser.request('PUT', `/api/weeks/${weekStart}`, first);
+    expect(await replay.json()).toEqual({ revision: 1 });
+    expect(
+      (
+        await expectError(
+          await browser.request('PUT', `/api/weeks/${weekStart}`, {
+            ...first,
+            trades: purchases(),
+          }),
+          409,
+        )
+      ).error.code,
+    ).toBe('MUTATION_REUSED');
+    expect((await client.query('select * from turnip_private.trades')).rows).toHaveLength(3);
+  });
+
+  it('includes trades in the snapshot returned for a conflict', async () => {
+    const { browser } = await player();
+    const trades = [...purchases(), sale()];
+    expect(
+      (await browser.request('PUT', `/api/weeks/${weekStart}`, mutation({ trades }))).status,
+    ).toBe(200);
+    const stale = await browser.request('PUT', `/api/weeks/${weekStart}`, mutation({ trades: [] }));
+    expect(stale.status).toBe(409);
+    expect(await stale.json()).toEqual({
+      error: { code: 'REVISION_CONFLICT', message: expect.any(String) },
+      week: await read(browser),
+    });
+    expect(await read(browser)).toMatchObject({ revision: 1, trades });
+  });
+
+  it('totals each own week with trades for the ledger, newest first', async () => {
+    const maple = await player();
+    const cherry = await player();
+    const save = (browser: Browser, date: string, trades?: Trade[]) =>
+      browser.request('PUT', `/api/weeks/${date}`, mutation(trades ? { trades } : {}));
+    expect(
+      (
+        await save(maple.browser, '2026-09-27', [
+          { id: randomUUID(), kind: 'buy', quantity: 5000, price: 101 },
+          sale(4000, 132, 6),
+        ])
+      ).status,
+    ).toBe(200);
+    expect((await save(maple.browser, weekStart, [...purchases(), sale()])).status).toBe(200);
+    // A week with prices but no trades has nothing to total.
+    expect((await save(maple.browser, '2026-09-20')).status).toBe(200);
+    expect(
+      (
+        await save(cherry.browser, weekStart, [
+          { id: randomUUID(), kind: 'buy', quantity: 100, price: 90 },
+        ])
+      ).status,
+    ).toBe(200);
+
+    const response = await maple.browser.request('GET', '/api/ledger');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Cache-Control')).toBe('no-store');
+    const ledger = (await response.json()) as LedgerResponse;
+    expect(ledger).toEqual({
+      weeks: [
+        { weekStart, bought: 10000, spent: 956000, sold: 3000, earned: 495000 },
+        { weekStart: '2026-09-27', bought: 5000, spent: 505000, sold: 4000, earned: 528000 },
+      ],
+    });
+    expect(overallProfit(ledger.weeks, weekStart)).toBe(23000 + 208200);
+    expect(await (await cherry.browser.request('GET', '/api/ledger')).json()).toEqual({
+      weeks: [{ weekStart, bought: 100, spent: 9000, sold: 0, earned: 0 }],
+    });
+    await expectError(await new Browser(app).request('GET', '/api/ledger'), 401);
   });
 });

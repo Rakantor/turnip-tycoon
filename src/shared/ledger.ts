@@ -25,6 +25,15 @@ export interface LedgerTotals {
 
 export const NO_TRADES: LedgerTotals = { bought: 0, spent: 0, sold: 0, earned: 0 };
 
+/** One own week's totals, as `GET /api/ledger` lists every week with trades. */
+export interface LedgerWeek extends LedgerTotals {
+  weekStart: string;
+}
+
+export interface LedgerResponse {
+  weeks: LedgerWeek[];
+}
+
 export type TradeProblem = 'too-many' | 'duplicate' | 'quantity' | 'price' | 'slot' | 'oversold';
 
 /** Why a week's trades cannot be saved, or null when they can. The app and API both check. */
@@ -107,10 +116,7 @@ export function weekResult(totals: LedgerTotals): number {
 }
 
 /** Every finished week's result plus this week's profit so far. */
-export function overallProfit(
-  weeks: readonly (LedgerTotals & { weekStart: string })[],
-  currentWeek: string,
-): number {
+export function overallProfit(weeks: readonly LedgerWeek[], currentWeek: string): number {
   let profit = 0;
   for (const week of weeks) {
     if (week.weekStart < currentWeek) profit += weekResult(week);

@@ -27,6 +27,7 @@ import {
   recoveryInput,
 } from './validation';
 import { registerWeekRoutes } from './weeks';
+import { registerLedgerRoutes } from './ledger';
 import { registerGroupRoutes } from './groups';
 
 export type AppEnvironment = { Variables: { db: Database; credentialMode: CredentialMode } };
@@ -406,6 +407,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
   });
 
   registerWeekRoutes(app);
+  registerLedgerRoutes(app);
   registerGroupRoutes(app);
 
   app.notFound((c) =>

@@ -1,3 +1,5 @@
+import type { Trade } from './ledger';
+
 export type PatternId = 'fluctuating' | 'large-spike' | 'decreasing' | 'small-spike';
 
 /** Daisy Mae's Sunday purchase price, in bells, inclusive. */
@@ -19,9 +21,16 @@ export interface WeekRecord extends WeeklyInputs {
   revision: number;
 }
 
+/** The owner's own week: everything friends see, plus the trades only the owner sees. */
+export interface OwnWeekRecord extends WeekRecord {
+  trades: Trade[];
+}
+
 export interface WeekMutation extends WeeklyInputs {
   mutationId: string;
   baseRevision: number;
+  /** Replaces the week's trades. Left out, as by app versions before trades, they stay. */
+  trades?: Trade[];
 }
 
 export function emptyWeek(playerId: string, weekStart: string): WeekRecord {
@@ -35,6 +44,10 @@ export function emptyWeek(playerId: string, weekStart: string): WeekRecord {
     previousPattern: null,
     prices: Array<number | null>(12).fill(null),
   };
+}
+
+export function emptyOwnWeek(playerId: string, weekStart: string): OwnWeekRecord {
+  return { ...emptyWeek(playerId, weekStart), trades: [] };
 }
 
 export function inputsOf(week: WeeklyInputs): WeeklyInputs {

@@ -188,6 +188,52 @@ export const priceEntries = privateSchema
   )
   .enableRLS();
 
+// A player's own purchases and sales. Shared reads never include them.
+export const trades = privateSchema
+  .table(
+    'trades',
+    {
+      weekId: uuid('week_id').notNull(),
+      playerId: uuid('player_id').notNull(),
+      // Generated on the device, so an entry keeps its identity across edits and retries.
+      id: uuid('id').notNull(),
+      position: integer('position').notNull(),
+      kind: text('kind').notNull(),
+      quantity: integer('quantity').notNull(),
+      price: integer('price').notNull(),
+      // Sales only: Monday to Saturday and AM/PM, as in price entries.
+      day: integer('day'),
+      slot: text('slot'),
+      revision: integer('revision').notNull().default(0),
+    },
+    (table) => [
+      primaryKey({ columns: [table.weekId, table.id] }),
+      unique('trades_week_position_unique').on(table.weekId, table.position),
+      index('trades_player_idx').on(table.playerId),
+      foreignKey({
+        columns: [table.weekId, table.playerId],
+        foreignColumns: [weeks.id, weeks.playerId],
+      }).onDelete('cascade'),
+      check('trades_kind', sql`${table.kind} in ('buy', 'sell')`),
+      check('trades_position', sql`${table.position} between 0 and 39`),
+      check(
+        'trades_quantity',
+        sql`${table.quantity} between 10 and 100000 and ${table.quantity} % 10 = 0`,
+      ),
+      check(
+        'trades_price',
+        sql`(${table.kind} = 'buy' and ${table.price} between 90 and 110) or (${table.kind} = 'sell' and ${table.price} between 9 and 660)`,
+      ),
+      // Spelled out with "is not null": a check that evaluates to null would pass.
+      check(
+        'trades_half_day',
+        sql`(${table.kind} = 'buy' and ${table.day} is null and ${table.slot} is null) or (${table.kind} = 'sell' and ${table.day} is not null and ${table.slot} is not null and ${table.day} between 1 and 6 and ${table.slot} in ('AM', 'PM'))`,
+      ),
+      check('trades_revision_nonnegative', sql`${table.revision} >= 0`),
+    ],
+  )
+  .enableRLS();
+
 export const mutations = privateSchema
   .table(
     'mutations',

@@ -419,4 +419,44 @@ describe('Groups and shared player prices', () => {
       401,
     );
   });
+
+  it("never shares a player's trades on any shared read", async () => {
+    const owner = await player();
+    const friend = await player();
+    const group = await create(owner.browser);
+    await join(friend.browser, group);
+    const tradeIds: string[] = [];
+    for (const date of [weekStart, '2026-09-27']) {
+      const id = randomUUID();
+      tradeIds.push(id);
+      const input: WeekMutation = {
+        mutationId: randomUUID(),
+        baseRevision: 0,
+        purchasePrice: 100,
+        firstBuy: false,
+        previousPattern: null,
+        prices: [91, ...Array<number | null>(11).fill(null)],
+        trades: [{ id, kind: 'buy', quantity: 1000, price: 100 }],
+      };
+      expect((await friend.browser.request('PUT', `/api/weeks/${date}`, input)).status).toBe(200);
+    }
+    const own = await friend.browser.request('GET', `/api/weeks/${weekStart}`);
+    expect(await own.json()).toMatchObject({ week: { trades: [{ id: tradeIds[0] }] } });
+
+    for (const [viewer, path] of [
+      [owner, `/api/groups?weekStart=${weekStart}`],
+      [owner, `/api/groups/${group.id}?weekStart=${weekStart}`],
+      [owner, memberWeek(friend.session.player.id)],
+      [owner, memberHistory(friend.session.player.id)],
+      // Viewing yourself as friends do is a shared read too.
+      [friend, memberWeek(friend.session.player.id)],
+    ] as const) {
+      const response = await viewer.browser.request('GET', path);
+      expect(response.status).toBe(200);
+      const text = await response.text();
+      expect(text).toContain('"purchasePrice":100');
+      expect(text).not.toContain('trades');
+      for (const id of tradeIds) expect(text).not.toContain(id);
+    }
+  });
 });
