@@ -50,7 +50,7 @@ Run `pnpm build:pages` as well when changing the frontend or deployment configur
 
 Tests cover temporary PostgreSQL databases, authentication and ownership, concurrent/idempotent writes, groups, browser storage/sync, PWA generation and updates, and prediction fixtures.
 
-For browser changes, test saves/reloads, groups, pairing, revocation, and recovery in independent profiles. Check shared links, Pages with third-party cookies blocked, keyboard/touch chart controls, and the horizontally scrolling price table at 320 pixels.
+For browser changes, test saves/reloads, trades, groups, pairing, revocation, and recovery in independent profiles; edit the same week on two devices to check merging. Check shared links, Pages with third-party cookies blocked, keyboard/touch chart controls, and the horizontally scrolling price table at 320 pixels.
 
 Use **Conventional Commits with single-line messages**, for example:
 
@@ -64,25 +64,27 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 
 ## Architecture and data rules
 
-| Path               | Responsibility                                                      |
-| ------------------ | ------------------------------------------------------------------- |
-| `src/client`       | Calculator, forecasts, Friends, history, Settings, and PWA controls |
-| `src/client/data`  | Browser API, identity bootstrap, IndexedDB, and sync queue          |
-| `src/shared`       | API/week/group contracts and device-local calendar helpers          |
-| `src/prediction`   | Standalone prediction adapter and audited upstream engine           |
-| `src/server`       | Hono API, access, weekly records, groups, and shared reads          |
-| `src/db/schema.ts` | Drizzle PostgreSQL schema                                           |
-| `drizzle`          | Versioned SQL migrations and snapshots                              |
-| `scripts`          | Local database, development server, migrations, and icon generation |
-| `tests/api`        | API and database integration tests                                  |
-| `tests/client`     | Browser-storage, session, synchronization, and PWA tests            |
-| `tests/prediction` | Prediction fixtures and regression tests                            |
-| `tests/build`      | Generated service-worker behavior                                   |
-| `public/licenses`  | Distributed upstream licenses and notices                           |
+| Path               | Responsibility                                                                               |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| `src/client`       | Calculator, forecasts, turnip trades, Friends, history, Settings, and PWA controls           |
+| `src/client/data`  | Browser API, identity bootstrap, IndexedDB, sync queue, and merging edits from other devices |
+| `src/shared`       | API/week/group contracts, ledger calculations, and device-local calendar helpers             |
+| `src/prediction`   | Standalone prediction adapter and audited upstream engine                                    |
+| `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, and shared reads         |
+| `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                    |
+| `drizzle`          | Versioned SQL migrations and snapshots                                                       |
+| `scripts`          | Local database, development server, migrations, and icon generation                          |
+| `tests/api`        | API and database integration tests                                                           |
+| `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                    |
+| `tests/prediction` | Prediction fixtures and regression tests                                                     |
+| `tests/build`      | Generated service-worker behavior                                                            |
+| `public/licenses`  | Distributed upstream licenses and notices                                                    |
 
 Keep launch focused on price entry with silent identity creation and app-generated friend codes. Weeks use the device's local calendar, start Sunday, and retain unknown observations. The interface edits the current and previous weeks; older weeks are read-only, and queued edits must upload after rollover. Infer the previous pattern only from the immediately preceding week when unique; otherwise use Unknown and preserve saved/manual choices. When an edit to the previous week changes the pattern it identifies, offer it to the current week rather than changing a saved choice.
 
-Groups allow eight equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Opening Prices or Friends reads the server at most once a minute, silently, with no refresh button; own uploads, group changes and error retries bypass that limit. Prices also re-reads its week when the app is shown or focused again, within the same limit, so another device's saves appear before anything is typed. Display observations separately from predictions and order all pattern probabilities highest first.
+Each player keeps a private turnip ledger. A week holds at most 40 purchases and sales, in bunches of 10: purchases at 90–110 bells each, sales at 9–660 with their half-day, and never more sold than bought. Trades save with their week under the same revision and mutation ID. A save without `trades` keeps the saved list, so app versions from before the ledger cannot erase it. Only the owner's reads include trades; shared weeks, history, and group responses never do, and `GET /api/ledger` returns the owner's weekly totals. A week's result counts unsold turnips as lost; overall profit adds this week's made-so-far to every finished week.
+
+Groups allow eight equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Opening Prices or Friends reads the server at most once a minute, silently, with no refresh button; own uploads, group changes and error retries bypass that limit. Prices also re-reads its week when the app is shown or focused again, within the same limit, so another device's saves appear before anything is typed. Display observations separately from predictions and order all pattern probabilities highest first. Odds of a better price don't wait for the current half-day: until its price is entered (or, among friends, shared), they compare with the latest price and name its half-day, never presenting it as current. An unreported half-day stays open until Nook's Cranny closes at 10 PM.
 
 ### Access and security invariants
 
@@ -160,6 +162,6 @@ Persistent-profile Chromium checks passed for offline reopening/reconnection, do
 
 Original project materials are licensed under the [Apache License, Version 2.0](LICENSE). Contributions are accepted under the same license. Third-party components retain their respective licenses and notices; see [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md).
 
-The mascot's optimized website assets live in `public/icons`. App Store/Xcode and Google Play exports live in `exports/app-icons`, outside the public web bundle. Run `pnpm icons:generate` to regenerate them from the retained source. See [icon assets and platform requirements](assets/branding/README.md).
+The README's images in `assets/readme` are rendered from the app: `screens.webp` shows a demo profile with friends on a 390-pixel phone layout, and `open-button.png` is the app's green button at 2.5× with a transparent background. Retake them when those screens or the button change. The mascot's optimized website assets live in `public/icons`. App Store/Xcode and Google Play exports live in `exports/app-icons`, outside the public web bundle. Run `pnpm icons:generate` to regenerate them from the retained source. See [icon assets and platform requirements](assets/branding/README.md).
 
 The prediction engine is adapted from [Turnip Prophet](https://github.com/mikebryant/ac-nh-turnip-prices), pinned to `c7b7ab3614faf61686da3c535cf204ef568d4cdb`. Preserve its Apache 2.0 license, NOTICE, and copyright attribution in the distributed app. The [engine audit](src/prediction/UPSTREAM_AUDIT.md) documents small-spike fixes, input conventions, and remaining approximation limits; [third-party notices](THIRD_PARTY_NOTICES.md) record attribution. Compatibility with the current game version is not yet independently verified.

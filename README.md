@@ -1,29 +1,43 @@
 <p align="center">
-  <img src="public/icons/brand-192.webp" width="144" alt="Turnip Tycoon mascot holding a turnip" />
+  <a href="https://rakantor.github.io/turnip-tycoon/">
+    <img src="public/og-image.png" width="100%" alt="Turnip Tycoon: turnip price forecasts for Animal Crossing: New Horizons. The mascot says: Hold on to those turnips! A big spike is coming, up to 420 bells." />
+  </a>
 </p>
-
-<h1 align="center">Turnip Tycoon</h1>
-
-<p align="center">Turnip price forecasts for Animal Crossing: New Horizons.</p>
 
 <p align="center">
-  <a href="https://rakantor.github.io/turnip-tycoon/"><strong>Open Turnip Tycoon →</strong></a>
+  <a href="https://rakantor.github.io/turnip-tycoon/"><img src="assets/readme/open-button.png" width="264" alt="Open Turnip Tycoon" /></a>
 </p>
 
-Enter your Sunday buy price and the morning and afternoon prices you know. Leave the rest blank. The first time you open it, pick the name your friends will see, or skip that and go by your friend code’s first four characters. If you already play on another device, connect that profile instead.
-
-- **Explore forecasts.** Tap the chart for possible price ranges and see each selling pattern’s probability.
-- **Compare with friends.** Create or join a group to see everyone’s prices and forecasts together.
-- **Keep your history.** Look back at your past weeks.
-- **Use it anywhere.** Enjoy a layout made for phones and desktops, or install the app from Settings.
-- **Keep going offline.** Once Settings shows **Ready to open offline**, your prices and forecasts stay available. Edits sync when you reconnect, and friends’ prices from your last online visit this week stay readable.
-
-Settings also lets you change your name, connect another device, and create a recovery code.
+<p align="center"><sub>Free · No sign-up · Works offline</sub></p>
 
 ---
 
-[Contributing & development](CONTRIBUTING.md) · Inspired by [Turnip Prophet](https://turnipprophet.io)
+<br>
 
-Copyright 2026 Rakantor. Licensed under the [Apache License, Version 2.0](LICENSE), except for third-party components, which retain their respective licenses. See [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md) for attribution and exceptions.
+Bought turnips from Daisy Mae? Enter the prices Nook's Cranny offers, and Turnip Tycoon tells you where your week is heading and when to sell, before your turnips spoil.
 
-A fan project, not affiliated with Nintendo.
+<p align="center">
+  <img src="assets/readme/screens.webp" width="100%" alt="Four phone screens: this week's prices with the mascot's forecast, a hold-or-sell card with the week's trades, the friends' island board showing the best price right now, and the history page with all-time profit." />
+</p>
+
+## What you can do
+
+- **See what's coming.** Get your week's likely pattern, a price range for every half-day, and the chance of a better price before Saturday.
+- **Track your turnips.** Log what you buy and sell, at whatever price, and see what you made each week and all time.
+- **Sell with friends.** Start a group of up to eight islands and see who has the best price right now. Friends see your prices, never your profit.
+- **Take it anywhere.** Install it on your phone, keep going offline, and carry on from your computer.
+
+<br>
+
+---
+
+<br>
+
+<p align="center">
+  <a href="CONTRIBUTING.md">Contributing &amp; development</a>
+  <br>
+  <br>
+  Inspired by <a href="https://turnipprophet.io">Turnip Prophet</a>.
+  <br>
+  <sub>A fan project, not affiliated with Nintendo.</sub>
+</p>
