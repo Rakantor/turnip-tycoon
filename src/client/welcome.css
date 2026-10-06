@@ -45,6 +45,13 @@
 .welcome-text strong {
   color: var(--text);
 }
+
+.welcome-privacy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
 .welcome-dialog .welcome-field {
   margin: 0;
 }

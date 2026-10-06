@@ -109,28 +109,6 @@
 .group-form-wrap {
   max-width: 600px;
 }
-.segmented-control {
-  display: inline-flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 999px;
-  background: #eaddbc;
-}
-.segmented-control button {
-  min-height: 40px;
-  padding: 0 18px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--heading);
-  font-size: 14px;
-  font-weight: 800;
-}
-.segmented-control button[aria-pressed='true'] {
-  background: var(--leaf);
-  box-shadow: 0 3px 0 var(--leaf-dark);
-  color: #fff;
-}
 .group-entry-form {
   display: flex;
   align-items: flex-end;
@@ -1044,7 +1022,8 @@
     flex-direction: column;
     align-items: stretch;
   }
-  .view-toggle {
+  /* Outranks the shared switch styles, which load after this file. */
+  .segmented-control.view-toggle {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

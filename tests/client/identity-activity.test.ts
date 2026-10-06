@@ -77,6 +77,11 @@ it('rechecks an active tab after a minute without keeping hidden tabs alive', as
   expect(useIdentity()).toMatchObject({ status: 'ready', error: null });
 });
 
+it('lets an unstarted legal page reload for an app update', async () => {
+  const { canReloadIdentity } = await import('../../src/client/data/identity');
+  expect(canReloadIdentity()).toBe(true);
+});
+
 it('accepts edits for a profile reconnected elsewhere while this tab resumes offline', async () => {
   const { useIdentity } = await import('../../src/client/data/identity');
   const { pendingEdits } = await import('../../src/client/data/pending-edits');

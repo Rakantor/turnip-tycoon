@@ -66,8 +66,11 @@ const restartInterruptedCreation = () => controller.restartInterruptedCreation()
 const answerWelcome = (displayName: string | null) => controller.answerWelcome(displayName);
 const startAfterRemoval = () => controller.startAfterRemoval();
 
-/** Read current state after async local writes, rather than a stale render. */
-export const canReloadIdentity = () => controller.state.canReload;
+/**
+ * Read current state after async local writes, rather than a stale render. Public legal
+ * pages never start the controller, so they hold no profile access to lose.
+ */
+export const canReloadIdentity = () => !started || controller.state.canReload;
 
 function start() {
   if (started) return;
@@ -95,9 +98,12 @@ function start() {
   void retry();
 }
 
-export function useIdentity() {
+export function useIdentity(enabled = true) {
   const current = useSyncExternalStore(subscribe, snapshot);
-  useEffect(start, []);
+  // Public legal pages must open even without storage, a profile, or an API connection.
+  useEffect(() => {
+    if (enabled) start();
+  }, [enabled]);
   return {
     ...current,
     retry,

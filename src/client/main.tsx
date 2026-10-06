@@ -24,6 +24,7 @@ import { Connect, Recover, Settings } from './settings';
 import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
 import { About } from './about';
+import { isLegalPath, Privacy, Terms } from './legal';
 import { ProfileRemovalNotice } from './profile-data';
 import { WelcomeDialog } from './welcome';
 import { assetUrl, hashRouting } from './urls';
@@ -46,9 +47,9 @@ function ScrollToPage() {
 }
 
 function App() {
-  const identity = useIdentity();
-  const pwa = usePwa();
   const location = useLocation();
+  const identity = useIdentity(!isLegalPath(location.pathname));
+  const pwa = usePwa();
   return (
     <AppContext.Provider value={identity}>
       <div inert={pwa.updating || undefined}>
@@ -104,7 +105,7 @@ function App() {
           </NavLink>
         </header>
         <ScrollToPage />
-        {identity.removal ? (
+        {identity.removal && !isLegalPath(location.pathname) ? (
           <ProfileRemovalNotice />
         ) : (
           <Routes>
@@ -140,11 +141,13 @@ function App() {
             />
             <Route path="/connect" element={<Connect />} />
             <Route path="/recover" element={<Recover />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )}
         <About />
-        <WelcomeDialog />
+        {!isLegalPath(location.pathname) && <WelcomeDialog />}
       </div>
       <UpdateNotice />
     </AppContext.Provider>

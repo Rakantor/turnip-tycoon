@@ -19,6 +19,18 @@
   color: var(--leaf-dark);
 }
 
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin-bottom: 14px;
+}
+
+.about-links a {
+  padding-block: 8px;
+}
+
 .about-footer pre {
   max-height: 40vh;
   overflow: auto;

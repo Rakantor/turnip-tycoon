@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import projectNotice from '../../NOTICE?raw';
 import { assetUrl } from './urls';
+import { CONTACT_EMAIL } from '../shared/contact';
 import './about.css';
 
 const LICENSE_ROOT = assetUrl('licenses/turnip-prophet');
@@ -29,6 +31,11 @@ export function About() {
 
   return (
     <footer className="about-footer">
+      <nav className="about-links" aria-label="Site information">
+        <Link to="/terms">Terms</Link>
+        <Link to="/privacy">Privacy</Link>
+        <a href={`mailto:${CONTACT_EMAIL}`}>Contact</a>
+      </nav>
       <p>
         Inspired by{' '}
         <a href="https://turnipprophet.io" target="_blank" rel="noreferrer">

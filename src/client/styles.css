@@ -1597,3 +1597,35 @@ span.sunday-turnips {
     transition: none;
   }
 }
+
+/* A pill switch: buttons with aria-pressed, or route links with aria-current. */
+.segmented-control {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #eaddbc;
+}
+
+.segmented-control button,
+.segmented-control a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--heading);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.segmented-control button[aria-pressed='true'],
+.segmented-control a[aria-current='page'] {
+  background: var(--leaf);
+  box-shadow: 0 3px 0 var(--leaf-dark);
+  color: #fff;
+}

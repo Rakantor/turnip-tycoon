@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { ChevronLeft, User } from 'lucide-react';
 import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
 import type { GroupPreview } from '../shared/groups';
@@ -158,7 +158,7 @@ export function WelcomeDialog() {
             <SeatPreview name={name} members={preview?.members ?? null} />
             <div className="field welcome-field">
               <label htmlFor={`${id}-name`}>
-                Your name
+                Your display name
                 <span className="welcome-count">
                   {name.length}/{DISPLAY_NAME_MAX_LENGTH}
                 </span>
@@ -173,6 +173,10 @@ export function WelcomeDialog() {
                 required
               />
             </div>
+            <p className="welcome-privacy">
+              Continuing creates a profile and saves your prices online and on this device. Read our{' '}
+              <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy page</Link>.
+            </p>
             <Button type="submit" disabled={!name.trim()}>
               {preview && !full ? 'Save and join' : 'Save name'}
             </Button>

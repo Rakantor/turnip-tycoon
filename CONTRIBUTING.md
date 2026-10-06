@@ -158,7 +158,30 @@ Using the local Pages preview:
 
 Persistent-profile Chromium checks passed for offline reopening/reconnection, downloaded updates applied offline, invalid-draft protection, preserving another tab's draft, 320-pixel Settings, and manifest/installability checks. Automated private profiles stalled during activation; updates timed out safely. **Physical-device installation and further private-mode update verification remain outstanding.**
 
-## Profile data controls
+## Terms and privacy
+
+The public `/terms` and `/privacy` routes live in `src/client/legal.tsx`. They are available
+from the footer, Settings, and the welcome screen. Direct visits do not start profile lookup
+or creation, and the welcome dialog must not cover them. Keep both routes usable without an
+API connection and in the installed app. These pages describe the hosted service, not every
+possible self-hosted configuration.
+
+The pages are written for players: short, plain sections with the privacy summary first. Keep
+them that way. Put implementation detail here, not on the pages. They state these operator facts,
+confirmed on 2026-10-06:
+
+- The controller is Rakantor, `rakantor.dev@gmail.com`; the operator confirmed the public
+  pseudonym is sufficient where they are established.
+- Supabase hosts the database in the EU on the **Free plan**: no automatic backups, 1-day logs.
+  Cloudflare Workers runs on the **Free plan**: 3-day Workers Logs (`wrangler.jsonc` enables
+  observability with full sampling, including per-request invocation logs). No operator-managed
+  backups exist. **Upgrading either plan changes these facts; update "How long we keep it".**
+- Support emails are deleted within a month after the request is resolved.
+- Transfers: GitHub, Cloudflare, and Google state EU-U.S. Data Privacy Framework certification
+  (with standard contractual clauses as well); Supabase relies on standard contractual clauses
+  for the United States and Singapore.
+
+### Profile data controls
 
 `src/server/profile-data.ts` implements authenticated `DELETE /api/profile` and
 `GET /api/profile/export?section=…&after=…`. Deletion requires the expected player ID and an
@@ -210,6 +233,49 @@ server success. In cookie mode, local cleanup requires acknowledged logout befor
 cleared. Logout also acknowledges already removed or expired credentials and clears the cookie.
 Provider logs, backups, and contact email are outside these endpoints. Before
 restoring any backup, ensure previously erased records cannot become active again.
+
+When changing the pages or the app:
+
+- Keep the data-control wording aligned with shipped behavior, and recheck both pages whenever
+  data collection, group sharing, storage, providers, plans, or account controls change. Give
+  material changes a visible in-app notice and update the date.
+- Keep the contact address monitored for requests the app cannot handle (corrections, objections,
+  restrictions, lost access). Never ask for secret tokens by email. Verify control proportionately,
+  record each request, and reply within a month. If a requester cannot be identified, follow
+  Article 11 rather than assuming ownership.
+- Avoid logging credentials, request bodies, or invite codes. Path identifiers can appear in
+  request logs, as the page states.
+- The stated legal bases are Article 6(1)(b) for the app and support, 6(1)(f) for security logs,
+  and 6(1)(c) for rights requests. Neither dismissing the welcome dialog nor reading a page is
+  consent to unrelated processing.
+
+Facts that must stay accurate:
+
+| Area                                                                                                | Repository evidence                                                                  |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Profile creation waits for a welcome answer, including skipping the name                            | `src/client/data/session-controller.ts`, `src/client/welcome.tsx`                    |
+| Device credentials, code verifiers, memberships, weekly data, trades, sync metadata                 | `src/db/schema.ts`, `src/server/app.ts`, `src/server/http.ts`                        |
+| Invite previews expose group/member names without authentication; joining requires no host approval | `src/server/groups.ts`                                                               |
+| Shared members can read prior weeks; own trade records are excluded                                 | `src/server/groups.ts`, `src/server/weeks.ts`, `src/server/ledger.ts`                |
+| Local profile access, history, unsent edits, and the latest current-week group snapshot             | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`     |
+| Forecasts run locally; fonts are bundled; no third-party audience analytics are included            | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts` |
+| Removing a device or clearing browser data does not delete the player/history                       | `src/server/app.ts`, `src/db/schema.ts`                                              |
+
+Research checked on 2026-10-06: [GDPR text (especially Articles 5, 6, 11–20, 28 and 44–49)](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng),
+[European Commission: principles](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en),
+[handling rights requests](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/dealing-requests-individuals_en),
+[EU guidance on unfair terms](https://europa.eu/youreurope/citizens/consumers/unfair-treatment/unfair-contract-terms/index_en.htm),
+[GitHub Pages IP logging](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection),
+[Cloudflare privacy policy](https://www.cloudflare.com/privacypolicy/),
+[Cloudflare DPA](https://www.cloudflare.com/cloudflare-customer-dpa/),
+[Supabase GDPR and residency guidance](https://supabase.com/docs/guides/security/gdpr-compliance),
+[Supabase DPA](https://supabase.com/legal/customer-resources/data-processing-addendum),
+[Supabase privacy policy](https://supabase.com/privacy),
+[Supabase plan limits](https://supabase.com/pricing),
+[Workers Logs retention](https://developers.cloudflare.com/workers/observability/logs/workers-logs/),
+[GitHub privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement),
+[Google's transfer frameworks](https://policies.google.com/privacy/frameworks), and
+[Google privacy policy](https://policies.google.com/privacy).
 
 ## Assets and licensing
 
