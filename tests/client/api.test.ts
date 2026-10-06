@@ -80,7 +80,7 @@ describe('API credential transport', () => {
     });
   });
 
-  it('keeps cookie transport unchanged when no external API is configured', async () => {
+  it('opts into cookie renewal only while using the browser credential lock', async () => {
     const { api, fetcher } = await transport('');
     api.setSessionToken(token);
     fetcher.mockImplementation(async () => json({ ok: true }));
@@ -89,8 +89,86 @@ describe('API credential transport', () => {
       signal: expect.any(AbortSignal),
       method: 'GET',
       credentials: 'same-origin',
-      headers: {},
+      headers: { 'X-Session-Renewal': '1' },
     });
+  });
+
+  it('does not opt into cookie renewal without cross-tab locks', async () => {
+    vi.stubGlobal('navigator', {});
+    const { api, fetcher } = await transport('');
+    fetcher.mockResolvedValue(json({ ok: true }));
+    await api.request('/session');
+    expect(fetcher.mock.calls[0][1]?.headers).not.toHaveProperty('X-Session-Renewal');
+  });
+
+  it.each(['/recovery', '/pairing/complete', '/logout', '/session'])(
+    'waits for another tab’s delayed cookie response before %s',
+    async (path) => {
+      const { api: first } = await transport('');
+      const { api: second, fetcher } = await transport('');
+      const delayed = defer<Response>();
+      const entered = defer<void>();
+      let cookie = 'old-token';
+      fetcher.mockImplementationOnce(async () => {
+        entered.resolve();
+        const response = await delayed.promise;
+        cookie = 'old-token';
+        return response;
+      });
+      const reading = first.request('/ledger');
+      await entered.promise;
+      fetcher.mockImplementationOnce(async () => {
+        cookie = 'new-token';
+        return json({ ok: true });
+      });
+      const switching = second.request(path, { method: 'POST', body: {} });
+      // Let Web Locks schedule the exclusive request while the shared read is held.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(fetcher).toHaveBeenCalledTimes(1);
+      delayed.resolve(json({ ok: true }));
+      await Promise.all([reading, switching]);
+      expect(fetcher).toHaveBeenCalledTimes(2);
+      expect(cookie).toBe('new-token');
+    },
+  );
+
+  it('keeps ordinary cookie reads concurrent and releases locks on failed requests', async () => {
+    const { api, fetcher } = await transport('');
+    const delayed = defer<Response>();
+    const entered = defer<void>();
+    fetcher.mockImplementationOnce(() => {
+      entered.resolve();
+      return delayed.promise;
+    });
+    const first = api.request('/ledger');
+    await entered.promise;
+    fetcher.mockResolvedValueOnce(json({ ok: true }));
+    await api.request('/devices');
+    delayed.resolve(json({ ok: true }));
+    await first;
+    fetcher.mockRejectedValueOnce(new TypeError('Offline'));
+    await expect(api.request('/ledger')).rejects.toThrow('Offline');
+    fetcher.mockResolvedValueOnce(json({ ok: true }));
+    await api.request('/recovery', { method: 'POST', body: {} });
+  });
+
+  it('keeps a queued write tied to its original profile while credentials change', async () => {
+    const { api, fetcher } = await transport('');
+    api.setExpectedPlayer('old-profile');
+    const delayed = defer<Response>();
+    const entered = defer<void>();
+    fetcher.mockImplementationOnce(() => {
+      entered.resolve();
+      return delayed.promise;
+    });
+    const recovery = api.request('/recovery', { method: 'POST', body: {} });
+    await entered.promise;
+    fetcher.mockResolvedValueOnce(json({ ok: true }));
+    const writing = api.request('/profile', { method: 'PATCH', body: { displayName: 'Old' } });
+    api.setExpectedPlayer('new-profile');
+    delayed.resolve(json({ ok: true }));
+    await Promise.all([recovery, writing]);
+    expect(fetcher.mock.calls[1][1]?.headers).toHaveProperty('X-Player-Id', 'old-profile');
   });
 
   it('does not silently adopt a recovery token before the identity controller accepts its response', async () => {

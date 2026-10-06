@@ -4,7 +4,7 @@ import type { z } from 'zod';
 import type { AppEnvironment } from './app';
 import { ApiError } from './errors';
 
-export const SESSION_SECONDS = 180 * 24 * 60 * 60;
+export const SESSION_SECONDS = 30 * 24 * 60 * 60;
 export const PAIRING_SECONDS = 10 * 60;
 const MAX_BODY_BYTES = 16 * 1024;
 const CORS_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE'];
@@ -90,6 +90,8 @@ export function writeCredential(
   kind: 'session' | 'pairing',
   token: string,
 ): void {
+  // Renewal must not overwrite a new credential or undo logout later in this response.
+  if (kind === 'session') c.set('sessionCredentialWritten', true);
   if (c.get('credentialMode') === 'bearer') return;
   setCookie(c, cookieName(c, kind), token, {
     httpOnly: true,

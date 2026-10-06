@@ -2,7 +2,7 @@ import { and, asc, eq, gt, isNull, sql } from 'drizzle-orm';
 import { Hono, type Context } from 'hono';
 import { connectDatabase, transaction, type Database } from '../db/connection';
 import { devices, pairingChallenges, players, recoveryCredentials } from '../db/schema';
-import { findSession, lockPlayer, newDevice, sessionHash, withSession } from './auth';
+import { findSession, lockPlayer, newDevice, renewSession, sessionHash, withSession } from './auth';
 import { defaultDisplayName } from '../shared/api';
 import { ApiError } from './errors';
 import {
@@ -29,8 +29,16 @@ import {
 import { registerWeekRoutes } from './weeks';
 import { registerLedgerRoutes } from './ledger';
 import { registerGroupRoutes } from './groups';
+import { registerProfileDataRoutes } from './profile-data';
 
-export type AppEnvironment = { Variables: { db: Database; credentialMode: CredentialMode } };
+export type AppEnvironment = {
+  Variables: {
+    db: Database;
+    credentialMode: CredentialMode;
+    sessionTokenHash?: string;
+    sessionCredentialWritten?: boolean;
+  };
+};
 
 export interface AppOptions {
   frontendOrigin?: string;
@@ -93,6 +101,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
           '/api/pairing',
           '/api/pairing/complete',
           '/api/recovery',
+          '/api/logout',
         ].includes(c.req.path)
       ) {
         const session = await findSession(db, await sessionHash(c));
@@ -104,6 +113,31 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
           );
       }
       await next();
+      const tokenHash = c.get('sessionTokenHash');
+      if (
+        c.res.ok &&
+        tokenHash &&
+        !c.get('sessionCredentialWritten') &&
+        (credentialMode === 'bearer' || c.req.header('X-Session-Renewal') === '1')
+      ) {
+        // Public requests and failed authentication do not keep a device connected.
+        // Cookie clients opt in only while holding the browser's credential lock.
+        // Otherwise a delayed response could overwrite a recovery/pairing cookie.
+        try {
+          if (await renewSession(db, tokenHash))
+            writeCredential(c, 'session', readCredential(c, 'session')!);
+        } catch (error) {
+          // Renewal is best-effort: never replace a committed response, such as a new
+          // recovery code, with an error.
+          console.error(
+            JSON.stringify({
+              event: 'session_renewal_failed',
+              name: error instanceof Error ? error.name : 'unknown',
+              path: c.req.path,
+            }),
+          );
+        }
+      }
     } finally {
       await client.end();
     }
@@ -119,7 +153,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
     const token = readCredential(c, 'session');
     if (token) {
       try {
-        const session = await findSession(c.get('db'), await hashSecret(token));
+        const session = await findSession(c.get('db'), await sessionHash(c));
         return c.json({
           ...session,
           ...(credentialMode === 'bearer' ? { sessionToken: token } : {}),
@@ -217,9 +251,31 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
 
   app.post('/api/logout', async (c) => {
     await readJson(c, emptyInput);
-    await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
-      await tx.delete(devices).where(eq(devices.id, session.deviceId));
-    });
+    const token = readCredential(c, 'session');
+    if (token) {
+      const tokenHash = await hashSecret(token);
+      try {
+        await transaction(c.get('db'), async (tx) => {
+          // Expired credentials may end their own access, but cannot read or edit a profile.
+          const [device] = await tx.select().from(devices).where(eq(devices.tokenHash, tokenHash));
+          if (!device) return;
+          const expectedPlayer = c.req.header('X-Player-Id');
+          if (expectedPlayer && device.playerId !== expectedPlayer)
+            throw new ApiError(
+              409,
+              'PLAYER_CHANGED',
+              'This browser is connected to a different player.',
+            );
+          await lockPlayer(tx, device.playerId);
+          await tx.delete(devices).where(eq(devices.id, device.id));
+        });
+      } catch (error) {
+        // A concurrent profile deletion already ended this credential's access.
+        if (!(error instanceof ApiError) || error.code !== 'DEVICE_REMOVED') throw error;
+      }
+    }
+    // Also clear a missing, expired, or already-revoked cookie. The client can retry
+    // safely after a lost acknowledgement without retaining an unresolved logout.
     writeCredential(c, 'session', '');
     return c.json({ ok: true });
   });
@@ -409,6 +465,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
   registerWeekRoutes(app);
   registerLedgerRoutes(app);
   registerGroupRoutes(app);
+  registerProfileDataRoutes(app);
 
   app.notFound((c) =>
     c.json({ error: { code: 'NOT_FOUND', message: 'This API endpoint does not exist.' } }, 404),

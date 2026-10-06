@@ -24,6 +24,7 @@ import { Connect, Recover, Settings } from './settings';
 import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
 import { About } from './about';
+import { ProfileRemovalNotice } from './profile-data';
 import { WelcomeDialog } from './welcome';
 import { assetUrl, hashRouting } from './urls';
 import { startPwa, usePwa } from './pwa';
@@ -103,41 +104,45 @@ function App() {
           </NavLink>
         </header>
         <ScrollToPage />
-        <Routes>
-          <Route path="/" element={<Calculator />} />
-          <Route path="/weeks/:weekStart" element={<Calculator />} />
-          <Route
-            path="/groups"
-            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/groups/join"
-            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/groups/:groupId"
-            element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/players/:playerId/weeks/:weekStart"
-            element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/players/:playerId/history"
-            element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/history"
-            element={<History key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route
-            path="/settings"
-            element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
-          />
-          <Route path="/connect" element={<Connect />} />
-          <Route path="/recover" element={<Recover />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        {identity.removal ? (
+          <ProfileRemovalNotice />
+        ) : (
+          <Routes>
+            <Route path="/" element={<Calculator />} />
+            <Route path="/weeks/:weekStart" element={<Calculator />} />
+            <Route
+              path="/groups"
+              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/groups/join"
+              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/groups/:groupId"
+              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/players/:playerId/weeks/:weekStart"
+              element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/players/:playerId/history"
+              element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/history"
+              element={<History key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route
+              path="/settings"
+              element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
+            />
+            <Route path="/connect" element={<Connect />} />
+            <Route path="/recover" element={<Recover />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        )}
         <About />
         <WelcomeDialog />
       </div>

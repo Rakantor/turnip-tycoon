@@ -8,6 +8,7 @@ import { activeIdentity, weekStore } from './runtime';
 import { weekKey } from './sync';
 import { mergeWeek } from './merge';
 import { pendingEdits, withPendingEdits } from './pending-edits';
+import { writeForProfile } from './profile-storage';
 
 export type SaveStatus =
   'loading' | 'local' | 'syncing' | 'saved' | 'offline' | 'error' | 'conflict';
@@ -76,7 +77,9 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
         return;
       }
       await weekStore.sync(owner, weekStart);
-      await database.meta.put({ key: `refresh:${key}`, value: Date.now() });
+      await writeForProfile(database, owner, [], async () => {
+        await database.meta.put({ key: `refresh:${key}`, value: Date.now() });
+      });
       setFailure((current) => (current?.key === key ? null : current));
     } catch (error) {
       reportFailure(error);

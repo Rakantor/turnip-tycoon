@@ -1,5 +1,6 @@
 import { totalsOf, type LedgerResponse, type LedgerWeek } from '../../shared/ledger';
 import { type LocalWeek, ownWeek, type TurnipDatabase } from './database';
+import { writeForProfile } from './profile-storage';
 
 export interface SavedLedger {
   weeks: LedgerWeek[];
@@ -37,7 +38,9 @@ export class LedgerCache {
     const { weeks } = await this.transport.get();
     // The response belongs to whoever was signed in when it was requested.
     if (!this.transport.isActive(owner)) return;
-    await this.db.meta.put({ key: keyFor(owner), value: { weeks, fetchedAt: now } });
+    await writeForProfile(this.db, owner, [], async () => {
+      await this.db.meta.put({ key: keyFor(owner), value: { weeks, fetchedAt: now } });
+    });
   }
 }
 

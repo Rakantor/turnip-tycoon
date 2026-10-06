@@ -5,6 +5,9 @@ import { ApiError } from '../../src/client/data/api';
 import { TurnipDatabase } from '../../src/client/data/database';
 import { SessionVault, IdentityChangedError } from '../../src/client/data/session-vault';
 import { SessionController } from '../../src/client/data/session-controller';
+import { WeekStore, weekKey } from '../../src/client/data/sync';
+import { PendingEdits, withPendingEdits } from '../../src/client/data/pending-edits';
+import { emptyOwnWeek } from '../../src/shared/week';
 
 const tokenA = 'a'.repeat(64);
 const tokenB = 'b'.repeat(64);
@@ -36,6 +39,7 @@ function harness(vault: SessionVault, lock = serialLock(), answered = true) {
   const currentResponse = vi.fn(() => true);
   const attach = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
   const forget = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
+  const forgetShared = vi.fn<(owner: string) => Promise<void>>().mockResolvedValue(undefined);
   const controller = new SessionController({
     vault,
     lock,
@@ -48,6 +52,7 @@ function harness(vault: SessionVault, lock = serialLock(), answered = true) {
     invalidateResponses: () => undefined,
     publish: () => undefined,
     attach,
+    forgetShared,
     forget,
     broadcast,
     deviceName: () => 'Test device',
@@ -59,6 +64,7 @@ function harness(vault: SessionVault, lock = serialLock(), answered = true) {
     broadcast,
     currentResponse,
     attach,
+    forgetShared,
     forget,
     credential: () => credential,
   };
@@ -267,11 +273,90 @@ describe('silent profile connection', () => {
     const { vault } = makeVault();
     await vault.save(session('one'), tokenA, null, () => true);
     const h = harness(vault);
-    h.network.mockRejectedValue(unauthorized());
+    h.network.mockRejectedValue(new ApiError(401, 'DEVICE_REMOVED', 'Device removed'));
     await h.controller.retry();
     await h.controller.retry();
     expect(h.network.mock.calls.every(([, options]) => !options?.method)).toBe(true);
-    expect(h.controller.state).toMatchObject({ status: 'error', session: session('one') });
+    expect(h.controller.state).toMatchObject({
+      status: 'error',
+      session: null,
+      removal: { owner: 'one', phase: 'disconnected' },
+    });
+    expect(h.forget).toHaveBeenCalledWith('one');
+  });
+
+  it.each([
+    { bearer: true, code: 'DEVICE_EXPIRED' },
+    { bearer: false, code: 'DEVICE_EXPIRED' },
+    { bearer: true, code: 'UNAUTHENTICATED' },
+    { bearer: false, code: 'UNAUTHENTICATED' },
+    { bearer: true, code: 'UNKNOWN' },
+    { bearer: false, code: 'UNKNOWN' },
+  ])('preserves local work for $code with bearer=$bearer', async ({ bearer, code }) => {
+    const { db, vault } = makeVault(bearer);
+    const savedToken = bearer ? tokenA : null;
+    await vault.save(session('one'), savedToken, null, () => true);
+    const store = new WeekStore(db, {
+      get: async () => emptyOwnWeek('one', '2026-10-04'),
+      put: vi.fn(),
+      isActive: () => false,
+    });
+    await store.edit('one', '2026-10-04', { purchasePrice: 100 });
+    await store.edit('unassigned', '2026-10-04', { purchasePrice: 110 });
+    const before = await db.weeks.toArray();
+    const h = harness(vault);
+    h.network.mockRejectedValue(new ApiError(401, code, 'Reconnect'));
+    await h.controller.retry();
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({
+      status: 'error',
+      session: session('one'),
+      removal: null,
+      needsProfile: false,
+    });
+    expect(h.controller.state.error).toContain('unsent edits are still on this device');
+    expect(await db.weeks.toArray()).toEqual(before);
+    expect(await vault.read()).toMatchObject({ session: session('one'), token: savedToken });
+    expect(h.forget).not.toHaveBeenCalled();
+    expect(h.forgetShared).toHaveBeenCalledWith('one');
+    expect(h.attach).not.toHaveBeenCalled();
+    expect(h.network.mock.calls.every(([, options]) => !options?.method)).toBe(true);
+  });
+
+  it('uploads retained edits after reconnecting the same expired profile', async () => {
+    const { db, vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    const put = vi.fn(async () => ({ revision: 1 }));
+    const store = new WeekStore(db, {
+      get: async () => emptyOwnWeek('one', '2026-10-04'),
+      put,
+      isActive: () => h.controller.state.status === 'ready',
+    });
+    await store.edit('one', '2026-10-04', { purchasePrice: 100 });
+    h.network.mockRejectedValue(new ApiError(401, 'DEVICE_EXPIRED', 'Expired'));
+    await h.controller.retry();
+    expect(put).not.toHaveBeenCalled();
+    h.attach.mockImplementation((owner) => store.sync(owner, '2026-10-04'));
+    await h.controller.adopt({ ...session('one'), deviceId: 'reconnected', sessionToken: tokenB });
+    expect(h.controller.state.status).toBe('ready');
+    expect(put).toHaveBeenCalledWith('2026-10-04', expect.objectContaining({ purchasePrice: 100 }));
+    expect((await db.weeks.toArray())[0].dirty).toBe(false);
+  });
+
+  it('still clears an expired profile if a later check confirms device removal', async () => {
+    const { db, vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockRejectedValueOnce(new ApiError(401, 'DEVICE_EXPIRED', 'Expired'));
+    await h.controller.retry();
+    expect(h.credential()).toBe(tokenA);
+    expect(h.controller.state.removal).toBeNull();
+    h.network.mockRejectedValueOnce(new ApiError(401, 'DEVICE_REMOVED', 'Removed'));
+    await h.controller.retry();
+    expect(h.controller.state.removal?.phase).toBe('disconnected');
+    expect(h.credential()).toBeNull();
+    expect(await db.weeks.toArray()).toEqual([]);
     expect(h.forget).toHaveBeenCalledWith('one');
   });
 
@@ -461,5 +546,374 @@ describe('silent profile connection', () => {
     expect(second.controller.state.session).toEqual(session('two'));
     expect(second.credential()).toBe(tokenB);
     expect(await vault.read()).toMatchObject({ token: tokenB, session: session('two') });
+  });
+});
+
+describe('profile deletion lifecycle', () => {
+  it('keeps cleanup history through reset and reconnection without clearing a new tab’s drafts', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    await vault.finishRemoval('one', 'disconnected');
+    const removed = await vault.read();
+    expect(removed.cleanups?.one).toEqual(expect.any(String));
+    await vault.resetRemoval(removed.revision);
+    expect((await vault.read()).cleanups).toEqual(removed.cleanups);
+    await vault.save(session('one'), tokenB, (await vault.read()).revision, () => true);
+    expect((await vault.read()).cleanups).toEqual(removed.cleanups);
+    const h = harness(vault);
+    h.network.mockResolvedValue(session('one'));
+    await h.controller.retry();
+    expect(h.forget).not.toHaveBeenCalled();
+    await vault.finishRemoval('one', 'disconnected');
+    expect((await vault.read()).cleanups?.one).not.toBe(removed.cleanups?.one);
+    await vault.resetRemoval((await vault.read()).revision);
+    await vault.save(session('one'), tokenB, (await vault.read()).revision, () => true);
+    await h.controller.retry();
+    expect(h.forget).toHaveBeenCalledWith('one');
+  });
+
+  it.each([false, true])(
+    'forgets retained patches and snapshots after cleanup (suspended=%s)',
+    async (suspended) => {
+      const { db, vault } = makeVault();
+      await vault.save(session('one'), tokenA, null, () => true);
+      const store = new WeekStore(db, {
+        get: async () => ({ ...emptyOwnWeek('one', '2026-10-04'), purchasePrice: 110 }),
+        put: vi.fn(),
+        isActive: () => true,
+      });
+      const pending = new PendingEdits(async (owner, week, patch) => {
+        await store.edit(owner, week, patch);
+        return db.weeks.get(weekKey(owner, week));
+      });
+      await pending.enqueue('one', '2026-10-04', { purchasePrice: 100 });
+      await pending.enqueue('one', '2026-10-04', { purchasePrice: 101 });
+      vi.spyOn(store, 'edit').mockRejectedValueOnce(new Error('Storage full'));
+      await expect(pending.enqueue('one', '2026-10-04', { purchasePrice: 102 })).rejects.toThrow();
+      const h = harness(vault);
+      h.forget.mockImplementation(async (owner) => {
+        pending.forget(owner);
+        pending.forget('unassigned');
+      });
+      h.attach.mockImplementation(async (owner) => {
+        pending.allow(owner);
+      });
+      h.network.mockResolvedValue(session('one'));
+      await h.controller.retry();
+      await vault.finishRemoval('one', 'disconnected');
+      if (!suspended) {
+        await h.controller.retry();
+        expect(pending.snapshot('one', '2026-10-04').durable).toBeUndefined();
+      }
+      await vault.resetRemoval((await vault.read()).revision);
+      await vault.save(session('one'), tokenB, (await vault.read()).revision, () => true);
+      await h.controller.retry();
+      expect(pending.snapshot('one', '2026-10-04')).toMatchObject({ edits: [] });
+      expect(pending.snapshot('one', '2026-10-04').durable).toBeUndefined();
+      await pending.flushAll();
+      await store.sync('one', '2026-10-04');
+      const row = (await db.weeks.get(weekKey('one', '2026-10-04')))!;
+      expect(
+        withPendingEdits(row.data, row.version, pending.snapshot('one', row.weekStart))
+          .purchasePrice,
+      ).toBe(110);
+    },
+  );
+
+  it('drains a refresh received while removal waits for another tab to switch identity', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const lock = serialLock();
+    const h = harness(vault, lock);
+    h.network.mockResolvedValue(session('one'));
+    await h.controller.retry();
+    const entered = defer<void>(),
+      release = defer<void>();
+    const switching = lock(async () => {
+      await vault.save(session('two'), tokenB, (await vault.read()).revision, () => true);
+      entered.resolve();
+      await release.promise;
+    });
+    await entered.promise;
+    const removal = h.controller.removeProfile('one');
+    const rejected = expect(removal).rejects.toBeInstanceOf(IdentityChangedError);
+    h.controller.refresh();
+    h.network.mockResolvedValue(session('two'));
+    release.resolve();
+    await switching;
+    await rejected;
+    await vi.waitFor(() =>
+      expect(h.controller.state).toMatchObject({
+        status: 'ready',
+        session: session('two'),
+        removal: null,
+      }),
+    );
+  });
+
+  it('restores connectivity automatically if saving deletion intent fails', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValue(session('one'));
+    await h.controller.retry();
+    vi.spyOn(vault, 'beginRemoval').mockRejectedValueOnce(new Error('Storage failed'));
+    await expect(h.controller.removeProfile('one')).rejects.toThrow('Storage failed');
+    await vi.waitFor(() =>
+      expect(h.controller.state).toMatchObject({
+        status: 'ready',
+        session: session('one'),
+        removal: null,
+        error: 'Storage failed',
+      }),
+    );
+  });
+
+  it.each([
+    [400, 'INVALID_INPUT'],
+    [403, 'INVALID_ORIGIN'],
+    [409, 'PLAYER_CHANGED'],
+    [401, 'UNAUTHENTICATED'],
+    [401, 'DEVICE_EXPIRED'],
+    [401, 'DEVICE_REMOVED'],
+  ] as const)(
+    'resumes the profile after a definite %i %s rejection without erasing edits',
+    async (status, code) => {
+      const { vault, db } = makeVault();
+      await vault.save(session('one'), tokenA, null, () => true);
+      const store = new WeekStore(db, { get: vi.fn(), put: vi.fn(), isActive: () => false });
+      await store.edit('one', '2026-10-04', { purchasePrice: 100 });
+      const h = harness(vault);
+      h.network.mockResolvedValue(session('one'));
+      await h.controller.retry();
+      h.network.mockRejectedValueOnce(new ApiError(status, code, 'Rejected before deletion'));
+      await expect(h.controller.removeProfile('one')).rejects.toThrow('Rejected before deletion');
+      await vi.waitFor(() => expect(h.controller.state.status).toBe('ready'));
+      expect(h.controller.state.removal).toBeNull();
+      expect(await db.meta.get('blocked-profile:one')).toBeUndefined();
+      expect((await db.weeks.toArray())[0]).toMatchObject({
+        dirty: true,
+        data: { purchasePrice: 100 },
+      });
+      expect(h.forget).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    new TypeError('Connection lost'),
+    new ApiError(500, 'INTERNAL_ERROR', 'Unknown outcome'),
+  ])(
+    'keeps an earlier ambiguous deletion unresolved even after a definite rejection',
+    async (error) => {
+      const { vault } = makeVault();
+      await vault.save(session('one'), tokenA, null, () => true);
+      const h = harness(vault);
+      h.network.mockResolvedValue(session('one'));
+      await h.controller.retry();
+      h.network.mockRejectedValueOnce(error);
+      await expect(h.controller.removeProfile('one')).rejects.toThrow();
+      const reloaded = harness(vault);
+      await reloaded.controller.retry();
+      reloaded.network.mockRejectedValueOnce(new ApiError(409, 'PLAYER_CHANGED', 'Changed'));
+      await expect(reloaded.controller.removeProfile('one')).rejects.toThrow();
+      expect((await vault.read()).removal?.phase).toBe('pending');
+      expect(reloaded.controller.state.removal?.phase).toBe('pending');
+    },
+  );
+
+  it('keeps an unresolved deletion’s error after a refresh requested during the attempt', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValue(session('one'));
+    await h.controller.retry();
+    let fail!: (error: unknown) => void;
+    h.network.mockReturnValueOnce(
+      new Promise((_, reject) => {
+        fail = reject;
+      }),
+    );
+    const removal = h.controller.removeProfile('one');
+    const rejected = expect(removal).rejects.toThrow('Unknown outcome');
+    await vi.waitFor(() => expect(h.network).toHaveBeenCalledWith('/profile', expect.anything()));
+    h.controller.refresh();
+    fail(new ApiError(500, 'INTERNAL_ERROR', 'Unknown outcome'));
+    await rejected;
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({
+      status: 'error',
+      error: 'Unknown outcome',
+      removal: { phase: 'pending' },
+    });
+  });
+
+  it('connects even if forgetting an earlier cleanup’s cached snapshots fails', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValue(session('one'));
+    await h.controller.retry();
+    await vault.finishRemoval('one', 'disconnected');
+    await vault.resetRemoval((await vault.read()).revision);
+    await vault.save(session('one'), tokenB, (await vault.read()).revision, () => true);
+    h.forget.mockRejectedValue(new Error('Storage failed'));
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({ status: 'ready', session: session('one') });
+    await h.controller.retry();
+    expect(h.forget).toHaveBeenCalledTimes(1);
+  });
+
+  it('forgets a completed removal’s copies once across repeated checks', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    h.network.mockResolvedValueOnce({ deletedPlayerId: 'one' });
+    await h.controller.removeProfile('one');
+    await h.controller.retry();
+    await h.controller.retry();
+    expect(h.forget).toHaveBeenCalledTimes(1);
+    const reloaded = harness(vault);
+    await reloaded.controller.retry();
+    await reloaded.controller.retry();
+    expect(reloaded.forget).toHaveBeenCalledTimes(1);
+  });
+
+  it('cannot cancel an attempt after a different tab replaces its pending revision', async () => {
+    const { vault } = makeVault();
+    const revision = await vault.save(session('one'), tokenA, null, () => true);
+    const first = await vault.beginRemoval('one', revision);
+    const second = await vault.beginRemoval('one', first);
+    await expect(vault.cancelRemoval('one', first)).rejects.toBeInstanceOf(IdentityChangedError);
+    expect((await vault.read()).revision).toBe(second);
+    expect((await vault.read()).removal?.phase).toBe('pending');
+  });
+
+  it('keeps cookie logout unresolved until the server acknowledges it', async () => {
+    const { vault, db } = makeVault(false);
+    await vault.save(session('one'), null, null, () => true);
+    const store = new WeekStore(db, { get: vi.fn(), put: vi.fn(), isActive: () => false });
+    await store.edit('one', '2026-10-04', { purchasePrice: 100 });
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    h.network.mockRejectedValue(new TypeError('Offline'));
+    await expect(h.controller.removeProfile('one')).rejects.toThrow();
+    await expect(h.controller.clearRemovalAccess()).rejects.toThrow();
+    expect(h.controller.state.removal?.phase).toBe('pending');
+    expect(await db.weeks.count()).toBe(1);
+    expect(h.forget).not.toHaveBeenCalled();
+    await expect(h.controller.startAfterRemoval()).rejects.toBeInstanceOf(IdentityChangedError);
+    await h.controller.retry();
+    h.network.mockResolvedValueOnce({ ok: true });
+    await h.controller.clearRemovalAccess();
+    expect(h.controller.state.removal?.phase).toBe('disconnected');
+    expect(await db.weeks.count()).toBe(0);
+    h.network.mockRejectedValue(unauthorized());
+    await h.controller.startAfterRemoval();
+    expect(h.controller.state).toMatchObject({ session: null, needsProfile: true });
+  });
+
+  it('can delete a legacy cookie profile even if the normal upgrade save failed', async () => {
+    const { vault, db } = makeVault(false);
+    await db.meta.put({ key: 'session', value: session('one') });
+    vi.spyOn(vault, 'save').mockRejectedValueOnce(new Error('Storage temporarily unavailable'));
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    expect((await vault.read()).revision).toBeNull();
+    h.network.mockResolvedValueOnce({ deletedPlayerId: 'one' });
+    await h.controller.removeProfile('one');
+    expect((await vault.read()).removal?.phase).toBe('deleted');
+  });
+
+  it('clears access after confirmation and waits for an explicit return to welcome', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    h.network.mockResolvedValueOnce({ deletedPlayerId: 'one' });
+    await h.controller.removeProfile('one');
+    expect(h.controller.state).toMatchObject({
+      session: null,
+      needsProfile: false,
+      removal: { phase: 'deleted' },
+    });
+    expect(h.credential()).toBeNull();
+    expect(await vault.read()).toMatchObject({
+      session: null,
+      token: null,
+      removal: { phase: 'deleted' },
+    });
+    h.network.mockClear();
+    await h.controller.retry();
+    expect(h.network).not.toHaveBeenCalled();
+    h.network.mockRejectedValue(unauthorized());
+    await h.controller.startAfterRemoval();
+    expect(h.controller.state).toMatchObject({ needsProfile: true, removal: null });
+    expect(h.network.mock.calls.every(([, options]) => options?.method !== 'POST')).toBe(true);
+  });
+
+  it('retains an interrupted deletion across reloads without resuming uploads or creating profiles', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    h.network.mockRejectedValueOnce(new TypeError('Connection lost'));
+    await expect(h.controller.removeProfile('one')).rejects.toThrow('Connection lost');
+    expect(await vault.read()).toMatchObject({ token: tokenA, removal: { phase: 'pending' } });
+    const reloaded = harness(vault);
+    await reloaded.controller.retry();
+    expect(reloaded.network).not.toHaveBeenCalled();
+    expect(reloaded.attach).not.toHaveBeenCalled();
+    expect(reloaded.controller.state.needsProfile).toBe(false);
+    reloaded.network.mockResolvedValueOnce({ deletedPlayerId: 'one' });
+    await reloaded.controller.removeProfile('one');
+    expect(reloaded.network).toHaveBeenCalledExactlyOnceWith('/profile', {
+      method: 'DELETE',
+      body: { playerId: 'one', confirm: 'delete' },
+    });
+    expect(reloaded.controller.state.removal?.phase).toBe('deleted');
+  });
+
+  it('does not claim deletion when a retry only proves that access is gone', async () => {
+    const { vault } = makeVault();
+    const revision = await vault.save(session('one'), tokenA, null, () => true);
+    await vault.beginRemoval('one', revision);
+    const h = harness(vault);
+    await h.controller.retry();
+    h.network.mockRejectedValue(unauthorized());
+    await expect(h.controller.removeProfile('one')).rejects.toThrow();
+    expect(h.controller.state.removal?.phase).toBe('pending');
+    await h.controller.clearRemovalAccess();
+    expect(h.controller.state.removal?.phase).toBe('disconnected');
+    expect(h.credential()).toBeNull();
+  });
+
+  it('cannot delete the profile another tab switched to or send a request without durable intent', async () => {
+    const { vault } = makeVault();
+    await vault.save(session('one'), tokenA, null, () => true);
+    const h = harness(vault);
+    h.network.mockResolvedValueOnce(session('one'));
+    await h.controller.retry();
+    const stored = await vault.read();
+    await vault.save(session('two'), tokenB, stored.revision, () => true);
+    h.network.mockClear();
+    await expect(h.controller.removeProfile('one')).rejects.toBeInstanceOf(IdentityChangedError);
+    expect(h.network).not.toHaveBeenCalled();
+    expect(await vault.read()).toMatchObject({ session: session('two'), token: tokenB });
+  });
+
+  it('cannot restore a delayed identity response after a deletion intent is saved', async () => {
+    const { vault } = makeVault();
+    const revision = await vault.save(session('one'), tokenA, null, () => true);
+    await vault.beginRemoval('one', revision);
+    await expect(vault.save(session('one'), tokenA, revision, () => true)).rejects.toBeInstanceOf(
+      IdentityChangedError,
+    );
+    expect(await vault.read()).toMatchObject({ removal: { phase: 'pending' } });
   });
 });

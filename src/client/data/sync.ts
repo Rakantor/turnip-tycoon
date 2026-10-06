@@ -4,6 +4,7 @@ import { type LocalWeek, ownWeek, type StoredWeek, TurnipDatabase } from './data
 import { mergeWeek, sameEntries, sameTrades } from './merge';
 import { shiftWeek } from '../../shared/calendar';
 import { inferPreviousPattern } from '../../prediction/previous-pattern';
+import { profileBlocked, ProfileWriteBlockedError, writeForProfile } from './profile-storage';
 
 export interface WeekTransport {
   get(weekStart: string): Promise<StoredWeek>;
@@ -100,7 +101,7 @@ export class WeekStore {
   /** A new local week can use cached history even while disconnected. */
   async initialize(owner: string, weekStart: string): Promise<void> {
     if (owner === 'unassigned') return;
-    await this.db.transaction('rw', this.db.weeks, async () => {
+    await writeForProfile(this.db, owner, [this.db.weeks], async () => {
       if (await this.db.weeks.get(weekKey(owner, weekStart))) return;
       await this.db.weeks.put(await this.freshWithDefaults(owner, weekStart));
     });
@@ -112,7 +113,7 @@ export class WeekStore {
     patch: Partial<OwnWeeklyInputs>,
     priceSlots?: number[],
   ): Promise<void> {
-    await this.db.transaction('rw', this.db.weeks, async () => {
+    const saved = await writeForProfile(this.db, owner, [this.db.weeks], async () => {
       const row =
         (await this.db.weeks.get(weekKey(owner, weekStart))) ??
         (await this.freshWithDefaults(owner, weekStart));
@@ -136,12 +137,14 @@ export class WeekStore {
       row.version++;
       row.dirty = true;
       await this.db.weeks.put(row);
+      return true;
     });
+    if (!saved) throw new ProfileWriteBlockedError();
   }
 
   /** Only anonymous, pre-bootstrap drafts may transfer to a resolved identity. */
   async attachDrafts(owner: string): Promise<void> {
-    await this.db.transaction('rw', this.db.weeks, async () => {
+    await writeForProfile(this.db, owner, [this.db.weeks], async () => {
       const drafts = await this.db.weeks.where('owner').equals('unassigned').toArray();
       for (const draft of drafts) {
         const target =
@@ -160,6 +163,7 @@ export class WeekStore {
   }
 
   async sync(owner: string, weekStart: string): Promise<void> {
+    if (await profileBlocked(this.db, owner)) return;
     const key = weekKey(owner, weekStart);
     const existing = this.flights.get(key);
     if (existing) {
@@ -193,7 +197,7 @@ export class WeekStore {
     if (!row?.pending) {
       const remote = await this.transport.get(weekStart);
       if (!this.transport.isActive(owner)) return;
-      await this.db.transaction('rw', this.db.weeks, async () => {
+      await writeForProfile(this.db, owner, [this.db.weeks], async () => {
         row = (await this.db.weeks.get(key)) ?? fresh(owner, weekStart);
         if (row.pending || row.conflict) return;
         // Only a never-saved week receives a default. A saved Unknown is a choice.
@@ -224,7 +228,7 @@ export class WeekStore {
     // Each combined retry follows another device's save; stop after a few in a row.
     let combined = 0;
     while (this.transport.isActive(owner)) {
-      const pending = await this.db.transaction('rw', this.db.weeks, async () => {
+      const pending = await writeForProfile(this.db, owner, [this.db.weeks], async () => {
         const current = await this.db.weeks.get(key);
         if (!current || current.conflict || !current.dirty) return null;
         if (!current.pending) {
@@ -245,7 +249,7 @@ export class WeekStore {
       try {
         const { version, ...body } = pending;
         const result = await this.transport.put(weekStart, body);
-        await this.db.transaction('rw', this.db.weeks, async () => {
+        await writeForProfile(this.db, owner, [this.db.weeks], async () => {
           const current = await this.db.weeks.get(key);
           if (current?.pending?.mutationId !== pending.mutationId) return;
           current.data.revision = result.revision;
@@ -274,7 +278,7 @@ export class WeekStore {
       } catch (error) {
         if (error instanceof ApiError && error.code === 'REVISION_CONFLICT' && error.week) {
           const remote = error.week;
-          const resolved = await this.db.transaction('rw', this.db.weeks, async () => {
+          const resolved = await writeForProfile(this.db, owner, [this.db.weeks], async () => {
             const current = await this.db.weeks.get(key);
             if (current?.pending?.mutationId !== pending.mutationId) return false;
             reconcile(current, remote);
@@ -291,7 +295,7 @@ export class WeekStore {
   }
 
   async resolve(owner: string, weekStart: string, choice: 'local' | 'remote'): Promise<void> {
-    await this.db.transaction('rw', this.db.weeks, async () => {
+    await writeForProfile(this.db, owner, [this.db.weeks], async () => {
       const row = await this.db.weeks.get(weekKey(owner, weekStart));
       if (!row?.conflict) return;
       if (row.base) {

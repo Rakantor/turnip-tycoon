@@ -35,8 +35,26 @@ export class PendingEdits {
   private flights = new Map<string, Promise<void>>();
   private listeners = new Set<() => void>();
   private sequence = 0;
+  private blocked = new Set<string>();
+  private generations = new Map<string, number>();
 
   constructor(private persist: Persist) {}
+
+  allow(owner: string) {
+    this.blocked.delete(owner);
+    this.blocked.delete('unassigned');
+  }
+
+  forget(owner: string) {
+    this.blocked.add(owner);
+    this.generations.set(owner, (this.generations.get(owner) ?? 0) + 1);
+    for (const [key, identity] of this.owners) {
+      if (identity.owner !== owner) continue;
+      this.entries.delete(key);
+      this.owners.delete(key);
+    }
+    for (const listener of this.listeners) listener();
+  }
 
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
@@ -60,6 +78,8 @@ export class PendingEdits {
     patch: Partial<OwnWeeklyInputs>,
     priceSlots?: number[],
   ): Promise<void> {
+    // Only erased profiles that are not shown stay blocked; publishing a profile unblocks it.
+    if (this.blocked.has(owner)) return Promise.resolve();
     const key = weekKey(owner, weekStart);
     const current = this.snapshot(owner, weekStart);
     const sequence = ++this.sequence;
@@ -91,11 +111,13 @@ export class PendingEdits {
       if (this.snapshot(owner, weekStart).edits.length) await this.flush(owner, weekStart);
       return;
     }
+    const generation = this.generations.get(owner);
     const run = async () => {
       while (this.snapshot(owner, weekStart).edits.length) {
         const edit = this.snapshot(owner, weekStart).edits[0];
         try {
           const durable = await this.persist(owner, weekStart, edit.patch, edit.priceSlots);
+          if (this.blocked.has(owner) || generation !== this.generations.get(owner)) return;
           const latest = this.snapshot(owner, weekStart);
           this.publish(key, {
             ...latest,
@@ -104,6 +126,7 @@ export class PendingEdits {
             durable: durable ?? latest.durable,
           });
         } catch (error) {
+          if (this.blocked.has(owner) || generation !== this.generations.get(owner)) return;
           this.publish(key, { ...this.snapshot(owner, weekStart), error: LOCAL_SAVE_ERROR });
           throw error;
         }
@@ -116,6 +139,15 @@ export class PendingEdits {
     } finally {
       this.flights.delete(key);
     }
+  }
+
+  /** Save this profile's retained edits locally before exporting its data. */
+  async flushOwner(owner: string): Promise<void> {
+    await Promise.all(
+      [...this.owners.values()]
+        .filter((entry) => entry.owner === owner)
+        .map((entry) => this.flush(owner, entry.weekStart)),
+    );
   }
 
   /** Save every retained edit locally before an intentional app reload. */

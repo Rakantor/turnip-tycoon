@@ -11,6 +11,8 @@ interface RequestOptions {
   contentType?: string | null;
   rawBody?: string;
   playerId?: string;
+  /** Simulate the app's renewal opt-in while its browser credential lock is held. */
+  sessionRenewal?: boolean;
 }
 
 /** Separate cookie jars represent separate browsers, including HttpOnly cookies. */
@@ -21,6 +23,7 @@ export class Browser {
 
   async request(method: string, path: string, body?: unknown, options: RequestOptions = {}) {
     const headers = new Headers();
+    if (options.sessionRenewal) headers.set('X-Session-Renewal', '1');
     if (options.playerId) headers.set('X-Player-Id', options.playerId);
     if (method !== 'GET') {
       if (options.origin !== null) headers.set('Origin', options.origin ?? origin);

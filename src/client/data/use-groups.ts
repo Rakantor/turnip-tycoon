@@ -6,6 +6,7 @@ import { database } from './database';
 import { activeIdentity } from './runtime';
 import type { IdentityState } from './session-controller';
 import { SharedGroupsCache, withoutGroup, withoutPlayer } from './shared-groups';
+import { writeForProfile } from './profile-storage';
 
 type GroupState = GroupsResponse & {
   status: 'loading' | 'ready' | 'offline' | 'error';
@@ -180,7 +181,9 @@ async function fetchGroups(store: GroupStore, quiet = false): Promise<void> {
         /* Friends then stay available online only. */
       }
       try {
-        await database.meta.put({ key: cooldownKey(store.owner), value: available });
+        await writeForProfile(database, store.owner, [], async () => {
+          await database.meta.put({ key: cooldownKey(store.owner), value: available });
+        });
       } catch {
         /* A failed cooldown cache must not hide a successful response. */
       }

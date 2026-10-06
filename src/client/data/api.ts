@@ -62,20 +62,43 @@ export async function request<T>(
     '/pairing/complete',
     '/recovery',
   ].includes(path);
-  const response = await fetch(`${apiOrigin ?? ''}/api${path}`, {
-    signal: AbortSignal.timeout(15_000),
-    method: options.method ?? 'GET',
-    credentials: apiOrigin ? 'omit' : 'same-origin',
-    headers: {
-      ...(options.body === undefined ? {} : { 'Content-Type': 'application/json' }),
-      ...(!publicPath && expectedPlayer ? { 'X-Player-Id': expectedPlayer } : {}),
-      ...(apiOrigin && sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {}),
-      ...(apiOrigin && path === '/pairing/complete' && pairingToken
-        ? { 'X-Pairing-Token': pairingToken }
-        : {}),
-    },
-    ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
-  });
+  const locks = !apiOrigin && typeof navigator !== 'undefined' ? navigator.locks : undefined;
+  // Keep the identity assertion tied to the caller's data, even if a credential
+  // change finishes while this request is waiting for the cookie lock.
+  const headers = {
+    ...(locks ? { 'X-Session-Renewal': '1' } : {}),
+    ...(options.body === undefined ? {} : { 'Content-Type': 'application/json' }),
+    ...(!publicPath && expectedPlayer ? { 'X-Player-Id': expectedPlayer } : {}),
+    ...(apiOrigin && sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {}),
+    ...(apiOrigin && path === '/pairing/complete' && pairingToken
+      ? { 'X-Pairing-Token': pairingToken }
+      : {}),
+  };
+  const send = () =>
+    fetch(`${apiOrigin ?? ''}/api${path}`, {
+      signal: AbortSignal.timeout(15_000),
+      method: options.method ?? 'GET',
+      credentials: apiOrigin ? 'omit' : 'same-origin',
+      headers,
+      ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
+    });
+  // A cookie is installed before fetch resolves, even when its JSON is later ignored.
+  // Share ordinary requests, but drain them before issuing any credential change.
+  // The name follows the origin-wide cookie scope, not a particular app/base path.
+  // Without Web Locks, keep the issued cookie's fixed lifetime instead of renewing unsafely.
+  const changesCredential =
+    options.method === 'DELETE' ||
+    (options.method === 'POST' &&
+      ['/session', '/players', '/recovery', '/pairing', '/pairing/complete', '/logout'].includes(
+        path,
+      ));
+  const response = locks
+    ? await locks.request(
+        'turnip-session-cookie',
+        { mode: changesCredential ? 'exclusive' : 'shared' },
+        send,
+      )
+    : await send();
   const body = (await response.json()) as T & {
     error?: { code: string; message: string };
     week?: StoredWeek;

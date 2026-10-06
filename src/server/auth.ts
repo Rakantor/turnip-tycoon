@@ -1,4 +1,4 @@
-import { and, eq, gt, sql } from 'drizzle-orm';
+import { and, eq, gt, lt, sql } from 'drizzle-orm';
 import type { Context } from 'hono';
 import { transaction, type Database, type Transaction } from '../db/connection';
 import { devices, players, recoveryCredentials } from '../db/schema';
@@ -10,21 +10,50 @@ import { hashSecret, randomToken } from './secrets';
 export async function sessionHash(c: Context<AppEnvironment>): Promise<string> {
   const token = readCredential(c, 'session');
   if (!token) throw new ApiError(401, 'UNAUTHENTICATED', 'Connect a device to continue.');
-  return hashSecret(token);
+  const tokenHash = await hashSecret(token);
+  c.set('sessionTokenHash', tokenHash);
+  return tokenHash;
 }
 
 export async function findSession(db: Database | Transaction, tokenHash: string) {
-  const [session] = await db
+  const [record] = await db
     .select({
       player: players,
       deviceId: devices.id,
+      expired: sql<boolean>`${devices.expiresAt} <= clock_timestamp()`,
       hasRecoveryCode: sql<boolean>`exists(select 1 from ${recoveryCredentials} where ${recoveryCredentials.playerId} = ${players.id})`,
     })
     .from(devices)
     .innerJoin(players, eq(players.id, devices.playerId))
-    .where(and(eq(devices.tokenHash, tokenHash), gt(devices.expiresAt, sql`clock_timestamp()`)));
-  if (!session) throw new ApiError(401, 'UNAUTHENTICATED', 'This device is no longer connected.');
+    .where(eq(devices.tokenHash, tokenHash));
+  if (!record) throw new ApiError(401, 'DEVICE_REMOVED', 'This device is no longer connected.');
+  const { expired, ...session } = record;
+  if (expired)
+    throw new ApiError(
+      401,
+      'DEVICE_EXPIRED',
+      'This device’s access expired. Reconnect your profile.',
+    );
   return session;
+}
+
+/** Renew at most daily, without reviving a credential that expired or was removed. */
+export async function renewSession(db: Database, tokenHash: string): Promise<boolean> {
+  const renewed = await db
+    .update(devices)
+    .set({ expiresAt: sql`clock_timestamp() + ${SESSION_SECONDS} * interval '1 second'` })
+    .where(
+      and(
+        eq(devices.tokenHash, tokenHash),
+        gt(devices.expiresAt, sql`clock_timestamp()`),
+        lt(
+          devices.expiresAt,
+          sql`clock_timestamp() + ${SESSION_SECONDS - 86400} * interval '1 second'`,
+        ),
+      ),
+    )
+    .returning({ id: devices.id });
+  return renewed.length > 0;
 }
 
 export async function lockPlayer(tx: Transaction, playerId: string): Promise<void> {
@@ -33,7 +62,7 @@ export async function lockPlayer(tx: Transaction, playerId: string): Promise<voi
     .from(players)
     .where(eq(players.id, playerId))
     .for('update');
-  if (!player) throw new ApiError(401, 'UNAUTHENTICATED', 'This player is no longer available.');
+  if (!player) throw new ApiError(401, 'DEVICE_REMOVED', 'This player is no longer available.');
 }
 
 // All access-changing operations take this same lock before touching credentials.

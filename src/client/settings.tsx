@@ -23,6 +23,7 @@ import {
 import { InstallApp } from './pwa-install';
 import { PairingCode } from './pairing';
 import { OfflineSettings } from './pwa-ui';
+import { ProfileDataSettings } from './profile-data';
 
 function RecoveryCode({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -407,6 +408,7 @@ export function Settings() {
             </div>
           </section>
           <RecoverySettings />
+          <ProfileDataSettings />
         </>
       ) : (
         <>

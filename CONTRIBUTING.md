@@ -88,7 +88,7 @@ Groups allow eight equal members and unlimited memberships. Store prices once, d
 
 ### Access and security invariants
 
-- Device secrets expire after 180 days; PostgreSQL stores SHA-256 verifiers. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; sibling GitHub Pages projects share that boundary.
+- Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; sibling GitHub Pages projects share that boundary.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
 - Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
@@ -157,6 +157,59 @@ Using the local Pages preview:
 5. On physical Android/iOS devices, test installation, standalone launch, recovery, offline reopening, reconnection, and queued uploads after rollover.
 
 Persistent-profile Chromium checks passed for offline reopening/reconnection, downloaded updates applied offline, invalid-draft protection, preserving another tab's draft, 320-pixel Settings, and manifest/installability checks. Automated private profiles stalled during activation; updates timed out safely. **Physical-device installation and further private-mode update verification remain outstanding.**
+
+## Profile data controls
+
+`src/server/profile-data.ts` implements authenticated `DELETE /api/profile` and
+`GET /api/profile/export?section=…&after=…`. Deletion requires the expected player ID and an
+explicit confirmation, takes the normal player/session lock, locks groups in ID order, and
+deletes the player and any resulting empty groups in one transaction. Foreign-key cascades
+remove prices, weeks, trades, memberships, devices, recovery verifiers, approved pairing
+challenges, and mutation records. Unapproved pairing challenges have no player association.
+Other players and nonempty groups stay. The existing origin checks and no-store headers apply.
+
+Export reads at most 100 records per page, including expired device metadata and all historical
+weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,
+and other players' data. The client downloads one versioned JSON file, with this profile's local
+weeks, unsent edits, and conflicts separate from server records. Each batch rechecks the session;
+the file records its start/end times and is not a database-wide point-in-time snapshot.
+
+`SessionVault` persists deletion intent before sending the request. Profile writes use
+`writeForProfile` to check a per-profile block marker inside the IndexedDB transaction, preventing
+late responses or other tabs from restoring erased rows, including refresh/cooldown metadata.
+Blocked user edits reject persistence so their patches and warnings remain queued until writes
+resume or cleanup is confirmed. The marker contains a player ID and removal state, not credentials or game records. A confirmed
+deletion clears local profile access, weeks, anonymous drafts, ledger data, and shared snapshots.
+Other tabs refresh through the existing identity channel and discard their retained in-memory
+edits when observing completed removal. A per-profile cleanup generation survives reset and
+reconnection, so suspended tabs discard stale snapshots and patches before restoring access even
+if they missed the removal notification. Returning to welcome unblocks anonymous edits in every
+tab. Local disconnection preserves other profiles' shared snapshots; confirmed deletion clears
+snapshots that contain the deleted player. Other devices clear their saved data,
+including unsent edits, when an online access check returns `401 DEVICE_REMOVED`: the presented
+credential no longer has a device record, following revocation or profile deletion. An expired
+record returns `401 DEVICE_EXPIRED`; missing/invalid credentials return `401 UNAUTHENTICATED`.
+Those cases pause uploads and clear friends' cached prices, but preserve the owner's local work
+for reconnection to the same profile. Retain expired bearer credentials for later removal checks.
+A missing cookie cannot establish removal, and offline devices cannot be erased remotely.
+No replacement profile is created automatically.
+
+Renewal only updates still-valid device records with less than 29 days remaining and never rotates
+their token, revives expired access, or undoes revocation. Concurrent renewals recheck the threshold
+in the UPDATE; only the request that extends expiry sends Set-Cookie. Cookie requests share an
+origin-wide Web Lock, while credential-changing requests take it exclusively through receipt of
+the response headers. `X-Session-Renewal: 1` opts into renewal under that lock. Cookie clients
+without Web Locks retain their issued fixed expiry; bearer clients renew without cookie coordination.
+Existing longer sessions keep their expiry until they enter the renewal window.
+
+Known validation, authentication, or identity rejections of the first deletion request cancel its
+pending marker and restore the profile; the normal access check then reports expiry or removal. Lost acknowledgements leave uploads paused and preserve access for an
+explicit retry; a later rejection cannot establish whether an earlier attempt succeeded. A 401
+does not prove deletion: the UI offers local cleanup and a private contact route without claiming
+server success. In cookie mode, local cleanup requires acknowledged logout before reporting access
+cleared. Logout also acknowledges already removed or expired credentials and clears the cookie.
+Provider logs, backups, and contact email are outside these endpoints. Before
+restoring any backup, ensure previously erased records cannot become active again.
 
 ## Assets and licensing
 
