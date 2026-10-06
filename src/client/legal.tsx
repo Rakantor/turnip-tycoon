@@ -306,9 +306,9 @@ export function Privacy() {
             are no database backups, so no older copy is left behind.
           </li>
           <li>
-            <strong>Server logs</strong> can include your IP address and the profile or group IDs in
-            a request. Cloudflare keeps them for 3 days and Supabase for 1 day. GitHub keeps its own
-            security logs under its privacy policy.
+            <strong>Error logs</strong> record what went wrong and where, which can include a
+            profile or group ID. Cloudflare keeps them for 3 days and Supabase for 1 day. GitHub
+            keeps its own security logs, including IP addresses, under its privacy policy.
           </li>
           <li>
             <strong>Support emails</strong> are deleted within a month after your request is
@@ -387,7 +387,7 @@ export function Privacy() {
             (Article 6(1)(b)).
           </li>
           <li>
-            Security logs and fixing errors: our legitimate interest in a safe, working app (Article
+            Error logs and security: our legitimate interest in a safe, working app (Article
             6(1)(f)). You can object to this.
           </li>
           <li>Handling rights requests: our legal obligation (Article 6(1)(c)).</li>

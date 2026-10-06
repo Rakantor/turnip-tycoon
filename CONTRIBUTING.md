@@ -173,9 +173,10 @@ confirmed on 2026-10-06:
 - The controller is Rakantor, `rakantor.dev@gmail.com`; the operator confirmed the public
   pseudonym is sufficient where they are established.
 - Supabase hosts the database in the EU on the **Free plan**: no automatic backups, 1-day logs.
-  Cloudflare Workers runs on the **Free plan**: 3-day Workers Logs (`wrangler.jsonc` enables
-  observability with full sampling, including per-request invocation logs). No operator-managed
-  backups exist. **Upgrading either plan changes these facts; update "How long we keep it".**
+  Cloudflare Workers runs on the **Free plan**: 3-day Workers Logs. `wrangler.jsonc` disables
+  per-request invocation logs, so only the app's own error logs (event, error name, and path) are
+  kept; re-enabling them would put every request in the logs and change the page. No
+  operator-managed backups exist. **Upgrading either plan changes these facts; update "How long we keep it".**
 - Support emails are deleted within a month after the request is resolved.
 - Transfers: GitHub, Cloudflare, and Google state EU-U.S. Data Privacy Framework certification
   (with standard contractual clauses as well); Supabase relies on standard contractual clauses

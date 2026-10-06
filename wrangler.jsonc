@@ -10,7 +10,12 @@
     "AUTH_MODE": "bearer",
     "FRONTEND_ORIGIN": "https://rakantor.github.io",
   },
-  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  // Keep only the app's own error logs; per-request invocation logs would record every request.
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": { "invocation_logs": false },
+  },
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
