@@ -202,7 +202,6 @@ function RightNow({
   const scale = useMemo(() => sparkScale(members), [members]);
   const sorted = byPeriod(members, period);
   const reported = sorted.length > 0 && reportedPrice(sorted[0], period) !== null;
-  const rest = reported ? sorted.slice(1) : sorted;
   // Odds look ahead from now, so they only fit the current selling half-day.
   const odds =
     period === nowPeriod && period > 0 ? groupOdds(members, owner, period - 1, closed) : null;
@@ -260,11 +259,12 @@ function RightNow({
           </Link>
         </section>
       )}
-      {rest.length > 0 && (
+      {/* Everyone stays listed, the best price included, for a quick overview. */}
+      {sorted.length > 0 && (
         <>
-          <h3 className="friend-list-heading">{reported ? 'Everyone else' : 'Everyone'}</h3>
+          <h3 className="friend-list-heading">Everyone</h3>
           <ul className="friend-list">
-            {rest.map((member) => {
+            {sorted.map((member) => {
               const price = reportedPrice(member, period);
               const self = member.player.id === owner;
               return (
@@ -862,12 +862,12 @@ export function Groups() {
       <div className="page-heading">
         <div>
           <h1>Friends</h1>
-          <p>Island board · {weekLabel(weekStart)}</p>
+          <p>{weekLabel(weekStart)}</p>
         </div>
         {hasGroups && (
           <Button secondary onClick={() => setShowForm(!showForm)}>
             {showForm ? <X size={16} /> : <Plus size={16} />}
-            {showForm ? 'Close' : 'Create or join'}
+            {showForm ? 'Close' : 'Create or join group'}
           </Button>
         )}
       </div>
@@ -915,7 +915,8 @@ export function Groups() {
                   aria-pressed={existingSelection === 'all'}
                   onClick={() => setSelectedGroup('all')}
                 >
-                  All friends <span>{data.players.length}</span>
+                  All friends{' '}
+                  <span>{data.players.filter((member) => member.player.id !== owner).length}</span>
                 </button>
                 {data.groups.map((group) => (
                   <button
