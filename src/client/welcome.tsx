@@ -31,9 +31,16 @@ function useInvitePreview(code: string | null): GroupPreview | null {
   return code && preview?.code === code ? preview.data : null;
 }
 
+/** Three seats fit one row on the narrowest phones. */
+const PREVIEW_SEATS = 3;
+
 /** The new player's seat, as friends will see it, beside the group's players. */
 function SeatPreview({ name, members }: { name: string; members: string[] | null }) {
   const trimmed = name.trim();
+  // A larger group shows its first player, then a count of the rest.
+  const shown =
+    members && members.length >= PREVIEW_SEATS ? members.slice(0, PREVIEW_SEATS - 2) : members;
+  const more = members && shown ? members.length - shown.length : 0;
   return (
     <ul className="group-seats welcome-seats" aria-hidden="true">
       <li className="group-seat-self">
@@ -48,8 +55,8 @@ function SeatPreview({ name, members }: { name: string; members: string[] | null
           <span className="group-seat-name">{trimmed || 'You'}</span>
         </span>
       </li>
-      {members
-        ? members.map((member, index) => (
+      {shown
+        ? shown.map((member, index) => (
             <li key={`${member}-${index}`}>
               <span className="welcome-seat">
                 <PlayerAvatar name={member} />
@@ -57,7 +64,7 @@ function SeatPreview({ name, members }: { name: string; members: string[] | null
               </span>
             </li>
           ))
-        : [0, 1, 2].map((index) => (
+        : Array.from({ length: PREVIEW_SEATS - 1 }, (_, index) => (
             <li key={index} className="welcome-seat-blank">
               <span className="welcome-seat">
                 <span className="player-avatar" />
@@ -65,6 +72,14 @@ function SeatPreview({ name, members }: { name: string; members: string[] | null
               </span>
             </li>
           ))}
+      {more > 0 && (
+        <li className="welcome-seat-more">
+          <span className="welcome-seat">
+            <span className="player-avatar">+{more}</span>
+            <span className="group-seat-name">{more} more</span>
+          </span>
+        </li>
+      )}
     </ul>
   );
 }

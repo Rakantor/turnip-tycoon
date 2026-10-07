@@ -82,7 +82,8 @@
 }
 
 /* The preview reuses the group card's seats, without links. */
-.welcome-seats {
+.group-seats.welcome-seats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0;
   padding: 10px 6px;
   border: 2px dashed var(--border);
@@ -96,8 +97,12 @@
   padding: 2px 0;
 }
 /* Neutral placeholders, not the group cards' rotating avatar colours. */
-.group-seats.welcome-seats .welcome-seat-blank .player-avatar {
+.group-seats.welcome-seats .welcome-seat-blank .player-avatar,
+.group-seats.welcome-seats .welcome-seat-more .player-avatar {
   background: var(--soft);
+}
+.welcome-seat-more .group-seat-name {
+  color: var(--muted);
 }
 .welcome-seat-bar {
   width: 70%;
