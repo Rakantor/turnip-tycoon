@@ -197,7 +197,7 @@ p {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* The header install shortcut is for phones; larger screens use Settings. */
+/* The header install shortcut is for phones; larger screens have the browser's own. */
 .site-header .install-link {
   display: none;
 }

@@ -45,10 +45,6 @@ export function usePwaReloadGuard(message: string | null) {
   }, [message]);
 }
 
-export function checkPwaUpdate() {
-  return controller?.checkForUpdates(true);
-}
-
 export async function updatePwa() {
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   await controller?.update(async () => {

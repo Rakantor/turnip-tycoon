@@ -20,9 +20,7 @@ import {
   useApp,
   useReveal,
 } from './ui';
-import { InstallApp } from './pwa-install';
 import { PairingCode } from './pairing';
-import { OfflineSettings } from './pwa-ui';
 import { ProfileDataSettings } from './profile-data';
 
 function RecoveryCode({ code }: { code: string }) {
@@ -437,8 +435,6 @@ export function Settings() {
           </div>
         </>
       )}
-      <InstallApp />
-      <OfflineSettings />
     </main>
   );
 }

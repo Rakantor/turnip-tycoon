@@ -1,7 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { Link } from 'react-router';
 import { Download, LoaderCircle } from 'lucide-react';
-import { Button } from './ui';
 
 interface InstallPromptEvent extends Event {
   prompt(): Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
@@ -14,17 +12,13 @@ type RelatedAppsNavigator = Navigator & {
 type InstallState = {
   available: boolean;
   installed: boolean;
-  ios: boolean;
   busy: boolean;
-  message: string | null;
 };
 
 let state: InstallState = {
   available: false,
   installed: false,
-  ios: false,
   busy: false,
-  message: null,
 };
 let started = false;
 let installPrompt: InstallPromptEvent | null = null;
@@ -44,7 +38,7 @@ function subscribe(listener: () => void) {
 
 const snapshot = () => state;
 
-/** Capture at startup: the browser may offer installation before Settings opens. */
+/** Capture at startup: the browser may offer installation at any time. */
 export function startInstallPromptCapture(): void {
   if (started || typeof window === 'undefined') return;
   started = true;
@@ -56,11 +50,6 @@ export function startInstallPromptCapture(): void {
     if (installed) installPrompt = null;
     publish({ installed, available: !installed && installPrompt !== null });
   };
-  publish({
-    ios:
-      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1),
-  });
   updateDisplayMode();
   standalone.addEventListener('change', updateDisplayMode);
   // Chromium on Android can report an installed copy even from a normal browser tab,
@@ -78,7 +67,7 @@ export function startInstallPromptCapture(): void {
   window.addEventListener('appinstalled', () => {
     installedThisVisit = true;
     installPrompt = null;
-    publish({ installed: true, available: false, busy: false, message: null });
+    publish({ installed: true, available: false, busy: false });
   });
   window.addEventListener('beforeinstallprompt', (event) => {
     if (!('prompt' in event) || typeof event.prompt !== 'function') return;
@@ -86,7 +75,7 @@ export function startInstallPromptCapture(): void {
     event.preventDefault();
     if (state.installed) return;
     installPrompt = event as InstallPromptEvent;
-    publish({ available: true, message: null });
+    publish({ available: true });
   });
 }
 
@@ -95,74 +84,21 @@ async function install() {
   if (!prompt || state.busy || state.installed) return;
   // A captured prompt can only be used once, including after dismissal.
   installPrompt = null;
-  publish({ available: false, busy: true, message: null });
+  publish({ available: false, busy: true });
   try {
-    const choice = await prompt.prompt();
-    if (choice.outcome === 'accepted' && !state.installed)
-      publish({ message: 'Installation started. Follow your browser’s instructions to finish.' });
+    await prompt.prompt();
   } catch {
-    if (!state.installed)
-      publish({ message: 'The install prompt could not open. Use your browser’s menu instead.' });
+    // The browser's own menu can still install the app.
   } finally {
     publish({ busy: false });
   }
 }
 
-export function InstallApp() {
-  const current = useSyncExternalStore(subscribe, snapshot);
-  return (
-    <section className="settings-section" id="install-app">
-      <h2>Install app</h2>
-      {current.installed ? (
-        <p role="status">Turnip Tycoon is installed on this device.</p>
-      ) : (
-        <>
-          <p>Add Turnip Tycoon to your home screen or apps for quick access.</p>
-          {current.available || current.busy ? (
-            <Button
-              type="button"
-              secondary
-              busy={current.busy}
-              onClick={() => {
-                void install();
-              }}
-            >
-              {!current.busy && <Download size={16} aria-hidden="true" />}
-              Install Turnip Tycoon
-            </Button>
-          ) : current.ios ? (
-            <p>
-              In Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>. Keep{' '}
-              <strong>Open as Web App</strong> enabled if shown, then tap <strong>Add</strong>.
-            </p>
-          ) : (
-            <p>
-              Open your browser’s menu and look for <strong>Install app</strong> or{' '}
-              <strong>Add to Home Screen</strong>, if available.
-            </p>
-          )}
-          {current.message && <p role="status">{current.message}</p>}
-        </>
-      )}
-    </section>
-  );
-}
-
-/** A phone header shortcut: the browser's prompt when offered, otherwise Settings' instructions. */
+/** A phone header shortcut, shown only while the browser offers its install prompt. */
 export function HeaderInstallButton() {
   const current = useSyncExternalStore(subscribe, snapshot);
-  if (current.installed) return null;
-  const content = (
-    <>
-      {current.busy ? (
-        <LoaderCircle size={19} className="spin" aria-hidden="true" />
-      ) : (
-        <Download size={19} aria-hidden="true" />
-      )}
-      <span className="install-label">Install</span>
-    </>
-  );
-  return current.available || current.busy ? (
+  if (current.installed || !(current.available || current.busy)) return null;
+  return (
     <button
       type="button"
       className="icon-button install-link"
@@ -173,15 +109,12 @@ export function HeaderInstallButton() {
         void install();
       }}
     >
-      {content}
+      {current.busy ? (
+        <LoaderCircle size={19} className="spin" aria-hidden="true" />
+      ) : (
+        <Download size={19} aria-hidden="true" />
+      )}
+      <span className="install-label">Install</span>
     </button>
-  ) : (
-    <Link
-      to="/settings#install-app"
-      className="icon-button install-link"
-      aria-label="Install Turnip Tycoon"
-    >
-      {content}
-    </Link>
   );
 }
