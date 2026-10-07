@@ -27,9 +27,19 @@ function bestCaseFrom(prediction: PredictionResult, fromSlot: number): number {
   return Math.max(0, ...prediction.slots.slice(fromSlot).map((range) => range.max));
 }
 
-function verdict(chance: number): string {
-  if (chance < 0.25) return 'Selling now looks good';
+/**
+ * What to do, given the chance of a better price later. Turnips can't be sold on
+ * Sunday, so there it says whether they look set to make a profit.
+ */
+function verdict(chance: number, sunday: boolean, sellNow: boolean): string {
+  if (sunday)
+    return chance > 0.75
+      ? 'A profit looks likely'
+      : chance < 0.25
+        ? 'A profit looks unlikely'
+        : 'A profit could go either way';
   if (chance > 0.75) return 'Holding looks good';
+  if (chance < 0.25) return sellNow ? 'Selling now looks good' : 'Selling soon looks good';
   return 'Could go either way';
 }
 
@@ -367,32 +377,62 @@ export function HoldOrSell({
       ? `the ${price} you paid`
       : `${reportedWhen(priceSlot, slot)}’s ${price}`;
   const showGroup = group !== null && group.islands.some((island) => !island.self);
+  // Every outcome leads with a headline saying what to do; only a missing price has none.
+  let headline: string | null = null;
   let message: string | null = null;
   if (price === null)
     message =
       slot === null
         ? 'Enter what Daisy Mae charged to see your odds.'
         : `Enter this ${partOfDay(slot)}’s price to see your odds.`;
-  else if (!odds)
+  else if (!odds) {
+    headline = closed ? 'Too late to sell' : 'Sell tonight';
     message = closed
       ? 'Nook’s Cranny has closed for the week.'
       : 'Last chance: Nook’s Cranny closes at 10 PM.';
-  else if (odds.certain) message = 'A higher price is coming. Hold on to your turnips!';
-  else if (odds.impossible)
+  } else if (odds.certain) {
+    headline = slot === null ? 'A profit is certain' : 'Hold on to your turnips';
+    message = 'A higher price is coming.';
+  } else if (odds.impossible) {
+    headline =
+      slot === null ? 'No profit this week' : sellNow ? 'Sell now' : 'Selling soon looks good';
     message = sellNow
-      ? 'This is the highest price your island can reach this week. Sell today.'
+      ? 'This is the highest price your island can reach this week.'
       : `No price left this week will beat ${known}.`;
+  } else headline = verdict(odds.chance, slot === null, sellNow);
   // The ring shows whenever there are odds; a certain or impossible outcome is said in words beside it.
   const ring = price !== null ? odds : null;
-  // A verdict needs a price you can sell at now.
-  const lead = message === null && ring && sellNow ? verdict(ring.chance) : null;
-  // Until this half-day's price is in, the forecast compares with an earlier one.
-  const missing =
-    slot !== null && priceSlot !== slot && !closed && price !== null
-      ? beforeOpening(now)
-        ? 'Nook’s Cranny opens at 8 AM.'
-        : `Enter this ${partOfDay(slot)}’s price to see whether to sell now.`
-      : null;
+  const opensLater =
+    slot !== null && priceSlot !== slot && !closed && price !== null && beforeOpening(now);
+  const summary = (
+    <p className={headline === null ? 'odds-message' : 'odds-summary'}>
+      {headline !== null && (
+        <span className="odds-verdict">
+          <mark>{headline}</mark>
+        </span>
+      )}
+      {message ?? (
+        <>
+          <span className="sr-only">{oddsPercent(ring?.chance ?? 0)} </span>
+          {slot === null || priceSlot === null ? (
+            <>
+              chance you can sell for more than the <strong>{price}</strong> you paid this week.
+            </>
+          ) : sellNow ? (
+            <>
+              chance of more than <strong>{price}</strong> on your island before Nook’s Cranny
+              closes on Saturday.
+            </>
+          ) : (
+            <>
+              chance of beating {reportedWhen(priceSlot, slot)}’s <strong>{price}</strong> before
+              Nook’s Cranny closes on Saturday.
+            </>
+          )}
+        </>
+      )}
+    </p>
+  );
   return (
     <section className="odds-card" id={TURNIPS_ID} tabIndex={-1} aria-labelledby={`${id}-title`}>
       <div
@@ -412,39 +452,12 @@ export function HoldOrSell({
             {ring ? (
               <div className="odds-main">
                 <OddsRing chance={ring.chance} />
-                {message !== null ? (
-                  <p className="odds-message">{message}</p>
-                ) : (
-                  <p>
-                    {lead && (
-                      <span className="odds-verdict">
-                        <mark>{lead}</mark>
-                      </span>
-                    )}
-                    <span className="sr-only">{oddsPercent(ring.chance)} </span>
-                    {slot === null || priceSlot === null ? (
-                      <>
-                        chance you can sell for more than the <strong>{price}</strong> you paid this
-                        week.
-                      </>
-                    ) : sellNow ? (
-                      <>
-                        chance of more than <strong>{price}</strong> on your island before Nook’s
-                        Cranny closes on Saturday.
-                      </>
-                    ) : (
-                      <>
-                        chance of beating {reportedWhen(priceSlot, slot)}’s <strong>{price}</strong>{' '}
-                        before Nook’s Cranny closes on Saturday.
-                      </>
-                    )}
-                  </p>
-                )}
+                {summary}
               </div>
             ) : (
-              <p className="odds-message">{message}</p>
+              summary
             )}
-            {missing && <p className="hint">{missing}</p>}
+            {opensLater && <p className="hint">Nook’s Cranny opens at 8 AM.</p>}
             {prediction.tolerance > 0 && price !== null && (
               <p className="hint">
                 Some prices are a little off the usual patterns, so treat this as a rough guide.
