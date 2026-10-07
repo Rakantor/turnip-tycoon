@@ -37,10 +37,6 @@ function eyebrowFor(slot: number | null): string {
   return slot === null ? 'Sunday forecast' : `${slotName(slot)} forecast`;
 }
 
-function boughtChip(purchasePrice: number | null): Advice['chips'] {
-  return purchasePrice === null ? [] : [{ text: `You paid ${purchasePrice}`, tone: 'sand' }];
-}
-
 /**
  * Plain-language guidance for a week. It only restates what the forecast
  * supports: the most likely pattern and the highest price still possible.
@@ -63,7 +59,7 @@ export function weekAdvice({
   odds?: { price: number; chance: number; certain: boolean } | null;
 }): Advice {
   const base = { highlight: '', trail: '', chips: [], bestSlot: null };
-  if (!isCurrent) return pastAdvice(prediction, prices, purchasePrice);
+  if (!isCurrent) return pastAdvice(prediction, prices);
   if (prediction.status === 'needs-input')
     return {
       ...base,
@@ -102,7 +98,7 @@ export function weekAdvice({
       ...base,
       eyebrow: eyebrowFor(slot),
       lead: 'Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night.',
-      chips: [patternChip, ...boughtChip(purchasePrice)],
+      chips: [patternChip],
     };
 
   const peakSlot = upcoming.reduce((best, index) =>
@@ -130,7 +126,7 @@ export function weekAdvice({
         patternChip,
         ...(ratio !== null && ratio >= 1
           ? [{ text: `${ratio.toFixed(1)}× what you paid`, tone: 'gold' as const }]
-          : boughtChip(purchasePrice)),
+          : []),
       ],
       bestSlot: slot,
     };
@@ -144,7 +140,6 @@ export function weekAdvice({
       : purchasePrice !== null && floor >= purchasePrice
         ? { text: `Even the low end, ${floor}, beats what you paid`, tone: 'gold' }
         : { text: `Could be as low as ${floor} then`, tone: 'gold' },
-    ...boughtChip(purchasePrice),
   ];
   const worthWatching =
     peakSlots.length === 1 && (purchasePrice === null || peak > purchasePrice) ? peakSlot : null;
@@ -155,12 +150,7 @@ export function weekAdvice({
       lead: 'Prices will most likely keep sliding this week. If you need bells, ',
       highlight: 'selling soon',
       trail: ' beats waiting.',
-      chips: [
-        patternChip,
-        ...oddsChips,
-        { text: `Small chance of up to ${peak}`, tone: 'gold' },
-        ...boughtChip(purchasePrice),
-      ],
+      chips: [patternChip, ...oddsChips, { text: `Small chance of up to ${peak}`, tone: 'gold' }],
       bestSlot: null,
     };
 
@@ -200,15 +190,10 @@ export function weekAdvice({
   };
 }
 
-function pastAdvice(
-  prediction: PredictionResult,
-  prices: (number | null)[],
-  purchasePrice: number | null,
-): Advice {
-  const base = { eyebrow: 'Looking back', highlight: '', trail: '', bestSlot: null };
-  const chips = boughtChip(purchasePrice);
+function pastAdvice(prediction: PredictionResult, prices: (number | null)[]): Advice {
+  const base = { eyebrow: 'Looking back', highlight: '', trail: '', chips: [], bestSlot: null };
   if (prediction.status === 'needs-input')
-    return { ...base, lead: 'No prices were saved for this week.', chips };
+    return { ...base, lead: 'No prices were saved for this week.' };
   const entered = prices
     .map((price, index) => ({ price, index }))
     .filter((entry): entry is { price: number; index: number } => entry.price !== null);
@@ -222,13 +207,12 @@ function pastAdvice(
     : percent(top.probability) === '100%'
       ? `This was a ${top.label.toLowerCase()} week.`
       : `This was most likely a ${top.label.toLowerCase()} week (${percent(top.probability)}).`;
-  if (!best) return { ...base, lead, chips };
+  if (!best) return { ...base, lead };
   return {
     ...base,
     lead: `${lead} Your best price was `,
     highlight: `${best.price} bells`,
     trail: ` on ${slotName(best.index)}.`,
-    chips,
     bestSlot: best.index,
   };
 }

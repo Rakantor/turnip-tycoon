@@ -79,7 +79,6 @@ describe('week advice', () => {
     expect(advice.chips.map(({ text }) => text)).toEqual([
       '92% large-spike',
       'Even the low end, 137, beats what you paid',
-      'You paid 98',
     ]);
   });
 
