@@ -317,9 +317,10 @@ p {
   font-weight: 700;
   margin-bottom: 0;
 }
-.week-navigation {
-  display: flex;
-  gap: 8px;
+/* The week arrows flank the week's title and dates. */
+.week-heading {
+  justify-content: flex-start;
+  gap: 14px;
 }
 .history-note {
   margin: -6px 0 22px;

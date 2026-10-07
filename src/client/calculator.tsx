@@ -360,33 +360,31 @@ function WeekCalculator({
     });
   return (
     <main id="main-content" className="page calculator-page">
-      <div className="page-heading">
+      <div className="page-heading week-heading">
+        <Link
+          className="icon-button"
+          to={`/weeks/${shiftWeek(weekStart, -1)}`}
+          aria-label="Previous week"
+        >
+          <ArrowLeft size={19} />
+        </Link>
         <div>
           <h1>{isCurrent ? 'This week' : lastWeek ? 'Last week' : 'Past week'}</h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
-        <div className="week-navigation">
+        {!isCurrent && (
           <Link
             className="icon-button"
-            to={`/weeks/${shiftWeek(weekStart, -1)}`}
-            aria-label="Previous week"
+            to={
+              shiftWeek(weekStart, 1) === currentWeekStart(now)
+                ? '/'
+                : `/weeks/${shiftWeek(weekStart, 1)}`
+            }
+            aria-label="Next week"
           >
-            <ArrowLeft size={19} />
+            <ArrowRight size={19} />
           </Link>
-          {!isCurrent && (
-            <Link
-              className="icon-button"
-              to={
-                shiftWeek(weekStart, 1) === currentWeekStart(now)
-                  ? '/'
-                  : `/weeks/${shiftWeek(weekStart, 1)}`
-              }
-              aria-label="Next week"
-            >
-              <ArrowRight size={19} />
-            </Link>
-          )}
-        </div>
+        )}
       </div>
       {readOnly && (
         <p className="history-note">
