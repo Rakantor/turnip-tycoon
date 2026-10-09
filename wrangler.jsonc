@@ -4,7 +4,7 @@
   "main": "src/server/index.ts",
   "compatibility_date": "2026-10-04",
   "compatibility_flags": ["nodejs_compat"],
-  "workers_dev": true,
+  "workers_dev": false,
   "routes": [{ "pattern": "api.turniptycoon.app", "custom_domain": true }],
   "secrets": { "required": [] },
   "vars": {

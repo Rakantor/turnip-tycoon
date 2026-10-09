@@ -99,7 +99,7 @@ The `turnip_private` schema enables RLS without public policies and must stay ou
 
 ## Deployment
 
-Frontend: `https://turniptycoon.app/`, served by GitHub Pages. API: `https://api.turniptycoon.app`, a Worker custom domain; the `workers.dev` address stays enabled. Pages uses hash routes and project-relative assets and links.
+Frontend: `https://turniptycoon.app/`, served by GitHub Pages. API: `https://api.turniptycoon.app`, a Worker custom domain with the `workers.dev` address switched off. Pages uses hash routes and project-relative assets and links.
 
 `wrangler.jsonc` configures the production API, its custom domain, bearer auth, allowed origin, and Hyperdrive. The Hyperdrive ID is public; database credentials stay in Hyperdrive. `wrangler.dev.jsonc` uses local PostgreSQL and cookie auth. Deployment commands explicitly select the production configuration.
 
