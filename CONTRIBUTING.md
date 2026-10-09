@@ -2,7 +2,7 @@
 
 Turnip Tycoon uses React and Vite for the calculator, a Hono API on Cloudflare Workers, and PostgreSQL through Drizzle and Hyperdrive. Predictions run in the browser. GitHub Pages serves the frontend separately from the API.
 
-[Local development](#local-development) · [Checks](#checks) · [Architecture](#architecture-and-data-rules) · [Deployment](#deployment) · [Offline testing](#offline-and-update-verification) · [Assets and licensing](#assets-and-licensing)
+[Local development](#local-development) · [Checks](#checks) · [Architecture](#architecture-and-data-rules) · [Translations](#translations) · [Deployment](#deployment) · [Offline testing](#offline-and-update-verification) · [Assets and licensing](#assets-and-licensing)
 
 ## Local development
 
@@ -40,7 +40,7 @@ After schema changes, run `pnpm db:generate`, review the migration, then apply i
 ## Checks
 
 ```sh
-pnpm check          # lint, strict TypeScript, local build, unit and PostgreSQL integration tests
+pnpm check          # lint, catalog sync, strict TypeScript, local build, unit and PostgreSQL integration tests
 pnpm format:check
 pnpm typegen        # regenerate production Worker binding types
 pnpm deploy:check   # bundle the API Worker without publishing
@@ -73,7 +73,7 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, and shared reads         |
 | `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                    |
 | `drizzle`          | Versioned SQL migrations and snapshots                                                       |
-| `scripts`          | Local database, development server, migrations, and icon generation                          |
+| `scripts`          | Local database, development server, migrations, icon generation, and machine translation     |
 | `tests/api`        | API and database integration tests                                                           |
 | `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                    |
 | `tests/prediction` | Prediction fixtures and regression tests                                                     |
@@ -96,6 +96,18 @@ Groups allow eight equal members and unlimited memberships. Store prices once, d
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
 
 The `turnip_private` schema enables RLS without public policies and must stay outside the Supabase Data API. Use a trusted database role that owns the tables, or has explicit privileges plus BYPASSRLS. Never expose database credentials or a Supabase service key to browsers.
+
+## Translations
+
+Interface text goes through [Lingui](https://lingui.dev). Write the English in place: `t` from `@lingui/core/macro` for plain strings, `<Trans>` from `@lingui/react/macro` for text with markup. Each message is a whole sentence; never build one from fragments, possessives, or a lowercased label, because other languages order and inflect words differently. Give placeholders readable names by assigning expressions to locals first, and add a `comment` where the text alone is ambiguous. Pages remount when the language changes, so helpers may call the global `t` when they run, but never at import time. Format numbers, percentages, dates and weekday names with `i18n.number` and `i18n.date`, not `toLocaleString(undefined)`. Weeks still start on Sunday in every language.
+
+Catalogs are `src/client/locales/{locale}.po`. English is the source and ships with the app; other languages load on demand and are precached for offline use. After changing text, run `pnpm i18n:extract`; `pnpm check` fails while catalogs are stale. In development, Settings offers a `pseudo` language that stretches and brackets every extracted message, so text that missed extraction stands out.
+
+`pnpm i18n:translate <locale>` translates untranslated messages with Claude (it needs `ANTHROPIC_API_KEY`), following the style guides in `src/client/locales/style/` and the glossary. It checks each translation and saves it marked fuzzy, which translation tools show as needing review. `tests/client/translations.test.ts` checks every committed translation: placeholders, tags and plural forms must survive, and Animal Crossing terms must use the game's official names from `src/client/locales/glossary.json`. Settings marks unreviewed languages as machine-translated; German is one.
+
+To add a language, add it to `locales` in `lingui.config.ts` and to `LANGUAGES` and `catalogs` in `src/client/i18n.ts`, give every `game` term in the glossary its official name in that language (with a source), add a style guide, then extract and translate. Check its fonts: Fredoka and Nunito cover Latin scripts, and Nunito covers Cyrillic, but neither covers Chinese, Japanese or Korean.
+
+The API answers in English. `src/client/data/server-messages.ts` translates each message the server can send, by its exact text, and `tests/client/server-messages.test.ts` keeps it in step with `src/server`. Terms and Privacy are published in English only.
 
 ## Deployment
 
@@ -252,15 +264,15 @@ When changing the pages or the app:
 
 Facts that must stay accurate:
 
-| Area                                                                                                | Repository evidence                                                                  |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Profile creation waits for a welcome answer, including skipping the name                            | `src/client/data/session-controller.ts`, `src/client/welcome.tsx`                    |
-| Device credentials, code verifiers, memberships, weekly data, trades, sync metadata                 | `src/db/schema.ts`, `src/server/app.ts`, `src/server/http.ts`                        |
-| Invite previews expose group/member names without authentication; joining requires no host approval | `src/server/groups.ts`                                                               |
-| Shared members can read prior weeks; own trade records are excluded                                 | `src/server/groups.ts`, `src/server/weeks.ts`, `src/server/ledger.ts`                |
-| Local profile access, history, unsent edits, and the latest current-week group snapshot             | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`     |
-| Forecasts run locally; fonts are bundled; no third-party audience analytics are included            | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts` |
-| Removing a device or clearing browser data does not delete the player/history                       | `src/server/app.ts`, `src/db/schema.ts`                                              |
+| Area                                                                                                 | Repository evidence                                                                                    |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Profile creation waits for a welcome answer, including skipping the name                             | `src/client/data/session-controller.ts`, `src/client/welcome.tsx`                                      |
+| Device credentials, code verifiers, memberships, weekly data, trades, sync metadata                  | `src/db/schema.ts`, `src/server/app.ts`, `src/server/http.ts`                                          |
+| Invite previews expose group/member names without authentication; joining requires no host approval  | `src/server/groups.ts`                                                                                 |
+| Shared members can read prior weeks; own trade records are excluded                                  | `src/server/groups.ts`, `src/server/weeks.ts`, `src/server/ledger.ts`                                  |
+| Local profile access, history, unsent edits, the latest current-week group snapshot, language choice | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`, `src/client/i18n.ts` |
+| Forecasts run locally; fonts are bundled; no third-party audience analytics are included             | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts`                   |
+| Removing a device or clearing browser data does not delete the player/history                        | `src/server/app.ts`, `src/db/schema.ts`                                                                |
 
 Research checked on 2026-10-06: [GDPR text (especially Articles 5, 6, 11–20, 28 and 44–49)](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng),
 [European Commission: principles](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en),
