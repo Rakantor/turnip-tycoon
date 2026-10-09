@@ -3,12 +3,10 @@ import react from '@vitejs/plugin-react';
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
 
-export const pagesBase = '/turnip-tycoon/';
-
 export const pagesPwaOptions: Partial<VitePWAOptions> = {
   strategies: 'generateSW',
   filename: 'sw.js',
-  scope: pagesBase,
+  scope: '/',
   // The checked-in manifest and native registration retain control of their lifecycle.
   manifest: false,
   injectRegister: false,
@@ -28,7 +26,7 @@ export const pagesPwaOptions: Partial<VitePWAOptions> = {
     ],
     // Pages uses hash routes: only the app's entry document needs a fallback.
     navigateFallback: 'index.html',
-    navigateFallbackAllowlist: [/^\/turnip-tycoon\/(?:index\.html)?(?:\?.*)?$/],
+    navigateFallbackAllowlist: [/^\/(?:index\.html)?(?:\?.*)?$/],
     // User data stays in the existing IndexedDB store; API responses are never cached.
     runtimeCaching: [],
   },
@@ -56,7 +54,6 @@ export default defineConfig(({ mode }) => {
       );
   }
   return {
-    base: pages ? pagesBase : '/',
     plugins: [
       react(),
       ...(pages ? [VitePWA(pagesPwaOptions)] : [cloudflare({ configPath: 'wrangler.dev.jsonc' })]),

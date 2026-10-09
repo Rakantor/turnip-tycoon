@@ -88,7 +88,7 @@ Groups allow eight equal members and unlimited memberships. Store prices once, d
 
 ### Access and security invariants
 
-- Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; sibling GitHub Pages projects share that boundary.
+- Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; the custom domain keeps that origin to this app alone.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
 - Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
@@ -99,22 +99,22 @@ The `turnip_private` schema enables RLS without public policies and must stay ou
 
 ## Deployment
 
-Frontend: `https://rakantor.github.io/turnip-tycoon/`. API: `https://turnip-tycoon.rakantor-dev.workers.dev`. Pages uses hash routes and project-relative assets and links.
+Frontend: `https://turniptycoon.app/`, served by GitHub Pages. API: `https://api.turniptycoon.app`, a Worker custom domain; the `workers.dev` address stays enabled. Pages uses hash routes and project-relative assets and links.
 
-`wrangler.jsonc` configures the production API, bearer auth, allowed origin, and Hyperdrive. The Hyperdrive ID is public; database credentials stay in Hyperdrive. `wrangler.dev.jsonc` uses local PostgreSQL and cookie auth. Deployment commands explicitly select the production configuration.
+`wrangler.jsonc` configures the production API, its custom domain, bearer auth, allowed origin, and Hyperdrive. The Hyperdrive ID is public; database credentials stay in Hyperdrive. `wrangler.dev.jsonc` uses local PostgreSQL and cookie auth. Deployment commands explicitly select the production configuration.
 
 ### Supabase and Hyperdrive
 
 1. Put the hosted migration connection in the ignored `.env.production` as `DATABASE_URL` (see [.env.production.example](.env.production.example)), then run `pnpm db:migrate:prod`. Only that command reads `.env.production`; `pnpm dev` and `pnpm db:migrate` never do. On an IPv4-only computer, use Supabase's complete **Session pooler** connection string on port **5432**; its username and hostname differ from Direct. Use verified TLS with `sslmode=verify-full` and `sslrootcert` pointing to the downloaded Supabase CA certificate.
 2. Connect Hyperdrive to Supabase's **Direct connection** endpoint on port **5432**. Disable query caching so authentication, membership, revocation, and saved-price reads stay current. Hyperdrive handles pooling; the local migration pooler choice does not change this connection.
-3. Run `pnpm exec wrangler login`, then `pnpm check` and `pnpm deploy:check`. Publish the API with `pnpm deploy:api` and retain its Worker origin.
+3. Run `pnpm exec wrangler login`, then `pnpm check` and `pnpm deploy:check`. Publish the API with `pnpm deploy:api`. The `turniptycoon.app` zone must be in the same Cloudflare account; Wrangler creates the `api.turniptycoon.app` DNS record and certificate, and refuses if a CNAME record already holds that name.
 
 ### GitHub Actions
 
-1. Set **Settings → Pages → Source** to **GitHub Actions**.
-2. Add `VITE_API_URL` under **Settings → Environments → github-pages → Environment variables**. The build and deploy jobs both select this environment. A repository-level Actions variable also works. Use only the public API origin: no credentials, path, or query string. There is no workflow fallback, and local `.env.pages.local` files do not reach GitHub Actions.
+1. Set **Settings → Pages → Source** to **GitHub Actions**, and **Custom domain** to `turniptycoon.app` with **Enforce HTTPS**. The workflow needs no `CNAME` file. In Cloudflare DNS, point the apex at GitHub Pages with DNS-only (unproxied) `A` records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, `AAAA` records `2606:50c0:8000::153` through `2606:50c0:8003::153`, and a `www` CNAME to `rakantor.github.io`. GitHub then redirects `www` and the old `rakantor.github.io/turnip-tycoon/` address to the apex. Verify the domain under the account's **Settings → Pages** to block takeovers.
+2. Add `VITE_API_URL` (`https://api.turniptycoon.app`) under **Settings → Environments → github-pages → Environment variables**. The build and deploy jobs both select this environment. A repository-level Actions variable also works. Use only the public API origin: no credentials, path, or query string. There is no workflow fallback, and local `.env.pages.local` files do not reach GitHub Actions.
 3. A push to `main` runs **Deploy GitHub Pages** automatically. The workflow checks the project, builds `dist/pages`, and publishes that directory. Other branches do not deploy Pages.
-4. A push to `main` that changes the API runs **Deploy API Worker** automatically: files under `src/server`, `src/db`, `src/shared` or `src/prediction`, `wrangler.jsonc`, or dependencies. Other pushes leave the Worker as it is; run the workflow by hand to redeploy, for example after a failed run. It needs a scoped `CLOUDFLARE_API_TOKEN` Actions secret and the `CLOUDFLARE_ACCOUNT_ID` repository variable, and uses the `production` environment, which can have deployment protection rules. Migrations stay manual, so run `pnpm db:migrate:prod` before pushing code that needs them.
+4. A push to `main` that changes the API runs **Deploy API Worker** automatically: files under `src/server`, `src/db`, `src/shared` or `src/prediction`, `wrangler.jsonc`, or dependencies. Other pushes leave the Worker as it is; run the workflow by hand to redeploy, for example after a failed run. It needs a scoped `CLOUDFLARE_API_TOKEN` Actions secret, allowed to edit Workers routes on the `turniptycoon.app` zone, and the `CLOUDFLARE_ACCOUNT_ID` repository variable, and uses the `production` environment, which can have deployment protection rules. Migrations stay manual, so run `pnpm db:migrate:prod` before pushing code that needs them.
 5. After deploying, check `/api/health`, silent bootstrap, price saves/reloads, groups, pairing, recovery, and revocation. Complete the offline and mobile checks below before release.
 
 Only public `VITE_` configuration enters the frontend build. `.env` and `.env.production` are for migration tooling. Both Worker configurations set `secrets.required` to an empty list so Wrangler does not infer migration credentials as Worker secrets or generated bindings.
@@ -138,11 +138,11 @@ VITE_API_URL=http://127.0.0.1:8787 pnpm build:pages
 VITE_API_URL=http://127.0.0.1:8787 pnpm preview:pages
 ```
 
-Open **http://localhost:4174/turnip-tycoon/**. With the checked-in local connection settings, this uses the local database, not Supabase. Production's origin allowlist intentionally rejects localhost pages. Rebuild with the production `VITE_API_URL` before publishing.
+Open **http://localhost:4174/**. With the checked-in local connection settings, this uses the local database, not Supabase. Production's origin allowlist intentionally rejects localhost pages. Rebuild with the production `VITE_API_URL` before publishing.
 
 ## Offline and update verification
 
-Production Pages builds, including local Pages preview, generate a worker scoped to `/turnip-tycoon/`. Normal development does not install it. Precache only the static app, icons, manifest, and licenses; scope cache cleanup to the project. API responses, credentials, and friends' data must never enter Cache Storage. Own records, queued edits, and the latest copy of friends' current-week prices stay in IndexedDB.
+Production Pages builds, including local Pages preview, generate a worker scoped to the site root. Normal development does not install it. Precache only the static app, icons, manifest, and licenses; scope cache cleanup to the project. API responses, credentials, and friends' data must never enter Cache Storage. Own records, queued edits, and the latest copy of friends' current-week prices stay in IndexedDB.
 
 Offline reopening needs one online visit to complete profile setup and activate the service worker. Cached own weeks, forecasts, and new local edits then work offline; uploads resume when connected with the app open. Friends show this week's prices from the last online visit; refreshing, joining, and leaving need a connection. Closed-app background uploading is not promised.
 

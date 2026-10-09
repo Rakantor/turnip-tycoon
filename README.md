@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://rakantor.github.io/turnip-tycoon/">
+  <a href="https://turniptycoon.app/">
     <img src="public/og-image.png" width="100%" alt="Turnip Tycoon: turnip price forecasts for Animal Crossing: New Horizons. The mascot says: Hold on to those turnips! A big spike is coming, up to 420 bells." />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://rakantor.github.io/turnip-tycoon/"><img src="assets/readme/open-button.png" width="264" alt="Open Turnip Tycoon" /></a>
+  <a href="https://turniptycoon.app/"><img src="assets/readme/open-button.png" width="264" alt="Open Turnip Tycoon" /></a>
 </p>
 
 <p align="center"><sub>Free · No sign-up · Works offline</sub></p>

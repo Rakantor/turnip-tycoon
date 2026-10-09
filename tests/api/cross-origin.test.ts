@@ -14,7 +14,7 @@ import type { OwnWeekRecord, WeekMutation } from '../../src/shared/week';
 import { createTestDatabase } from '../helpers/database';
 import { Browser, expectError, pairingCookie, sessionCookie } from './browser';
 
-const frontendOrigin = 'https://rakantor.github.io';
+const frontendOrigin = 'https://turniptycoon.app';
 const apiOrigin = 'https://turnip-api.workers.dev';
 const options = { credentialMode: 'bearer' as const, frontendOrigin };
 
@@ -69,8 +69,8 @@ describe('Cross-origin request policy before database access', () => {
   it('rejects untrusted origins on reads, writes, and preflights before opening the database', async () => {
     for (const origin of [
       'https://attacker.test',
-      'https://rakantor.github.io.attacker.test',
-      'https://rakantor.github.io/',
+      'https://turniptycoon.app.attacker.test',
+      'https://turniptycoon.app/',
       `${frontendOrigin}, https://attacker.test`,
       'null',
       '',
@@ -119,8 +119,8 @@ describe('Cross-origin request policy before database access', () => {
       '',
       '*',
       'null',
-      'https://rakantor.github.io/turnip-tycoon/',
-      'http://rakantor.github.io',
+      'https://turniptycoon.app/prices/',
+      'http://turniptycoon.app',
     ]) {
       expect(() =>
         createApp('unused', { credentialMode: 'bearer', frontendOrigin: origin }),

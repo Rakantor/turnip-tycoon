@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { build } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
-import { pagesBase, pagesPwaOptions } from '../../vite.config';
+import { pagesPwaOptions } from '../../vite.config';
 
 type PrecacheEntry = { url: string; revision: string | null };
 
@@ -63,7 +63,6 @@ describe('Pages service worker build', () => {
     await build({
       configFile: false,
       root: fixture,
-      base: pagesBase,
       mode: 'pages',
       logLevel: 'silent',
       plugins: [VitePWA(pagesPwaOptions)],
@@ -105,20 +104,20 @@ describe('Pages service worker build', () => {
     expect(first.routes).toHaveLength(1);
   });
 
-  it('limits navigation fallback to this GitHub Pages entry point', () => {
+  it('limits navigation fallback to the app entry point', () => {
     const route = first.routes[0];
     expect(route.handler).toBe('index.html');
     const matches = (path: string) => route.options.allowlist.some((rule) => rule.test(path));
-    expect(matches('/turnip-tycoon/')).toBe(true);
-    expect(matches('/turnip-tycoon/?source=installed')).toBe(true);
-    expect(matches('/turnip-tycoon/index.html')).toBe(true);
+    expect(matches('/')).toBe(true);
+    expect(matches('/?source=installed')).toBe(true);
+    expect(matches('/index.html')).toBe(true);
     for (const path of [
-      '/',
-      '/another-project/',
-      '/turnip-tycoon-copy/',
-      '/turnip-tycoon/api/session',
-      '/turnip-tycoon/assets/missing.js',
-      '/turnip-tycoon/licenses/missing',
+      '/another-page/',
+      '/index.html/extra',
+      '/debug.html',
+      '/api/session',
+      '/assets/missing.js',
+      '/licenses/missing',
     ]) {
       expect(matches(path)).toBe(false);
     }
