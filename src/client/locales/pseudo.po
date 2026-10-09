@@ -1,0 +1,2685 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-10 00:41+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: pseudo\n"
+
+#. Marks the current half-day's column
+#: src/client/group-price-table.tsx
+msgid "(now)"
+msgstr ""
+
+#. placeholder {0}: noPrices.length
+#: src/client/odds.ts
+msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
+msgstr ""
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+msgid "{chance} decreasing"
+msgstr ""
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+msgid "{chance} fluctuating"
+msgstr ""
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+msgid "{chance} large spike"
+msgstr ""
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+msgid "{chance} small spike"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{difference} vs. what you paid"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "{earned} earned − {spent} spent"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{friendName}’s {friendPrice}"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{groupName} details"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{groupName} players"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "{halfDay} (now)"
+msgstr ""
+
+#. halfDay is, e.g., "Monday morning"
+#: src/client/advice.ts
+msgid "{halfDay} forecast"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "{halfDay} sell price in bells"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{halfDay}: could be {min} to {max} bells"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{halfDay}: expected {min} bells"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{halfDay}: you entered {price} bells"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "{halfDay}’s {price}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{held, plural, one {Hold or sell your # turnip?} other {Hold or sell your # turnips?}}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{holderName} has {groupPrice} right now"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{lowest} to {highest} vs. what you paid"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{lowest} vs. what you paid"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{members} of {capacity} players"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "{min} to {max} bells"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "{min}–{max} bells"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "{mismatched}, whose prices don’t match a pattern"
+msgstr ""
+
+#. More players in the group than the seats shown
+#: src/client/welcome.tsx
+msgid "{more} more"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "{name} disconnected."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{name}’s {price}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{name}’s {price} from {halfDay}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "{name}’s {price} from this morning"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "{name}’s history"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{name}’s island"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{name}’s island is buying at {other}!"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "{name}’s reported prices, Monday through Saturday"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "{name}’s selling pattern probabilities"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{name}’s week"
+msgstr ""
+
+#. placeholder {0}: odds.price
+#: src/client/advice.ts
+msgid "{oddsChance} chance of more than {0}"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "{pattern} still possible ({chance})"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "{pattern}, up to {best}"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "{period}: {value} bells reported"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "{period}: possible minimum {min}, maximum {max} bells"
+msgstr ""
+
+#. Turnips bought at a price
+#. Turnips bought at a price
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+msgid "{quantity} at {price}"
+msgstr ""
+
+#. Turnips sold at a price; halfDay is short, like “Mon AM”
+#: src/client/calculator.tsx
+msgid "{quantity} at {price} on {halfDay}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "{rottedCount} rotted"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "{times}× what you paid"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "{times}× what you paid for yours."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "{tolerance, plural, one {These matches allow a #-bell rounding difference.} other {These matches allow a #-bell rounding difference.}}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "{total, plural, one {# bell} other {# bells}}"
+msgstr ""
+
+#. verdict is a sentence about the week’s pattern, e.g. "This was a decreasing week."
+#: src/client/advice.ts
+msgid "{verdict} Your best price was <0>{bestPrice} bells</0> on {halfDay}."
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "100 fewer"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "100 more"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "A good price is better shared."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "A higher price is coming"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "A higher price is coming."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "A little data goes a long way."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "A profit could go either way"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "A profit is certain"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "A profit looks likely"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "A profit looks unlikely"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "A week holds at most 40 purchases and sales."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Add the prices you know. Leave the rest blank."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Afternoon"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "All friends"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "All-time profit"
+msgstr ""
+
+#. Morning, as a column heading
+#. Morning, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+msgid "AM"
+msgstr ""
+
+#. Morning, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+msgctxt "chart"
+msgid "AM"
+msgstr ""
+
+#: src/client/pwa-ui.tsx
+msgid "An update is ready"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Another device changed the same entries"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Another device changed this week"
+msgstr ""
+
+#: src/client/pwa-ui.tsx
+msgid "App update"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Approve another device"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Approve device"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Approve this code from a connected device first."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Approved. On the new device, select “Finish connecting”."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "at {averagePaid}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "at {price}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Average cost"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Back"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Back to friends"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Back to prices"
+msgstr ""
+
+#. The unit under a price
+#. The unit under a price
+#. The unit under a price
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "bells"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "bells per turnip"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Bells per turnip"
+msgstr ""
+
+#. Follows a price or a range of prices
+#: src/client/group-price-table.tsx
+msgid "bells predicted"
+msgstr ""
+
+#. Follows a price
+#: src/client/group-price-table.tsx
+msgid "bells reported"
+msgstr ""
+
+#. Under the all-time profit, which is in bells
+#: src/client/history.tsx
+msgid "bells, with this week’s {thisWeekSoFar} so far"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Best {shownName} price"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Best bet"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Best entered"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Best price"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Best price right now · until 10 PM"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Best price right now · until noon"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Best week"
+msgstr ""
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+msgid "between {first} and {last}"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+msgid "Bought"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Bought {bought}; sold {sold}"
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "Bought for"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Bought for {purchasePrice}"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Bought for<0>, average per turnip</0>"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Bring your friends along"
+msgstr ""
+
+#. Under “Sun”: the Sunday buy price column
+#: src/client/group-price-table.tsx
+msgid "Buy"
+msgstr ""
+
+#. Under “Sun” on the week board
+#: src/client/calculator.tsx
+msgid "buy price"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "By Saturday night"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Cancel"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Certain"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Chance for each island"
+msgstr ""
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+msgid "chance of beating {halfDay}’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr ""
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+msgid "chance of beating this afternoon’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr ""
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+msgid "chance of beating this morning’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr ""
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+msgid "chance of more than <0>{price}</0> on your island before Nook’s Cranny closes on Saturday."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Chance of selling for more than each price from {low} to {high} bells."
+msgstr ""
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+msgid "chance someone beats {price} by Saturday night"
+msgstr ""
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+msgid "chance someone beats {price} by tonight"
+msgstr ""
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+msgid "chance you can sell for more than the <0>{price}</0> you paid this week."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Changes need review"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Cheapest Sunday price"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Check the supplied fields."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Check this entry."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Choose a valid device."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Choose a valid export page."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Choose a valid group or player."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Choose a valid history date and limit."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Choose a valid Sunday for this week."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Choose which entries to keep. Yours are still here until you choose."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Clear this device’s saved data"
+msgstr ""
+
+#: src/client/groups.tsx
+#: src/client/turnips.tsx
+msgid "Close"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Close half-day details"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Compare entries"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Compare your prices and find a good time to sell, together."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Connect a device to continue."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connect an existing profile"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connect this device to an existing profile"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Connect to load this player’s shared prices."
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Connect to load your saved history."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Connect to see your friends’ shared prices."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Connect to the internet to delete your profile."
+msgstr ""
+
+#: src/client/data/use-groups.ts
+msgid "Connect to your player before updating friends."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connect using another device instead"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Connect your other device"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Connect your profile online to download or delete its data."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connected {connected}"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connected devices"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Connecting your profile… You can already enter prices."
+msgstr ""
+
+#: src/client/pairing.tsx
+#: src/client/settings.tsx
+msgid "Connection code"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Connection unavailable. You can keep entering prices on this device."
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Contact"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Continuing creates a profile and saves your prices online and on this device. Read our <0>Terms</0> and <1>Privacy page</1>."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Copy {groupName} group code"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Copy code"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Copy this group link to share it."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Correct the highlighted entries. The forecast uses your last valid prices."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "cost {cost}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "cost {rottedCost}"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Could be"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Could be (min–max)"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Could be as low as {floor} then"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Could go either way"
+msgstr ""
+
+#: src/client/data/use-week.ts
+msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
+msgstr ""
+
+#: src/client/pwa-controller.ts
+msgid "Could not check for updates. Reconnect and try again."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Could not confirm deletion."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Could not connect this profile."
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Could not load the license."
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
+msgstr ""
+
+#: src/client/data/use-groups.ts
+msgid "Could not load your groups."
+msgstr ""
+
+#: src/client/data/api.ts
+msgid "Could not reach the server."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Could not request deletion."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Could not restart profile creation."
+msgstr ""
+
+#: src/client/data/pending-edits.ts
+msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
+msgstr ""
+
+#: src/client/pwa-controller.ts
+msgid "Could not update the app."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Couldn’t sync"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Create a group"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Create group"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Create or join a group"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Create or join group"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Create recovery code"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Created {groupName}."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Daisy Mae charges {min}–{max} bells."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Daisy Mae is selling for {other} on {name}’s island"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Day"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Decreasing"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Delete my profile"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Delete your profile?"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Deleting your profile…"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Deletion needs another check"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Devices"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Disconnect"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Disconnect {name}? You can connect it again later."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Disconnect device"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Display name"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Download my data"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Download your data first if you want to keep it. This cannot be undone. <0>Backup and log details</0>."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Edit purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Edit purchase of {what}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Edit sale"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Edit sale of {what}"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Edit your name"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Editing…"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Enter how many turnips."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Enter the price per turnip."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Enter this afternoon’s price to see your odds."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Enter this morning’s price to see your odds."
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Enter this week’s prices"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Enter what Daisy Mae charged to see your odds."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Enter your saved recovery code. Switching profiles does not merge prices. Recovery replaces the code with a new one."
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Entries"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Entry"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Even the low end, {floor}, beats what you paid"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Everyone"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Everything else from both devices is combined. Choose which of these to keep."
+msgstr ""
+
+#: src/client/pairing.tsx
+msgid "Expires at {expires}. Keep this page open."
+msgstr ""
+
+#: src/client/pairing.tsx
+msgid "Finish connecting"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Finish or correct your price entry before updating."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "First Daisy Mae purchase"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "First Daisy Mae purchase on this island?"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "First purchase on their island"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Fluctuating"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "for {earned}"
+msgstr ""
+
+#. Short label for Friday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Fri AM"
+msgstr ""
+
+#. Short label for Friday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Fri PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Friday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Friday morning"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Friend code"
+msgstr ""
+
+#: src/client/groups.tsx
+#: src/client/main.tsx
+msgid "Friends"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Friends & groups"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Friends’ prices"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Friends’ prices this week"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Full week"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Full week group prices"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Generated by Turnip Tycoon. This code stays the same when you change your name."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Get a connection code"
+msgstr ""
+
+#: src/client/pairing.tsx
+msgid "Get a new code"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Go online on your other devices first if you want their latest edits included."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group action"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group code"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group code copied."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group full"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group link copied."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group name"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Group share link"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Hang on! A small spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "High"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Highest {shownName} price in your groups."
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/main.tsx
+msgid "History"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Hold on to those turnips! A big spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Hold on to those turnips! A big spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Hold on to your turnips"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Hold or sell?"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Holding"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Holding {holding} → {holdingAfter} turnips"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Holding looks good"
+msgstr ""
+
+#: src/client/forecast.tsx
+#: src/client/shared-player.tsx
+msgid "How the week could go"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "I already play on another device"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "I understand that my profile and its records will be deleted."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
+msgstr ""
+
+#: src/client/pwa-install.tsx
+msgid "Install"
+msgstr ""
+
+#: src/client/pwa-install.tsx
+msgid "Install Turnip Tycoon"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Invite"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Invite a player to {groupName}"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Island"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "It’s too early to call. {pattern} is most likely, and prices could reach <0>up to {peak} bells</0> {when}."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Join {groupName} on Turnip Tycoon"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Join a group"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Join group"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Join your friends"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Joined {groupName}."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Keep my profile"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Keep this device’s entries"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Kind of trade"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Language"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Large spike"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Last chance: Nook’s Cranny closes at 10 PM."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Last week"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Last week’s pattern"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Last week’s turnips"
+msgstr ""
+
+#: src/client/pwa-ui.tsx
+msgid "Later"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Leave group"
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Licenses"
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "Load older weeks"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Loading devices…"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Loading saved prices…"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Loading saved weeks…"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Loading shared history…"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Loading shared prices…"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Loading your groups…"
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Loading…"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Log a purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Log a sale"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Log at most {most} turnips at a time."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Log purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Log sale"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Looking back"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Low"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Lowest buy price in your groups."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Made so far"
+msgstr ""
+
+#: src/client/main.tsx
+msgid "Main navigation"
+msgstr ""
+
+#: src/client/data/session-vault.ts
+msgid "Missing device credential."
+msgstr ""
+
+#. Short label for Monday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Mon AM"
+msgstr ""
+
+#. Short label for Monday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Mon PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Monday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Monday morning"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Morning"
+msgstr ""
+
+#: src/client/data/identity.ts
+#: src/client/ui.tsx
+msgid "My computer"
+msgstr ""
+
+#: src/client/data/identity.ts
+msgid "My phone"
+msgstr ""
+
+#: src/client/ui.tsx
+msgid "My phone or tablet"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Name saved"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Next best: {other} on {name}’s island."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Next week"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+msgid "No"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+msgid "No forecast yet"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "No forecast yet."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "No friends have shared a {periodLabel} price yet"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "No friends have shared a Sunday buy price yet"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "No half-days left this week"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "No matching forecast"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "No new profile has been created. You can close the app, or start again when you are ready."
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "No past weeks yet."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "No pattern matches these prices. Check your entries and week settings. Your prices have been kept."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "No pattern matches these reported prices."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "No price left this week will beat {known}."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "No price yet this afternoon. {chance} chance it’s already above {price}."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "No price yet this morning. {chance} chance it’s already above {price}."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "No prices were saved for this week."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "No profit this week"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "No turnips bought"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "No turnips bought. Log a purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "No turnips logged."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Nobody has shared a {periodLabel} price yet."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Nobody has shared a Sunday buy price yet."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Nook’s Cranny has closed for the week."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Nook’s Cranny opens at 8 AM."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Nook’s Cranny pays {min}–{max} bells."
+msgstr ""
+
+#: src/client/odds.ts
+msgid "Not counted: {first}; {second}."
+msgstr ""
+
+#: src/client/odds.ts
+msgid "Not counted: {first}."
+msgstr ""
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+msgid "Not entered"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Not entered, no forecast available"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Not sure"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Now"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Odds explorer"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Offline · saved on this device"
+msgstr ""
+
+#: src/client/pwa-controller.ts
+msgid "Offline access could not be prepared. Reconnect and try again."
+msgstr ""
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+msgid "on {halfDay}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "on the {soldCount} sold"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "On the device you already use, open Settings, choose “Approve another device” and enter this code."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "On the new device, open Settings → Connect this device to an existing profile. Enter its connection code here."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "On your connected device, open Settings and choose “Approve another device”."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Open {name}’s week"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Open this request from the app."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Open your week"
+msgstr ""
+
+#: src/client/pairing.tsx
+msgid "Or scan this code on your connected device."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Other device"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Out of reach this week"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Past week"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Past weeks"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Past weeks and their profit"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Past weeks are read-only. <0>Return to this week</0>"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Paste a group code"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Peak day still open"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Permanently delete profile"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Please try connecting again."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Please try creating the group again."
+msgstr ""
+
+#. Afternoon, as a column heading
+#. Afternoon, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+msgid "PM"
+msgstr ""
+
+#. Afternoon, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+msgctxt "chart"
+msgid "PM"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Possible patterns"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Previous pattern"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Previous week"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Previous weeks, shared with your groups."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Price view"
+msgstr ""
+
+#. Main navigation: the current week's prices and forecast
+#: src/client/calculator.tsx
+#: src/client/main.tsx
+msgid "Prices"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Prices don’t match a pattern"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Prices right now"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Prices will bounce around this week — <0>up to {peak} bells</0> is possible {when}. Sell when you see a price you like."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Privacy"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Privacy and data requests"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Profile"
+msgstr ""
+
+#: src/client/data/profile-storage.ts
+msgid "Profile cleanup is in progress. Keep this page open to retry your unsaved edits."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Profile recovered"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Profit"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Profit on these"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Quick amounts"
+msgstr ""
+
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+msgid "Reconnect"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Recover profile"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Recovery code"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Remove this purchase"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Remove this sale"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Removed"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Replace recovery code"
+msgstr ""
+
+#: src/client/forecast.tsx
+#: src/client/group-price-table.tsx
+msgid "Reported"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+msgid "Retry connection"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Retry deletion"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Retry devices"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Retry history"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Return to prices"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Return to welcome"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Right now"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Room for another group?"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Rotted"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Ruled out"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Sale"
+msgstr ""
+
+#. Short label for Saturday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Sat AM"
+msgstr ""
+
+#. Short label for Saturday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Sat PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Saturday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Saturday morning"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Save"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Save and join"
+msgstr ""
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+msgid "Save name"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Saved"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Saved data and unsent edits on this browser will be cleared. Other devices clear their copies when they next check access online. Friends may still have offline copies or screenshots."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Saved on this device · sync pending"
+msgstr ""
+
+#: src/client/data/use-week.ts
+msgid "Saved on this device. Waiting to sync."
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Saved weeks will appear here when a new week starts."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Saving…"
+msgstr ""
+
+#: src/client/pairing.tsx
+msgid "Scan this code on your connected device to approve the connection"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "See the island board"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "See this week"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Select and copy the group code above."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Select the code above to copy it manually."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Sell all now<0> at {price}</0>"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Sell now"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Sell tonight"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Selling for more than <0>{price}</0> bells"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Selling now looks good"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Selling soon looks good"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Send a JSON request body."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Send a JSON request."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Send valid JSON."
+msgstr ""
+
+#: src/client/main.tsx
+#: src/client/settings.tsx
+msgid "Settings"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Share group link"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Share your group link to bring friends along."
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Shared history"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Shared past weekly prices"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Shared view · read only"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Show group"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Show Turnip Tycoon in"
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Site information"
+msgstr ""
+
+#: src/client/main.tsx
+msgid "Skip to content"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Small chance of up to {peak}"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Small spike"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+msgid "Sold"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Sold for"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Sold for<0>, average per turnip</0>"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Sold them and forgot to log it?"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Some prices are a little off the usual patterns, so treat this as a rough guide."
+msgstr ""
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+msgid "someone beats {price} by Saturday night"
+msgstr ""
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+msgid "someone beats {price} by tonight"
+msgstr ""
+
+#: src/client/ui.tsx
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Start a group with friends to compare prices and forecasts."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Start a new profile"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Stay"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Sunday"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Sunday buy"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+msgid "Sunday buy price"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Sunday forecast"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Sunday purchase price in bells"
+msgstr ""
+
+#. An example group name
+#: src/client/groups.tsx
+msgid "Sunday turnip crew"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Sunday, from Daisy Mae"
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Terms"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "That’s {times}× what you paid — fly over before 10 PM."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "That’s {times}× what you paid — fly over before noon."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "That’s {times}× what you paid."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "That’s less than the {purchase} you paid."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "the {price} you paid"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "The best {periodLabel} price in your groups."
+msgstr ""
+
+#: src/client/data/profile-export.ts
+msgid "The download could not be completed. Please try again."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "The lowest Sunday price in your groups."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "The request body could not be read."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "The request is too large."
+msgstr ""
+
+#: src/client/data/session-vault.ts
+msgid "The saved device credential is invalid."
+msgstr ""
+
+#: src/client/data/session-vault.ts
+msgid "The saved profile is missing its device credential."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "The server did not return a valid device credential."
+msgstr ""
+
+#: src/client/pwa-controller.ts
+msgid "The update is not ready yet. Please try again."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "These cost you"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "These prices didn’t match any pattern."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "These prices now point to a <0>decreasing</0> week. Use that in this week’s forecast?"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "These prices now point to a <0>fluctuating</0> week. Use that in this week’s forecast?"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "These prices now point to a <0>large spike</0> week. Use that in this week’s forecast?"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "These prices now point to a <0>small spike</0> week. Use that in this week’s forecast?"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "this afternoon’s {price}"
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "This browser could not read saved profile access. Enable browser storage or connect an existing profile."
+msgstr ""
+
+#: src/client/data/use-week.ts
+msgid "This browser could not save prices locally. Check its storage settings before closing this page."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "This browser could not save your profile access. Keep this tab open and create a recovery code in Settings."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This browser is connected to a different player."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This browser request is not allowed."
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+msgid "This device"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This device is no longer available."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This device is no longer connected."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "This device is no longer connected. Connect your profile again or use a recovery code in Settings."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "This device needs to reconnect. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This device’s access expired. Reconnect your profile."
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "This device’s access expired. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "This device’s name"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This group code is not available. Check the code and try again."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This group is full. A group can have up to 8 players."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This group is no longer available to you."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "This is the highest price your island can reach this week."
+msgstr ""
+
+#: src/client/odds.ts
+msgid "this morning’s {price}"
+msgstr ""
+
+#: src/client/legal.tsx
+msgid "This page is only available in English."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This pairing code expired or is no longer available. Start again on the new device."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This pairing code has already been approved."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This pairing code is no longer available."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "This player hasn’t entered prices for this week."
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "This player is no longer available through your groups."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This player is no longer available to you."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This player is no longer available."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "This profile is no longer connected"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This recovery code is invalid or has already been replaced."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This save request was already used for a different edit."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "This translation was made by machine and hasn’t been checked by players yet, so some wording may be off."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was a decreasing week."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was a fluctuating week."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was a large-spike week."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was a small-spike week."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was most likely a decreasing week ({chance})."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was most likely a fluctuating week ({chance})."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was most likely a large-spike week ({chance})."
+msgstr ""
+
+#: src/client/advice.ts
+msgid "This was most likely a small-spike week ({chance})."
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "This week"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "This week is not available."
+msgstr ""
+
+#: src/client/history.tsx
+msgid "This week will appear here when a new week starts."
+msgstr ""
+
+#: src/client/outlook.tsx
+msgid "This week’s advice"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "This week’s forecast now uses decreasing as last week’s pattern."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "This week’s forecast now uses fluctuating as last week’s pattern."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "This week’s forecast now uses large spike as last week’s pattern."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "This week’s forecast now uses small spike as last week’s pattern."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "This week’s pattern"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "This week’s trades"
+msgstr ""
+
+#. Short label for Thursday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Thu AM"
+msgstr ""
+
+#. Short label for Thursday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Thu PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Thursday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Thursday morning"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Today"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Today’s <0>{current} bells</0> is as good as it gets this week. Time to sell!"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Too late to sell"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "Tops out at {best}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Tops out at {ownBest}"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Trades"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "Try again"
+msgstr ""
+
+#. Short label for Tuesday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Tue AM"
+msgstr ""
+
+#. Short label for Tuesday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Tue PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Tuesday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Tuesday morning"
+msgstr ""
+
+#: src/client/about.tsx
+msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/turnips.tsx
+msgid "Turnips"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Turnips come in bunches of 10."
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Turnips rotted"
+msgstr ""
+
+#: src/client/group-price-table.tsx
+msgid "Unavailable"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+msgid "Unknown"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr ""
+
+#: src/client/pwa-ui.tsx
+msgid "Update now"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Uploads are paused. If the connection was interrupted, the deletion may already have reached the server. We will only show a successful deletion when the server confirms it."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Use a recovery code"
+msgstr ""
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+msgid "Use a recovery code instead"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Use another connected device to bring that profile’s prices here. Switching profiles does not merge prices."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Use for this week"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Use HTTPS to connect securely."
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Use other device’s entries"
+msgstr ""
+
+#: src/client/data/session-controller.ts
+msgid "Waiting for a connection. Your prices stay on this device."
+msgstr ""
+
+#. Short label for Wednesday morning, in tight table columns
+#: src/client/advice.ts
+msgid "Wed AM"
+msgstr ""
+
+#. Short label for Wednesday afternoon, in tight table columns
+#: src/client/advice.ts
+msgid "Wed PM"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Wednesday afternoon"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Wednesday morning"
+msgstr ""
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+msgid "Week"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Week result"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Week settings"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "week total {weekTotal}"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Weekly price forecast by half-day"
+msgstr ""
+
+#: src/client/shared-player.tsx
+msgid "Weekly prices"
+msgstr ""
+
+#: src/client/history.tsx
+msgid "Weeks traded"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Welcome to Turnip Tycoon!"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "What should your friends call you?"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "When"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "With friends"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "With friends: <0>{chance}</0> chance someone beats {target}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "With friends: a higher price than {target} is certain"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "With friends: nobody can beat {target} this week"
+msgstr ""
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+msgid "Yes"
+msgstr ""
+
+#. A tag after your own name in a list
+#. A tag after your own name in a list
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+msgid "you"
+msgstr ""
+
+#: src/client/groups.tsx
+#: src/client/welcome.tsx
+msgid "You"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "You entered"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "You get"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "You have {groupPrice} right now"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "You have {ownNow} right now"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "You no longer share a group with this player."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "You paid {ownPrice}"
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "You paid {purchasePrice}"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "You pay"
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "You’re holding {holding}. Log what you bought first."
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "You’re invited to <0>{groupName}</0>. What should they call you?"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Your {mine} beats everyone right now!"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Your {mine} is the best Sunday deal in your groups"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Your {ownPrice}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "your {price}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "your {price} from {halfDay}"
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "your {price} from this morning"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Your changes will sync when the connection is restored."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Your data"
+msgstr ""
+
+#: src/client/welcome.tsx
+msgid "Your display name"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Your download is ready. Check your browser’s downloads."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Your friend code <0>{friendCode}</0>"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Your groups"
+msgstr ""
+
+#: src/client/groups.tsx
+#: src/client/odds-card.tsx
+msgid "Your island"
+msgstr ""
+
+#: src/client/odds.ts
+msgid "Your island tops out at {best}"
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Your previous recovery code will stop working. Connected devices will stay connected."
+msgstr ""
+
+#: src/client/forecast.tsx
+msgid "Your price"
+msgstr ""
+
+#: src/client/calculator.tsx
+msgid "Your prices"
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Your profile and its records have been removed from the app’s database, and all connected devices have lost access."
+msgstr ""
+
+#: src/client/data/session-vault.ts
+msgid "Your profile changed in another tab. Please try again."
+msgstr ""
+
+#: src/client/data/profile-export.ts
+msgid "Your profile changed. Please start the download again."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Your profile changed. Please try again."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Your profile changed. Review it before deleting."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Your profile changed. Start the download again."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Your profile is connected. Your old recovery code has been replaced."
+msgstr ""
+
+#: src/client/profile-data.tsx
+msgid "Your profile is deleted"
+msgstr ""
+
+#: src/client/pwa.ts
+msgid "Your profile is still connecting or could not be saved. Try again shortly."
+msgstr ""
+
+#: src/client/settings.tsx
+msgid "Your profile is temporarily unavailable. Prices can still be entered on this device."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Your sales need more turnips than that."
+msgstr ""
+
+#: src/client/turnips.tsx
+msgid "Your sales need these turnips. Change or remove a sale first."
+msgstr ""
+
+#: src/client/pwa-ui.tsx
+msgid "Your saved prices will stay on this device."
+msgstr ""
+
+#: src/client/odds-card.tsx
+msgid "Your turnips"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Your week"
+msgstr ""
+
+#: src/client/advice.ts
+msgid "Your weekly forecast"
+msgstr ""

@@ -1,8 +1,10 @@
+import { i18n } from '@lingui/core';
+import { plural, t } from '@lingui/core/macro';
 import type { PredictionResult } from '../prediction';
 import { combineChances, oddsAbove, slotChanceAbove, type Odds } from '../prediction/odds';
 import type { SharedPlayerWeek } from '../shared/groups';
 import type { WeeklyInputs } from '../shared/week';
-import { percent, slotName } from './advice';
+import { patternName, percent, slotName } from './advice';
 
 export type ForecastMember = SharedPlayerWeek & { prediction: PredictionResult };
 
@@ -161,46 +163,73 @@ export function groupOdds(
   };
 }
 
-export function partOfDay(slot: number): string {
-  return slot % 2 ? 'afternoon' : 'morning';
+/** A price named by when it was reported, seen from now: "this morning’s 120", "Tuesday afternoon’s 98". */
+export function reportedPrice(price: number, priceSlot: number, slot: number): string {
+  if (Math.floor(priceSlot / 2) !== Math.floor(slot / 2)) {
+    const halfDay = slotName(priceSlot);
+    return t`${halfDay}’s ${price}`;
+  }
+  return priceSlot % 2 ? t`this afternoon’s ${price}` : t`this morning’s ${price}`;
 }
 
-/** When an earlier price was reported, seen from now: "this morning", "Tuesday afternoon". */
-export function reportedWhen(priceSlot: number, slot: number): string {
-  return Math.floor(priceSlot / 2) === Math.floor(slot / 2)
-    ? `this ${partOfDay(priceSlot)}`
-    : slotName(priceSlot);
+/**
+ * What follows the group's chance in bold: someone beats the price by Saturday night,
+ * or by tonight once it is Saturday.
+ */
+export function beatsBy({ price, certain }: GroupOdds, slot: number): string {
+  if (certain)
+    return slot >= 10
+      ? t({ message: `someone beats ${price} by tonight`, comment: 'Follows “Certain” in bold' })
+      : t({
+          message: `someone beats ${price} by Saturday night`,
+          comment: 'Follows “Certain” in bold',
+        });
+  return slot >= 10
+    ? t({
+        message: `chance someone beats ${price} by tonight`,
+        comment: 'Follows a percentage in bold, e.g. “42%”',
+      })
+    : t({
+        message: `chance someone beats ${price} by Saturday night`,
+        comment: 'Follows a percentage in bold, e.g. “42%”',
+      });
 }
 
 /** Why an island could, or can’t, beat the price. */
 export function islandReason(island: MemberOdds): string {
   const { odds } = island;
-  if (!odds) return 'No half-days left this week';
+  if (!odds) return t`No half-days left this week`;
+  const best = odds.bestCase;
   if (odds.impossible || !odds.driver)
-    return `${island.self ? 'Your island tops' : 'Tops'} out at ${odds.bestCase}`;
+    return island.self ? t`Your island tops out at ${best}` : t`Tops out at ${best}`;
+  const pattern = patternName(odds.driver.id);
+  const chance = percent(odds.driver.probability);
   return odds.driver.probability >= 0.995
-    ? `${odds.driver.label}, up to ${odds.bestCase}`
-    : `${odds.driver.label} still possible (${percent(odds.driver.probability)})`;
+    ? t`${pattern}, up to ${best}`
+    : t`${pattern} still possible (${chance})`;
 }
 
 function nameList(names: string[]): string {
-  return names.length < 2
-    ? names.join('')
-    : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+  return new Intl.ListFormat(i18n.locale, { type: 'conjunction' }).format(names);
 }
 
 /** Who was left out of the group number, or an empty string when nobody was. */
 export function notCountedNote({ noPrices, unmatched }: GroupOdds): string {
+  const withoutPrices = nameList(noPrices);
+  const mismatched = nameList(unmatched);
   const parts = [
     noPrices.length
-      ? `${nameList(noPrices)}, who ${noPrices.length === 1 ? 'has' : 'have'} no prices this week`
+      ? plural(noPrices.length, {
+          one: `${withoutPrices}, who has no prices this week`,
+          other: `${withoutPrices}, who have no prices this week`,
+        })
       : '',
-    unmatched.length ? `${nameList(unmatched)}, whose prices don’t match a pattern` : '',
+    unmatched.length ? t`${mismatched}, whose prices don’t match a pattern` : '',
   ].filter(Boolean);
-  return parts.length ? `Not counted: ${parts.join('; ')}.` : '';
-}
-
-/** "by Saturday night", or "by tonight" once it is Saturday. */
-export function deadline(slot: number): string {
-  return slot >= 10 ? 'by tonight' : 'by Saturday night';
+  const [first, second] = parts;
+  return parts.length === 2
+    ? t`Not counted: ${first}; ${second}.`
+    : parts.length
+      ? t`Not counted: ${first}.`
+      : '';
 }

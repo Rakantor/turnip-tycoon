@@ -1,6 +1,50 @@
-import type { PredictionResult } from '../prediction';
+import { i18n, type MessageDescriptor } from '@lingui/core';
+import { msg, t } from '@lingui/core/macro';
+import type { PatternId, PredictionResult } from '../prediction';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const SLOT_NAMES = [
+  msg`Monday morning`,
+  msg`Monday afternoon`,
+  msg`Tuesday morning`,
+  msg`Tuesday afternoon`,
+  msg`Wednesday morning`,
+  msg`Wednesday afternoon`,
+  msg`Thursday morning`,
+  msg`Thursday afternoon`,
+  msg`Friday morning`,
+  msg`Friday afternoon`,
+  msg`Saturday morning`,
+  msg`Saturday afternoon`,
+];
+
+const SLOT_SHORT_NAMES = [
+  msg({ message: 'Mon AM', comment: 'Short label for Monday morning, in tight table columns' }),
+  msg({ message: 'Mon PM', comment: 'Short label for Monday afternoon, in tight table columns' }),
+  msg({ message: 'Tue AM', comment: 'Short label for Tuesday morning, in tight table columns' }),
+  msg({ message: 'Tue PM', comment: 'Short label for Tuesday afternoon, in tight table columns' }),
+  msg({ message: 'Wed AM', comment: 'Short label for Wednesday morning, in tight table columns' }),
+  msg({
+    message: 'Wed PM',
+    comment: 'Short label for Wednesday afternoon, in tight table columns',
+  }),
+  msg({ message: 'Thu AM', comment: 'Short label for Thursday morning, in tight table columns' }),
+  msg({ message: 'Thu PM', comment: 'Short label for Thursday afternoon, in tight table columns' }),
+  msg({ message: 'Fri AM', comment: 'Short label for Friday morning, in tight table columns' }),
+  msg({ message: 'Fri PM', comment: 'Short label for Friday afternoon, in tight table columns' }),
+  msg({ message: 'Sat AM', comment: 'Short label for Saturday morning, in tight table columns' }),
+  msg({ message: 'Sat PM', comment: 'Short label for Saturday afternoon, in tight table columns' }),
+];
+
+const PATTERN_COMMENT =
+  'A weekly turnip price pattern. The game never names them; use the term players use.';
+
+/** In the order the week settings and pattern lists show them. */
+export const PATTERNS: { id: PatternId; name: MessageDescriptor }[] = [
+  { id: 'fluctuating', name: msg({ message: 'Fluctuating', comment: PATTERN_COMMENT }) },
+  { id: 'large-spike', name: msg({ message: 'Large spike', comment: PATTERN_COMMENT }) },
+  { id: 'decreasing', name: msg({ message: 'Decreasing', comment: PATTERN_COMMENT }) },
+  { id: 'small-spike', name: msg({ message: 'Small spike', comment: PATTERN_COMMENT }) },
+];
 
 export type ChipTone = 'leaf' | 'gold' | 'sand' | 'clay';
 
@@ -16,25 +60,78 @@ export interface Advice {
 }
 
 export function slotName(index: number): string {
-  return `${DAYS[Math.floor(index / 2)]} ${index % 2 ? 'afternoon' : 'morning'}`;
+  return i18n._(SLOT_NAMES[index]);
 }
 
 export function slotShortName(index: number): string {
-  return `${DAYS[Math.floor(index / 2)].slice(0, 3)} ${index % 2 ? 'PM' : 'AM'}`;
+  return i18n._(SLOT_SHORT_NAMES[index]);
+}
+
+// 4 January 2026 was a Sunday.
+const weekdayDate = (day: number) => new Date(2026, 0, 4 + day, 12);
+
+/** A weekday's name, from 0 for Sunday to 6 for Saturday. */
+export function dayName(day: number): string {
+  return i18n.date(weekdayDate(day), { weekday: 'long' });
+}
+
+/** A weekday's short name, from 0 for Sunday to 6 for Saturday. */
+export function dayShortName(day: number): string {
+  return i18n.date(weekdayDate(day), { weekday: 'short' });
+}
+
+export function patternName(id: PatternId): string {
+  return i18n._(PATTERNS.find((pattern) => pattern.id === id)!.name);
+}
+
+function formatPercent(value: number): string {
+  return i18n.number(value, { style: 'percent', maximumFractionDigits: 0 });
 }
 
 export function percent(probability: number): string {
   const rounded = Math.round(probability * 100);
-  return rounded === 0 && probability > 0 ? '<1%' : `${rounded}%`;
+  return rounded === 0 && probability > 0
+    ? `<${formatPercent(0.01)}`
+    : formatPercent(rounded / 100);
+}
+
+/** A pattern's chance to one decimal, so small chances still show. */
+export function patternPercent(probability: number): string {
+  const format = (value: number) =>
+    i18n.number(value, { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return probability < 0.001 ? `<${format(0.001)}` : format(probability);
 }
 
 /** Never rounds an uncertain chance up to 100%; certainty is said in words instead. */
 export function oddsPercent(chance: number): string {
-  return chance >= 0.995 && chance < 1 ? '>99%' : percent(chance);
+  return chance >= 0.995 && chance < 1 ? `>${formatPercent(0.99)}` : percent(chance);
+}
+
+/** Splits a translated message around its one emphasized part, marked <0>…</0>. */
+function emphasized(message: string): Pick<Advice, 'lead' | 'highlight' | 'trail'> {
+  const match = /^([^]*?)<0>([^]*?)<\/0>([^]*)$/.exec(message);
+  return match
+    ? { lead: match[1], highlight: match[2], trail: match[3] }
+    : { lead: message, highlight: '', trail: '' };
 }
 
 function eyebrowFor(slot: number | null): string {
-  return slot === null ? 'Sunday forecast' : `${slotName(slot)} forecast`;
+  if (slot === null) return t`Sunday forecast`;
+  const halfDay = slotName(slot);
+  return t({ message: `${halfDay} forecast`, comment: 'halfDay is, e.g., "Monday morning"' });
+}
+
+function patternChip(id: PatternId, chance: string): string {
+  switch (id) {
+    case 'fluctuating':
+      return t({ message: `${chance} fluctuating`, comment: 'The chance of a pattern, as a chip' });
+    case 'large-spike':
+      return t({ message: `${chance} large spike`, comment: 'The chance of a pattern, as a chip' });
+    case 'decreasing':
+      return t({ message: `${chance} decreasing`, comment: 'The chance of a pattern, as a chip' });
+    case 'small-spike':
+      return t({ message: `${chance} small spike`, comment: 'The chance of a pattern, as a chip' });
+  }
 }
 
 /**
@@ -63,29 +160,27 @@ export function weekAdvice({
   if (prediction.status === 'needs-input')
     return {
       ...base,
-      eyebrow: 'Your weekly forecast',
-      lead: 'Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week.',
+      eyebrow: t`Your weekly forecast`,
+      lead: t`Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week.`,
     };
   if (prediction.status === 'inconsistent')
     return {
       ...base,
       eyebrow: eyebrowFor(slot),
-      lead: 'Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept.',
+      lead: t`Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept.`,
     };
 
   const top = prediction.patterns[0];
-  const patternChip = {
-    text: `${percent(top.probability)} ${top.label.toLowerCase()}`,
-    tone: 'leaf' as const,
-  };
+  const topChip = { text: patternChip(top.id, percent(top.probability)), tone: 'leaf' as const };
+  const oddsChance = odds === null ? '' : oddsPercent(odds.chance);
   const oddsChips: Advice['chips'] =
     odds === null || odds.chance === 0
       ? []
       : [
           {
             text: odds.certain
-              ? 'A higher price is coming'
-              : `${oddsPercent(odds.chance)} chance of more than ${odds.price}`,
+              ? t`A higher price is coming`
+              : t`${oddsChance} chance of more than ${odds.price}`,
             tone: 'gold',
           },
         ];
@@ -97,8 +192,8 @@ export function weekAdvice({
     return {
       ...base,
       eyebrow: eyebrowFor(slot),
-      lead: 'Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night.',
-      chips: [patternChip],
+      lead: t`Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night.`,
+      chips: [topChip],
     };
 
   const peakSlot = upcoming.reduce((best, index) =>
@@ -110,22 +205,32 @@ export function weekAdvice({
   // Early in the week several half-days can reach the same maximum; naming
   // only the first of them would suggest a precision the forecast lacks.
   const peakSlots = upcoming.filter((index) => prediction.slots[index].max >= peak * 0.97);
+  const halfDay = slotName(peakSlot);
+  const first = slotName(peakSlots[0]);
+  const last = slotName(peakSlots[peakSlots.length - 1]);
   const when =
     peakSlots.length === 1
-      ? ` on ${slotName(peakSlot)}`
-      : ` between ${slotName(peakSlots[0])} and ${slotName(peakSlots[peakSlots.length - 1])}`;
+      ? t({ message: `on ${halfDay}`, comment: 'When the peak could come; ends a sentence' })
+      : t({
+          message: `between ${first} and ${last}`,
+          comment: 'When the peak could come; ends a sentence',
+        });
 
   if (current !== null && current >= peak) {
     const ratio = purchasePrice ? current / purchasePrice : null;
+    const times =
+      ratio === null
+        ? ''
+        : i18n.number(ratio, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     return {
       eyebrow: eyebrowFor(slot),
-      lead: 'Today’s ',
-      highlight: `${current} bells`,
-      trail: ' is as good as it gets this week. Time to sell!',
+      ...emphasized(
+        t`Today’s <0>${current} bells</0> is as good as it gets this week. Time to sell!`,
+      ),
       chips: [
-        patternChip,
+        topChip,
         ...(ratio !== null && ratio >= 1
-          ? [{ text: `${ratio.toFixed(1)}× what you paid`, tone: 'gold' as const }]
+          ? [{ text: t`${times}× what you paid`, tone: 'gold' as const }]
           : []),
       ],
       bestSlot: slot,
@@ -133,13 +238,13 @@ export function weekAdvice({
   }
 
   const peakChips = (): Advice['chips'] => [
-    patternChip,
+    topChip,
     ...oddsChips,
     peakSlots.length > 1
-      ? { text: 'Peak day still open', tone: 'gold' }
+      ? { text: t`Peak day still open`, tone: 'gold' }
       : purchasePrice !== null && floor >= purchasePrice
-        ? { text: `Even the low end, ${floor}, beats what you paid`, tone: 'gold' }
-        : { text: `Could be as low as ${floor} then`, tone: 'gold' },
+        ? { text: t`Even the low end, ${floor}, beats what you paid`, tone: 'gold' }
+        : { text: t`Could be as low as ${floor} then`, tone: 'gold' },
   ];
   const worthWatching =
     peakSlots.length === 1 && (purchasePrice === null || peak > purchasePrice) ? peakSlot : null;
@@ -147,24 +252,26 @@ export function weekAdvice({
   if (top.id === 'decreasing' && top.probability >= 0.75)
     return {
       eyebrow: eyebrowFor(slot),
-      lead: 'Prices will most likely keep sliding this week. If you need bells, ',
-      highlight: 'selling soon',
-      trail: ' beats waiting.',
-      chips: [patternChip, ...oddsChips, { text: `Small chance of up to ${peak}`, tone: 'gold' }],
+      ...emphasized(
+        t`Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting.`,
+      ),
+      chips: [topChip, ...oddsChips, { text: t`Small chance of up to ${peak}`, tone: 'gold' }],
       bestSlot: null,
     };
 
   if ((top.id === 'large-spike' || top.id === 'small-spike') && top.probability >= 0.5) {
     const certain = top.probability >= 0.8;
-    const lead =
+    const message =
       top.id === 'large-spike'
-        ? `Hold on to those turnips! A big spike ${certain ? 'is coming' : 'looks likely'} — they could sell for `
-        : `Hang on! A small spike ${certain ? 'is coming' : 'looks likely'} — they could sell for `;
+        ? certain
+          ? t`Hold on to those turnips! A big spike is coming — they could sell for <0>up to ${peak} bells</0> ${when}.`
+          : t`Hold on to those turnips! A big spike looks likely — they could sell for <0>up to ${peak} bells</0> ${when}.`
+        : certain
+          ? t`Hang on! A small spike is coming — they could sell for <0>up to ${peak} bells</0> ${when}.`
+          : t`Hang on! A small spike looks likely — they could sell for <0>up to ${peak} bells</0> ${when}.`;
     return {
       eyebrow: eyebrowFor(slot),
-      lead,
-      highlight: `up to ${peak} bells`,
-      trail: `${when}.`,
+      ...emphasized(message),
       chips: peakChips(),
       bestSlot: worthWatching,
     };
@@ -173,27 +280,50 @@ export function weekAdvice({
   if (top.id === 'fluctuating' && top.probability >= 0.5)
     return {
       eyebrow: eyebrowFor(slot),
-      lead: 'Prices will bounce around this week — ',
-      highlight: `up to ${peak} bells`,
-      trail: ` is possible${when}. Sell when you see a price you like.`,
+      ...emphasized(
+        t`Prices will bounce around this week — <0>up to ${peak} bells</0> is possible ${when}. Sell when you see a price you like.`,
+      ),
       chips: peakChips(),
       bestSlot: worthWatching,
     };
 
+  const pattern = patternName(top.id);
   return {
     eyebrow: eyebrowFor(slot),
-    lead: `It’s too early to call. ${top.label} is most likely, and prices could reach `,
-    highlight: `up to ${peak} bells`,
-    trail: `${when}.`,
+    ...emphasized(
+      t`It’s too early to call. ${pattern} is most likely, and prices could reach <0>up to ${peak} bells</0> ${when}.`,
+    ),
     chips: peakChips(),
     bestSlot: worthWatching,
   };
 }
 
+/** What a past week turned out to be, stated plainly when its pattern is certain. */
+function pastVerdict(id: PatternId, certain: boolean, chance: string): string {
+  switch (id) {
+    case 'fluctuating':
+      return certain
+        ? t`This was a fluctuating week.`
+        : t`This was most likely a fluctuating week (${chance}).`;
+    case 'large-spike':
+      return certain
+        ? t`This was a large-spike week.`
+        : t`This was most likely a large-spike week (${chance}).`;
+    case 'decreasing':
+      return certain
+        ? t`This was a decreasing week.`
+        : t`This was most likely a decreasing week (${chance}).`;
+    case 'small-spike':
+      return certain
+        ? t`This was a small-spike week.`
+        : t`This was most likely a small-spike week (${chance}).`;
+  }
+}
+
 function pastAdvice(prediction: PredictionResult, prices: (number | null)[]): Advice {
-  const base = { eyebrow: 'Looking back', highlight: '', trail: '', chips: [], bestSlot: null };
+  const base = { eyebrow: t`Looking back`, highlight: '', trail: '', chips: [], bestSlot: null };
   if (prediction.status === 'needs-input')
-    return { ...base, lead: 'No prices were saved for this week.' };
+    return { ...base, lead: t`No prices were saved for this week.` };
   const entered = prices
     .map((price, index) => ({ price, index }))
     .filter((entry): entry is { price: number; index: number } => entry.price !== null);
@@ -202,17 +332,21 @@ function pastAdvice(prediction: PredictionResult, prices: (number | null)[]): Ad
     : null;
   const top = prediction.status === 'possible' ? prediction.patterns[0] : null;
   // A pattern shown as 100% is stated plainly, without "most likely".
-  const lead = !top
-    ? 'These prices didn’t match any pattern.'
-    : percent(top.probability) === '100%'
-      ? `This was a ${top.label.toLowerCase()} week.`
-      : `This was most likely a ${top.label.toLowerCase()} week (${percent(top.probability)}).`;
-  if (!best) return { ...base, lead };
+  const verdict = !top
+    ? t`These prices didn’t match any pattern.`
+    : pastVerdict(top.id, Math.round(top.probability * 100) === 100, percent(top.probability));
+  if (!best) return { ...base, lead: verdict };
+  const bestPrice = best.price;
+  const halfDay = slotName(best.index);
   return {
     ...base,
-    lead: `${lead} Your best price was `,
-    highlight: `${best.price} bells`,
-    trail: ` on ${slotName(best.index)}.`,
+    ...emphasized(
+      t({
+        message: `${verdict} Your best price was <0>${bestPrice} bells</0> on ${halfDay}.`,
+        comment:
+          'verdict is a sentence about the week’s pattern, e.g. "This was a decreasing week."',
+      }),
+    ),
     bestSlot: best.index,
   };
 }

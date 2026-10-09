@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { ChevronLeft, User } from 'lucide-react';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
 import type { GroupPreview } from '../shared/groups';
 import { request } from './data/api';
@@ -52,7 +54,7 @@ function SeatPreview({ name, members }: { name: string; members: string[] | null
               <User size={18} />
             </span>
           )}
-          <span className="group-seat-name">{trimmed || 'You'}</span>
+          <span className="group-seat-name">{trimmed || t`You`}</span>
         </span>
       </li>
       {shown
@@ -76,7 +78,9 @@ function SeatPreview({ name, members }: { name: string; members: string[] | null
         <li className="welcome-seat-more">
           <span className="welcome-seat">
             <span className="player-avatar">+{more}</span>
-            <span className="group-seat-name">{more} more</span>
+            <span className="group-seat-name">
+              <Trans comment="More players in the group than the seats shown">{more} more</Trans>
+            </span>
           </span>
         </li>
       )}
@@ -104,6 +108,9 @@ export function WelcomeDialog() {
       : null;
   const preview = useInvitePreview(inviteCode);
   const full = preview ? preview.group.memberCount >= preview.group.capacity : false;
+  const groupName = preview?.group.name;
+  const maxLength = DISPLAY_NAME_MAX_LENGTH;
+  const length = name.length;
 
   useEffect(() => {
     const element = dialog.current;
@@ -151,31 +158,32 @@ export function WelcomeDialog() {
                 height={56}
                 alt=""
               />
-              <h2 id={`${id}-title`}>Welcome to Turnip Tycoon!</h2>
+              <h2 id={`${id}-title`}>
+                <Trans>Welcome to Turnip Tycoon!</Trans>
+              </h2>
             </div>
             <p className="welcome-text">
               {preview ? (
                 full ? (
-                  <>
-                    <strong>{preview.group.name}</strong> is full right now. What should your
-                    friends call you?
-                  </>
-                ) : (
-                  <>
-                    You’re invited to <strong>{preview.group.name}</strong>. What should they call
+                  <Trans>
+                    <strong>{groupName}</strong> is full right now. What should your friends call
                     you?
-                  </>
+                  </Trans>
+                ) : (
+                  <Trans>
+                    You’re invited to <strong>{groupName}</strong>. What should they call you?
+                  </Trans>
                 )
               ) : (
-                'What should your friends call you?'
+                t`What should your friends call you?`
               )}
             </p>
             <SeatPreview name={name} members={preview?.members ?? null} />
             <div className="field welcome-field">
               <label htmlFor={`${id}-name`}>
-                Your display name
+                <Trans>Your display name</Trans>
                 <span className="welcome-count">
-                  {name.length}/{DISPLAY_NAME_MAX_LENGTH}
+                  {length}/{maxLength}
                 </span>
               </label>
               <input
@@ -189,18 +197,20 @@ export function WelcomeDialog() {
               />
             </div>
             <p className="welcome-privacy">
-              Continuing creates a profile and saves your prices online and on this device. Read our{' '}
-              <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy page</Link>.
+              <Trans>
+                Continuing creates a profile and saves your prices online and on this device. Read
+                our <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy page</Link>.
+              </Trans>
             </p>
             <Button type="submit" disabled={!name.trim()}>
-              {preview && !full ? 'Save and join' : 'Save name'}
+              {preview && !full ? t`Save and join` : t`Save name`}
             </Button>
             <button
               className="text-button welcome-switch"
               type="button"
               onClick={() => setStep('connect')}
             >
-              I already play on another device
+              <Trans>I already play on another device</Trans>
             </button>
           </form>
         ) : (
@@ -211,12 +221,16 @@ export function WelcomeDialog() {
               onClick={() => setStep('name')}
             >
               <ChevronLeft size={16} aria-hidden="true" />
-              Back
+              <Trans>Back</Trans>
             </button>
-            <h2 id={`${id}-title`}>Connect your other device</h2>
+            <h2 id={`${id}-title`}>
+              <Trans>Connect your other device</Trans>
+            </h2>
             <p className="welcome-text">
-              On the device you already use, open Settings, choose “Approve another device” and
-              enter this code.
+              <Trans>
+                On the device you already use, open Settings, choose “Approve another device” and
+                enter this code.
+              </Trans>
             </p>
             <PairingCode deviceName={defaultDeviceName()} />
             <button
@@ -226,7 +240,7 @@ export function WelcomeDialog() {
                 void navigate('/recover');
               }}
             >
-              Use a recovery code instead
+              <Trans>Use a recovery code instead</Trans>
             </button>
           </div>
         )}

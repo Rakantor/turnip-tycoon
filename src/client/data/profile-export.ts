@@ -3,6 +3,7 @@ import {
   type ExportSection,
   type ProfileExportPage,
 } from '../../shared/profile-data';
+import { t } from '@lingui/core/macro';
 import type { TurnipDatabase } from './database';
 import { CONTACT_EMAIL } from '../../shared/contact';
 
@@ -17,7 +18,7 @@ export async function collectProfileExport(
 ) {
   const startedAt = new Date().toISOString();
   const check = () => {
-    if (!deps.current()) throw new Error('Your profile changed. Please start the download again.');
+    if (!deps.current()) throw new Error(t`Your profile changed. Please start the download again.`);
   };
   check();
   await deps.savePending();
@@ -41,7 +42,7 @@ export async function collectProfileExport(
         page.section !== section ||
         (page.nextCursor && cursor && page.nextCursor <= cursor)
       )
-        throw new Error('The download could not be completed. Please try again.');
+        throw new Error(t`The download could not be completed. Please try again.`);
       metadata ??= page;
       records[section].push(...page.records);
       cursor = page.nextCursor ?? undefined;

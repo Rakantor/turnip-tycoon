@@ -1,4 +1,5 @@
 import type { GroupsResponse } from '../../shared/groups';
+import { t } from '@lingui/core/macro';
 import type { TurnipDatabase } from './database';
 import type { Table } from 'dexie';
 
@@ -6,7 +7,7 @@ export const blockedProfileKey = (owner: string) => `blocked-profile:${owner}`;
 
 export class ProfileWriteBlockedError extends Error {
   constructor() {
-    super('Profile cleanup is in progress. Keep this page open to retry your unsaved edits.');
+    super(t`Profile cleanup is in progress. Keep this page open to retry your unsaved edits.`);
     this.name = 'ProfileWriteBlockedError';
   }
 }

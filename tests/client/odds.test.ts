@@ -3,12 +3,12 @@ import { predictWeek } from '../../src/prediction';
 import type { SharedPlayerWeek } from '../../src/shared/groups';
 import { emptyWeek } from '../../src/shared/week';
 import {
-  deadline,
+  beatsBy,
   groupOdds,
   islandOdds,
   islandReason,
   notCountedNote,
-  reportedWhen,
+  reportedPrice,
   type ForecastMember,
 } from '../../src/client/odds';
 
@@ -157,8 +157,8 @@ describe('group odds', () => {
   });
 
   it('says when an earlier price was reported', () => {
-    expect(reportedWhen(6, THURSDAY_PM)).toBe('this morning');
-    expect(reportedWhen(5, THURSDAY_PM)).toBe('Wednesday afternoon');
+    expect(reportedPrice(61, 6, THURSDAY_PM)).toBe('this morning’s 61');
+    expect(reportedPrice(98, 5, THURSDAY_PM)).toBe('Wednesday afternoon’s 98');
   });
 
   it('notices when the best price is yours', () => {
@@ -168,7 +168,9 @@ describe('group odds', () => {
   });
 
   it('says tonight once it is Saturday', () => {
-    expect(deadline(THURSDAY_PM)).toBe('by Saturday night');
-    expect(deadline(10)).toBe('by tonight');
+    const group = groupOdds([you, jun, mika], 'you', THURSDAY_PM)!;
+    expect(beatsBy({ ...group, certain: false }, THURSDAY_PM)).toMatch(/by Saturday night$/);
+    expect(beatsBy({ ...group, certain: false }, 10)).toMatch(/by tonight$/);
+    expect(beatsBy({ ...group, certain: true }, 10)).toMatch(/^someone beats/);
   });
 });

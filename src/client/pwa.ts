@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
+import { t } from '@lingui/core/macro';
 import { PwaController, type PwaState } from './pwa-controller';
 import { canReloadIdentity } from './data/identity';
 import { pendingEdits } from './data/pending-edits';
@@ -56,6 +57,8 @@ export async function updatePwa() {
     }
     await pendingEdits.flushAll();
     if (!canReloadIdentity())
-      throw new Error('Your profile is still connecting or could not be saved. Try again shortly.');
+      throw new Error(
+        t`Your profile is still connecting or could not be saved. Try again shortly.`,
+      );
   });
 }

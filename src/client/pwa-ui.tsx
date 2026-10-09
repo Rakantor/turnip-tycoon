@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { Button, Notice } from './ui';
 import { updatePwa, usePwa } from './pwa';
 
@@ -13,10 +15,14 @@ export function UpdateNotice() {
   const safePage = pathname === '/' || pathname === '/history' || pathname.startsWith('/weeks/');
   if (!pwa.updateAvailable || dismissedOn === pathname || !safePage) return null;
   return (
-    <aside className="app-update" aria-label="App update">
+    <aside className="app-update" aria-label={t`App update`}>
       <div>
-        <strong>An update is ready</strong>
-        <p>Your saved prices will stay on this device.</p>
+        <strong>
+          <Trans>An update is ready</Trans>
+        </strong>
+        <p>
+          <Trans>Your saved prices will stay on this device.</Trans>
+        </p>
         {pwa.error && <Notice>{pwa.error}</Notice>}
       </div>
       <div className="button-row">
@@ -26,10 +32,10 @@ export function UpdateNotice() {
             void updatePwa();
           }}
         >
-          Update now
+          <Trans>Update now</Trans>
         </Button>
         <Button secondary disabled={pwa.updating} onClick={() => setDismissedOn(pathname)}>
-          Later
+          <Trans>Later</Trans>
         </Button>
       </div>
     </aside>

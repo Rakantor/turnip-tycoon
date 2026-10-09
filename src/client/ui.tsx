@@ -11,6 +11,8 @@ import {
   type ReactNode,
 } from 'react';
 import { LoaderCircle } from 'lucide-react';
+import { i18n } from '@lingui/core';
+import { t } from '@lingui/core/macro';
 import type { useIdentity } from './data/identity';
 
 export const AppContext = createContext<ReturnType<typeof useIdentity> | null>(null);
@@ -21,11 +23,11 @@ export function useApp() {
 }
 
 export function messageOf(error: unknown): string {
-  return error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+  return error instanceof Error ? error.message : t`Something went wrong. Please try again.`;
 }
 
 export function defaultDeviceName(): string {
-  return /Android|iPhone|iPad/i.test(navigator.userAgent) ? 'My phone or tablet' : 'My computer';
+  return /Android|iPhone|iPad/i.test(navigator.userAgent) ? t`My phone or tablet` : t`My computer`;
 }
 
 export function Button({
@@ -144,5 +146,9 @@ export function dateFromWeek(weekStart: string, offset = 0): Date {
 export function weekLabel(weekStart: string): string {
   const start = dateFromWeek(weekStart);
   const end = dateFromWeek(weekStart, 6);
-  return `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${end.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  return new Intl.DateTimeFormat(i18n.locale, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).formatRange(start, end);
 }

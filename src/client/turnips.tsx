@@ -1,5 +1,8 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { CircleAlert, Minus, Pencil, Plus, X } from 'lucide-react';
+import { i18n } from '@lingui/core';
+import { plural, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import {
   averageCost,
   heldCost,
@@ -16,11 +19,10 @@ import { slotName } from './advice';
 import { Button } from './ui';
 import './turnips.css';
 
-export const bells = (value: number) => Math.round(value).toLocaleString();
+export const bells = (value: number) => i18n.number(Math.round(value));
 export const signedBells = (value: number) => `${value < 0 ? '−' : '+'}${bells(Math.abs(value))}`;
 /** Averages show one decimal only when they aren't whole. */
-export const average = (value: number) =>
-  value.toLocaleString(undefined, { maximumFractionDigits: 1 });
+export const average = (value: number) => i18n.number(value, { maximumFractionDigits: 1 });
 const tone = (value: number) => (value < 0 ? 'bells-down' : 'bells-up');
 
 /** Where focus goes when a closed sheet's opener is gone. */
@@ -43,15 +45,20 @@ function TradeList({
   return (
     <ul className="trade-list">
       {trades.map((trade) => {
-        const what = `${bells(trade.quantity)} at ${trade.price}`;
+        const quantity = bells(trade.quantity);
+        const price = trade.price;
+        const what = t({
+          message: `${quantity} at ${price}`,
+          comment: 'Turnips bought at a price',
+        });
         const amount = trade.quantity * trade.price;
         return (
           <li key={trade.id} className="trade-row" data-kind={trade.kind}>
             <span className={`trade-tag trade-${trade.kind}`}>
-              {trade.kind === 'buy' ? 'Bought' : 'Sold'}
+              {trade.kind === 'buy' ? t`Bought` : t`Sold`}
             </span>
             <span className="trade-when">
-              {trade.kind === 'buy' ? 'Sunday' : slotName(trade.slot)}
+              {trade.kind === 'buy' ? t`Sunday` : slotName(trade.slot)}
             </span>
             <span className="trade-amount">{what}</span>
             <span className={`trade-bells ${trade.kind === 'buy' ? 'bells-down' : 'bells-up'}`}>
@@ -61,7 +68,9 @@ function TradeList({
               <button
                 type="button"
                 className="trade-edit"
-                aria-label={`Edit ${trade.kind === 'buy' ? 'purchase' : 'sale'} of ${what}`}
+                aria-label={
+                  trade.kind === 'buy' ? t`Edit purchase of ${what}` : t`Edit sale of ${what}`
+                }
                 onClick={() => onEdit(trade)}
               >
                 <Pencil size={17} aria-hidden="true" />
@@ -159,24 +168,29 @@ function TradeSheet({
   const after = totalsOf(trades);
   const range = kind === 'buy' ? PURCHASE_PRICE_RANGE : SELLING_PRICE_RANGE;
   const problem = tradesProblem(trades);
+  const most = bells(TRADE_QUANTITY_MAX);
+  const { min, max } = range;
+  const holding = bells(held);
   const error = !count
-    ? 'Enter how many turnips.'
+    ? t`Enter how many turnips.`
     : count % 10
-      ? 'Turnips come in bunches of 10.'
+      ? t`Turnips come in bunches of 10.`
       : count > TRADE_QUANTITY_MAX
-        ? `Log at most ${bells(TRADE_QUANTITY_MAX)} turnips at a time.`
+        ? t`Log at most ${most} turnips at a time.`
         : !each
-          ? 'Enter the price per turnip.'
+          ? t`Enter the price per turnip.`
           : each < range.min || each > range.max
-            ? `${kind === 'buy' ? 'Daisy Mae charges' : 'Nook’s Cranny pays'} ${range.min}–${range.max} bells.`
+            ? kind === 'buy'
+              ? t`Daisy Mae charges ${min}–${max} bells.`
+              : t`Nook’s Cranny pays ${min}–${max} bells.`
             : problem === 'oversold'
               ? kind === 'sell'
-                ? `You’re holding ${bells(held)}. Log what you bought first.`
-                : 'Your sales need more turnips than that.'
+                ? t`You’re holding ${holding}. Log what you bought first.`
+                : t`Your sales need more turnips than that.`
               : problem === 'too-many'
-                ? 'A week holds at most 40 purchases and sales.'
+                ? t`A week holds at most 40 purchases and sales.`
                 : problem
-                  ? 'Check this entry.'
+                  ? t`Check this entry.`
                   : '';
   const amounts =
     kind === 'sell'
@@ -186,17 +200,18 @@ function TradeSheet({
   const gain = madeSoFar(after) - madeSoFar(before);
   const costBefore = averageCost(before);
   const costAfter = averageCost(after);
+  const totalBells = plural(total, { one: '# bell', other: '# bells' });
   const summary =
     kind === 'sell'
       ? [
-          { label: 'You get', value: `${bells(total)} bells`, className: 'summary-total' },
-          { label: 'These cost you', value: bells(total - gain), className: '' },
-          { label: 'Profit on these', value: signedBells(gain), className: tone(gain) },
+          { label: t`You get`, value: totalBells, className: 'summary-total' },
+          { label: t`These cost you`, value: bells(total - gain), className: '' },
+          { label: t`Profit on these`, value: signedBells(gain), className: tone(gain) },
         ]
       : [
-          { label: 'You pay', value: `${bells(total)} bells`, className: 'summary-total' },
+          { label: t`You pay`, value: totalBells, className: 'summary-total' },
           {
-            label: 'Average cost',
+            label: t`Average cost`,
             value:
               costAfter === null
                 ? '—'
@@ -220,7 +235,7 @@ function TradeSheet({
   }
   function remove() {
     if (tradesProblem(others)) {
-      setRemoveError('Your sales need these turnips. Change or remove a sale first.');
+      setRemoveError(t`Your sales need these turnips. Change or remove a sale first.`);
       return;
     }
     onSave(others);
@@ -228,10 +243,13 @@ function TradeSheet({
   }
 
   const title = editing
-    ? `Edit ${kind === 'buy' ? 'purchase' : 'sale'}`
+    ? kind === 'buy'
+      ? t`Edit purchase`
+      : t`Edit sale`
     : kind === 'buy'
-      ? 'Log a purchase'
-      : 'Log a sale';
+      ? t`Log a purchase`
+      : t`Log a sale`;
+  const holdingAfter = bells(unsold(after));
   return (
     <dialog
       ref={dialog}
@@ -258,32 +276,34 @@ function TradeSheet({
       >
         <div className="trade-sheet-heading">
           <h2 id={`${id}-title`}>{title}</h2>
-          <button type="button" className="icon-button" aria-label="Close" onClick={close}>
+          <button type="button" className="icon-button" aria-label={t`Close`} onClick={close}>
             <X size={20} aria-hidden="true" />
           </button>
         </div>
         {!editing && saleSlots.length > 0 && (
-          <div className="segmented" role="group" aria-label="Kind of trade">
+          <div className="segmented" role="group" aria-label={t`Kind of trade`}>
             <button
               type="button"
               aria-pressed={kind === 'sell'}
               onClick={() => kind !== 'sell' && switchTo('sell')}
             >
-              Sold
+              <Trans>Sold</Trans>
             </button>
             <button
               type="button"
               aria-pressed={kind === 'buy'}
               onClick={() => kind !== 'buy' && switchTo('buy')}
             >
-              Bought
+              <Trans>Bought</Trans>
             </button>
           </div>
         )}
         <div className="field sheet-field">
           {kind === 'sell' ? (
             <>
-              <label htmlFor={`${id}-when`}>When</label>
+              <label htmlFor={`${id}-when`}>
+                <Trans>When</Trans>
+              </label>
               <select
                 id={`${id}-when`}
                 value={slot}
@@ -295,28 +315,36 @@ function TradeSheet({
               >
                 {[...new Set([...saleSlots, defaultSlot])]
                   .sort((left, right) => left - right)
-                  .map((option) => (
-                    <option key={option} value={option}>
-                      {slotName(option)}
-                      {option === currentSlot ? ' (now)' : ''}
-                    </option>
-                  ))}
+                  .map((option) => {
+                    const halfDay = slotName(option);
+                    return (
+                      <option key={option} value={option}>
+                        {option === currentSlot ? t`${halfDay} (now)` : halfDay}
+                      </option>
+                    );
+                  })}
               </select>
             </>
           ) : (
             <>
-              <span className="field-label">When</span>
-              <p className="sheet-static">Sunday, from Daisy Mae</p>
+              <span className="field-label">
+                <Trans>When</Trans>
+              </span>
+              <p className="sheet-static">
+                <Trans>Sunday, from Daisy Mae</Trans>
+              </p>
             </>
           )}
         </div>
         <div className="field sheet-field">
-          <label htmlFor={`${id}-quantity`}>Turnips</label>
+          <label htmlFor={`${id}-quantity`}>
+            <Trans>Turnips</Trans>
+          </label>
           <div className="amount-row">
             <button
               type="button"
               className="amount-step"
-              aria-label="100 fewer"
+              aria-label={t`100 fewer`}
               onClick={() => setQuantity(String(Math.max(0, count - 100)))}
             >
               <Minus size={18} aria-hidden="true" />
@@ -333,14 +361,14 @@ function TradeSheet({
             <button
               type="button"
               className="amount-step"
-              aria-label="100 more"
+              aria-label={t`100 more`}
               onClick={() => setQuantity(String(Math.min(TRADE_QUANTITY_MAX, count + 100)))}
             >
               <Plus size={18} aria-hidden="true" />
             </button>
           </div>
           {amounts.length > 0 && (
-            <div className="amount-picks" role="group" aria-label="Quick amounts">
+            <div className="amount-picks" role="group" aria-label={t`Quick amounts`}>
               {amounts.map((amount) => (
                 <button
                   key={amount}
@@ -355,7 +383,9 @@ function TradeSheet({
           )}
         </div>
         <div className="field sheet-field">
-          <label htmlFor={`${id}-price`}>Bells per turnip</label>
+          <label htmlFor={`${id}-price`}>
+            <Trans>Bells per turnip</Trans>
+          </label>
           <input
             id={`${id}-price`}
             className="sheet-input"
@@ -377,7 +407,9 @@ function TradeSheet({
             </p>
           ))}
           <p className="sheet-after">
-            Holding {bells(held)} → {bells(unsold(after))} turnips
+            <Trans>
+              Holding {holding} → {holdingAfter} turnips
+            </Trans>
           </p>
         </div>
         {(error || removeError) && (
@@ -386,11 +418,11 @@ function TradeSheet({
           </p>
         )}
         <Button type="submit" disabled={Boolean(error)}>
-          {editing ? 'Save' : kind === 'buy' ? 'Log purchase' : 'Log sale'}
+          {editing ? t`Save` : kind === 'buy' ? t`Log purchase` : t`Log sale`}
         </Button>
         {editing && (
           <button type="button" className="text-button sheet-remove" onClick={remove}>
-            Remove this {kind === 'buy' ? 'purchase' : 'sale'}
+            {kind === 'buy' ? t`Remove this purchase` : t`Remove this sale`}
           </button>
         )}
       </form>
@@ -418,7 +450,9 @@ export function SundayTurnips({
     return (
       <span className="sunday-turnips">
         <span aria-hidden="true">—</span>
-        <span className="sr-only">No turnips bought</span>
+        <span className="sr-only">
+          <Trans>No turnips bought</Trans>
+        </span>
       </span>
     );
   function showTurnips() {
@@ -435,8 +469,11 @@ export function SundayTurnips({
         className={`sunday-turnips${bought ? '' : ' is-empty'}${count.length > 6 ? ' is-long' : ''}`}
         aria-label={
           bought
-            ? `${count} turnips bought. Go to your turnips`
-            : 'No turnips bought. Log a purchase'
+            ? plural(bought, {
+                one: '# turnip bought. Go to your turnips',
+                other: '# turnips bought. Go to your turnips',
+              })
+            : t`No turnips bought. Log a purchase`
         }
         onClick={bought ? showTurnips : () => setAdding(true)}
       >
@@ -478,6 +515,9 @@ export function WeekTurnips({
   const price = slot === null ? null : week.prices[slot];
   const sellAll = canSell && price !== null ? held * price - heldCost(totals) : null;
   const sold = madeSoFar(totals);
+  const weekTotal = sellAll === null ? '' : signedBells(sold + sellAll);
+  const soldCount = bells(totals.sold);
+  const cost = bells(heldCost(totals));
   return (
     <>
       {week.trades.length > 0 && (
@@ -485,18 +525,18 @@ export function WeekTurnips({
           {sellAll !== null && (
             <Tile
               label={
-                <>
+                <Trans>
                   Sell all now<span className="tile-narrow"> at {price}</span>
-                </>
+                </Trans>
               }
               value={signedBells(sellAll)}
               detail={
                 <>
                   <span className="tile-roomy">
-                    at {price}
+                    <Trans>at {price}</Trans>
                     {totals.sold ? ' · ' : ''}
                   </span>
-                  {totals.sold ? `week total ${signedBells(sold + sellAll)}` : null}
+                  {totals.sold ? t`week total ${weekTotal}` : null}
                 </>
               }
               variant="gold"
@@ -506,27 +546,25 @@ export function WeekTurnips({
           )}
           {totals.sold > 0 && (
             <Tile
-              label="Made so far"
+              label={t`Made so far`}
               value={signedBells(sold)}
-              detail={`on the ${bells(totals.sold)} sold`}
+              detail={t`on the ${soldCount} sold`}
               variant={sold < 0 ? 'clay' : 'leaf'}
               valueTone={tone(sold)}
             />
           )}
-          {held > 0 && (
-            <Tile label="Holding" value={bells(held)} detail={`cost ${bells(heldCost(totals))}`} />
-          )}
+          {held > 0 && <Tile label={t`Holding`} value={bells(held)} detail={t`cost ${cost}`} />}
         </dl>
       )}
       <div className="turnips-actions" ref={actions}>
         <Button secondary={canSell} onClick={() => setRequest({ kind: 'buy' })}>
           <Plus size={18} aria-hidden="true" />
-          Log a purchase
+          <Trans>Log a purchase</Trans>
         </Button>
         {canSell && (
           <Button onClick={() => setRequest({ kind: 'sell' })}>
             <Plus size={18} aria-hidden="true" />
-            Log a sale
+            <Trans>Log a sale</Trans>
           </Button>
         )}
       </div>
@@ -537,7 +575,9 @@ export function WeekTurnips({
           tabIndex={-1}
           aria-labelledby={`${TRADES_ID}-title`}
         >
-          <h3 id={`${TRADES_ID}-title`}>This week’s trades</h3>
+          <h3 id={`${TRADES_ID}-title`}>
+            <Trans>This week’s trades</Trans>
+          </h3>
           <TradeList
             trades={week.trades}
             onEdit={(trade) => setRequest({ kind: trade.kind, editing: trade })}
@@ -581,36 +621,46 @@ export function PastTurnips({
   const result = weekResult(totals);
   const rotted = unsold(totals);
   const cost = averageCost(totals);
+  const averagePaid = cost === null ? '' : average(cost);
+  const earned = bells(totals.earned);
+  const spent = bells(totals.spent);
+  const rottedCost = bells(heldCost(totals));
   return (
     <section className="past-turnips" id={TURNIPS_ID} tabIndex={-1} aria-labelledby={`${id}-title`}>
-      <h2 id={`${id}-title`}>{lastWeek ? 'Last week’s turnips' : 'Turnips'}</h2>
+      <h2 id={`${id}-title`}>{lastWeek ? t`Last week’s turnips` : t`Turnips`}</h2>
       {week.trades.length === 0 ? (
-        <p className="muted">No turnips logged.</p>
+        <p className="muted">
+          <Trans>No turnips logged.</Trans>
+        </p>
       ) : (
         <>
           <div className={`turnips-result ${result < 0 ? 'result-loss' : ''}`}>
-            <span className="tile-label">Week result</span>
+            <span className="tile-label">
+              <Trans>Week result</Trans>
+            </span>
             <strong className={tone(result)}>{signedBells(result)}</strong>
             <span className="tile-detail">
-              {bells(totals.earned)} earned − {bells(totals.spent)} spent
+              <Trans>
+                {earned} earned − {spent} spent
+              </Trans>
             </span>
           </div>
           <dl className="turnips-tiles">
             <Tile
-              label="Bought"
+              label={t`Bought`}
               value={bells(totals.bought)}
-              detail={cost === null ? undefined : `at ${average(cost)}`}
+              detail={cost === null ? undefined : t`at ${averagePaid}`}
             />
             <Tile
-              label="Sold"
+              label={t`Sold`}
               value={bells(totals.sold)}
-              detail={totals.sold ? `for ${bells(totals.earned)}` : undefined}
+              detail={totals.sold ? t`for ${earned}` : undefined}
             />
             {rotted > 0 && (
               <Tile
-                label="Rotted"
+                label={t`Rotted`}
                 value={bells(rotted)}
-                detail={`cost ${bells(heldCost(totals))}`}
+                detail={t`cost ${rottedCost}`}
                 variant="clay"
                 valueTone="bells-down"
               />
@@ -620,11 +670,18 @@ export function PastTurnips({
             <div className="turnips-rotted">
               <CircleAlert size={20} aria-hidden="true" />
               <div>
-                <p className="rotted-title">{bells(rotted)} turnips rotted on Sunday.</p>
-                <p>Sold them and forgot to log it?</p>
+                <p className="rotted-title">
+                  {plural(rotted, {
+                    one: '# turnip rotted on Sunday.',
+                    other: '# turnips rotted on Sunday.',
+                  })}
+                </p>
+                <p>
+                  <Trans>Sold them and forgot to log it?</Trans>
+                </p>
                 <Button secondary onClick={() => setRequest({ kind: 'sell' })}>
                   <Plus size={18} aria-hidden="true" />
-                  Log a sale
+                  <Trans>Log a sale</Trans>
                 </Button>
               </div>
             </div>
@@ -643,7 +700,7 @@ export function PastTurnips({
         <div className="turnips-actions">
           <Button secondary onClick={() => setRequest({ kind: 'buy' })}>
             <Plus size={18} aria-hidden="true" />
-            Log a purchase
+            <Trans>Log a purchase</Trans>
           </Button>
         </div>
       )}

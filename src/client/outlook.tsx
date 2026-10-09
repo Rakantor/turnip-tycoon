@@ -1,10 +1,11 @@
 import { Leaf } from 'lucide-react';
+import { t } from '@lingui/core/macro';
 import type { Advice } from './advice';
 import { assetUrl } from './urls';
 
 export function Outlook({ advice }: { advice: Advice }) {
   return (
-    <section className="outlook" aria-label="This week’s advice">
+    <section className="outlook" aria-label={t`This week’s advice`}>
       <div className="outlook-bubble">
         <img
           className="outlook-mascot"

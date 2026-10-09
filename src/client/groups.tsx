@@ -1,21 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { ArrowRight, Check, Copy, Plane, Plus, Share2, Users, X } from 'lucide-react';
+import { i18n } from '@lingui/core';
+import { plural, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
 import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
-import { oddsPercent } from './advice';
+import { oddsPercent, patternName, percent, slotShortName } from './advice';
 import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
 import { GroupPriceTable } from './group-price-table';
 import {
   afterClosing,
-  deadline,
+  beatsBy,
   groupOdds,
   islandReason,
   notCountedNote,
-  partOfDay,
   type ForecastMember,
   type GroupOdds,
 } from './odds';
@@ -35,8 +37,13 @@ import { clearWelcomeJoin, isWelcomeJoin } from './welcome-join';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-export const PERIODS = ['Sunday buy price', ...DAYS.flatMap((day) => [`${day} AM`, `${day} PM`])];
+/** The half-days compared: 0 is Sunday's buy price, then Monday AM onward. */
+function periodName(period: number): string {
+  return period === 0 ? t`Sunday buy price` : slotShortName(period - 1);
+}
+function timesPaid(ratio: number): string {
+  return i18n.number(ratio, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
 function initialPeriod(): number {
   return (currentSlot() ?? -1) + 1;
 }
@@ -64,7 +71,8 @@ function withOwnWeek<T extends SharedPlayerWeek>(
   return players.map((member) => (member.player.id === owner ? { ...member, week } : member));
 }
 function islandName(member: SharedPlayerWeek, owner: string): string {
-  return member.player.id === owner ? 'Your island' : `${member.player.displayName}’s island`;
+  const name = member.player.displayName;
+  return member.player.id === owner ? t`Your island` : t`${name}’s island`;
 }
 function weekLink(member: SharedPlayerWeek, owner: string): string {
   return member.player.id === owner
@@ -87,13 +95,21 @@ export function PlayerAvatar({ name, small = false }: { name: string; small?: bo
 
 function ForecastSummary({ prediction }: { prediction: PredictionResult }) {
   if (prediction.status === 'needs-input')
-    return <span className="member-forecast forecast-none">No forecast yet</span>;
+    return (
+      <span className="member-forecast forecast-none">
+        <Trans>No forecast yet</Trans>
+      </span>
+    );
   if (prediction.status === 'inconsistent')
-    return <span className="member-forecast forecast-unmatched">Prices don’t match a pattern</span>;
+    return (
+      <span className="member-forecast forecast-unmatched">
+        <Trans>Prices don’t match a pattern</Trans>
+      </span>
+    );
   const likely = prediction.patterns[0];
   return (
     <span className={`member-forecast${likely.id === 'decreasing' ? ' forecast-falling' : ''}`}>
-      {likely.label} · {Math.round(likely.probability * 100)}%
+      {patternName(likely.id)} · {percent(likely.probability)}
     </span>
   );
 }
@@ -144,30 +160,28 @@ export function PriceSparkline({
 /** Inside the best-price card: the chance someone beats it before Saturday closes. */
 function BeatOdds({ odds, slot }: { odds: GroupOdds; slot: number }) {
   const note = notCountedNote(odds);
+  const price = odds.price;
   return (
     <div className="beat-odds">
       <p className="beat-odds-head">
-        <strong>{odds.certain ? 'Certain' : oddsPercent(odds.chance)}</strong>
-        <span>
-          {odds.certain ? '' : 'chance '}someone beats {odds.price} {deadline(slot)}
-        </span>
+        <strong>{odds.certain ? t`Certain` : oddsPercent(odds.chance)}</strong>
+        <span>{beatsBy(odds, slot)}</span>
       </p>
       <span className="beat-meter" aria-hidden="true">
         <span style={{ width: `${odds.chance * 100}%` }} />
       </span>
-      <ul className="beat-list" aria-label="Chance for each island">
+      <ul className="beat-list" aria-label={t`Chance for each island`}>
         {odds.islands.map((island) => (
           <li key={island.member.player.id}>
             <PlayerAvatar name={island.member.player.displayName} small />
             <span className="beat-who">
               <span className="beat-name">
-                {island.self ? 'You' : island.member.player.displayName}
+                {island.self ? t`You` : island.member.player.displayName}
               </span>
               <span className="beat-why">{islandReason(island)}</span>
               {island.alreadyAbove !== null && island.alreadyAbove > 0 && (
                 <span className="beat-nudge">
-                  No price yet this {partOfDay(slot)}. {oddsPercent(island.alreadyAbove)} chance
-                  it’s already above {odds.price}.
+                  {alreadyAbove(slot, oddsPercent(island.alreadyAbove), price)}
                 </span>
               )}
             </span>
@@ -178,6 +192,12 @@ function BeatOdds({ odds, slot }: { odds: GroupOdds; slot: number }) {
       {note && <p className="beat-note">{note}</p>}
     </div>
   );
+}
+
+function alreadyAbove(slot: number, chance: string, price: number): string {
+  return slot % 2
+    ? t`No price yet this afternoon. ${chance} chance it’s already above ${price}.`
+    : t`No price yet this morning. ${chance} chance it’s already above ${price}.`;
 }
 
 function RightNow({
@@ -212,16 +232,26 @@ function RightNow({
   const bestPrice = best && shown !== null ? reportedPrice(best, shown) : null;
   const ratio =
     best && bestPrice !== null && period > 0 && yourPurchase ? bestPrice / yourPurchase : null;
+  const shownName = periodName(shown ?? period);
   const tag =
     shown === 0
-      ? 'Cheapest Sunday price'
+      ? t`Cheapest Sunday price`
       : shown === nowPeriod && !closed
-        ? `Best price right now · until ${period % 2 ? 'noon' : '10 PM'}`
-        : `Best ${PERIODS[shown ?? period]} price`;
+        ? period % 2
+          ? t`Best price right now · until noon`
+          : t`Best price right now · until 10 PM`
+        : t`Best ${shownName} price`;
+  const name = best?.player.displayName ?? '';
+  const times = ratio === null ? '' : timesPaid(ratio);
+  const periodLabel = periodName(period);
   return (
     <div className="right-now">
       {!reported && (
-        <p className="right-now-empty">Nobody has shared a {PERIODS[period]} price yet.</p>
+        <p className="right-now-empty">
+          {period === 0
+            ? t`Nobody has shared a Sunday buy price yet.`
+            : t`Nobody has shared a ${periodLabel} price yet.`}
+        </p>
       )}
       {best && bestPrice !== null && shown !== null && (
         <section className="best-price-card" aria-label={tag}>
@@ -237,24 +267,26 @@ function RightNow({
             </div>
             <div className="best-price-value">
               {bestPrice}
-              <small>bells</small>
+              <small>
+                <Trans comment="The unit under a price">bells</Trans>
+              </small>
             </div>
           </div>
           <div className="best-price-detail">
             <p>
               {ratio === null
                 ? shown === 0
-                  ? 'Lowest buy price in your groups.'
-                  : `Highest ${PERIODS[shown]} price in your groups.`
+                  ? t`Lowest buy price in your groups.`
+                  : t`Highest ${shownName} price in your groups.`
                 : best.player.id === owner
-                  ? `That’s ${ratio.toFixed(1)}× what you paid.`
-                  : `${ratio.toFixed(1)}× what you paid for yours.`}
+                  ? t`That’s ${times}× what you paid.`
+                  : t`${times}× what you paid for yours.`}
             </p>
             <PriceSparkline week={best.week} prediction={best.prediction} scale={scale} />
           </div>
           {odds && <BeatOdds odds={odds} slot={period - 1} />}
           <Link className="button" to={weekLink(best, owner)}>
-            {best.player.id === owner ? 'Open your week' : `Open ${best.player.displayName}’s week`}
+            {best.player.id === owner ? t`Open your week` : t`Open ${name}’s week`}
             <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </section>
@@ -262,7 +294,9 @@ function RightNow({
       {/* Everyone stays listed, the best price included, for a quick overview. */}
       {sorted.length > 0 && (
         <>
-          <h3 className="friend-list-heading">Everyone</h3>
+          <h3 className="friend-list-heading">
+            <Trans>Everyone</Trans>
+          </h3>
           <ul className="friend-list">
             {sorted.map((member) => {
               const price = reportedPrice(member, period);
@@ -277,7 +311,11 @@ function RightNow({
                     <span className="friend-identity">
                       <span className="friend-name">
                         {member.player.displayName}
-                        {self && <span className="you-label">you</span>}
+                        {self && (
+                          <span className="you-label">
+                            <Trans comment="A tag after your own name in a list">you</Trans>
+                          </span>
+                        )}
                       </span>
                       <ForecastSummary prediction={member.prediction} />
                     </span>
@@ -289,7 +327,7 @@ function RightNow({
                     <span className="friend-price">
                       <span className="reported-price">{price ?? '—'}</span>
                       <span className="friend-period">
-                        {price === null ? 'Not entered' : PERIODS[period]}
+                        {price === null ? t`Not entered` : periodLabel}
                       </span>
                     </span>
                   </Link>
@@ -333,7 +371,8 @@ function GroupForm({
     try {
       const group =
         mode === 'create' ? await data.create(name.trim()) : await data.join(code.trim());
-      setDone(`${mode === 'create' ? 'Created' : 'Joined'} ${group.name}.`);
+      const groupName = group.name;
+      setDone(mode === 'create' ? t`Created ${groupName}.` : t`Joined ${groupName}.`);
       setName('');
       setCode('');
       onDone?.();
@@ -345,7 +384,7 @@ function GroupForm({
   }
   return (
     <div className="group-form-wrap">
-      <div className="segmented-control" aria-label="Group action">
+      <div className="segmented-control" aria-label={t`Group action`}>
         <button
           type="button"
           aria-pressed={mode === 'create'}
@@ -354,7 +393,7 @@ function GroupForm({
             setError('');
           }}
         >
-          Create a group
+          <Trans>Create a group</Trans>
         </button>
         <button
           type="button"
@@ -364,7 +403,7 @@ function GroupForm({
             setError('');
           }}
         >
-          Join a group
+          <Trans>Join a group</Trans>
         </button>
       </div>
       <form
@@ -376,20 +415,20 @@ function GroupForm({
       >
         {mode === 'create' ? (
           <Field
-            label="Group name"
+            label={t`Group name`}
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Sunday turnip crew"
+            placeholder={t({ message: 'Sunday turnip crew', comment: 'An example group name' })}
             maxLength={60}
             required
             autoComplete="off"
           />
         ) : (
           <Field
-            label="Group code"
+            label={t`Group code`}
             value={code}
             onChange={(event) => setCode(event.target.value.toUpperCase())}
-            placeholder="Paste a group code"
+            placeholder={t`Paste a group code`}
             maxLength={24}
             required
             autoComplete="off"
@@ -407,11 +446,14 @@ function GroupForm({
           }
         >
           {mode === 'create' ? <Plus size={16} /> : <Users size={16} />}
-          {mode === 'create' ? 'Create group' : 'Join group'}
+          {mode === 'create' ? t`Create group` : t`Join group`}
         </Button>
       </form>
       <p className="hint">
-        Up to 8 players. Members can see each other’s name, friend code, weekly prices and history.
+        <Trans>
+          Up to 8 players. Members can see each other’s name, friend code, weekly prices and
+          history.
+        </Trans>
       </p>
       {error && <Notice>{error}</Notice>}
       {done && <Notice success>{done}</Notice>}
@@ -442,29 +484,30 @@ function GroupSeats({
         left.player.displayName.localeCompare(right.player.displayName),
     );
   const open = Math.max(0, group.capacity - Math.max(group.memberCount, members.length));
+  const groupName = group.name;
   return (
-    <ul className="group-seats" aria-label={`${group.name} players`}>
+    <ul className="group-seats" aria-label={t`${groupName} players`}>
       {members.map((member) => {
         const self = member.player.id === owner;
+        const name = member.player.displayName;
         return (
           <li key={member.player.id} className={self ? 'group-seat-self' : undefined}>
-            <Link
-              to={weekLink(member, owner)}
-              aria-label={self ? 'Your week' : `${member.player.displayName}’s week`}
-            >
-              <PlayerAvatar name={member.player.displayName} />
-              <span className="group-seat-name">{self ? 'You' : member.player.displayName}</span>
+            <Link to={weekLink(member, owner)} aria-label={self ? t`Your week` : t`${name}’s week`}>
+              <PlayerAvatar name={name} />
+              <span className="group-seat-name">{self ? t`You` : name}</span>
             </Link>
           </li>
         );
       })}
       {Array.from({ length: open }, (_, index) => (
         <li key={`open-${index}`} className="group-seat-open">
-          <button type="button" onClick={onInvite} aria-label={`Invite a player to ${group.name}`}>
+          <button type="button" onClick={onInvite} aria-label={t`Invite a player to ${groupName}`}>
             <span className="group-seat-invite">
               <Plus size={18} aria-hidden="true" />
             </span>
-            <span className="group-seat-name">Invite</span>
+            <span className="group-seat-name">
+              <Trans>Invite</Trans>
+            </span>
           </button>
         </li>
       ))}
@@ -485,13 +528,16 @@ function GroupDetails({
   const [fallbackLink, setFallbackLink] = useState('');
   const [leaving, setLeaving] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
+  const groupName = group.name;
+  const members = group.memberCount;
+  const capacity = group.capacity;
   async function share() {
     const url = appUrl(`/groups/join?code=${encodeURIComponent(group.code)}`);
     if (navigator.share) {
       try {
         await navigator.share({
           title: group.name,
-          text: `Join ${group.name} on Turnip Tycoon`,
+          text: t`Join ${groupName} on Turnip Tycoon`,
           url,
         });
         return;
@@ -501,19 +547,19 @@ function GroupDetails({
     }
     try {
       await navigator.clipboard.writeText(url);
-      setMessage('Group link copied.');
+      setMessage(t`Group link copied.`);
       setFallbackLink('');
     } catch {
       setFallbackLink(url);
-      setMessage('Copy this group link to share it.');
+      setMessage(t`Copy this group link to share it.`);
     }
   }
   async function copyCode() {
     try {
       await navigator.clipboard.writeText(group.code);
-      setMessage('Group code copied.');
+      setMessage(t`Group code copied.`);
     } catch {
-      setMessage('Select and copy the group code above.');
+      setMessage(t`Select and copy the group code above.`);
     }
   }
   async function leave() {
@@ -528,12 +574,14 @@ function GroupDetails({
     }
   }
   return (
-    <section className="group-detail-card" aria-label={`${group.name} details`}>
+    <section className="group-detail-card" aria-label={t`${groupName} details`}>
       <div className="group-card-heading">
         <div>
           <h3>{group.name}</h3>
           <p>
-            {group.memberCount} of {group.capacity} players
+            <Trans>
+              {members} of {capacity} players
+            </Trans>
           </p>
         </div>
         <span className="group-badge">
@@ -549,12 +597,14 @@ function GroupDetails({
         }}
       />
       <div className="group-code-line">
-        <span>Group code</span>
+        <span>
+          <Trans>Group code</Trans>
+        </span>
         <code>{group.code}</code>
         <button
           className="icon-button"
           type="button"
-          aria-label={`Copy ${group.name} group code`}
+          aria-label={t`Copy ${groupName} group code`}
           onClick={() => {
             void copyCode();
           }}
@@ -571,7 +621,7 @@ function GroupDetails({
           disabled={group.memberCount >= group.capacity}
         >
           <Share2 size={15} />
-          {group.memberCount >= group.capacity ? 'Group full' : 'Share group link'}
+          {group.memberCount >= group.capacity ? t`Group full` : t`Share group link`}
         </Button>
         <button
           className="text-button muted"
@@ -579,17 +629,19 @@ function GroupDetails({
           disabled={data.status === 'offline'}
           onClick={() => setConfirmLeave(true)}
         >
-          Leave group
+          <Trans>Leave group</Trans>
         </button>
       </div>
       {confirmLeave && (
         <div className="leave-confirmation">
           <p>
-            Leave {group.name}? You’ll stop sharing with players unless you share another group.
+            <Trans>
+              Leave {groupName}? You’ll stop sharing with players unless you share another group.
+            </Trans>
           </p>
           <div>
             <Button secondary onClick={() => setConfirmLeave(false)}>
-              Stay
+              <Trans>Stay</Trans>
             </Button>
             <Button
               busy={leaving}
@@ -597,7 +649,7 @@ function GroupDetails({
                 void leave();
               }}
             >
-              Leave group
+              <Trans>Leave group</Trans>
             </Button>
           </div>
         </div>
@@ -609,7 +661,7 @@ function GroupDetails({
       )}
       {fallbackLink && (
         <input
-          aria-label="Group share link"
+          aria-label={t`Group share link`}
           className="share-fallback"
           readOnly
           value={fallbackLink}
@@ -625,14 +677,16 @@ function ConnectionMessage({ data }: { data: GroupData }) {
   if (data.status === 'offline' && !data.players.length)
     return (
       <div className="group-connection">
-        <p>Connect to see your friends’ shared prices.</p>
+        <p>
+          <Trans>Connect to see your friends’ shared prices.</Trans>
+        </p>
         <Button
           secondary
           onClick={() => {
             void identity.retry();
           }}
         >
-          Reconnect
+          <Trans>Reconnect</Trans>
         </Button>
       </div>
     );
@@ -646,7 +700,7 @@ function ConnectionMessage({ data }: { data: GroupData }) {
             void data.retry();
           }}
         >
-          Try again
+          <Trans>Try again</Trans>
         </Button>
       </div>
     );
@@ -655,7 +709,7 @@ function ConnectionMessage({ data }: { data: GroupData }) {
 
 function FriendsPostcardLoading() {
   return (
-    <Loading label="Loading your groups…">
+    <Loading label={t`Loading your groups…`}>
       <div className="friends-postcard">
         <span className="friends-postcard-icon">
           <Plane size={26} />
@@ -676,7 +730,7 @@ function FriendsPostcardLoading() {
 
 function IslandBoardLoading() {
   return (
-    <Loading label="Loading your groups…" className="friends-comparison">
+    <Loading label={t`Loading your groups…`} className="friends-comparison">
       <div className="friends-toolbar">
         <div className="group-filters">
           <Placeholder className="placeholder-control" width={120} />
@@ -755,40 +809,54 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
   const friendCount = players.filter((member) => member.player.id !== owner).length;
   const loading = data.status === 'loading' && !players.length;
   const reveal = useReveal(loading);
+  const name = bestOther?.player.displayName ?? '';
+  const periodLabel = periodName(period);
   let headline: string;
   let detail: string;
   if (bestOther && other !== null && period === 0) {
     const cheaper = mine === null || other < mine;
+    const saving = mine === null ? 0 : mine - other;
     headline = cheaper
-      ? `Daisy Mae is selling for ${other} on ${bestOther.player.displayName}’s island`
-      : `Your ${mine} is the best Sunday deal in your groups`;
+      ? t`Daisy Mae is selling for ${other} on ${name}’s island`
+      : t`Your ${mine} is the best Sunday deal in your groups`;
     detail = cheaper
       ? mine === null
-        ? 'The lowest Sunday price in your groups.'
-        : `That’s ${mine - other} bells cheaper than yours.`
-      : `Next best: ${other} on ${bestOther.player.displayName}’s island.`;
+        ? t`The lowest Sunday price in your groups.`
+        : plural(saving, {
+            one: 'That’s # bell cheaper than yours.',
+            other: 'That’s # bells cheaper than yours.',
+          })
+      : t`Next best: ${other} on ${name}’s island.`;
   } else if (bestOther && other !== null && (mine === null || other > mine)) {
-    headline = `${bestOther.player.displayName}’s island is buying at ${other}!`;
-    const deadline = period % 2 ? 'noon' : '10 PM';
+    headline = t`${name}’s island is buying at ${other}!`;
+    const times = purchase ? timesPaid(other / purchase) : '';
     detail = purchase
       ? other >= purchase
-        ? `That’s ${(other / purchase).toFixed(1)}× what you paid — fly over before ${deadline}.`
-        : `That’s less than the ${purchase} you paid.`
-      : `The best ${PERIODS[period]} price in your groups.`;
+        ? period % 2
+          ? t`That’s ${times}× what you paid — fly over before noon.`
+          : t`That’s ${times}× what you paid — fly over before 10 PM.`
+        : t`That’s less than the ${purchase} you paid.`
+      : t`The best ${periodLabel} price in your groups.`;
   } else if (bestOther && other !== null && mine !== null) {
-    headline = `Your ${mine} beats everyone right now!`;
-    detail = `Next best: ${other} on ${bestOther.player.displayName}’s island.`;
+    headline = t`Your ${mine} beats everyone right now!`;
+    detail = t`Next best: ${other} on ${name}’s island.`;
   } else {
-    headline = `No friends have shared a ${PERIODS[period]} price yet`;
+    headline =
+      period === 0
+        ? t`No friends have shared a Sunday buy price yet`
+        : t`No friends have shared a ${periodLabel} price yet`;
     detail =
       friendCount === 0
-        ? 'Share your group link to bring friends along.'
-        : `${friendCount} ${friendCount === 1 ? 'friend' : 'friends'} in your groups. Check back later.`;
+        ? t`Share your group link to bring friends along.`
+        : plural(friendCount, {
+            one: '# friend in your groups. Check back later.',
+            other: '# friends in your groups. Check back later.',
+          });
   }
   return (
     <section className="friends-panel" aria-labelledby="friends-panel-title">
       <h2 id="friends-panel-title" className="sr-only">
-        Friends’ prices
+        <Trans>Friends’ prices</Trans>
       </h2>
       <ConnectionMessage data={data} />
       {loading && <FriendsPostcardLoading />}
@@ -798,11 +866,15 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
             <Users size={26} aria-hidden="true" />
           </span>
           <div className="friends-postcard-text">
-            <p className="friends-postcard-title">A good price is better shared.</p>
-            <p>Start a group with friends to compare prices and forecasts.</p>
+            <p className="friends-postcard-title">
+              <Trans>A good price is better shared.</Trans>
+            </p>
+            <p>
+              <Trans>Start a group with friends to compare prices and forecasts.</Trans>
+            </p>
           </div>
           <Link className="button" to="/groups">
-            Create or join a group <ArrowRight size={17} aria-hidden="true" />
+            <Trans>Create or join a group</Trans> <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
       )}
@@ -816,7 +888,7 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
             <p>{detail}</p>
           </div>
           <Link className="button button-light" to="/groups">
-            See the island board <ArrowRight size={17} aria-hidden="true" />
+            <Trans>See the island board</Trans> <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
       )}
@@ -857,17 +929,20 @@ export function Groups() {
   const loading = data.status === 'loading' && !hasGroups;
   const reveal = useReveal(loading);
   const formOpen = linkCode || showForm || (!hasGroups && data.status === 'ready');
+  const friendCode = identity.session?.player.friendCode;
   return (
     <main className="page groups-page" id="main-content">
       <div className="page-heading">
         <div>
-          <h1>Friends</h1>
+          <h1>
+            <Trans>Friends</Trans>
+          </h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
         {hasGroups && (
           <Button secondary onClick={() => setShowForm(!showForm)}>
             {showForm ? <X size={16} /> : <Plus size={16} />}
-            {showForm ? 'Close' : 'Create or join group'}
+            {showForm ? t`Close` : t`Create or join group`}
           </Button>
         )}
       </div>
@@ -876,20 +951,24 @@ export function Groups() {
         <section className="group-create-card">
           <div className="section-heading">
             <div>
-              <span className="section-eyebrow">Friends &amp; groups</span>
+              <span className="section-eyebrow">
+                <Trans>Friends &amp; groups</Trans>
+              </span>
               <h2>
                 {linkCode
-                  ? 'Join your friends'
+                  ? t`Join your friends`
                   : hasGroups
-                    ? 'Room for another group?'
-                    : 'Bring your friends along'}
+                    ? t`Room for another group?`
+                    : t`Bring your friends along`}
               </h2>
             </div>
             <span className="group-badge">
               <Users size={22} aria-hidden="true" />
             </span>
           </div>
-          <p className="muted">Compare your prices and find a good time to sell, together.</p>
+          <p className="muted">
+            <Trans>Compare your prices and find a good time to sell, together.</Trans>
+          </p>
           <GroupForm
             key={linkCode || 'group-form'}
             data={data}
@@ -906,16 +985,16 @@ export function Groups() {
         <>
           <section
             className={`friends-comparison ${reveal}`}
-            aria-label="Friends’ prices this week"
+            aria-label={t`Friends’ prices this week`}
           >
             <div className="friends-toolbar">
-              <div className="group-filters" role="group" aria-label="Show group">
+              <div className="group-filters" role="group" aria-label={t`Show group`}>
                 <button
                   type="button"
                   aria-pressed={existingSelection === 'all'}
                   onClick={() => setSelectedGroup('all')}
                 >
-                  All friends{' '}
+                  <Trans>All friends</Trans>{' '}
                   <span>{data.players.filter((member) => member.player.id !== owner).length}</span>
                 </button>
                 {data.groups.map((group) => (
@@ -931,16 +1010,20 @@ export function Groups() {
               </div>
             </div>
             <div className="view-bar">
-              <div className="segmented-control view-toggle" role="group" aria-label="Price view">
+              <div
+                className="segmented-control view-toggle"
+                role="group"
+                aria-label={t`Price view`}
+              >
                 <button type="button" aria-pressed={view === 'now'} onClick={() => setView('now')}>
-                  Right now
+                  <Trans>Right now</Trans>
                 </button>
                 <button
                   type="button"
                   aria-pressed={view === 'week'}
                   onClick={() => setView('week')}
                 >
-                  Full week
+                  <Trans>Full week</Trans>
                 </button>
               </div>
               {/* Compare is hidden for now. To bring it back, keep a chosen period in state
@@ -949,9 +1032,9 @@ export function Groups() {
                 <label className="period-select">
                   Compare
                   <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
-                    {PERIODS.map((label, index) => (
-                      <option key={label} value={index}>
-                        {label}
+                    {Array.from({ length: 13 }, (_, index) => (
+                      <option key={index} value={index}>
+                        {periodName(index)}
                       </option>
                     ))}
                   </select>
@@ -972,7 +1055,9 @@ export function Groups() {
           </section>
           <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
             <div className="section-heading">
-              <h2 id="your-groups-title">Your groups</h2>
+              <h2 id="your-groups-title">
+                <Trans>Your groups</Trans>
+              </h2>
             </div>
             <div className="group-card-grid">
               {data.groups.map((group) => (
@@ -986,9 +1071,13 @@ export function Groups() {
         <div className="your-friend-code">
           <Check size={15} aria-hidden="true" />
           <span>
-            Your friend code <strong>{identity.session.player.friendCode}</strong>
+            <Trans>
+              Your friend code <strong>{friendCode}</strong>
+            </Trans>
           </span>
-          <Link to="/settings">Edit your name</Link>
+          <Link to="/settings">
+            <Trans>Edit your name</Trans>
+          </Link>
         </div>
       )}
     </main>

@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
+import { t } from '@lingui/core/macro';
 import {
   invalidateIdentityResponses,
   isCurrentIdentityResponse,
@@ -25,7 +26,7 @@ const controller = new SessionController({
   invalidateResponses: invalidateIdentityResponses,
   lock: (run) =>
     navigator.locks ? navigator.locks.request(`${identityNamespace}:identity`, run) : run(),
-  deviceName: () => (/Mobi|Android/i.test(navigator.userAgent) ? 'My phone' : 'My computer'),
+  deviceName: () => (/Mobi|Android/i.test(navigator.userAgent) ? t`My phone` : t`My computer`),
   publish: (next) => {
     // A profile shown without a removal may be edited again, even after an earlier cleanup.
     if (!next.removal) pendingEdits.allow(next.session?.player.id ?? 'unassigned');

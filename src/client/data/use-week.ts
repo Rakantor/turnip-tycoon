@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { t } from '@lingui/core/macro';
 import { liveQuery } from 'dexie';
 import type { SessionResponse } from '../../shared/api';
 import { emptyOwnWeek, type OwnWeeklyInputs, type OwnWeekRecord } from '../../shared/week';
@@ -38,8 +39,8 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
           error instanceof ApiError
             ? error.message
             : error instanceof TypeError
-              ? 'Saved on this device. Waiting to sync.'
-              : 'Could not access saved prices on this device. Keep this page open and retry after checking browser storage.',
+              ? t`Saved on this device. Waiting to sync.`
+              : t`Could not access saved prices on this device. Keep this page open and retry after checking browser storage.`,
         network: error instanceof TypeError,
       });
     },
@@ -57,8 +58,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
       error: () => {
         setFailure({
           key,
-          message:
-            'This browser could not save prices locally. Check its storage settings before closing this page.',
+          message: t`This browser could not save prices locally. Check its storage settings before closing this page.`,
           network: false,
         });
       },

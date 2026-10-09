@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import projectNotice from '../../NOTICE?raw';
 import { assetUrl } from './urls';
 import { CONTACT_EMAIL } from '../shared/contact';
@@ -18,7 +20,7 @@ export function About() {
       const texts = await Promise.all(
         ['NOTICE', 'LICENSE'].map(async (name) => {
           const response = await fetch(`${LICENSE_ROOT}/${name}`);
-          if (!response.ok) throw new Error('Could not load the license.');
+          if (!response.ok) throw new Error(t`Could not load the license.`);
           return response.text();
         }),
       );
@@ -31,42 +33,58 @@ export function About() {
 
   return (
     <footer className="about-footer">
-      <nav className="about-links" aria-label="Site information">
-        <Link to="/terms">Terms</Link>
-        <Link to="/privacy">Privacy</Link>
-        <a href={`mailto:${CONTACT_EMAIL}`}>Contact</a>
+      <nav className="about-links" aria-label={t`Site information`}>
+        <Link to="/terms">
+          <Trans>Terms</Trans>
+        </Link>
+        <Link to="/privacy">
+          <Trans>Privacy</Trans>
+        </Link>
+        <a href={`mailto:${CONTACT_EMAIL}`}>
+          <Trans>Contact</Trans>
+        </a>
       </nav>
       <p>
-        Inspired by{' '}
-        <a href="https://turnipprophet.io" target="_blank" rel="noreferrer">
-          Turnip Prophet
-        </a>
-        . A fan project, not affiliated with Nintendo.
+        <Trans>
+          Inspired by{' '}
+          <a href="https://turnipprophet.io" target="_blank" rel="noreferrer">
+            Turnip Prophet
+          </a>
+          . A fan project, not affiliated with Nintendo.
+        </Trans>
       </p>
       <details
         onToggle={(event) => {
           if (event.currentTarget.open) void loadLicenses();
         }}
       >
-        <summary>Licenses</summary>
+        <summary>
+          <Trans>Licenses</Trans>
+        </summary>
         <p>
-          Turnip Tycoon is licensed under the{' '}
-          <a href={`${LICENSE_ROOT}/LICENSE`}>Apache License, Version 2.0</a>. Third-party
-          components retain their respective licenses, including the{' '}
-          <a href={assetUrl('licenses/fonts/Fredoka-OFL.txt')}>Fredoka</a> and{' '}
-          <a href={assetUrl('licenses/fonts/Nunito-OFL.txt')}>Nunito</a> fonts.
+          <Trans>
+            Turnip Tycoon is licensed under the{' '}
+            <a href={`${LICENSE_ROOT}/LICENSE`}>Apache License, Version 2.0</a>. Third-party
+            components retain their respective licenses, including the{' '}
+            <a href={assetUrl('licenses/fonts/Fredoka-OFL.txt')}>Fredoka</a> and{' '}
+            <a href={assetUrl('licenses/fonts/Nunito-OFL.txt')}>Nunito</a> fonts.
+          </Trans>
         </p>
         {status === 'error' ? (
           <p className="about-license-error" role="alert">
-            Could not load the licenses.{' '}
-            <button type="button" onClick={() => void loadLicenses()}>
-              Try again
-            </button>{' '}
-            or open the <a href={`${LICENSE_ROOT}/NOTICE`}>notice</a> and{' '}
-            <a href={`${LICENSE_ROOT}/LICENSE`}>license</a>.
+            <Trans>
+              Could not load the licenses.{' '}
+              <button type="button" onClick={() => void loadLicenses()}>
+                Try again
+              </button>{' '}
+              or open the <a href={`${LICENSE_ROOT}/NOTICE`}>notice</a> and{' '}
+              <a href={`${LICENSE_ROOT}/LICENSE`}>license</a>.
+            </Trans>
           </p>
         ) : (
-          <pre aria-busy={status === 'loading'}>{licenses ?? 'Loading…'}</pre>
+          <pre lang="en" aria-busy={status === 'loading'}>
+            {licenses ?? t`Loading…`}
+          </pre>
         )}
       </details>
     </footer>

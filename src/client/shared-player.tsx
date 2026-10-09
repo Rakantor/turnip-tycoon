@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, ArrowRight, Eye, History as HistoryIcon } from 'lucide-react';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import type { Player } from '../shared/api';
 import type { WeekRecord } from '../shared/week';
 import { currentWeekStart } from '../shared/calendar';
 import { predictWeek } from '../prediction';
 import { ApiError, request } from './data/api';
 import { forgetSharedPlayer, savedPlayerWeek } from './data/use-groups';
+import { dayName, patternName } from './advice';
 import { PlayerAvatar } from './groups';
 import { Forecast } from './forecast';
 import { HistoryLoading } from './history';
@@ -31,7 +34,20 @@ interface SharedHistoryResponse {
   weeks: WeekRecord[];
   nextCursor: string | null;
 }
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_INDEXES = [0, 1, 2, 3, 4, 5];
+const historyColumns = () => [t`Week`, t`Bought for`, t`Best entered`, t`Entries`];
+
+function HalfDayHeadings({ scope }: { scope?: 'col' }) {
+  return (
+    <tr>
+      <th scope={scope}>
+        <Trans>Day</Trans>
+      </th>
+      <th scope={scope}>{t({ message: 'AM', comment: 'Morning, as a column heading' })}</th>
+      <th scope={scope}>{t({ message: 'PM', comment: 'Afternoon, as a column heading' })}</th>
+    </tr>
+  );
+}
 function isWeek(value: string) {
   return (
     /^\d{4}-\d{2}-\d{2}$/.test(value) &&
@@ -45,7 +61,7 @@ function accessLost(error: unknown): boolean {
 function sharedError(error: unknown, owner: string, playerId: string) {
   if (accessLost(error)) {
     void forgetSharedPlayer(owner, playerId).catch(() => undefined);
-    return 'This player is no longer available through your groups.';
+    return t`This player is no longer available through your groups.`;
   }
   return messageOf(error);
 }
@@ -53,14 +69,16 @@ function ConnectionNeeded() {
   const identity = useApp();
   return (
     <div className="group-connection">
-      <p>Connect to load this player’s shared prices.</p>
+      <p>
+        <Trans>Connect to load this player’s shared prices.</Trans>
+      </p>
       <Button
         secondary
         onClick={() => {
           void identity.retry();
         }}
       >
-        Reconnect
+        <Trans>Reconnect</Trans>
       </Button>
     </div>
   );
@@ -68,7 +86,7 @@ function ConnectionNeeded() {
 
 function SharedWeekLoading() {
   return (
-    <Loading label="Loading shared prices…">
+    <Loading label={t`Loading shared prices…`}>
       <div className="page-heading shared-player-heading">
         <div className="shared-player-identity">
           <Placeholder round className="shared-avatar-placeholder" />
@@ -88,12 +106,16 @@ function SharedWeekLoading() {
       <div className="calculator-layout shared-calculator-layout">
         <div className="shared-prices-card">
           <div className="card-heading">
-            <h2>Weekly prices</h2>
+            <h2>
+              <Trans>Weekly prices</Trans>
+            </h2>
           </div>
           <div className="shared-buy-price">
             <div>
-              <span className="section-eyebrow">SUNDAY</span>
-              <h3>Bought for</h3>
+              <span className="section-eyebrow">{dayName(0)}</span>
+              <h3>
+                <Trans>Bought for</Trans>
+              </h3>
             </div>
             <strong>
               <Placeholder width="1.6em" />
@@ -101,16 +123,12 @@ function SharedWeekLoading() {
           </div>
           <table className="shared-price-table">
             <thead>
-              <tr>
-                <th>Day</th>
-                <th>AM</th>
-                <th>PM</th>
-              </tr>
+              <HalfDayHeadings />
             </thead>
             <tbody>
-              {DAYS.map((day) => (
+              {DAY_INDEXES.map((day) => (
                 <tr key={day}>
-                  <th>{day}</th>
+                  <th>{dayName(day + 1)}</th>
                   <td>
                     <Placeholder width="1.6em" />
                   </td>
@@ -125,7 +143,9 @@ function SharedWeekLoading() {
         <div className="forecast">
           <div className="forecast-card">
             <div className="forecast-card-heading">
-              <h2>How the week could go</h2>
+              <h2>
+                <Trans>How the week could go</Trans>
+              </h2>
             </div>
             <Placeholder className="placeholder-block forecast-chart-placeholder" />
           </div>
@@ -141,6 +161,8 @@ function SharedWeekContent({
   className,
 }: SharedWeekResponse & { className?: string }) {
   const prediction = useMemo(() => predictWeek(week), [week]);
+  const name = player.displayName;
+  const notEntered = t`Not entered`;
   return (
     <div className={className}>
       <div className="page-heading shared-player-heading">
@@ -153,56 +175,60 @@ function SharedWeekContent({
         </div>
         <Link className="text-link" to={`/players/${player.id}/history`}>
           <HistoryIcon size={16} />
-          Past weeks
+          <Trans>Past weeks</Trans>
         </Link>
       </div>
       <div className="shared-week-label">
         <span className="week-chip">{weekLabel(week.weekStart)}</span>
         <span className="muted">
           <Eye size={14} />
-          Shared view · read only
+          <Trans>Shared view · read only</Trans>
         </span>
       </div>
       <div className="calculator-layout shared-calculator-layout">
         <section className="shared-prices-card" aria-labelledby="shared-prices-title">
           <div className="card-heading">
-            <h2 id="shared-prices-title">Weekly prices</h2>
+            <h2 id="shared-prices-title">
+              <Trans>Weekly prices</Trans>
+            </h2>
           </div>
           <div className="shared-buy-price">
             <div>
-              <span className="section-eyebrow">SUNDAY</span>
-              <h3>Bought for</h3>
+              <span className="section-eyebrow">{dayName(0)}</span>
+              <h3>
+                <Trans>Bought for</Trans>
+              </h3>
             </div>
             <strong>
               {week.purchasePrice ?? '—'}{' '}
-              <small>{week.purchasePrice !== null ? 'bells' : 'Not entered'}</small>
+              <small>
+                {week.purchasePrice !== null
+                  ? t({ message: 'bells', comment: 'The unit under a price' })
+                  : notEntered}
+              </small>
             </strong>
           </div>
           <table className="shared-price-table">
             <caption className="sr-only">
-              {player.displayName}’s reported prices, Monday through Saturday
+              <Trans>{name}’s reported prices, Monday through Saturday</Trans>
             </caption>
             <thead>
-              <tr>
-                <th scope="col">Day</th>
-                <th scope="col">AM</th>
-                <th scope="col">PM</th>
-              </tr>
+              <HalfDayHeadings scope="col" />
             </thead>
             <tbody>
-              {DAYS.map((day, index) => (
-                <tr key={day}>
-                  <th scope="row">{day}</th>
+              {DAY_INDEXES.map((index) => (
+                <tr key={index}>
+                  <th scope="row">{dayName(index + 1)}</th>
                   <td>
                     {week.prices[index * 2] ?? (
-                      <span className="muted" aria-label="Not entered">
+                      <span className="muted" aria-label={notEntered}>
                         —
                       </span>
                     )}
                   </td>
                   <td>
                     {week.prices[index * 2 + 1] ?? (
-                      <span className="muted" aria-label="Not entered">
+                      <span className="muted" aria-label={notEntered}>
                         —
                       </span>
                     )}
@@ -217,12 +243,16 @@ function SharedWeekContent({
           >
             <dl>
               <div>
-                <dt>First purchase on their island</dt>
-                <dd>{week.firstBuy === null ? 'Unknown' : week.firstBuy ? 'Yes' : 'No'}</dd>
+                <dt>
+                  <Trans>First purchase on their island</Trans>
+                </dt>
+                <dd>{week.firstBuy === null ? t`Unknown` : week.firstBuy ? t`Yes` : t`No`}</dd>
               </div>
               <div>
-                <dt>Previous pattern</dt>
-                <dd>{week.previousPattern ? week.previousPattern.replace('-', ' ') : 'Unknown'}</dd>
+                <dt>
+                  <Trans>Previous pattern</Trans>
+                </dt>
+                <dd>{week.previousPattern ? patternName(week.previousPattern) : t`Unknown`}</dd>
               </div>
             </dl>
           </section>
@@ -285,7 +315,7 @@ export function SharedPlayer() {
     };
   }, [identity.status, key, owner, playerId, weekStart, reload, valid]);
   const shown = result?.key === key ? result.data : null;
-  const failed = !valid ? 'This week is not available.' : error?.key === key ? error.message : '';
+  const failed = !valid ? t`This week is not available.` : error?.key === key ? error.message : '';
   const disconnected = identity.status === 'offline' || identity.status === 'error';
   const loading = !shown && !failed && (!disconnected || checked !== key);
   const reveal = useReveal(loading);
@@ -293,7 +323,7 @@ export function SharedPlayer() {
     <main className="page shared-player-page" id="main-content">
       <Link className="text-link back-to-friends" to="/groups">
         <ArrowLeft size={16} />
-        Back to friends
+        <Trans>Back to friends</Trans>
       </Link>
       {shown ? (
         <SharedWeekContent {...shown} className={reveal} />
@@ -302,7 +332,7 @@ export function SharedPlayer() {
           <Notice>{failed}</Notice>
           {valid && (
             <Button secondary onClick={() => setReload((value) => value + 1)}>
-              Try again
+              <Trans>Try again</Trans>
             </Button>
           )}
         </div>
@@ -349,6 +379,7 @@ export function SharedHistory() {
   }, [identity.status, key, owner, playerId, reload]);
   const shown = identity.status === 'ready' && result?.key === key ? result.data : null;
   const reveal = useReveal(loading && !shown);
+  const name = shown?.player.displayName ?? '';
   async function more() {
     if (!shown?.nextCursor) return;
     const attempt = generation.current;
@@ -388,16 +419,18 @@ export function SharedHistory() {
     <main className="page history-page shared-player-page" id="main-content">
       <Link className="text-link back-to-friends" to="/groups">
         <ArrowLeft size={16} />
-        Back to friends
+        <Trans>Back to friends</Trans>
       </Link>
       <div className="page-heading">
         <div>
-          <h1>{shown ? `${shown.player.displayName}’s history` : 'Shared history'}</h1>
-          <p>Previous weeks, shared with your groups.</p>
+          <h1>{shown ? t`${name}’s history` : t`Shared history`}</h1>
+          <p>
+            <Trans>Previous weeks, shared with your groups.</Trans>
+          </p>
         </div>
         {shown && (
           <Link className="text-link" to={`/players/${playerId}/weeks/${currentWeekStart()}`}>
-            This week <ArrowRight size={16} />
+            <Trans>This week</Trans> <ArrowRight size={16} />
           </Link>
         )}
       </div>
@@ -409,20 +442,23 @@ export function SharedHistory() {
             <>
               <Notice>{error}</Notice>
               <Button secondary onClick={() => setReload((value) => value + 1)}>
-                Try again
+                <Trans>Try again</Trans>
               </Button>
             </>
           )}
           {shown && shown.weeks.length > 0 && (
             <div className={`history-table-scroll ${reveal}`}>
               <table className="history-table">
-                <caption className="sr-only">Shared past weekly prices</caption>
+                <caption className="sr-only">
+                  <Trans>Shared past weekly prices</Trans>
+                </caption>
                 <thead>
                   <tr>
-                    <th scope="col">Week</th>
-                    <th scope="col">Bought for</th>
-                    <th scope="col">Best entered</th>
-                    <th scope="col">Entries</th>
+                    {historyColumns().map((column) => (
+                      <th key={column} scope="col">
+                        {column}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -446,15 +482,16 @@ export function SharedHistory() {
             </div>
           )}
           {loading && !shown && (
-            <HistoryLoading
-              label="Loading shared history…"
-              columns={['Week', 'Bought for', 'Best entered', 'Entries']}
-            />
+            <HistoryLoading label={t`Loading shared history…`} columns={historyColumns()} />
           )}
           {shown && !loading && !error && shown.weeks.length === 0 && (
             <div className="empty-history">
-              <p>No past weeks yet.</p>
-              <p className="muted">Saved weeks will appear here when a new week starts.</p>
+              <p>
+                <Trans>No past weeks yet.</Trans>
+              </p>
+              <p className="muted">
+                <Trans>Saved weeks will appear here when a new week starts.</Trans>
+              </p>
             </div>
           )}
           {shown?.nextCursor && (
@@ -465,7 +502,7 @@ export function SharedHistory() {
                 void more();
               }}
             >
-              Load older weeks
+              <Trans>Load older weeks</Trans>
             </Button>
           )}
         </>

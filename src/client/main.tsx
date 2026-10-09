@@ -1,5 +1,8 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
+import { i18n } from '@lingui/core';
+import { I18nProvider } from '@lingui/react';
+import { Trans, useLingui } from '@lingui/react/macro';
 import {
   BrowserRouter,
   HashRouter,
@@ -31,6 +34,7 @@ import { assetUrl, hashRouting } from './urls';
 import { startPwa, usePwa } from './pwa';
 import { UpdateNotice } from './pwa-ui';
 import { HeaderInstallButton, startInstallPromptCapture } from './pwa-install';
+import { activateLocale, preferredLocale } from './i18n';
 import './fonts.css';
 import './styles.css';
 
@@ -50,6 +54,7 @@ function App() {
   const location = useLocation();
   const identity = useIdentity(!isLegalPath(location.pathname));
   const pwa = usePwa();
+  const { t, i18n } = useLingui();
   return (
     <AppContext.Provider value={identity}>
       <div inert={pwa.updating || undefined}>
@@ -66,7 +71,7 @@ function App() {
             }
           }}
         >
-          Skip to content
+          <Trans>Skip to content</Trans>
         </Link>
         <header className="site-header">
           <Link to="/" className="brand">
@@ -80,74 +85,79 @@ function App() {
             />
             <span className="brand-name">Turnip Tycoon</span>
           </Link>
-          <nav aria-label="Main navigation">
+          <nav aria-label={t`Main navigation`}>
             <NavLink to="/" end>
               <CalendarDays size={18} aria-hidden="true" />
-              Prices
+              <Trans comment="Main navigation: the current week's prices and forecast">
+                Prices
+              </Trans>
             </NavLink>
             <NavLink to="/groups">
               <Users size={18} aria-hidden="true" />
-              Friends
+              <Trans>Friends</Trans>
             </NavLink>
             <NavLink to="/history">
               <HistoryIcon size={18} aria-hidden="true" />
-              History
+              <Trans>History</Trans>
             </NavLink>
           </nav>
           <HeaderInstallButton />
           <NavLink
             to="/settings"
             className="settings-link icon-button"
-            aria-label="Settings"
-            title="Settings"
+            aria-label={t`Settings`}
+            title={t`Settings`}
           >
             <SettingsIcon size={20} aria-hidden="true" />
           </NavLink>
         </header>
         <ScrollToPage />
-        {identity.removal && !isLegalPath(location.pathname) ? (
-          <ProfileRemovalNotice />
-        ) : (
-          <Routes>
-            <Route path="/" element={<Calculator />} />
-            <Route path="/weeks/:weekStart" element={<Calculator />} />
-            <Route
-              path="/groups"
-              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/groups/join"
-              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/groups/:groupId"
-              element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/players/:playerId/weeks/:weekStart"
-              element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/players/:playerId/history"
-              element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/history"
-              element={<History key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route
-              path="/settings"
-              element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
-            />
-            <Route path="/connect" element={<Connect />} />
-            <Route path="/recover" element={<Recover />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        )}
-        <About />
-        {!isLegalPath(location.pathname) && <WelcomeDialog />}
+        {/* Pages remount in a new language, so no memoized text keeps the old one. */}
+        <Fragment key={i18n.locale}>
+          {identity.removal && !isLegalPath(location.pathname) ? (
+            <ProfileRemovalNotice />
+          ) : (
+            <Routes>
+              <Route path="/" element={<Calculator />} />
+              <Route path="/weeks/:weekStart" element={<Calculator />} />
+              <Route
+                path="/groups"
+                element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/groups/join"
+                element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/groups/:groupId"
+                element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/players/:playerId/weeks/:weekStart"
+                element={<SharedPlayer key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/players/:playerId/history"
+                element={<SharedHistory key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/history"
+                element={<History key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
+                path="/settings"
+                element={<Settings key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route path="/connect" element={<Connect />} />
+              <Route path="/recover" element={<Recover />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          )}
+          <About />
+          {!isLegalPath(location.pathname) && <WelcomeDialog />}
+        </Fragment>
       </div>
       <UpdateNotice />
     </AppContext.Provider>
@@ -159,8 +169,12 @@ const Router = hashRouting ? HashRouter : BrowserRouter;
 startInstallPromptCapture();
 startPwa();
 
-createRoot(document.getElementById('root')!).render(
-  <Router basename={hashRouting ? undefined : import.meta.env.BASE_URL}>
-    <App />
-  </Router>,
+void activateLocale(preferredLocale()).then(() =>
+  createRoot(document.getElementById('root')!).render(
+    <I18nProvider i18n={i18n}>
+      <Router basename={hashRouting ? undefined : import.meta.env.BASE_URL}>
+        <App />
+      </Router>
+    </I18nProvider>,
+  ),
 );

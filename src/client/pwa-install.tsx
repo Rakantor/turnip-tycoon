@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { Download, LoaderCircle } from 'lucide-react';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 
 interface InstallPromptEvent extends Event {
   prompt(): Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
@@ -102,7 +104,7 @@ export function HeaderInstallButton() {
     <button
       type="button"
       className="icon-button install-link"
-      aria-label="Install Turnip Tycoon"
+      aria-label={t`Install Turnip Tycoon`}
       aria-busy={current.busy || undefined}
       disabled={current.busy}
       onClick={() => {
@@ -114,7 +116,9 @@ export function HeaderInstallButton() {
       ) : (
         <Download size={19} aria-hidden="true" />
       )}
-      <span className="install-label">Install</span>
+      <span className="install-label">
+        <Trans>Install</Trans>
+      </span>
     </button>
   );
 }

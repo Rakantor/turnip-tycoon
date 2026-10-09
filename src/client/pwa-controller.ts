@@ -1,3 +1,5 @@
+import { t } from '@lingui/core/macro';
+
 export interface PwaState {
   ready: boolean;
   updateAvailable: boolean;
@@ -70,7 +72,7 @@ export class PwaController {
         this.watch(registration.waiting);
       })
       .catch(() => {
-        this.publish({ error: 'Offline access could not be prepared. Reconnect and try again.' });
+        this.publish({ error: t`Offline access could not be prepared. Reconnect and try again.` });
       })
       .finally(() => {
         this.registering = null;
@@ -86,7 +88,7 @@ export class PwaController {
       await this.registration.update();
       this.publish({ error: null });
     } catch {
-      this.publish({ error: 'Could not check for updates. Reconnect and try again.' });
+      this.publish({ error: t`Could not check for updates. Reconnect and try again.` });
     }
   }
 
@@ -105,7 +107,7 @@ export class PwaController {
           };
           const timeout = setTimeout(() => {
             this.container.removeEventListener('controllerchange', changed);
-            reject(new Error('The update is not ready yet. Please try again.'));
+            reject(new Error(t`The update is not ready yet. Please try again.`));
           }, 15_000);
           this.container.addEventListener('controllerchange', changed);
           try {
@@ -121,7 +123,9 @@ export class PwaController {
       await prepareReload();
       this.reload();
     } catch (error) {
-      this.publish({ error: error instanceof Error ? error.message : 'Could not update the app.' });
+      this.publish({
+        error: error instanceof Error ? error.message : t`Could not update the app.`,
+      });
     } finally {
       this.publish({ updating: false });
     }

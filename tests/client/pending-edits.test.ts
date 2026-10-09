@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TurnipDatabase } from '../../src/client/data/database';
 import {
-  LOCAL_SAVE_ERROR,
+  localSaveError,
   PendingEdits,
   withPendingEdits,
 } from '../../src/client/data/pending-edits';
@@ -54,7 +54,7 @@ describe('unsaved local edits', () => {
     ).rejects.toBe(failure);
     expect(await h.db.weeks.get(weekKey(owner, week))).toBeUndefined();
     const retained = h.queue.snapshot(owner, week);
-    expect(retained.error).toBe(LOCAL_SAVE_ERROR);
+    expect(retained.error).toBe(localSaveError());
     expect(retained.edits).toHaveLength(1);
     expect(withPendingEdits(emptyWeek(owner, week), -1, retained)).toMatchObject({
       purchasePrice: 100,
@@ -65,7 +65,7 @@ describe('unsaved local edits', () => {
     // a local write that never happened. Retained intent remains above that data.
     const refreshed = { ...emptyWeek(owner, week), purchasePrice: 105, revision: 8 };
     expect(withPendingEdits(refreshed, 0, h.queue.snapshot(owner, week)).purchasePrice).toBe(100);
-    expect(h.queue.snapshot(owner, week).error).toBe(LOCAL_SAVE_ERROR);
+    expect(h.queue.snapshot(owner, week).error).toBe(localSaveError());
   });
 
   it('retries local persistence before dropping retained intent or its warning', async () => {
@@ -136,7 +136,7 @@ describe('unsaved local edits', () => {
     ).rejects.toThrow();
     await h.queue.attachDrafts(owner);
     expect(h.queue.snapshot('unassigned', week).edits).toEqual([]);
-    expect(h.queue.snapshot(owner, week).error).toBe(LOCAL_SAVE_ERROR);
+    expect(h.queue.snapshot(owner, week).error).toBe(localSaveError());
     expect(
       withPendingEdits(emptyWeek(owner, week), -1, h.queue.snapshot(owner, week)).purchasePrice,
     ).toBe(100);
@@ -164,7 +164,7 @@ describe('unsaved local edits', () => {
     expect(h.queue.snapshot('different-player', week).edits).toEqual([]);
     expect(h.queue.snapshot(owner, '2026-10-11').edits).toEqual([]);
     await h.queue.enqueue(owner, '2026-10-11', { purchasePrice: 95 });
-    expect(h.queue.snapshot(owner, week).error).toBe(LOCAL_SAVE_ERROR);
+    expect(h.queue.snapshot(owner, week).error).toBe(localSaveError());
     expect(h.queue.snapshot(owner, week).edits).toHaveLength(1);
   });
 
@@ -204,7 +204,7 @@ describe('unsaved local edits', () => {
     h.persist.mockRejectedValue(failure);
     await expect(h.queue.enqueue(owner, week, { purchasePrice: 100 })).rejects.toBe(failure);
     await expect(h.queue.flushAll()).rejects.toBe(failure);
-    expect(h.queue.snapshot(owner, week)).toMatchObject({ error: LOCAL_SAVE_ERROR });
+    expect(h.queue.snapshot(owner, week)).toMatchObject({ error: localSaveError() });
     expect(h.queue.snapshot(owner, week).edits).toHaveLength(1);
     expect(await h.db.weeks.get(weekKey(owner, week))).toBeUndefined();
     h.persist.mockImplementation(h.write);

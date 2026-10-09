@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { CONTACT_EMAIL } from '../shared/contact';
 import './legal.css';
 
@@ -20,6 +21,7 @@ function LegalPage({
   intro: string;
   children: ReactNode;
 }) {
+  const { i18n } = useLingui();
   useEffect(() => {
     const previous = document.title;
     document.title = `${title} · Turnip Tycoon`;
@@ -30,11 +32,17 @@ function LegalPage({
 
   return (
     <main className="page legal-page" id="main-content">
-      <nav className="segmented-control legal-navigation" aria-label="Terms and privacy">
+      {/* The terms and privacy page are published in English only. */}
+      {i18n.locale !== 'en' && (
+        <p className="hint legal-language">
+          <Trans>This page is only available in English.</Trans>
+        </p>
+      )}
+      <nav lang="en" className="segmented-control legal-navigation" aria-label="Terms and privacy">
         <NavLink to="/terms">Terms</NavLink>
         <NavLink to="/privacy">Privacy</NavLink>
       </nav>
-      <article className="legal-document">
+      <article lang="en" className="legal-document">
         <header>
           <h1>{title}</h1>
           <p className="legal-intro">{intro}</p>
@@ -325,9 +333,9 @@ export function Privacy() {
       <section aria-labelledby="storage">
         <h2 id="storage">What stays on your device</h2>
         <p>
-          The app saves your profile access, your weeks and trades, unsent edits, and the latest
-          prices from your groups in your browser’s storage, so it works offline. These are needed
-          for the app to work. We don’t use advertising or analytics cookies.
+          The app saves your profile access, your weeks and trades, unsent edits, the latest prices
+          from your groups, and your language choice in your browser’s storage, so it works offline.
+          These are needed for the app to work. We don’t use advertising or analytics cookies.
         </p>
         <p>
           Clearing your browser data removes these copies, possibly including unsent edits and your

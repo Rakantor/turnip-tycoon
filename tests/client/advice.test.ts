@@ -77,7 +77,7 @@ describe('week advice', () => {
     expect(advice.trail).toBe(' on Wednesday afternoon.');
     expect(advice.bestSlot).toBe(5);
     expect(advice.chips.map(({ text }) => text)).toEqual([
-      '92% large-spike',
+      '92% large spike',
       'Even the low end, 137, beats what you paid',
     ]);
   });

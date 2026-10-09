@@ -1,11 +1,13 @@
 import { useId, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, ChartSpline } from 'lucide-react';
+import { plural, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { combineChances, oddsAbove } from '../prediction/odds';
 import { totalsOf, unsold, type Trade } from '../shared/ledger';
 import type { OwnWeekRecord } from '../shared/week';
-import { oddsPercent } from './advice';
+import { oddsPercent, percent, slotName } from './advice';
 import { useGroups } from './data/use-groups';
 import { PlayerAvatar } from './groups';
 import {
@@ -13,13 +15,12 @@ import {
   beforeOpening,
   groupOdds,
   islandOdds,
-  partOfDay,
-  reportedWhen,
+  reportedPrice,
   type ForecastMember,
   type GroupOdds,
   type IslandOdds,
 } from './odds';
-import { bells, TURNIPS_ID, WeekTurnips } from './turnips';
+import { TURNIPS_ID, WeekTurnips } from './turnips';
 import { useApp } from './ui';
 import './odds.css';
 
@@ -34,13 +35,13 @@ function bestCaseFrom(prediction: PredictionResult, fromSlot: number): number {
 function verdict(chance: number, sunday: boolean, sellNow: boolean): string {
   if (sunday)
     return chance > 0.75
-      ? 'A profit looks likely'
+      ? t`A profit looks likely`
       : chance < 0.25
-        ? 'A profit looks unlikely'
-        : 'A profit could go either way';
-  if (chance > 0.75) return 'Holding looks good';
-  if (chance < 0.25) return sellNow ? 'Selling now looks good' : 'Selling soon looks good';
-  return 'Could go either way';
+        ? t`A profit looks unlikely`
+        : t`A profit could go either way`;
+  if (chance > 0.75) return t`Holding looks good`;
+  if (chance < 0.25) return sellNow ? t`Selling now looks good` : t`Selling soon looks good`;
+  return t`Could go either way`;
 }
 
 function OddsRing({ chance }: { chance: number }) {
@@ -65,10 +66,20 @@ function OddsRing({ chance }: { chance: number }) {
   );
 }
 
+/** The group's best price, whose it is, and when it was reported if not this half-day. */
+function groupTarget(group: GroupOdds, slot: number): string {
+  const { price, priceSlot, yours } = group;
+  const name = group.holder.player.displayName;
+  if (priceSlot === slot) return yours ? t`your ${price}` : t`${name}’s ${price}`;
+  if (Math.floor(priceSlot / 2) === Math.floor(slot / 2))
+    return yours ? t`your ${price} from this morning` : t`${name}’s ${price} from this morning`;
+  const halfDay = slotName(priceSlot);
+  return yours ? t`your ${price} from ${halfDay}` : t`${name}’s ${price} from ${halfDay}`;
+}
+
 function FriendsOdds({ group, slot }: { group: GroupOdds; slot: number }) {
-  const target =
-    (group.yours ? `your ${group.price}` : `${group.holder.player.displayName}’s ${group.price}`) +
-    (group.priceSlot === slot ? '' : ` from ${reportedWhen(group.priceSlot, slot)}`);
+  const target = groupTarget(group, slot);
+  const chance = oddsPercent(group.chance);
   const friends = group.islands.filter((island) => !island.self).slice(0, 3);
   return (
     <Link className="odds-friends" to="/groups">
@@ -82,21 +93,23 @@ function FriendsOdds({ group, slot }: { group: GroupOdds; slot: number }) {
         ))}
       </span>
       <span className="odds-friends-text">
-        With friends:{' '}
         {group.certain ? (
-          <>a higher price than {target} is certain</>
+          <Trans>With friends: a higher price than {target} is certain</Trans>
         ) : group.chance === 0 ? (
-          <>nobody can beat {target} this week</>
+          <Trans>With friends: nobody can beat {target} this week</Trans>
         ) : (
-          <>
-            <strong>{oddsPercent(group.chance)}</strong> chance someone beats {target}
-          </>
+          <Trans>
+            With friends: <strong>{chance}</strong> chance someone beats {target}
+          </Trans>
         )}
       </span>
       <ArrowRight size={17} aria-hidden="true" />
     </Link>
   );
 }
+
+const CHANCE_TARGET =
+  'The target is “the 98 you paid” or a price named by when it was reported, like “this morning’s 120”';
 
 const CHART = { width: 340, height: 196, left: 36, right: 330, top: 10, bottom: 166 };
 
@@ -124,27 +137,23 @@ function OddsExplorer({
   const svg = useRef<SVGSVGElement>(null);
   // What was paid, or an earlier half-day's price, is a preset, but nobody can sell at it now.
   const ownNow = sellNow ? own.price : null;
-  const presets = useMemo(
-    () => [
-      ...(own.price === null
+  const presets = useMemo(() => {
+    const ownPrice = own.price;
+    const friend = group?.bestFriend;
+    const friendName = friend?.member.player.displayName ?? '';
+    const friendPrice = friend?.price ?? 0;
+    return [
+      ...(ownPrice === null
         ? []
         : [
             {
-              label: `${own.priceSlot === null ? 'You paid' : 'Your'} ${own.price}`,
-              price: own.price,
+              label: own.priceSlot === null ? t`You paid ${ownPrice}` : t`Your ${ownPrice}`,
+              price: ownPrice,
             },
           ]),
-      ...(group?.bestFriend
-        ? [
-            {
-              label: `${group.bestFriend.member.player.displayName}’s ${group.bestFriend.price}`,
-              price: group.bestFriend.price,
-            },
-          ]
-        : []),
-    ],
-    [own.price, own.priceSlot, group],
-  );
+      ...(friend ? [{ label: t`${friendName}’s ${friendPrice}`, price: friend.price }] : []),
+    ];
+  }, [own.price, own.priceSlot, group]);
   const ownBest = bestCaseFrom(prediction, own.fromSlot);
   const {
     low,
@@ -212,11 +221,14 @@ function OddsExplorer({
     if (at < CHART.left - 4 || at > CHART.right + 4) return;
     show(low + ((at - CHART.left) / (CHART.right - CHART.left)) * (high - low));
   };
-  const holder = group?.yours ? 'You have' : `${group?.holder.player.displayName} has`;
+  const holderName = group?.holder.player.displayName ?? '';
+  const groupPrice = group?.price ?? 0;
   return (
     <div className="odds-explorer-body">
       <label className="odds-explorer-label" htmlFor={`${id}-price`}>
-        Selling for more than <output htmlFor={`${id}-price`}>{price}</output> bells
+        <Trans>
+          Selling for more than <output htmlFor={`${id}-price`}>{price}</output> bells
+        </Trans>
       </label>
       <input
         id={`${id}-price`}
@@ -228,7 +240,7 @@ function OddsExplorer({
         onChange={(event) => show(Number(event.target.value))}
       />
       {presets.length > 0 && (
-        <div className="odds-presets" role="group" aria-label="Prices right now">
+        <div className="odds-presets" role="group" aria-label={t`Prices right now`}>
           {presets.map((preset) => (
             <button
               key={preset.label}
@@ -244,29 +256,31 @@ function OddsExplorer({
       <div className="odds-readout" aria-live="polite">
         <div>
           <span className="odds-key">
-            <i className="odds-key-own" /> Your island
+            <i className="odds-key-own" /> <Trans>Your island</Trans>
           </span>
-          <strong>{ownNow !== null && price < ownNow ? 'Now' : oddsPercent(ownChance)}</strong>
+          <strong>{ownNow !== null && price < ownNow ? t`Now` : oddsPercent(ownChance)}</strong>
           <span>
             {ownNow !== null && price < ownNow
-              ? `You have ${ownNow} right now`
+              ? t`You have ${ownNow} right now`
               : ownChance === 0
-                ? `Tops out at ${ownBest}`
-                : 'By Saturday night'}
+                ? t`Tops out at ${ownBest}`
+                : t`By Saturday night`}
           </span>
         </div>
         {group && friendsChance !== null && (
           <div>
             <span className="odds-key">
-              <i className="odds-key-friends" /> With friends
+              <i className="odds-key-friends" /> <Trans>With friends</Trans>
             </span>
-            <strong>{groupNow && price < group.price ? 'Now' : oddsPercent(friendsChance)}</strong>
+            <strong>{groupNow && price < group.price ? t`Now` : oddsPercent(friendsChance)}</strong>
             <span>
               {groupNow && price < group.price
-                ? `${holder} ${group.price} right now`
+                ? group.yours
+                  ? t`You have ${groupPrice} right now`
+                  : t`${holderName} has ${groupPrice} right now`
                 : friendsChance === 0
-                  ? 'Out of reach this week'
-                  : 'By Saturday night'}
+                  ? t`Out of reach this week`
+                  : t`By Saturday night`}
             </span>
           </div>
         )}
@@ -276,7 +290,7 @@ function OddsExplorer({
         className="odds-chart"
         viewBox={`0 0 ${CHART.width} ${CHART.height}`}
         role="img"
-        aria-label={`Chance of selling for more than each price from ${low} to ${high} bells.`}
+        aria-label={t`Chance of selling for more than each price from ${low} to ${high} bells.`}
         onPointerDown={fromPointer}
         onPointerMove={fromPointer}
       >
@@ -290,7 +304,7 @@ function OddsExplorer({
               y2={y(chance)}
             />
             <text className="odds-axis" x={CHART.left - 6} y={y(chance) + 3.5} textAnchor="end">
-              {chance * 100}%
+              {percent(chance)}
             </text>
           </g>
         ))}
@@ -373,9 +387,11 @@ export function HoldOrSell({
   const sellNow = slot !== null && priceSlot === slot && !closed;
   // Otherwise the price to beat is named: what was paid, or when it was seen.
   const known =
-    slot === null || priceSlot === null
-      ? `the ${price} you paid`
-      : `${reportedWhen(priceSlot, slot)}’s ${price}`;
+    price === null
+      ? ''
+      : slot === null || priceSlot === null
+        ? t`the ${price} you paid`
+        : reportedPrice(price, priceSlot, slot);
   const showGroup = group !== null && group.islands.some((island) => !island.self);
   // Every outcome leads with a headline saying what to do; only a missing price has none.
   let headline: string | null = null;
@@ -383,23 +399,28 @@ export function HoldOrSell({
   if (price === null)
     message =
       slot === null
-        ? 'Enter what Daisy Mae charged to see your odds.'
-        : `Enter this ${partOfDay(slot)}’s price to see your odds.`;
+        ? t`Enter what Daisy Mae charged to see your odds.`
+        : slot % 2
+          ? t`Enter this afternoon’s price to see your odds.`
+          : t`Enter this morning’s price to see your odds.`;
   else if (!odds) {
-    headline = closed ? 'Too late to sell' : 'Sell tonight';
+    headline = closed ? t`Too late to sell` : t`Sell tonight`;
     message = closed
-      ? 'Nook’s Cranny has closed for the week.'
-      : 'Last chance: Nook’s Cranny closes at 10 PM.';
+      ? t`Nook’s Cranny has closed for the week.`
+      : t`Last chance: Nook’s Cranny closes at 10 PM.`;
   } else if (odds.certain) {
-    headline = slot === null ? 'A profit is certain' : 'Hold on to your turnips';
-    message = 'A higher price is coming.';
+    headline = slot === null ? t`A profit is certain` : t`Hold on to your turnips`;
+    message = t`A higher price is coming.`;
   } else if (odds.impossible) {
     headline =
-      slot === null ? 'No profit this week' : sellNow ? 'Sell now' : 'Selling soon looks good';
+      slot === null ? t`No profit this week` : sellNow ? t`Sell now` : t`Selling soon looks good`;
     message = sellNow
-      ? 'This is the highest price your island can reach this week.'
-      : `No price left this week will beat ${known}.`;
+      ? t`This is the highest price your island can reach this week.`
+      : t({ message: `No price left this week will beat ${known}.`, comment: CHANCE_TARGET });
   } else headline = verdict(odds.chance, slot === null, sellNow);
+  const halfDay = priceSlot === null ? '' : slotName(priceSlot);
+  const sameDay =
+    slot !== null && priceSlot !== null && Math.floor(priceSlot / 2) === Math.floor(slot / 2);
   // The ring shows whenever there are odds; a certain or impossible outcome is said in words beside it.
   const ring = price !== null ? odds : null;
   const opensLater =
@@ -415,19 +436,29 @@ export function HoldOrSell({
         <>
           <span className="sr-only">{oddsPercent(ring?.chance ?? 0)} </span>
           {slot === null || priceSlot === null ? (
-            <>
+            <Trans comment="Follows the chance, shown in a ring">
               chance you can sell for more than the <strong>{price}</strong> you paid this week.
-            </>
+            </Trans>
           ) : sellNow ? (
-            <>
+            <Trans comment="Follows the chance, shown in a ring">
               chance of more than <strong>{price}</strong> on your island before Nook’s Cranny
               closes on Saturday.
-            </>
+            </Trans>
+          ) : !sameDay ? (
+            <Trans comment="Follows the chance, shown in a ring">
+              chance of beating {halfDay}’s <strong>{price}</strong> before Nook’s Cranny closes on
+              Saturday.
+            </Trans>
+          ) : priceSlot % 2 ? (
+            <Trans comment="Follows the chance, shown in a ring">
+              chance of beating this afternoon’s <strong>{price}</strong> before Nook’s Cranny
+              closes on Saturday.
+            </Trans>
           ) : (
-            <>
-              chance of beating {reportedWhen(priceSlot, slot)}’s <strong>{price}</strong> before
-              Nook’s Cranny closes on Saturday.
-            </>
+            <Trans comment="Follows the chance, shown in a ring">
+              chance of beating this morning’s <strong>{price}</strong> before Nook’s Cranny closes
+              on Saturday.
+            </Trans>
           )}
         </>
       )}
@@ -441,10 +472,13 @@ export function HoldOrSell({
         <div className="odds-heading">
           <h2 id={`${id}-title`}>
             {held > 0
-              ? `Hold or sell your ${bells(held)} turnips?`
+              ? plural(held, {
+                  one: 'Hold or sell your # turnip?',
+                  other: 'Hold or sell your # turnips?',
+                })
               : possible
-                ? 'Hold or sell?'
-                : 'Your turnips'}
+                ? t`Hold or sell?`
+                : t`Your turnips`}
           </h2>
         </div>
         {possible && (
@@ -457,10 +491,16 @@ export function HoldOrSell({
             ) : (
               summary
             )}
-            {opensLater && <p className="hint">Nook’s Cranny opens at 8 AM.</p>}
+            {opensLater && (
+              <p className="hint">
+                <Trans>Nook’s Cranny opens at 8 AM.</Trans>
+              </p>
+            )}
             {prediction.tolerance > 0 && price !== null && (
               <p className="hint">
-                Some prices are a little off the usual patterns, so treat this as a rough guide.
+                <Trans>
+                  Some prices are a little off the usual patterns, so treat this as a rough guide.
+                </Trans>
               </p>
             )}
           </div>
@@ -476,7 +516,7 @@ export function HoldOrSell({
           >
             <summary>
               <ChartSpline size={16} aria-hidden="true" />
-              Odds explorer
+              <Trans>Odds explorer</Trans>
             </summary>
             {explorerOpen && (
               <OddsExplorer

@@ -1,4 +1,5 @@
 import type { SessionResponse } from '../../shared/api';
+import { t } from '@lingui/core/macro';
 import type { ProfileRemoval } from '../../shared/profile-data';
 import { ApiError } from './api';
 import {
@@ -37,8 +38,8 @@ type Dependencies = {
   deviceName: () => string;
 };
 
-const STORAGE_WARNING =
-  'This browser could not save your profile access. Keep this tab open and create a recovery code in Settings.';
+const storageWarning = () =>
+  t`This browser could not save your profile access. Keep this tab open and create a recovery code in Settings.`;
 const EMPTY: StoredSession = { revision: null, session: null, token: null, creating: false };
 function sameIdentity(left: StoredSession, right: StoredSession): boolean {
   return (
@@ -153,7 +154,7 @@ export class SessionController {
     } catch {
       if (this.deps.vault.bearer && !this.stored.token) {
         throw new Error(
-          'This browser could not read saved profile access. Enable browser storage or connect an existing profile.',
+          t`This browser could not read saved profile access. Enable browser storage or connect an existing profile.`,
         );
       }
     }
@@ -171,7 +172,7 @@ export class SessionController {
     const session = publicSession(value);
     const token = value.sessionToken ?? this.stored.token;
     if (this.deps.vault.bearer && (!token || !/^[a-f0-9]{64}$/.test(token))) {
-      throw new Error('The server did not return a valid device credential.');
+      throw new Error(t`The server did not return a valid device credential.`);
     }
     let revision = this.stored.revision;
     let warning: string | null = null;
@@ -189,7 +190,7 @@ export class SessionController {
     } catch (error) {
       if (error instanceof IdentityChangedError || attempt !== this.generation) throw error;
       this.unsaved = true;
-      if (this.deps.vault.bearer) warning = STORAGE_WARNING;
+      if (this.deps.vault.bearer) warning = storageWarning();
     }
     if (attempt !== this.generation) return;
     this.stored = { session, token, revision, creating: false, cleanups: this.durable.cleanups };
@@ -244,7 +245,7 @@ export class SessionController {
         this.publish({
           ...this.state,
           status: 'error',
-          error: error instanceof Error ? error.message : 'Could not connect this profile.',
+          error: error instanceof Error ? error.message : t`Could not connect this profile.`,
         });
       throw error;
     }
@@ -282,7 +283,7 @@ export class SessionController {
         }
         if (this.deps.vault.bearer && this.stored.creating && !this.stored.token) {
           throw new Error(
-            'Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings.',
+            t`Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings.`,
           );
         }
         let session: CredentialResponse;
@@ -300,13 +301,15 @@ export class SessionController {
             await this.deps.forgetShared(lost).catch(() => undefined);
             if (attempt !== this.generation) return;
             throw new Error(
-              `${error.code === 'DEVICE_EXPIRED' ? 'This device’s access expired.' : 'This device needs to reconnect.'} Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings.`,
+              error.code === 'DEVICE_EXPIRED'
+                ? t`This device’s access expired. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings.`
+                : t`This device needs to reconnect. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings.`,
               { cause: error },
             );
           }
           if (this.deps.vault.bearer && (this.stored.token || this.stored.session)) {
             throw new Error(
-              'This device is no longer connected. Connect your profile again or use a recovery code in Settings.',
+              t`This device is no longer connected. Connect your profile again or use a recovery code in Settings.`,
               { cause: error },
             );
           }
@@ -352,7 +355,7 @@ export class SessionController {
           error:
             error instanceof Error
               ? error.message
-              : 'Waiting for a connection. Your prices stay on this device.',
+              : t`Waiting for a connection. Your prices stay on this device.`,
         });
       }
     };
@@ -456,8 +459,8 @@ export class SessionController {
         error instanceof Error
           ? error.message
           : this.stored.removal
-            ? 'Could not confirm deletion.'
-            : 'Could not request deletion.';
+            ? t`Could not confirm deletion.`
+            : t`Could not request deletion.`;
       // A deferred refresh republishes this, whether the profile resumed or remains pending.
       this.removalFailure = { owner, message };
       this.publish({ ...this.state, status: 'error', error: message });
@@ -535,7 +538,7 @@ export class SessionController {
       this.publish({
         ...this.state,
         status: 'error',
-        error: error instanceof Error ? error.message : 'Could not restart profile creation.',
+        error: error instanceof Error ? error.message : t`Could not restart profile creation.`,
       });
     }
   }

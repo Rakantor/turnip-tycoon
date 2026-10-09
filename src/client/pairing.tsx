@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { i18n } from '@lingui/core';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import type { PairingResponse, SessionResponse } from '../shared/api';
 import { request } from './data/api';
 import { Button, messageOf, Notice, useApp } from './ui';
@@ -63,29 +66,31 @@ export function PairingCode({
   }
 
   const url = pairing ? appUrl(`/settings?pair=${encodeURIComponent(pairing.code)}`) : '';
+  const expires = pairing
+    ? i18n.date(new Date(pairing.expiresAt), { hour: 'numeric', minute: '2-digit' })
+    : '';
   return (
     <div className="pairing-content">
       {pairing && (
         <>
           <div className="pairing-code">
-            <span className="field-label">Connection code</span>
+            <span className="field-label">
+              <Trans>Connection code</Trans>
+            </span>
             <strong>{pairing.code}</strong>
           </div>
           <div className="qr-row">
             <QRCodeSVG
               value={url}
               size={120}
-              title="Scan this code on your connected device to approve the connection"
+              title={t`Scan this code on your connected device to approve the connection`}
             />
             <div>
-              <p>Or scan this code on your connected device.</p>
+              <p>
+                <Trans>Or scan this code on your connected device.</Trans>
+              </p>
               <p className="hint">
-                Expires at{' '}
-                {new Date(pairing.expiresAt).toLocaleTimeString(undefined, {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-                . Keep this page open.
+                <Trans>Expires at {expires}. Keep this page open.</Trans>
               </p>
             </div>
           </div>
@@ -100,7 +105,7 @@ export function PairingCode({
             void complete();
           }}
         >
-          Finish connecting
+          <Trans>Finish connecting</Trans>
         </Button>
         <button
           className="text-button"
@@ -110,7 +115,7 @@ export function PairingCode({
             void begin();
           }}
         >
-          Get a new code
+          <Trans>Get a new code</Trans>
         </button>
       </div>
     </div>

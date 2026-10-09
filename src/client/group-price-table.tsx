@@ -1,16 +1,14 @@
 import { Fragment, useId, useMemo } from 'react';
 import { Link } from 'react-router';
+import { i18n } from '@lingui/core';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { predictWeek, type PredictionResult } from '../prediction';
 import type { SharedPlayerWeek } from '../shared/groups';
+import { dayName, dayShortName, PATTERNS, patternPercent, percent, slotShortName } from './advice';
 import './group-price-table.css';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PATTERNS = [
-  { id: 'fluctuating', label: 'Fluctuating' },
-  { id: 'large-spike', label: 'Large spike' },
-  { id: 'small-spike', label: 'Small spike' },
-  { id: 'decreasing', label: 'Decreasing' },
-];
+const DAY_INDEXES = [0, 1, 2, 3, 4, 5];
 
 function PriceCell({
   value,
@@ -23,8 +21,7 @@ function PriceCell({
   slot?: number;
   now?: boolean;
 }) {
-  const period =
-    slot === undefined ? 'Sunday buy' : `${DAYS[Math.floor(slot / 2)]} ${slot % 2 ? 'PM' : 'AM'}`;
+  const period = slot === undefined ? t`Sunday buy` : slotShortName(slot);
   const range =
     slot !== undefined && prediction.status === 'possible' ? prediction.slots[slot] : null;
   const className = now ? 'price-now' : undefined;
@@ -33,23 +30,30 @@ function PriceCell({
       <td className={className}>
         <span
           className={`group-price-value ${slot === undefined ? 'price-buy' : 'price-reported'}`}
-          title={`${period}: ${value} bells reported`}
+          title={t`${period}: ${value} bells reported`}
         >
           {value}
-          <span className="sr-only"> bells reported</span>
+          <span className="sr-only">
+            {' '}
+            <Trans comment="Follows a price">bells reported</Trans>
+          </span>
         </span>
       </td>
     );
   }
   if (range) {
+    const { min, max } = range;
     return (
       <td className={className}>
         <span
           className="group-price-value price-predicted"
-          title={`${period}: possible minimum ${range.min}, maximum ${range.max} bells`}
+          title={t`${period}: possible minimum ${min}, maximum ${max} bells`}
         >
-          {range.min === range.max ? range.min : `${range.min}–${range.max}`}
-          <span className="sr-only"> bells predicted</span>
+          {min === max ? min : `${min}–${max}`}
+          <span className="sr-only">
+            {' '}
+            <Trans comment="Follows a price or a range of prices">bells predicted</Trans>
+          </span>
         </span>
       </td>
     );
@@ -57,7 +61,9 @@ function PriceCell({
   return (
     <td className={`group-price-missing${now ? ' price-now' : ''}`}>
       <span aria-hidden="true">—</span>
-      <span className="sr-only">Not entered{slot !== undefined && ', no forecast available'}</span>
+      <span className="sr-only">
+        {slot === undefined ? t`Not entered` : t`Not entered, no forecast available`}
+      </span>
     </td>
   );
 }
@@ -93,14 +99,16 @@ export function GroupPriceTable({
       <div
         className="group-price-scroll"
         role="region"
-        aria-label="Full week group prices"
+        aria-label={t`Full week group prices`}
         aria-describedby={`${id}-legend`}
         tabIndex={0}
       >
         <table className="group-price-table">
           <caption className="sr-only">
-            Group prices in bells per turnip. Reported prices are solid; predictions are possible
-            ranges in dashed boxes.
+            <Trans>
+              Group prices in bells per turnip. Reported prices are solid; predictions are possible
+              ranges in dashed boxes.
+            </Trans>
           </caption>
           <colgroup>
             <col className="price-name-column" />
@@ -108,20 +116,23 @@ export function GroupPriceTable({
           <colgroup>
             <col className="price-buy-column" />
           </colgroup>
-          {DAYS.map((day) => (
+          {DAY_INDEXES.map((day) => (
             <colgroup key={day} span={2} />
           ))}
           <thead>
             <tr>
               <th scope="col" rowSpan={2} className="price-name-cell">
-                Island
+                <Trans>Island</Trans>
               </th>
               <th scope="col" rowSpan={2}>
-                Sun<span className="price-header-detail">Buy</span>
+                {dayShortName(0)}
+                <span className="price-header-detail">
+                  <Trans comment="Under “Sun”: the Sunday buy price column">Buy</Trans>
+                </span>
               </th>
-              {DAYS.map((label) => (
-                <th key={label} scope="colgroup" colSpan={2}>
-                  {label.slice(0, 3)}
+              {DAY_INDEXES.map((day) => (
+                <th key={day} scope="colgroup" colSpan={2}>
+                  {dayShortName(day + 1)}
                 </th>
               ))}
             </tr>
@@ -132,96 +143,109 @@ export function GroupPriceTable({
                   scope="col"
                   className={slot === currentSlot ? 'price-now' : undefined}
                 >
-                  <span className="sr-only">{DAYS[Math.floor(slot / 2)]} </span>
-                  {slot % 2 ? 'PM' : 'AM'}
-                  {slot === currentSlot && <span className="sr-only"> (now)</span>}
+                  <span className="sr-only">{dayName(Math.floor(slot / 2) + 1)} </span>
+                  {slot % 2
+                    ? t({ message: 'PM', comment: 'Afternoon, as a column heading' })
+                    : t({ message: 'AM', comment: 'Morning, as a column heading' })}
+                  {slot === currentSlot && (
+                    <span className="sr-only">
+                      {' '}
+                      <Trans comment="Marks the current half-day's column">(now)</Trans>
+                    </span>
+                  )}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ player, week, prediction, patterns }) => (
-              <Fragment key={player.id}>
-                <tr
-                  className={`${prediction.status === 'possible' ? 'price-row-with-patterns' : ''}${player.id === owner ? ' price-row-self' : ''}`}
-                >
-                  <th scope="row" className="price-name-cell">
-                    <Link
-                      to={
-                        player.id === owner ? '/' : `/players/${player.id}/weeks/${week.weekStart}`
-                      }
-                      className="price-player-link"
-                    >
-                      {player.displayName}
-                    </Link>
-                    {player.id === owner && <span className="you-label">you</span>}
-                    {prediction.status !== 'possible' && (
-                      <span
-                        className={`price-forecast-status${prediction.status === 'inconsistent' ? ' forecast-unmatched' : ''}`}
-                      >
-                        {prediction.status === 'needs-input'
-                          ? 'No forecast yet'
-                          : 'No matching forecast'}
-                      </span>
-                    )}
-                  </th>
-                  <PriceCell value={week.purchasePrice} prediction={prediction} />
-                  {slots.map((slot) => (
-                    <PriceCell
-                      key={slot}
-                      slot={slot}
-                      value={week.prices[slot]}
-                      prediction={prediction}
-                      now={slot === currentSlot}
-                    />
-                  ))}
-                </tr>
-                {prediction.status === 'possible' && (
+            {rows.map(({ player, week, prediction, patterns }) => {
+              const name = player.displayName;
+              return (
+                <Fragment key={player.id}>
                   <tr
-                    className={`price-pattern-row${player.id === owner ? ' price-row-self' : ''}`}
+                    className={`${prediction.status === 'possible' ? 'price-row-with-patterns' : ''}${player.id === owner ? ' price-row-self' : ''}`}
                   >
-                    <td colSpan={slots.length + 2}>
-                      <div className="price-pattern-summary">
-                        <ul
-                          className="price-pattern-probabilities"
-                          aria-label={`${player.displayName}’s selling pattern probabilities`}
+                    <th scope="row" className="price-name-cell">
+                      <Link
+                        to={
+                          player.id === owner
+                            ? '/'
+                            : `/players/${player.id}/weeks/${week.weekStart}`
+                        }
+                        className="price-player-link"
+                      >
+                        {player.displayName}
+                      </Link>
+                      {player.id === owner && (
+                        <span className="you-label">
+                          <Trans comment="A tag after your own name in a list">you</Trans>
+                        </span>
+                      )}
+                      {prediction.status !== 'possible' && (
+                        <span
+                          className={`price-forecast-status${prediction.status === 'inconsistent' ? ' forecast-unmatched' : ''}`}
                         >
-                          {patterns.map(({ id, label, probability }) => (
-                            <li
-                              key={id}
-                              className={probability === 0 ? 'pattern-ruled-out' : undefined}
-                            >
-                              <span>{label}</span>
-                              <strong>
-                                {probability === 0
-                                  ? '0'
-                                  : probability < 0.001
-                                    ? '<0.1'
-                                    : (probability * 100).toFixed(1)}
-                                %
-                              </strong>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </td>
+                          {prediction.status === 'needs-input'
+                            ? t`No forecast yet`
+                            : t`No matching forecast`}
+                        </span>
+                      )}
+                    </th>
+                    <PriceCell value={week.purchasePrice} prediction={prediction} />
+                    {slots.map((slot) => (
+                      <PriceCell
+                        key={slot}
+                        slot={slot}
+                        value={week.prices[slot]}
+                        prediction={prediction}
+                        now={slot === currentSlot}
+                      />
+                    ))}
                   </tr>
-                )}
-              </Fragment>
-            ))}
+                  {prediction.status === 'possible' && (
+                    <tr
+                      className={`price-pattern-row${player.id === owner ? ' price-row-self' : ''}`}
+                    >
+                      <td colSpan={slots.length + 2}>
+                        <div className="price-pattern-summary">
+                          <ul
+                            className="price-pattern-probabilities"
+                            aria-label={t`${name}’s selling pattern probabilities`}
+                          >
+                            {patterns.map(({ id, name: patternName, probability }) => (
+                              <li
+                                key={id}
+                                className={probability === 0 ? 'pattern-ruled-out' : undefined}
+                              >
+                                <span>{i18n._(patternName)}</span>
+                                <strong>
+                                  {probability === 0 ? percent(0) : patternPercent(probability)}
+                                </strong>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
       <div className="price-table-legend" id={`${id}-legend`}>
         <span>
           <i className="price-key-reported" />
-          Reported
+          <Trans>Reported</Trans>
         </span>
         <span>
           <i className="price-key-predicted" />
-          Could be (min–max)
+          <Trans>Could be (min–max)</Trans>
         </span>
-        <span>— Unavailable</span>
+        <span>
+          — <Trans>Unavailable</Trans>
+        </span>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { SessionResponse } from '../../shared/api';
+import { t } from '@lingui/core/macro';
 import type { TurnipDatabase } from './database';
 import type { ProfileRemoval } from '../../shared/profile-data';
 import { blockedProfileKey, eraseProfileCopies } from './profile-storage';
@@ -33,7 +34,7 @@ function sessionRecord(
 
 export class IdentityChangedError extends Error {
   constructor() {
-    super('Your profile changed in another tab. Please try again.');
+    super(t`Your profile changed in another tab. Please try again.`);
     this.name = 'IdentityChangedError';
   }
 }
@@ -66,10 +67,11 @@ export class SessionVault {
         record.sealed.ciphertext,
       );
       token = new TextDecoder().decode(plaintext);
-      if (!/^[a-f0-9]{64}$/.test(token)) throw new Error('The saved device credential is invalid.');
+      if (!/^[a-f0-9]{64}$/.test(token))
+        throw new Error(t`The saved device credential is invalid.`);
     }
     if (this.bearer && record.session && !token) {
-      throw new Error('The saved profile is missing its device credential.');
+      throw new Error(t`The saved profile is missing its device credential.`);
     }
     return {
       revision: record.revision,
@@ -212,7 +214,7 @@ export class SessionVault {
     }
     const record: SessionRecord = { revision: crypto.randomUUID(), session: publicSession(value) };
     if (this.bearer) {
-      if (!token || !/^[a-f0-9]{64}$/.test(token)) throw new Error('Missing device credential.');
+      if (!token || !/^[a-f0-9]{64}$/.test(token)) throw new Error(t`Missing device credential.`);
       // Non-extractable keys avoid plaintext credentials in the database. This
       // does not protect against XSS: same-origin scripts can still use the key.
       const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, [

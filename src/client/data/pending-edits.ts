@@ -1,10 +1,11 @@
 import type { OwnWeekRecord, OwnWeeklyInputs } from '../../shared/week';
+import { t } from '@lingui/core/macro';
 import { type LocalWeek, ownWeek, type StoredWeek } from './database';
 import { weekStore } from './runtime';
 import { weekKey } from './sync';
 
-export const LOCAL_SAVE_ERROR =
-  'Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it.';
+export const localSaveError = () =>
+  t`Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it.`;
 
 interface PendingEdit {
   sequence: number;
@@ -127,7 +128,7 @@ export class PendingEdits {
           });
         } catch (error) {
           if (this.blocked.has(owner) || generation !== this.generations.get(owner)) return;
-          this.publish(key, { ...this.snapshot(owner, weekStart), error: LOCAL_SAVE_ERROR });
+          this.publish(key, { ...this.snapshot(owner, weekStart), error: localSaveError() });
           throw error;
         }
       }

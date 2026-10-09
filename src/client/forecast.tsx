@@ -7,17 +7,15 @@ import {
   type ReactNode,
 } from 'react';
 import { Sparkles, X } from 'lucide-react';
-import type { PatternId, PredictionResult, PriceRange } from '../prediction';
+import { i18n } from '@lingui/core';
+import { plural, t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
+import type { PredictionResult, PriceRange } from '../prediction';
+import { dayShortName, PATTERNS, patternPercent, percent, slotName, slotShortName } from './advice';
 import { Notice } from './ui';
 import './forecast.css';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PATTERNS: { id: PatternId; label: string }[] = [
-  { id: 'fluctuating', label: 'Fluctuating' },
-  { id: 'large-spike', label: 'Large spike' },
-  { id: 'decreasing', label: 'Decreasing' },
-  { id: 'small-spike', label: 'Small spike' },
-];
+const DAY_INDEXES = [0, 1, 2, 3, 4, 5];
 
 export function rangeLabel({ min, max }: PriceRange): string {
   return min === max ? String(min) : `${min}–${max}`;
@@ -28,7 +26,8 @@ function change(price: number, purchasePrice: number): number {
 }
 
 function signed(value: number): string {
-  return value > 0 ? `+${value}%` : value < 0 ? `−${Math.abs(value)}%` : '±0%';
+  const size = percent(Math.abs(value) / 100);
+  return value > 0 ? `+${size}` : value < 0 ? `−${size}` : `±${size}`;
 }
 
 function ForecastChart({
@@ -64,14 +63,13 @@ function ForecastChart({
   const height = (price: number) => `${(price / ceiling) * 92}%`;
   const describe = (index: number) => {
     const price = prices[index];
-    const slot = prediction.slots[index];
-    return `${DAYS[Math.floor(index / 2)]} ${index % 2 ? 'PM' : 'AM'}: ${
-      price !== null
-        ? `you entered ${price} bells`
-        : slot.min === slot.max
-          ? `expected ${slot.min} bells`
-          : `could be ${slot.min} to ${slot.max} bells`
-    }`;
+    const { min, max } = prediction.slots[index];
+    const halfDay = slotName(index);
+    return price !== null
+      ? t`${halfDay}: you entered ${price} bells`
+      : min === max
+        ? t`${halfDay}: expected ${min} bells`
+        : t`${halfDay}: could be ${min} to ${max} bells`;
   };
 
   function select(index: number, focus = false) {
@@ -137,15 +135,18 @@ function ForecastChart({
   if (selected !== null && purchasePrice !== null && active) {
     if (activePrice !== null) {
       const value = change(activePrice, purchasePrice);
-      note = { text: `${signed(value)} vs. what you paid`, tone: value >= 0 ? 'up' : 'down' };
+      const difference = signed(value);
+      note = { text: t`${difference} vs. what you paid`, tone: value >= 0 ? 'up' : 'down' };
     } else {
       const low = change(active.min, purchasePrice);
       const high = change(active.max, purchasePrice);
+      const lowest = signed(low);
+      const highest = signed(high);
       note = {
         text:
           low === high
-            ? `${signed(low)} vs. what you paid`
-            : `${signed(low)} to ${signed(high)} vs. what you paid`,
+            ? t`${lowest} vs. what you paid`
+            : t`${lowest} to ${highest} vs. what you paid`,
         tone: low >= 0 ? 'up' : high <= 0 ? 'down' : 'mixed',
       };
     }
@@ -154,8 +155,10 @@ function ForecastChart({
   return (
     <div className="forecast-chart">
       <p id={`${id}-instructions`} className="sr-only">
-        Select a half-day to see its possible range. Use the arrow keys to move between half-days,
-        Home or End to jump to the first or last, and Escape to close the details.
+        <Trans>
+          Select a half-day to see its possible range. Use the arrow keys to move between half-days,
+          Home or End to jump to the first or last, and Escape to close the details.
+        </Trans>
       </p>
       <div
         className="chart-plot"
@@ -178,7 +181,7 @@ function ForecastChart({
         <div
           className="chart-columns"
           role="group"
-          aria-label="Weekly price forecast by half-day"
+          aria-label={t`Weekly price forecast by half-day`}
           aria-describedby={`${id}-instructions`}
         >
           {prediction.slots.map((slot, index) => {
@@ -234,7 +237,21 @@ function ForecastChart({
                     </>
                   )}
                 </span>
-                <span className="chart-half">{index % 2 ? 'PM' : 'AM'}</span>
+                <span className="chart-half">
+                  {index % 2
+                    ? t({
+                        message: 'PM',
+                        context: 'chart',
+                        comment:
+                          'Afternoon, under one of twelve narrow chart columns: keep it very short',
+                      })
+                    : t({
+                        message: 'AM',
+                        context: 'chart',
+                        comment:
+                          'Morning, under one of twelve narrow chart columns: keep it very short',
+                      })}
+                </span>
               </button>
             );
           })}
@@ -250,14 +267,12 @@ function ForecastChart({
                 }}
               >
                 <div className="chart-tooltip-heading">
-                  <strong>
-                    {DAYS[Math.floor(selected / 2)]} {selected % 2 ? 'PM' : 'AM'}
-                  </strong>
+                  <strong>{slotShortName(selected)}</strong>
                   {!hovering && (
                     <button
                       type="button"
                       className="chart-tooltip-close"
-                      aria-label="Close half-day details"
+                      aria-label={t`Close half-day details`}
                       onClick={() => {
                         setSelected(null);
                         columns.current[selected]?.focus();
@@ -270,27 +285,33 @@ function ForecastChart({
                 {activePrice !== null ? (
                   <dl className="chart-tooltip-values">
                     <div>
-                      <dt>You entered</dt>
+                      <dt>
+                        <Trans>You entered</Trans>
+                      </dt>
                       <dd className="value-entered">{activePrice}</dd>
                     </div>
                   </dl>
                 ) : (
                   <dl className="chart-tooltip-values">
                     <div>
-                      <dt>Low</dt>
+                      <dt>
+                        <Trans>Low</Trans>
+                      </dt>
                       <dd>{active.min}</dd>
                     </div>
                     <span className="chart-tooltip-dash" aria-hidden="true">
                       –
                     </span>
                     <div>
-                      <dt>High</dt>
+                      <dt>
+                        <Trans>High</Trans>
+                      </dt>
                       <dd className="value-high">{active.max}</dd>
                     </div>
                   </dl>
                 )}
                 <p className={`chart-tooltip-note${note ? ` note-${note.tone}` : ''}`}>
-                  {note?.text ?? 'bells per turnip'}
+                  {note?.text ?? t`bells per turnip`}
                 </p>
               </div>
               <span
@@ -304,14 +325,14 @@ function ForecastChart({
         </div>
       </div>
       <div className="chart-days" aria-hidden="true">
-        {DAYS.map((day, dayIndex) => (
+        {DAY_INDEXES.map((dayIndex) => (
           <span
-            key={day}
+            key={dayIndex}
             className={
               selected !== null && Math.floor(selected / 2) === dayIndex ? 'is-selected' : undefined
             }
           >
-            {day.slice(0, 3)}
+            {dayShortName(dayIndex + 1)}
           </span>
         ))}
       </div>
@@ -325,22 +346,21 @@ function PatternOdds({ prediction }: { prediction: PredictionResult }) {
     ...pattern,
     probability: prediction.patterns.find((result) => result.id === pattern.id)?.probability ?? 0,
   })).sort((left, right) => right.probability - left.probability);
+  const tolerance = prediction.tolerance;
   return (
     <section className="pattern-card" aria-labelledby={`${id}-title`}>
-      <h2 id={`${id}-title`}>This week’s pattern</h2>
-      <ul className="pattern-list" aria-label="Possible patterns">
+      <h2 id={`${id}-title`}>
+        <Trans>This week’s pattern</Trans>
+      </h2>
+      <ul className="pattern-list" aria-label={t`Possible patterns`}>
         {patterns.map((pattern) => (
           <li
             key={pattern.id}
             className={pattern.probability === 0 ? 'pattern-ruled-out' : undefined}
           >
-            <span className="pattern-name">{pattern.label}</span>
+            <span className="pattern-name">{i18n._(pattern.name)}</span>
             <strong>
-              {pattern.probability === 0
-                ? 'Ruled out'
-                : pattern.probability < 0.001
-                  ? '<0.1%'
-                  : `${(pattern.probability * 100).toFixed(1)}%`}
+              {pattern.probability === 0 ? t`Ruled out` : patternPercent(pattern.probability)}
             </strong>
             <span className="probability-track" aria-hidden="true">
               <span style={{ width: `${pattern.probability * 100}%` }} />
@@ -350,7 +370,10 @@ function PatternOdds({ prediction }: { prediction: PredictionResult }) {
       </ul>
       {prediction.tolerance > 0 && (
         <p className="hint">
-          These matches allow a {prediction.tolerance}-bell rounding difference.
+          {plural(tolerance, {
+            one: 'These matches allow a #-bell rounding difference.',
+            other: 'These matches allow a #-bell rounding difference.',
+          })}
         </p>
       )}
     </section>
@@ -381,18 +404,21 @@ export function Forecast({
       {lead}
       <section className="forecast-card" aria-labelledby={`${id}-title`}>
         <div className="forecast-card-heading">
-          <h2 id={`${id}-title`}>How the week could go</h2>
+          <h2 id={`${id}-title`}>
+            <Trans>How the week could go</Trans>
+          </h2>
           {prediction.status === 'possible' && (
             <div className="chart-legend" aria-hidden="true">
               <span>
-                <i className="legend-dot" /> {shared ? 'Reported' : 'Your price'}
+                <i className="legend-dot" /> {shared ? t`Reported` : t`Your price`}
               </span>
               <span>
-                <i className="legend-range" /> Could be
+                <i className="legend-range" /> <Trans>Could be</Trans>
               </span>
               {purchasePrice !== null && (
                 <span>
-                  <i className="legend-buy" /> {shared ? 'Bought for' : 'You paid'} {purchasePrice}
+                  <i className="legend-buy" />{' '}
+                  {shared ? t`Bought for ${purchasePrice}` : t`You paid ${purchasePrice}`}
                 </span>
               )}
             </div>
@@ -403,19 +429,19 @@ export function Forecast({
             <span className="forecast-empty-icon">
               <Sparkles size={27} aria-hidden="true" />
             </span>
-            <p>{shared ? 'No forecast yet.' : 'A little data goes a long way.'}</p>
+            <p>{shared ? t`No forecast yet.` : t`A little data goes a long way.`}</p>
             <p className="muted">
               {shared
-                ? 'This player hasn’t entered prices for this week.'
-                : 'Add the prices you know. Leave the rest blank.'}
+                ? t`This player hasn’t entered prices for this week.`
+                : t`Add the prices you know. Leave the rest blank.`}
             </p>
           </div>
         )}
         {prediction.status === 'inconsistent' && (
           <Notice>
             {shared
-              ? 'No pattern matches these reported prices.'
-              : 'No pattern matches these prices. Check your entries and week settings. Your prices have been kept.'}
+              ? t`No pattern matches these reported prices.`
+              : t`No pattern matches these prices. Check your entries and week settings. Your prices have been kept.`}
           </Notice>
         )}
         {prediction.status === 'possible' && (

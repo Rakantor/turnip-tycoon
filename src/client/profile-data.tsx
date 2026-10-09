@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { CONTACT_EMAIL } from '../shared/contact';
 import type { ProfileExportPage } from '../shared/profile-data';
 import { isCurrentIdentityResponse, request } from './data/api';
@@ -44,23 +46,33 @@ function DeleteConfirmation({ close }: { close: () => void }) {
         if (!busy) close();
       }}
     >
-      <h2 id="delete-profile-title">Delete your profile?</h2>
+      <h2 id="delete-profile-title">
+        <Trans>Delete your profile?</Trans>
+      </h2>
       <p>
-        This permanently removes your name, friend code, price history, purchases, sales, and group
-        memberships from the app’s database.
+        <Trans>
+          This permanently removes your name, friend code, price history, purchases, sales, and
+          group memberships from the app’s database.
+        </Trans>
       </p>
       <p>
-        All connected devices and your recovery code will lose access. Groups with other members
-        will stay, along with their records.
+        <Trans>
+          All connected devices and your recovery code will lose access. Groups with other members
+          will stay, along with their records.
+        </Trans>
       </p>
       <p>
-        Saved data and unsent edits on this browser will be cleared. Other devices clear their
-        copies when they next check access online. Friends may still have offline copies or
-        screenshots.
+        <Trans>
+          Saved data and unsent edits on this browser will be cleared. Other devices clear their
+          copies when they next check access online. Friends may still have offline copies or
+          screenshots.
+        </Trans>
       </p>
       <p>
-        Download your data first if you want to keep it. This cannot be undone.{' '}
-        <Link to="/privacy#privacy-retention">Backup and log details</Link>.
+        <Trans>
+          Download your data first if you want to keep it. This cannot be undone.{' '}
+          <Link to="/privacy#privacy-retention">Backup and log details</Link>.
+        </Trans>
       </p>
       <label className="profile-delete-check">
         <input
@@ -69,13 +81,17 @@ function DeleteConfirmation({ close }: { close: () => void }) {
           onChange={(event) => setConfirmed(event.target.checked)}
           disabled={busy}
         />{' '}
-        I understand that my profile and its records will be deleted.
+        <Trans>I understand that my profile and its records will be deleted.</Trans>
       </label>
-      {!online && <Notice>Connect to the internet to delete your profile.</Notice>}
+      {!online && (
+        <Notice>
+          <Trans>Connect to the internet to delete your profile.</Trans>
+        </Notice>
+      )}
       {error && <Notice>{error}</Notice>}
       <div className="button-row">
         <Button secondary disabled={busy} onClick={close}>
-          Keep my profile
+          <Trans>Keep my profile</Trans>
         </Button>
         <Button
           className="button-danger"
@@ -90,7 +106,7 @@ function DeleteConfirmation({ close }: { close: () => void }) {
             });
           }}
         >
-          Permanently delete profile
+          <Trans>Permanently delete profile</Trans>
         </Button>
       </div>
     </dialog>
@@ -126,7 +142,7 @@ export function ProfileDataSettings() {
             `/profile/export?section=${section}${after ? `&after=${after}` : ''}`,
           );
           if (!isCurrentIdentityResponse(result))
-            throw new Error('Your profile changed. Start the download again.');
+            throw new Error(t`Your profile changed. Start the download again.`);
           return result;
         },
       });
@@ -149,15 +165,25 @@ export function ProfileDataSettings() {
   }
   return (
     <section className="settings-section" id="your-data" ref={section}>
-      <h2>Your data</h2>
+      <h2>
+        <Trans>Your data</Trans>
+      </h2>
       <p>
-        Download your profile, all saved prices and trades, group memberships, and device details as
-        a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere
-        private.
+        <Trans>
+          Download your profile, all saved prices and trades, group memberships, and device details
+          as a JSON file. Unsent edits on this browser are included separately. Keep the file
+          somewhere private.
+        </Trans>
       </p>
-      <p>Go online on your other devices first if you want their latest edits included.</p>
+      <p>
+        <Trans>
+          Go online on your other devices first if you want their latest edits included.
+        </Trans>
+      </p>
       {!available && (
-        <p className="hint">Connect your profile online to download or delete its data.</p>
+        <p className="hint">
+          <Trans>Connect your profile online to download or delete its data.</Trans>
+        </p>
       )}
       <div className="button-row">
         <Button
@@ -168,19 +194,21 @@ export function ProfileDataSettings() {
             void download();
           }}
         >
-          Download my data
+          <Trans>Download my data</Trans>
         </Button>
         <Button
           className="button-danger"
           disabled={!available || busy}
           onClick={() => setConfirming(true)}
         >
-          Delete my profile
+          <Trans>Delete my profile</Trans>
         </Button>
       </div>
       {error && <Notice>{error}</Notice>}
       {downloaded && (
-        <Notice success>Your download is ready. Check your browser’s downloads.</Notice>
+        <Notice success>
+          <Trans>Your download is ready. Check your browser’s downloads.</Trans>
+        </Notice>
       )}
       {confirming && <DeleteConfirmation close={() => setConfirming(false)} />}
     </section>
@@ -208,17 +236,20 @@ export function ProfileRemovalNotice() {
       <h1>
         {pending
           ? waiting
-            ? 'Deleting your profile…'
-            : 'Deletion needs another check'
+            ? t`Deleting your profile…`
+            : t`Deletion needs another check`
           : removal.phase === 'deleted'
-            ? 'Your profile is deleted'
-            : 'This profile is no longer connected'}
+            ? t`Your profile is deleted`
+            : t`This profile is no longer connected`}
       </h1>
       {pending ? (
         <>
           <p>
-            Uploads are paused. If the connection was interrupted, the deletion may already have
-            reached the server. We will only show a successful deletion when the server confirms it.
+            <Trans>
+              Uploads are paused. If the connection was interrupted, the deletion may already have
+              reached the server. We will only show a successful deletion when the server confirms
+              it.
+            </Trans>
           </p>
           {!waiting && (
             <>
@@ -226,16 +257,18 @@ export function ProfileRemovalNotice() {
                 disabled={!online}
                 onClick={() => run(() => identity.removeProfile(removal.owner))}
               >
-                Retry deletion
+                <Trans>Retry deletion</Trans>
               </Button>
               <p>
-                If this device no longer has access, contact{' '}
-                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> about an unconfirmed
-                request. You can clear this browser’s saved data and access below. That does not
-                confirm server deletion, and removes the ability to retry here.
+                <Trans>
+                  If this device no longer has access, contact{' '}
+                  <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> about an unconfirmed
+                  request. You can clear this browser’s saved data and access below. That does not
+                  confirm server deletion, and removes the ability to retry here.
+                </Trans>
               </p>
               <Button secondary onClick={() => run(identity.clearRemovalAccess)}>
-                Clear this device’s saved data
+                <Trans>Clear this device’s saved data</Trans>
               </Button>
             </>
           )}
@@ -244,21 +277,25 @@ export function ProfileRemovalNotice() {
         <>
           <p>
             {removal.phase === 'deleted'
-              ? 'Your profile and its records have been removed from the app’s database, and all connected devices have lost access.'
-              : 'Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server.'}
+              ? t`Your profile and its records have been removed from the app’s database, and all connected devices have lost access.`
+              : t`Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server.`}
           </p>
           <p>
-            No new profile has been created. You can close the app, or start again when you are
-            ready.
+            <Trans>
+              No new profile has been created. You can close the app, or start again when you are
+              ready.
+            </Trans>
           </p>
           <Button busy={busy} onClick={() => run(identity.startAfterRemoval)}>
-            Return to welcome
+            <Trans>Return to welcome</Trans>
           </Button>
         </>
       )}
       {(error || identity.error) && <Notice>{error || identity.error}</Notice>}
       <p className="access-alternative">
-        <Link to="/privacy#your-choices">Privacy and data requests</Link>
+        <Link to="/privacy#your-choices">
+          <Trans>Privacy and data requests</Trans>
+        </Link>
       </p>
     </main>
   );

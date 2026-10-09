@@ -1,6 +1,8 @@
 import { useEffect, useId, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, Coins } from 'lucide-react';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { currentWeekStart } from '../shared/calendar';
 import {
   averageCost,
@@ -78,6 +80,7 @@ function ProfitSummary({ weeks, currentWeek }: { weeks: LedgerWeek[]; currentWee
   );
   const rotted = finished.reduce((total, week) => total + unsold(week), 0);
   const soFar = thisWeek ? madeSoFar(thisWeek) : 0;
+  const thisWeekSoFar = signedBells(soFar);
   return (
     <section className="profit-summary" aria-labelledby={`${id}-title`}>
       <div className="profit-total">
@@ -85,25 +88,36 @@ function ProfitSummary({ weeks, currentWeek }: { weeks: LedgerWeek[]; currentWee
           <Coins size={28} aria-hidden="true" />
         </span>
         <div>
-          <h2 id={`${id}-title`}>All-time profit</h2>
+          <h2 id={`${id}-title`}>
+            <Trans>All-time profit</Trans>
+          </h2>
           <p className={`profit-value ${overall < 0 ? 'bells-down' : 'bells-up'}`}>
             {signedBells(overall)}
           </p>
           <p className="profit-note">
-            {soFar ? `bells, with this week’s ${signedBells(soFar)} so far` : 'bells'}
+            {soFar
+              ? t({
+                  message: `bells, with this week’s ${thisWeekSoFar} so far`,
+                  comment: 'Under the all-time profit, which is in bells',
+                })
+              : t({ message: 'bells', comment: 'The unit under a price' })}
           </p>
         </div>
       </div>
       <dl className="profit-stats">
         <div>
-          <dt>Weeks traded</dt>
+          <dt>
+            <Trans>Weeks traded</Trans>
+          </dt>
           <dd className="profit-stat">
             {weeks.filter((week) => week.weekStart <= currentWeek).length}
           </dd>
         </div>
         {best && (
           <div>
-            <dt>Best week</dt>
+            <dt>
+              <Trans>Best week</Trans>
+            </dt>
             <dd className={`profit-stat ${weekResult(best) < 0 ? 'bells-down' : 'bells-up'}`}>
               {signedBells(weekResult(best))}
             </dd>
@@ -111,15 +125,15 @@ function ProfitSummary({ weeks, currentWeek }: { weeks: LedgerWeek[]; currentWee
           </div>
         )}
         <div>
-          <dt>Turnips rotted</dt>
+          <dt>
+            <Trans>Turnips rotted</Trans>
+          </dt>
           <dd className="profit-stat">{bells(rotted)}</dd>
         </div>
       </dl>
     </section>
   );
 }
-
-const HISTORY_COLUMNS = ['Week', 'Bought for', 'Sold for', 'Turnips', 'Profit'];
 
 export function History() {
   const identity = useApp();
@@ -178,23 +192,27 @@ export function History() {
     <main className="page history-page" id="main-content">
       <div className="page-heading">
         <div>
-          <h1>History</h1>
+          <h1>
+            <Trans>History</Trans>
+          </h1>
         </div>
         <Link className="text-link" to="/">
-          This week <ArrowRight size={16} />
+          <Trans>This week</Trans> <ArrowRight size={16} />
         </Link>
       </div>
       {ledger && ledger.length > 0 && <ProfitSummary weeks={ledger} currentWeek={currentWeek} />}
       {identity.status === 'offline' || identity.status === 'error' ? (
         <div className="sync-message">
-          <p>Connect to load your saved history.</p>
+          <p>
+            <Trans>Connect to load your saved history.</Trans>
+          </p>
           <Button
             secondary
             onClick={() => {
               void identity.retry();
             }}
           >
-            Try again
+            <Trans>Try again</Trans>
           </Button>
         </div>
       ) : (
@@ -203,7 +221,7 @@ export function History() {
             <>
               <Notice>{error}</Notice>
               <Button secondary onClick={() => setRefreshCount((count) => count + 1)}>
-                Retry history
+                <Trans>Retry history</Trans>
               </Button>
             </>
           )}
@@ -211,23 +229,29 @@ export function History() {
             <div className={`history-table-scroll ${reveal}`}>
               {/* Explicit roles keep the table readable when phones stack its rows. */}
               <table className="history-table history-ledger" role="table">
-                <caption className="sr-only">Past weeks and their profit</caption>
+                <caption className="sr-only">
+                  <Trans>Past weeks and their profit</Trans>
+                </caption>
                 <thead role="rowgroup">
                   <tr role="row">
                     <th scope="col" role="columnheader">
-                      Week
+                      <Trans>Week</Trans>
                     </th>
                     <th scope="col" role="columnheader">
-                      Bought for<span className="sr-only">, average per turnip</span>
+                      <Trans>
+                        Bought for<span className="sr-only">, average per turnip</span>
+                      </Trans>
                     </th>
                     <th scope="col" role="columnheader">
-                      Sold for<span className="sr-only">, average per turnip</span>
+                      <Trans>
+                        Sold for<span className="sr-only">, average per turnip</span>
+                      </Trans>
                     </th>
                     <th scope="col" role="columnheader">
-                      Turnips
+                      <Trans>Turnips</Trans>
                     </th>
                     <th scope="col" role="columnheader" className="history-profit">
-                      Profit
+                      <Trans>Profit</Trans>
                     </th>
                   </tr>
                 </thead>
@@ -238,21 +262,24 @@ export function History() {
                     const sale = averageSale(totals);
                     const rotted = unsold(totals);
                     const result = weekResult(totals);
+                    const rottedCount = bells(rotted);
                     return (
                       <tr key={week.weekStart} role="row">
                         <th scope="row" role="rowheader">
                           <Link to={`/weeks/${week.weekStart}`}>{weekLabel(week.weekStart)}</Link>
                         </th>
-                        <td role="cell" data-label="Bought for">
+                        <td role="cell" data-label={t`Bought for`}>
                           {cost === null ? '—' : average(cost)}
                         </td>
-                        <td role="cell" data-label="Sold for">
+                        <td role="cell" data-label={t`Sold for`}>
                           {sale === null ? '—' : average(sale)}
                         </td>
-                        <td role="cell" data-label="Turnips">
+                        <td role="cell" data-label={t`Turnips`}>
                           {totals.bought ? bells(totals.bought) : '—'}
                           {rotted > 0 && (
-                            <span className="history-rotted">{bells(rotted)} rotted</span>
+                            <span className="history-rotted">
+                              <Trans>{rottedCount} rotted</Trans>
+                            </span>
                           )}
                         </td>
                         <td
@@ -271,13 +298,22 @@ export function History() {
             </div>
           )}
           {loading && weeks.length === 0 && (
-            <HistoryLoading label="Loading saved weeks…" columns={HISTORY_COLUMNS} />
+            <HistoryLoading
+              label={t`Loading saved weeks…`}
+              columns={[t`Week`, t`Bought for`, t`Sold for`, t`Turnips`, t`Profit`]}
+            />
           )}
           {!loading && !error && weeks.length === 0 && (
             <div className="empty-history">
-              <p>No past weeks yet.</p>
-              <p className="muted">This week will appear here when a new week starts.</p>
-              <Link to="/">Enter this week’s prices</Link>
+              <p>
+                <Trans>No past weeks yet.</Trans>
+              </p>
+              <p className="muted">
+                <Trans>This week will appear here when a new week starts.</Trans>
+              </p>
+              <Link to="/">
+                <Trans>Enter this week’s prices</Trans>
+              </Link>
             </div>
           )}
           {nextCursor && (
@@ -288,7 +324,7 @@ export function History() {
                 void more();
               }}
             >
-              Load older weeks
+              <Trans>Load older weeks</Trans>
             </Button>
           )}
         </>

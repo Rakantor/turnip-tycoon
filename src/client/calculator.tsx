@@ -1,6 +1,9 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, ArrowRight, Check, CloudOff, LoaderCircle, Moon, Sun } from 'lucide-react';
+import { i18n } from '@lingui/core';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 import { predictWeek } from '../prediction';
 import { uniquePattern } from '../prediction/previous-pattern';
 import { currentSlot, currentWeekStart, isEditableWeek, shiftWeek } from '../shared/calendar';
@@ -12,7 +15,7 @@ import { Button, dateFromWeek, Notice, useApp, weekLabel } from './ui';
 import { FriendsPanel } from './groups';
 import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
-import { slotShortName, weekAdvice } from './advice';
+import { patternName, PATTERNS, slotName, slotShortName, weekAdvice } from './advice';
 import { afterClosing, islandOdds } from './odds';
 import { HoldOrSell } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
@@ -20,13 +23,7 @@ import { usePwaReloadGuard } from './pwa';
 import { BellBag, Turnip } from './icons';
 import { PastTurnips, SundayTurnips } from './turnips';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const PATTERNS: { id: PatternId; label: string }[] = [
-  { id: 'fluctuating', label: 'Fluctuating' },
-  { id: 'large-spike', label: 'Large spike' },
-  { id: 'decreasing', label: 'Decreasing' },
-  { id: 'small-spike', label: 'Small spike' },
-];
+const DAY_INDEXES = [0, 1, 2, 3, 4, 5];
 
 function PriceInput({
   value,
@@ -73,7 +70,7 @@ function PriceInput({
     }
     const next = parsePrice(draft.trim(), kind);
     if (next === undefined) {
-      setError(`${min}–${max} bells`);
+      setError(t`${min}–${max} bells`);
       onValidity(true);
       return;
     }
@@ -119,7 +116,9 @@ function PriceInput({
         }}
       />
       <span id={rangeId} className="sr-only">
-        {min} to {max} bells
+        <Trans>
+          {min} to {max} bells
+        </Trans>
       </span>
       {error && (
         <span id={errorId} className="input-error">
@@ -131,10 +130,15 @@ function PriceInput({
 }
 
 function describeTrade(trade: Trade): string {
-  return (
-    `${trade.quantity.toLocaleString()} at ${trade.price}` +
-    (trade.kind === 'sell' ? ` on ${slotShortName(trade.slot)}` : '')
-  );
+  const quantity = i18n.number(trade.quantity);
+  const price = trade.price;
+  if (trade.kind === 'buy')
+    return t({ message: `${quantity} at ${price}`, comment: 'Turnips bought at a price' });
+  const halfDay = slotShortName(trade.slot);
+  return t({
+    message: `${quantity} at ${price} on ${halfDay}`,
+    comment: 'Turnips sold at a price; halfDay is short, like “Mon AM”',
+  });
 }
 
 /** One kind of trade for the conflict comparison, such as "4,000 at 98, 6,000 at 94". */
@@ -150,26 +154,28 @@ function describeEntry(
   theirs: OwnWeekRecord,
 ): { label: string; mine: string; theirs: string } {
   const pattern = (week: OwnWeekRecord) =>
-    PATTERNS.find((item) => item.id === week.previousPattern)?.label ?? 'Unknown';
+    week.previousPattern ? patternName(week.previousPattern) : t`Unknown`;
   const firstBuy = (week: OwnWeekRecord) =>
-    week.firstBuy === null ? 'Not sure' : week.firstBuy ? 'Yes' : 'No';
+    week.firstBuy === null ? t`Not sure` : week.firstBuy ? t`Yes` : t`No`;
   const both = (value: (week: OwnWeekRecord) => string) => ({
     mine: value(mine),
     theirs: value(theirs),
   });
   if (entry === 'purchasePrice')
     return {
-      label: 'Sunday buy price',
+      label: t`Sunday buy price`,
       ...both((week) => String(week.purchasePrice ?? '—')),
     };
-  if (entry === 'firstBuy') return { label: 'First Daisy Mae purchase', ...both(firstBuy) };
-  if (entry === 'previousPattern') return { label: 'Last week’s pattern', ...both(pattern) };
+  if (entry === 'firstBuy') return { label: t`First Daisy Mae purchase`, ...both(firstBuy) };
+  if (entry === 'previousPattern') return { label: t`Last week’s pattern`, ...both(pattern) };
   if (entry === 'trades')
     return {
-      label: 'Trades',
-      ...both(
-        (week) => `Bought ${tradeList(week.trades, 'buy')}; sold ${tradeList(week.trades, 'sell')}`,
-      ),
+      label: t`Trades`,
+      ...both((week) => {
+        const bought = tradeList(week.trades, 'buy');
+        const sold = tradeList(week.trades, 'sell');
+        return t`Bought ${bought}; sold ${sold}`;
+      }),
     };
   if (entry.startsWith('price:')) {
     const slot = Number(entry.slice('price:'.length));
@@ -179,12 +185,58 @@ function describeEntry(
   const find = (week: OwnWeekRecord) => week.trades.find((trade) => trade.id === id);
   const kind = (find(mine) ?? find(theirs))?.kind;
   return {
-    label: kind === 'buy' ? 'Purchase' : 'Sale',
+    label: kind === 'buy' ? t`Purchase` : t`Sale`,
     ...both((week) => {
       const trade = find(week);
-      return trade ? describeTrade(trade) : 'Removed';
+      return trade ? describeTrade(trade) : t`Removed`;
     }),
   };
+}
+
+function patternApplied(pattern: PatternId): string {
+  switch (pattern) {
+    case 'fluctuating':
+      return t`This week’s forecast now uses fluctuating as last week’s pattern.`;
+    case 'large-spike':
+      return t`This week’s forecast now uses large spike as last week’s pattern.`;
+    case 'decreasing':
+      return t`This week’s forecast now uses decreasing as last week’s pattern.`;
+    case 'small-spike':
+      return t`This week’s forecast now uses small spike as last week’s pattern.`;
+  }
+}
+
+function patternFound(pattern: PatternId) {
+  switch (pattern) {
+    case 'fluctuating':
+      return (
+        <Trans>
+          These prices now point to a <strong>fluctuating</strong> week. Use that in this week’s
+          forecast?
+        </Trans>
+      );
+    case 'large-spike':
+      return (
+        <Trans>
+          These prices now point to a <strong>large spike</strong> week. Use that in this week’s
+          forecast?
+        </Trans>
+      );
+    case 'decreasing':
+      return (
+        <Trans>
+          These prices now point to a <strong>decreasing</strong> week. Use that in this week’s
+          forecast?
+        </Trans>
+      );
+    case 'small-spike':
+      return (
+        <Trans>
+          These prices now point to a <strong>small spike</strong> week. Use that in this week’s
+          forecast?
+        </Trans>
+      );
+  }
 }
 
 /** After an edit to last week identifies its pattern, offer it to this week's forecast. */
@@ -196,21 +248,17 @@ function PatternOffer({ weekStart, pattern }: { weekStart: string; pattern: Patt
     identity.status === 'ready',
   );
   const [applied, setApplied] = useState(false);
-  const label = PATTERNS.find((item) => item.id === pattern)!.label.toLowerCase();
   if (applied)
     return (
       <Notice success>
-        This week’s forecast now uses {label} as last week’s pattern.{' '}
-        <Link to="/">See this week</Link>
+        {patternApplied(pattern)} <Link to="/">{t`See this week`}</Link>
       </Notice>
     );
   // This week's saved setting is never changed silently, and needs no offer once it agrees.
   if (!stored || week.previousPattern === pattern) return null;
   return (
     <div className="pattern-offer" role="status">
-      <p>
-        These prices now point to a <strong>{label}</strong> week. Use that in this week’s forecast?
-      </p>
+      <p>{patternFound(pattern)}</p>
       <Button
         secondary
         onClick={() => {
@@ -218,7 +266,7 @@ function PatternOffer({ weekStart, pattern }: { weekStart: string; pattern: Patt
           setApplied(true);
         }}
       >
-        Use for this week
+        <Trans>Use for this week</Trans>
       </Button>
     </div>
   );
@@ -315,24 +363,24 @@ function WeekCalculator({
   const editing = draftFields.length > 0;
   usePwaReloadGuard(
     editing || invalidFields.length > 0
-      ? 'Finish or correct your price entry before updating.'
+      ? t`Finish or correct your price entry before updating.`
       : null,
   );
   const saveLabel = editing
-    ? 'Editing…'
+    ? t`Editing…`
     : status === 'saved'
-      ? 'Saved'
+      ? t`Saved`
       : status === 'loading'
-        ? 'Loading saved prices…'
+        ? t`Loading saved prices…`
         : status === 'syncing'
-          ? 'Saving…'
+          ? t`Saving…`
           : status === 'offline'
-            ? 'Offline · saved on this device'
+            ? t`Offline · saved on this device`
             : status === 'local'
-              ? 'Saved on this device · sync pending'
+              ? t`Saved on this device · sync pending`
               : status === 'conflict'
-                ? 'Changes need review'
-                : 'Couldn’t sync';
+                ? t`Changes need review`
+                : t`Couldn’t sync`;
   const own = isCurrent ? islandOdds(week, prediction, slot, afterClosing(now)) : null;
   const advice = weekAdvice({
     prediction,
@@ -354,22 +402,21 @@ function WeekCalculator({
       ? rangeLabel(prediction.slots[index])
       : '—';
   const shortDate = (offset: number) =>
-    dateFromWeek(weekStart, offset).toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-    });
+    i18n.date(dateFromWeek(weekStart, offset), { month: 'short', day: 'numeric' });
+  const weekday = (offset: number) =>
+    i18n.date(dateFromWeek(weekStart, offset), { weekday: 'short' });
   return (
     <main id="main-content" className="page calculator-page">
       <div className="page-heading week-heading">
         <Link
           className="icon-button"
           to={`/weeks/${shiftWeek(weekStart, -1)}`}
-          aria-label="Previous week"
+          aria-label={t`Previous week`}
         >
           <ArrowLeft size={19} />
         </Link>
         <div>
-          <h1>{isCurrent ? 'This week' : lastWeek ? 'Last week' : 'Past week'}</h1>
+          <h1>{isCurrent ? t`This week` : lastWeek ? t`Last week` : t`Past week`}</h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
         {!isCurrent && (
@@ -380,7 +427,7 @@ function WeekCalculator({
                 ? '/'
                 : `/weeks/${shiftWeek(weekStart, 1)}`
             }
-            aria-label="Next week"
+            aria-label={t`Next week`}
           >
             <ArrowRight size={19} />
           </Link>
@@ -388,14 +435,16 @@ function WeekCalculator({
       </div>
       {readOnly && (
         <p className="history-note">
-          Past weeks are read-only. <Link to="/">Return to this week</Link>
+          <Trans>
+            Past weeks are read-only. <Link to="/">Return to this week</Link>
+          </Trans>
         </p>
       )}
       <Outlook advice={advice} />
       <div className="calculator-layout">
         <section className="weekly-entry" aria-labelledby="prices-title">
           <div className="entry-heading">
-            <h2 id="prices-title">{editable ? 'Your prices' : 'Prices'}</h2>
+            <h2 id="prices-title">{editable ? t`Your prices` : t`Prices`}</h2>
             <div className="entry-status">
               <span className={`save-status status-${editing ? 'editing' : status}`} role="status">
                 {editing ? null : status === 'saved' ? (
@@ -412,17 +461,23 @@ function WeekCalculator({
           <div className="week-board">
             <div className={`day-card day-card-sunday${sundayToday ? ' day-today has-tag' : ''}`}>
               <div className="day-card-head">
-                <span className="day-name">Sun</span>
+                <span className="day-name">{weekday(0)}</span>
                 <span className="day-date">{shortDate(0)}</span>
-                <span className="day-sub">buy price</span>
-                {sundayToday && <span className="day-tag">Today</span>}
+                <span className="day-sub">
+                  <Trans comment="Under “Sun” on the week board">buy price</Trans>
+                </span>
+                {sundayToday && (
+                  <span className="day-tag">
+                    <Trans>Today</Trans>
+                  </span>
+                )}
               </div>
               <div className="day-card-body">
                 <div className="period-slot sunday-slot">
                   <BellBag className="icon-bells" size={16} aria-hidden="true" />
                   <PriceInput
                     key={inputGeneration}
-                    label="Sunday purchase price in bells"
+                    label={t`Sunday purchase price in bells`}
                     value={week.purchasePrice}
                     purchase
                     readOnly={readOnly}
@@ -444,29 +499,36 @@ function WeekCalculator({
             <div className="period-headings" aria-hidden="true">
               <span />
               <span className="period-am">
-                <Sun size={14} /> Morning
+                <Sun size={14} /> <Trans>Morning</Trans>
               </span>
               <span className="period-pm">
-                <Moon size={14} /> Afternoon
+                <Moon size={14} /> <Trans>Afternoon</Trans>
               </span>
             </div>
-            {DAYS.map((day, dayIndex) => {
+            {DAY_INDEXES.map((dayIndex) => {
               const today = slot !== null && Math.floor(slot / 2) === dayIndex;
               const best = bestSlot !== null && Math.floor(bestSlot / 2) === dayIndex;
-              const tag = today ? 'Today' : best ? (isCurrent ? 'Best bet' : 'Best price') : null;
+              const tag = today
+                ? t`Today`
+                : best
+                  ? isCurrent
+                    ? t`Best bet`
+                    : t`Best price`
+                  : null;
               return (
                 <div
-                  key={day}
+                  key={dayIndex}
                   className={`day-card${today ? ' day-today' : ''}${best ? ' day-best' : ''}${tag ? ' has-tag' : ''}`}
                 >
                   <div className="day-card-head">
-                    <span className="day-name">{day.slice(0, 3)}</span>
+                    <span className="day-name">{weekday(dayIndex + 1)}</span>
                     <span className="day-date">{shortDate(dayIndex + 1)}</span>
                     {tag && <span className="day-tag">{tag}</span>}
                   </div>
                   <div className="day-card-body">
                     {[0, 1].map((period) => {
                       const index = dayIndex * 2 + period;
+                      const halfDay = slotName(index);
                       return (
                         <div
                           key={period}
@@ -479,7 +541,7 @@ function WeekCalculator({
                           )}
                           <PriceInput
                             key={inputGeneration}
-                            label={`${day} ${period ? 'PM' : 'AM'} sell price in bells`}
+                            label={t`${halfDay} sell price in bells`}
                             value={week.prices[index]}
                             hint={hintFor(index)}
                             readOnly={readOnly}
@@ -503,7 +565,9 @@ function WeekCalculator({
           </div>
           {invalidFields.length > 0 && (
             <Notice>
-              Correct the highlighted entries. The forecast uses your last valid prices.
+              <Trans>
+                Correct the highlighted entries. The forecast uses your last valid prices.
+              </Trans>
             </Notice>
           )}
           {lastWeek &&
@@ -514,14 +578,14 @@ function WeekCalculator({
             )}
           {(status === 'error' || status === 'offline') && (
             <div className="sync-message">
-              <p>{error ?? 'Your changes will sync when the connection is restored.'}</p>
+              <p>{error ?? t`Your changes will sync when the connection is restored.`}</p>
               <Button
                 secondary
                 onClick={() => {
                   void (identity.status === 'ready' ? retry() : identity.retry());
                 }}
               >
-                Try again
+                <Trans>Try again</Trans>
               </Button>
             </div>
           )}
@@ -529,7 +593,7 @@ function WeekCalculator({
             <div className="sync-message">
               <p>
                 {identity.error ??
-                  'Connection unavailable. You can keep entering prices on this device.'}
+                  t`Connection unavailable. You can keep entering prices on this device.`}
               </p>
               <Button
                 secondary
@@ -537,21 +601,33 @@ function WeekCalculator({
                   void identity.retry();
                 }}
               >
-                Retry connection
+                <Trans>Retry connection</Trans>
               </Button>
             </div>
           )}
           {identity.status === 'ready' && identity.error && <Notice>{identity.error}</Notice>}
           {conflict && conflictEntries && (
             <div className="conflict-panel" role="alert">
-              <h3>Another device changed the same entries</h3>
-              <p>Everything else from both devices is combined. Choose which of these to keep.</p>
+              <h3>
+                <Trans>Another device changed the same entries</Trans>
+              </h3>
+              <p>
+                <Trans>
+                  Everything else from both devices is combined. Choose which of these to keep.
+                </Trans>
+              </p>
               <table>
                 <thead>
                   <tr>
-                    <th>Entry</th>
-                    <th>This device</th>
-                    <th>Other device</th>
+                    <th>
+                      <Trans>Entry</Trans>
+                    </th>
+                    <th>
+                      <Trans>This device</Trans>
+                    </th>
+                    <th>
+                      <Trans>Other device</Trans>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -574,7 +650,7 @@ function WeekCalculator({
                     void resolveConflict('local');
                   }}
                 >
-                  Keep this device’s entries
+                  <Trans>Keep this device’s entries</Trans>
                 </Button>
                 <Button
                   secondary
@@ -583,7 +659,7 @@ function WeekCalculator({
                     void resolveConflict('remote');
                   }}
                 >
-                  Use other device’s entries
+                  <Trans>Use other device’s entries</Trans>
                 </Button>
               </div>
             </div>
@@ -591,42 +667,56 @@ function WeekCalculator({
           {/* Edits saved before this device kept a base are compared as whole weeks. */}
           {conflict && !conflictEntries && (
             <div className="conflict-panel" role="alert">
-              <h3>Another device changed this week</h3>
-              <p>Choose which entries to keep. Yours are still here until you choose.</p>
+              <h3>
+                <Trans>Another device changed this week</Trans>
+              </h3>
+              <p>
+                <Trans>Choose which entries to keep. Yours are still here until you choose.</Trans>
+              </p>
               <details>
-                <summary>Compare entries</summary>
+                <summary>
+                  <Trans>Compare entries</Trans>
+                </summary>
                 <table>
                   <thead>
                     <tr>
-                      <th>Entry</th>
-                      <th>This device</th>
-                      <th>Other device</th>
+                      <th>
+                        <Trans>Entry</Trans>
+                      </th>
+                      <th>
+                        <Trans>This device</Trans>
+                      </th>
+                      <th>
+                        <Trans>Other device</Trans>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <th>Purchase</th>
+                      <th>
+                        <Trans>Purchase</Trans>
+                      </th>
                       <td>{week.purchasePrice ?? '—'}</td>
                       <td>{conflict.purchasePrice ?? '—'}</td>
                     </tr>
-                    {DAYS.flatMap((day, dayIndex) =>
-                      [0, 1].map((period) => (
-                        <tr key={`${day}-${period}`}>
-                          <th>
-                            {day.slice(0, 3)} {period ? 'PM' : 'AM'}
-                          </th>
-                          <td>{week.prices[dayIndex * 2 + period] ?? '—'}</td>
-                          <td>{conflict.prices[dayIndex * 2 + period] ?? '—'}</td>
-                        </tr>
-                      )),
-                    )}
+                    {week.prices.map((price, index) => (
+                      <tr key={index}>
+                        <th>{slotShortName(index)}</th>
+                        <td>{price ?? '—'}</td>
+                        <td>{conflict.prices[index] ?? '—'}</td>
+                      </tr>
+                    ))}
                     <tr>
-                      <th>Bought</th>
+                      <th>
+                        <Trans>Bought</Trans>
+                      </th>
                       <td>{tradeList(week.trades, 'buy')}</td>
                       <td>{tradeList(conflict.trades, 'buy')}</td>
                     </tr>
                     <tr>
-                      <th>Sold</th>
+                      <th>
+                        <Trans>Sold</Trans>
+                      </th>
                       <td>{tradeList(week.trades, 'sell')}</td>
                       <td>{tradeList(conflict.trades, 'sell')}</td>
                     </tr>
@@ -640,7 +730,7 @@ function WeekCalculator({
                     void resolveConflict('local');
                   }}
                 >
-                  Keep this device’s entries
+                  <Trans>Keep this device’s entries</Trans>
                 </Button>
                 <Button
                   secondary
@@ -649,14 +739,16 @@ function WeekCalculator({
                     void resolveConflict('remote');
                   }}
                 >
-                  Use other device’s entries
+                  <Trans>Use other device’s entries</Trans>
                 </Button>
               </div>
             </div>
           )}
-          <div className="prediction-inputs" role="group" aria-label="Week settings">
+          <div className="prediction-inputs" role="group" aria-label={t`Week settings`}>
             <div className="field">
-              <label htmlFor="previous-pattern">Last week’s pattern</label>
+              <label htmlFor="previous-pattern">
+                <Trans>Last week’s pattern</Trans>
+              </label>
               <select
                 id="previous-pattern"
                 value={week.previousPattern ?? 'unknown'}
@@ -668,16 +760,18 @@ function WeekCalculator({
                   })
                 }
               >
-                <option value="unknown">Unknown</option>
+                <option value="unknown">{t`Unknown`}</option>
                 {PATTERNS.map((pattern) => (
                   <option key={pattern.id} value={pattern.id}>
-                    {pattern.label}
+                    {i18n._(pattern.name)}
                   </option>
                 ))}
               </select>
             </div>
             <div className="field">
-              <label htmlFor="first-buy">First Daisy Mae purchase on this island?</label>
+              <label htmlFor="first-buy">
+                <Trans>First Daisy Mae purchase on this island?</Trans>
+              </label>
               <select
                 id="first-buy"
                 value={week.firstBuy === null ? 'unknown' : week.firstBuy ? 'yes' : 'no'}
@@ -689,9 +783,9 @@ function WeekCalculator({
                   })
                 }
               >
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-                <option value="unknown">Not sure</option>
+                <option value="no">{t`No`}</option>
+                <option value="yes">{t`Yes`}</option>
+                <option value="unknown">{t`Not sure`}</option>
               </select>
             </div>
           </div>

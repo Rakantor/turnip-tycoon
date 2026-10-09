@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
+import { t } from '@lingui/core/macro';
 import type { SessionResponse } from '../../shared/api';
 import type { GroupSummary, GroupsResponse, SharedPlayerWeek } from '../../shared/groups';
 import { ApiError, request } from './api';
@@ -64,7 +65,7 @@ function publish(store: GroupStore, patch: Partial<GroupState>) {
 }
 function assertOwner(owner: string) {
   if (!activeIdentity.connected || activeIdentity.owner !== owner) {
-    throw new Error('Connect to your player before updating friends.');
+    throw new Error(t`Connect to your player before updating friends.`);
   }
 }
 
@@ -190,7 +191,7 @@ async function fetchGroups(store: GroupStore, quiet = false): Promise<void> {
     } catch (error) {
       if (generation !== store.generation) return;
       store.loaded = false;
-      const message = error instanceof Error ? error.message : 'Could not load your groups.';
+      const message = error instanceof Error ? error.message : t`Could not load your groups.`;
       if (error instanceof ApiError && [401, 403].includes(error.status)) {
         await forget(store.owner, store).catch(() => undefined);
         publish(store, { status: 'error', error: message });

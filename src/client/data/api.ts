@@ -1,5 +1,7 @@
 import type { StoredWeek } from './database';
+import { t } from '@lingui/core/macro';
 import { apiOrigin } from './api-config';
+import { serverMessage } from './server-messages';
 
 export class ApiError extends Error {
   constructor(
@@ -116,7 +118,7 @@ export async function request<T>(
     throw new ApiError(
       response.status,
       body.error?.code ?? 'REQUEST_FAILED',
-      body.error?.message ?? 'Could not reach the server.',
+      body.error?.message ? serverMessage(body.error.message) : t`Could not reach the server.`,
       body.week,
     );
   }
