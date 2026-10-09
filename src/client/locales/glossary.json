@@ -1,0 +1,242 @@
+{
+  "$comment": "Terms every translation must use. `game` terms are Animal Crossing: New Horizons' official names in that language; tests/client/translations.test.ts enforces them wherever the English message uses `match`. `community` and `app` terms keep wording consistent but are not enforced. `forms` are substrings a translation must contain (case-insensitive, so compounds count); `avoid` are words that must not appear.",
+  "terms": [
+    {
+      "en": "Daisy Mae",
+      "kind": "game",
+      "note": "The boar who sells turnips on Sunday mornings.",
+      "match": ["Daisy Mae"],
+      "translations": {
+        "de": {
+          "term": "Jorna",
+          "forms": ["Jorna"],
+          "avoid": ["Daisy"],
+          "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        }
+      }
+    },
+    {
+      "en": "Nook’s Cranny",
+      "kind": "game",
+      "note": "The shop that buys turnips, Monday to Saturday, 8 AM to 10 PM.",
+      "match": ["Nook’s Cranny", "Nook's Cranny"],
+      "translations": {
+        "de": {
+          "term": "Nooks Laden",
+          "forms": ["Nooks Laden"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages; German New Horizons guides (GIGA, GamePro)"
+        }
+      }
+    },
+    {
+      "en": "Timmy and Tommy",
+      "kind": "game",
+      "note": "The shopkeepers at Nook’s Cranny.",
+      "match": ["Timmy", "Tommy"],
+      "translations": {
+        "de": {
+          "term": "Nepp und Schlepp",
+          "forms": ["Nepp", "Schlepp"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (special NPC names)"
+        }
+      }
+    },
+    {
+      "en": "bells",
+      "kind": "game",
+      "note": "The in-game currency. Prices are in bells per turnip.",
+      "match": ["bell", "bells"],
+      "translations": {
+        "de": {
+          "term": "Sterni (plural Sternis)",
+          "forms": ["Sterni"],
+          "avoid": ["Glocke", "Bells"],
+          "source": "Game text (e.g. Bell voucher → Sterni-Coupon); Nookipedia, Bell: names in other languages"
+        }
+      }
+    },
+    {
+      "en": "turnips",
+      "kind": "game",
+      "note": "Bought from Daisy Mae on Sunday, sold during the week. Not the app name “Turnip Tycoon”, which is never translated.",
+      "match": ["turnip", "turnips"],
+      "translations": {
+        "de": {
+          "term": "Rübe (plural Rüben)",
+          "forms": ["Rübe"],
+          "avoid": ["Turnip", "Steckrübe"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages; German New Horizons guides"
+        }
+      }
+    },
+    {
+      "en": "island",
+      "kind": "game",
+      "note": "Each player’s island; prices differ from island to island.",
+      "match": ["island", "islands"],
+      "translations": {
+        "de": {
+          "term": "Insel",
+          "forms": ["Insel"],
+          "avoid": ["Island"],
+          "source": "Game text"
+        }
+      }
+    },
+    {
+      "en": "spoil, rot",
+      "kind": "community",
+      "note": "Unsold turnips spoil on Sunday morning. The game’s item name for spoiled turnips is not confirmed for every language; describe it plainly.",
+      "match": ["spoil", "rotted", "rot"],
+      "translations": {
+        "de": {
+          "term": "verfaulen (verfaulte Rüben)",
+          "forms": ["fault"],
+          "avoid": [],
+          "source": "German New Horizons guides (GIGA, GamePro); not confirmed against game text"
+        }
+      }
+    },
+    {
+      "en": "Fluctuating",
+      "kind": "community",
+      "note": "A weekly price pattern. The game never names the patterns; use the terms players use.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Schwankend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "Large spike",
+      "kind": "community",
+      "note": "A weekly price pattern with one very high peak.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Stark ansteigend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "Decreasing",
+      "kind": "community",
+      "note": "A weekly price pattern that only falls.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Absteigend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "Small spike",
+      "kind": "community",
+      "note": "A weekly price pattern with a modest peak.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Leicht ansteigend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "pattern",
+      "kind": "community",
+      "note": "How prices move over the week.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Muster (Verkaufsmuster where it stands alone)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "morning, afternoon (AM, PM)",
+      "kind": "community",
+      "note": "Nook’s Cranny changes its price at noon, so each day has a morning and an afternoon price.",
+      "match": [],
+      "translations": {
+        "de": {
+          "term": "Vormittag, Nachmittag (vorm., nachm.)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        }
+      }
+    },
+    {
+      "en": "friend code",
+      "kind": "app",
+      "note": "Turnip Tycoon’s own code for each player, not the Nintendo Switch friend code.",
+      "match": [],
+      "translations": { "de": { "term": "Freundescode", "forms": [], "avoid": [], "source": "" } }
+    },
+    {
+      "en": "group, group code",
+      "kind": "app",
+      "note": "Up to eight players who share prices.",
+      "match": [],
+      "translations": {
+        "de": { "term": "Gruppe, Gruppencode", "forms": [], "avoid": [], "source": "" }
+      }
+    },
+    {
+      "en": "recovery code",
+      "kind": "app",
+      "match": [],
+      "note": "A secret code that brings a profile back on a new device.",
+      "translations": {
+        "de": { "term": "Wiederherstellungscode", "forms": [], "avoid": [], "source": "" }
+      }
+    },
+    {
+      "en": "connection code",
+      "kind": "app",
+      "note": "A short-lived code that connects another device to a profile.",
+      "match": [],
+      "translations": {
+        "de": { "term": "Verbindungscode", "forms": [], "avoid": [], "source": "" }
+      }
+    },
+    {
+      "en": "forecast",
+      "kind": "app",
+      "match": [],
+      "note": "The app’s price prediction for the week.",
+      "translations": { "de": { "term": "Prognose", "forms": [], "avoid": [], "source": "" } }
+    },
+    {
+      "en": "half-day",
+      "kind": "app",
+      "note": "A morning or afternoon price period.",
+      "match": [],
+      "translations": { "de": { "term": "Halbtag", "forms": [], "avoid": [], "source": "" } }
+    },
+    {
+      "en": "Turnip Tycoon",
+      "kind": "app",
+      "note": "The app’s name. Never translate it.",
+      "match": [],
+      "translations": { "de": { "term": "Turnip Tycoon", "forms": [], "avoid": [], "source": "" } }
+    }
+  ]
+}

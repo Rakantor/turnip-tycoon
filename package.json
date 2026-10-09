@@ -18,6 +18,7 @@
     "icons:generate": "node scripts/generate-icons.mjs",
     "i18n:extract": "lingui extract --clean",
     "i18n:check": "lingui check sync",
+    "i18n:translate": "tsx scripts/translate.ts",
     "typegen": "wrangler types --config wrangler.jsonc --strict-vars false",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.worker.json && tsc -p tsconfig.node.json",
     "build": "pnpm run typecheck && vite build",
@@ -51,6 +52,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "@cloudflare/vite-plugin": "^1.62.5",
     "@cloudflare/workers-types": "^5.20261004.1",
     "@eslint/js": "^10.0.1",
@@ -58,6 +60,7 @@
     "@lingui/format-po": "^6.9.1",
     "@lingui/native-tools": "^0.1.6",
     "@lingui/vite-plugin": "^6.9.1",
+    "@messageformat/parser": "^5.1.1",
     "@playwright/cli": "^0.1.22",
     "@types/node": "^26.6.4",
     "@types/pg": "^8.23.1",
