@@ -1,0 +1,3330 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-10 11:05+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: fr\n"
+
+#. Marks the current half-day's column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "(now)"
+msgstr "(maintenant)"
+
+#. placeholder {0}: noPrices.length
+#: src/client/odds.ts
+#, fuzzy
+msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
+msgstr "{0, plural, one {{withoutPrices}, qui n’a pas de prix cette semaine} other {{withoutPrices}, qui n’ont pas de prix cette semaine}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
+msgstr "{bought, plural, one {# navet acheté. Voir tes navets} other {# navets achetés. Voir tes navets}}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} decreasing"
+msgstr "{chance} décroissante"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} fluctuating"
+msgstr "{chance} variable"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} large spike"
+msgstr "{chance} grand pic"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} small spike"
+msgstr "{chance} petit pic"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{difference} vs. what you paid"
+msgstr "{difference} par rapport à ton prix d’achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{earned} earned − {spent} spent"
+msgstr "Recettes {earned} − dépenses {spent}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
+msgstr "{friendCount, plural, one {# ami dans tes groupes. Reviens plus tard.} other {# amis dans tes groupes. Reviens plus tard.}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{friendName}’s {friendPrice}"
+msgstr "{friendName} : {friendPrice}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} details"
+msgstr "Détails de {groupName}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} players"
+msgstr "Membres de {groupName}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{halfDay} (now)"
+msgstr "{halfDay} (maintenant)"
+
+#. halfDay is, e.g., "Monday morning"
+#: src/client/advice.ts
+#, fuzzy
+msgid "{halfDay} forecast"
+msgstr "Prévision pour {halfDay}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{halfDay} sell price in bells"
+msgstr "Prix de vente de {halfDay} en clochettes"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: could be {min} to {max} bells"
+msgstr "{halfDay} : entre {min} et {max} clochettes possibles"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: expected {min} bells"
+msgstr "{halfDay} : {min} clochettes prévues"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: you entered {price} bells"
+msgstr "{halfDay} : tu as noté {price} clochettes"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{halfDay}’s {price}"
+msgstr "les {price} de {halfDay}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{held, plural, one {Hold or sell your # turnip?} other {Hold or sell your # turnips?}}"
+msgstr "{held, plural, one {Garder ou vendre ton # navet ?} other {Garder ou vendre tes # navets ?}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{holderName} has {groupPrice} right now"
+msgstr "{holderName} a {groupPrice} en ce moment"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} to {highest} vs. what you paid"
+msgstr "De {lowest} à {highest} par rapport à ton prix d’achat"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} vs. what you paid"
+msgstr "{lowest} par rapport à ton prix d’achat"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{members} of {capacity} players"
+msgstr "{members} membres sur {capacity}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min} to {max} bells"
+msgstr "{min} à {max} clochettes"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min}–{max} bells"
+msgstr "{min}–{max} clochettes"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{mismatched}, whose prices don’t match a pattern"
+msgstr "{mismatched}, dont les prix ne correspondent à aucune courbe"
+
+#. More players in the group than the seats shown
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "{more} more"
+msgstr "{more} de plus"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "{name} disconnected."
+msgstr "{name} déconnecté."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price}"
+msgstr "les {price} de {name}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from {halfDay}"
+msgstr "les {price} de {name} ({halfDay})"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from this morning"
+msgstr "les {price} de {name} de ce matin"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s history"
+msgstr "Historique de {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island"
+msgstr "Île de {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island is buying at {other}!"
+msgstr "L’île de {name} achète à {other} !"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s reported prices, Monday through Saturday"
+msgstr "Prix notés par {name}, du lundi au samedi"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{name}’s selling pattern probabilities"
+msgstr "Probabilités des courbes de {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s week"
+msgstr "Semaine de {name}"
+
+#. placeholder {0}: odds.price
+#: src/client/advice.ts
+#, fuzzy
+msgid "{oddsChance} chance of more than {0}"
+msgstr "{oddsChance} de chances de dépasser {0}"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern} still possible ({chance})"
+msgstr "{pattern} encore possible ({chance})"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern}, up to {best}"
+msgstr "{pattern}, jusqu’à {best}"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: {value} bells reported"
+msgstr "{period} : {value} clochettes notées"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: possible minimum {min}, maximum {max} bells"
+msgstr "{period} : minimum {min}, maximum {max} clochettes possibles"
+
+#. Turnips bought at a price
+#. Turnips bought at a price
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{quantity} at {price}"
+msgstr "{quantity} à {price}"
+
+#. Turnips sold at a price; halfDay is short, like “Mon AM”
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{quantity} at {price} on {halfDay}"
+msgstr "{quantity} à {price} ({halfDay})"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
+msgstr "{rotted, plural, one {# navet a pourri dimanche.} other {# navets ont pourri dimanche.}}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "{rottedCount} rotted"
+msgstr "{rottedCount} pourris"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
+msgstr "{saving, plural, one {C’est # clochette de moins que chez toi.} other {C’est # clochettes de moins que chez toi.}}"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "{times}× what you paid"
+msgstr "{times}× ton prix d’achat"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{times}× what you paid for yours."
+msgstr "{times}× ton prix d’achat."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{tolerance, plural, one {These matches allow a #-bell rounding difference.} other {These matches allow a #-bell rounding difference.}}"
+msgstr "{tolerance, plural, one {Ces correspondances tolèrent un écart d’arrondi de # clochette.} other {Ces correspondances tolèrent un écart d’arrondi de # clochettes.}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{total, plural, one {# bell} other {# bells}}"
+msgstr "{total, plural, one {# clochette} other {# clochettes}}"
+
+#. verdict is a sentence about the week’s pattern, e.g. "This was a decreasing week."
+#: src/client/advice.ts
+#, fuzzy
+msgid "{verdict} Your best price was <0>{bestPrice} bells</0> on {halfDay}."
+msgstr "{verdict} Ton meilleur prix était de <0>{bestPrice} clochettes</0> {halfDay}."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
+msgstr "<0>{groupName}</0> est complet pour l’instant. Comment tes amis doivent-ils t’appeler ?"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
+msgstr "<0>Conserve ce code de récupération en lieu sûr.</0> Il n’est affiché qu’ici et donne accès à tes prix."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 fewer"
+msgstr "100 de moins"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 more"
+msgstr "100 de plus"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "A good price is better shared."
+msgstr "Un bon prix, c’est encore mieux à plusieurs."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "A higher price is coming"
+msgstr "Un prix plus élevé arrive"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A higher price is coming."
+msgstr "Un prix plus élevé arrive."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "A little data goes a long way."
+msgstr "Quelques données suffisent déjà."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit could go either way"
+msgstr "Bénéfice incertain"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit is certain"
+msgstr "Bénéfice assuré"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks likely"
+msgstr "Bénéfice probable"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks unlikely"
+msgstr "Bénéfice improbable"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "A week holds at most 40 purchases and sales."
+msgstr "Une semaine compte au plus 40 achats et ventes."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Add the prices you know. Leave the rest blank."
+msgstr "Note les prix que tu connais. Laisse le reste vide."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Afternoon"
+msgstr "Après-midi"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
+msgstr "Tous les appareils connectés et ton code de récupération perdront l’accès. Les groupes avec d’autres membres resteront, avec leurs données."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "All friends"
+msgstr "Tous les amis"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "All-time profit"
+msgstr "Bénéfice total"
+
+#. Morning, as a column heading
+#. Morning, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "AM"
+msgstr "AM"
+
+#. Morning, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "AM"
+msgstr "AM"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "An update is ready"
+msgstr "Une mise à jour est prête"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed the same entries"
+msgstr "Un autre appareil a modifié les mêmes entrées"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed this week"
+msgstr "Un autre appareil a modifié cette semaine"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "App update"
+msgstr "Mise à jour de l’appli"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve another device"
+msgstr "Autoriser un autre appareil"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve device"
+msgstr "Autoriser l’appareil"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Approve this code from a connected device first."
+msgstr "Autorise d’abord ce code depuis un appareil connecté."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approved. On the new device, select “Finish connecting”."
+msgstr "Autorisé. Sur le nouvel appareil, sélectionne « Terminer la connexion »."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {averagePaid}"
+msgstr "à {averagePaid} en moyenne"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {price}"
+msgstr "à {price}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Average cost"
+msgstr "Prix moyen"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Back"
+msgstr "Retour"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Back to friends"
+msgstr "Retour aux amis"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Back to prices"
+msgstr "Retour aux prix"
+
+#. The unit under a price
+#. The unit under a price
+#. The unit under a price
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "bells"
+msgstr "clochettes"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "bells per turnip"
+msgstr "clochettes par navet"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bells per turnip"
+msgstr "Clochettes par navet"
+
+#. Follows a price or a range of prices
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells predicted"
+msgstr "clochettes prévues"
+
+#. Follows a price
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells reported"
+msgstr "clochettes notées"
+
+#. Under the all-time profit, which is in bells
+#: src/client/history.tsx
+#, fuzzy
+msgid "bells, with this week’s {thisWeekSoFar} so far"
+msgstr "clochettes, dont {thisWeekSoFar} cette semaine pour l’instant"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best {shownName} price"
+msgstr "Meilleur prix · {shownName}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best bet"
+msgstr "Le plus probable"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Best entered"
+msgstr "Meilleur prix noté"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best price"
+msgstr "Meilleur prix"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until 10 PM"
+msgstr "Meilleur prix actuel · jusqu’à 22 h"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until noon"
+msgstr "Meilleur prix actuel · jusqu’à midi"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Best week"
+msgstr "Meilleure semaine"
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "between {first} and {last}"
+msgstr "entre {first} et {last}"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bought"
+msgstr "Achetés"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Bought {bought}; sold {sold}"
+msgstr "Achetés : {bought} ; vendus : {sold}"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Bought for"
+msgstr "Achetés à"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Bought for {purchasePrice}"
+msgstr "Achetés à {purchasePrice}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Bought for<0>, average per turnip</0>"
+msgstr "Achetés à<0>, moyenne par navet</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Bring your friends along"
+msgstr "Fais venir tes amis"
+
+#. Under “Sun”: the Sunday buy price column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Buy"
+msgstr "Achat"
+
+#. Under “Sun” on the week board
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "buy price"
+msgstr "prix d’achat"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "By Saturday night"
+msgstr "D’ici samedi soir"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Certain"
+msgstr "À coup sûr"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Chance for each island"
+msgstr "Chances par île"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating {halfDay}’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "de chances de dépasser les <0>{price}</0> de {halfDay} avant la fermeture de la Boutique Nook samedi."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this afternoon’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "de chances de dépasser les <0>{price}</0> de cet après-midi avant la fermeture de la Boutique Nook samedi."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this morning’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "de chances de dépasser les <0>{price}</0> de ce matin avant la fermeture de la Boutique Nook samedi."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of more than <0>{price}</0> on your island before Nook’s Cranny closes on Saturday."
+msgstr "de chances d’obtenir plus de <0>{price}</0> sur ton île avant la fermeture de la Boutique Nook samedi."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Chance of selling for more than each price from {low} to {high} bells."
+msgstr "Chances de vendre à plus que chaque prix, de {low} à {high} clochettes."
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by Saturday night"
+msgstr "de chances que quelqu’un dépasse {price} d’ici samedi soir"
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by tonight"
+msgstr "de chances que quelqu’un dépasse {price} d’ici ce soir"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance you can sell for more than the <0>{price}</0> you paid this week."
+msgstr "de chances de vendre à plus que les <0>{price}</0> payées cette semaine."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Changes need review"
+msgstr "Des modifications à vérifier"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Cheapest Sunday price"
+msgstr "Prix du dimanche le plus bas"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Check the supplied fields."
+msgstr "Vérifie les champs envoyés."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Check this entry."
+msgstr "Vérifie cette entrée."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid device."
+msgstr "Choisis un appareil valide."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid export page."
+msgstr "Choisis une page d’export valide."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid group or player."
+msgstr "Choisis un groupe ou une personne valide."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid history date and limit."
+msgstr "Choisis une date et une limite valides pour l’historique."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid Sunday for this week."
+msgstr "Choisis un dimanche valide pour cette semaine."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Choose which entries to keep. Yours are still here until you choose."
+msgstr "Choisis les entrées à garder. Les tiennes restent là tant que tu n’as pas choisi."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Clear this device’s saved data"
+msgstr "Effacer les données enregistrées sur cet appareil"
+
+#: src/client/groups.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Close"
+msgstr "Fermer"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Close half-day details"
+msgstr "Fermer les détails de la demi-journée"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Compare entries"
+msgstr "Comparer les entrées"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Compare your prices and find a good time to sell, together."
+msgstr "Comparez vos prix et trouvez ensemble le bon moment pour vendre."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Connect a device to continue."
+msgstr "Connecte un appareil pour continuer."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect an existing profile"
+msgstr "Connecter un profil existant"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect this device to an existing profile"
+msgstr "Connecter cet appareil à un profil existant"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Connect to load this player’s shared prices."
+msgstr "Connecte-toi pour charger les prix partagés de cette personne."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load your saved history."
+msgstr "Connecte-toi pour charger ton historique enregistré."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Connect to see your friends’ shared prices."
+msgstr "Connecte-toi pour voir les prix partagés de tes amis."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect to the internet to delete your profile."
+msgstr "Connecte-toi à Internet pour supprimer ton profil."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Connect to your player before updating friends."
+msgstr "Connecte ton profil avant de mettre à jour tes amis."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect using another device instead"
+msgstr "Se connecter avec un autre appareil"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Connect your other device"
+msgstr "Connecte ton autre appareil"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect your profile online to download or delete its data."
+msgstr "Connecte ton profil en ligne pour télécharger ou supprimer ses données."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected {connected}"
+msgstr "Connecté le {connected}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected devices"
+msgstr "Appareils connectés"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connecting your profile… You can already enter prices."
+msgstr "Connexion de ton profil… Tu peux déjà noter des prix."
+
+#: src/client/pairing.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connection code"
+msgstr "Code de connexion"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Connection unavailable. You can keep entering prices on this device."
+msgstr "Connexion indisponible. Tu peux continuer à noter des prix sur cet appareil."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Contact"
+msgstr "Contact"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Continuing creates a profile and saves your prices online and on this device. Read our <0>Terms</0> and <1>Privacy page</1>."
+msgstr "En continuant, tu crées un profil et tes prix sont enregistrés en ligne et sur cet appareil. Lis nos <0>Conditions</0> et notre <1>page Confidentialité</1>."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copied"
+msgstr "Copié"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy {groupName} group code"
+msgstr "Copier le code du groupe {groupName}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copy code"
+msgstr "Copier le code"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy this group link to share it."
+msgstr "Copie ce lien de groupe pour le partager."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Correct the highlighted entries. The forecast uses your last valid prices."
+msgstr "Corrige les entrées signalées. La prévision utilise tes derniers prix valides."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {cost}"
+msgstr "coût {cost}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {rottedCost}"
+msgstr "coût {rottedCost}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Could be"
+msgstr "Possible"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Could be (min–max)"
+msgstr "Possible (min.–max.)"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Could be as low as {floor} then"
+msgstr "Peut alors descendre à {floor}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Could go either way"
+msgstr "Ça peut aller dans les deux sens"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
+msgstr "Impossible d’accéder aux prix enregistrés sur cet appareil. Garde cette page ouverte et réessaie après avoir vérifié le stockage du navigateur."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not check for updates. Reconnect and try again."
+msgstr "Impossible de rechercher des mises à jour. Reconnecte-toi et réessaie."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not confirm deletion."
+msgstr "Impossible de confirmer la suppression."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not connect this profile."
+msgstr "Impossible de connecter ce profil."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the license."
+msgstr "Impossible de charger la licence."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
+msgstr "Impossible de charger les licences. <0>Réessayer</0> ou ouvrir l’<1>avis</1> et la <2>licence</2>."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Could not load your groups."
+msgstr "Impossible de charger tes groupes."
+
+#: src/client/data/api.ts
+#, fuzzy
+msgid "Could not reach the server."
+msgstr "Impossible de joindre le serveur."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not request deletion."
+msgstr "Impossible de demander la suppression."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not restart profile creation."
+msgstr "Impossible de relancer la création du profil."
+
+#: src/client/data/pending-edits.ts
+#, fuzzy
+msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
+msgstr "Impossible d’enregistrer ces prix sur cet appareil. Tes modifications non enregistrées restent sur cette page. Garde-la ouverte et réessaie avant de la fermer."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not update the app."
+msgstr "Impossible de mettre à jour l’appli."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Couldn’t sync"
+msgstr "Échec de la synchronisation"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
+msgstr "Crée un code pour récupérer tes prix si tu perds l’accès à cet appareil. Range-le dans un endroit privé."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create a group"
+msgstr "Créer un groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create group"
+msgstr "Créer le groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join a group"
+msgstr "Créer ou rejoindre un groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join group"
+msgstr "Créer ou rejoindre un groupe"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create recovery code"
+msgstr "Créer un code de récupération"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Created {groupName}."
+msgstr "Groupe {groupName} créé."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Daisy Mae charges {min}–{max} bells."
+msgstr "Porcelette demande {min}–{max} clochettes."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Daisy Mae is selling for {other} on {name}’s island"
+msgstr "Porcelette vend à {other} sur l’île de {name}"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Day"
+msgstr "Jour"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Decreasing"
+msgstr "Décroissante"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete my profile"
+msgstr "Supprimer mon profil"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete your profile?"
+msgstr "Supprimer ton profil ?"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deleting your profile…"
+msgstr "Suppression de ton profil…"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deletion needs another check"
+msgstr "La suppression doit être revérifiée"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Devices"
+msgstr "Appareils"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect {name}? You can connect it again later."
+msgstr "Déconnecter {name} ? Tu pourras le reconnecter plus tard."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect device"
+msgstr "Déconnecter l’appareil"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Display name"
+msgstr "Nom affiché"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download my data"
+msgstr "Télécharger mes données"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your data first if you want to keep it. This cannot be undone. <0>Backup and log details</0>."
+msgstr "Télécharge d’abord tes données si tu veux les garder. Cette action est irréversible. <0>Détails sur les sauvegardes et les journaux</0>."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
+msgstr "Télécharge ton profil, tous tes prix et transactions enregistrés, tes groupes et les détails de tes appareils dans un fichier JSON. Les modifications non envoyées de ce navigateur sont incluses à part. Range le fichier dans un endroit privé."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase"
+msgstr "Modifier l’achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase of {what}"
+msgstr "Modifier l’achat : {what}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale"
+msgstr "Modifier la vente"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale of {what}"
+msgstr "Modifier la vente : {what}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Edit your name"
+msgstr "Modifier ton nom"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Editing…"
+msgstr "Modification…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter how many turnips."
+msgstr "Indique combien de navets."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter the price per turnip."
+msgstr "Indique le prix par navet."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this afternoon’s price to see your odds."
+msgstr "Note le prix de cet après-midi pour voir tes chances."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this morning’s price to see your odds."
+msgstr "Note le prix de ce matin pour voir tes chances."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Enter this week’s prices"
+msgstr "Noter les prix de cette semaine"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week."
+msgstr "Note ce que Porcelette demandait dimanche, ou n’importe quel prix que tu as vu, et je prévois ta semaine."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter what Daisy Mae charged to see your odds."
+msgstr "Note ce que Porcelette demandait pour voir tes chances."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Enter your saved recovery code. Switching profiles does not merge prices. Recovery replaces the code with a new one."
+msgstr "Saisis ton code de récupération. Changer de profil ne fusionne pas les prix. La récupération remplace le code par un nouveau."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Entries"
+msgstr "Entrées"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Entry"
+msgstr "Entrée"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Even the low end, {floor}, beats what you paid"
+msgstr "Même au pire, {floor}, c’est plus que ton prix d’achat"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night."
+msgstr "Tous les prix de la semaine sont là. Les navets pourrissent le dimanche, alors vends-les avant la fermeture de la Boutique Nook samedi soir."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Everyone"
+msgstr "Tout le monde"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Everything else from both devices is combined. Choose which of these to keep."
+msgstr "Tout le reste des deux appareils a été fusionné. Choisis lesquelles de ces entrées garder."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Expires at {expires}. Keep this page open."
+msgstr "Expire à {expires}. Garde cette page ouverte."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Finish connecting"
+msgstr "Terminer la connexion"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Finish or correct your price entry before updating."
+msgstr "Termine ou corrige ta saisie de prix avant la mise à jour."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase"
+msgstr "Premier achat à Porcelette"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase on this island?"
+msgstr "Premier achat à Porcelette sur cette île ?"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "First purchase on their island"
+msgstr "Premier achat sur son île"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fluctuating"
+msgstr "Variable"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "for {earned}"
+msgstr "pour {earned}"
+
+#. Short label for Friday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri AM"
+msgstr "ven. AM"
+
+#. Short label for Friday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri PM"
+msgstr "ven. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday afternoon"
+msgstr "vendredi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday morning"
+msgstr "vendredi matin"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Friend code"
+msgstr "Code ami"
+
+#: src/client/groups.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Friends"
+msgstr "Amis"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends & groups"
+msgstr "Amis et groupes"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices"
+msgstr "Prix de tes amis"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices this week"
+msgstr "Prix de tes amis cette semaine"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Full week"
+msgstr "Semaine complète"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Full week group prices"
+msgstr "Prix du groupe sur toute la semaine"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Generated by Turnip Tycoon. This code stays the same when you change your name."
+msgstr "Généré par Turnip Tycoon. Ce code reste le même si tu changes de nom."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Get a connection code"
+msgstr "Obtenir un code de connexion"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Get a new code"
+msgstr "Obtenir un nouveau code"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Go online on your other devices first if you want their latest edits included."
+msgstr "Connecte d’abord tes autres appareils à Internet si tu veux inclure leurs dernières modifications."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group action"
+msgstr "Action de groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code"
+msgstr "Code de groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code copied."
+msgstr "Code de groupe copié."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group full"
+msgstr "Groupe complet"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group link copied."
+msgstr "Lien du groupe copié."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group name"
+msgstr "Nom du groupe"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
+msgstr "Prix du groupe en clochettes par navet. Les prix notés sont pleins ; les prévisions sont des fourchettes possibles en pointillés."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group share link"
+msgstr "Lien de partage du groupe"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Patience ! Un petit pic arrive : tes navets pourraient se vendre <0>jusqu’à {peak} clochettes</0> {when}."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Patience ! Un petit pic semble probable : tes navets pourraient se vendre <0>jusqu’à {peak} clochettes</0> {when}."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "High"
+msgstr "Haut"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Highest {shownName} price in your groups."
+msgstr "Prix le plus élevé dans tes groupes ({shownName})."
+
+#: src/client/history.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "History"
+msgstr "Historique"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept."
+msgstr "Hum, ces prix ne correspondent à aucune courbe. Vérifie tes entrées et les paramètres de la semaine ; tes prix sont conservés."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Garde bien tes navets ! Un grand pic arrive : ils pourraient se vendre <0>jusqu’à {peak} clochettes</0> {when}."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Garde bien tes navets ! Un grand pic semble probable : ils pourraient se vendre <0>jusqu’à {peak} clochettes</0> {when}."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold on to your turnips"
+msgstr "Garde tes navets"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold or sell?"
+msgstr "Garder ou vendre ?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding"
+msgstr "En stock"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding {holding} → {holdingAfter} turnips"
+msgstr "En stock : {holding} → {holdingAfter} navets"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Holding looks good"
+msgstr "Mieux vaut garder"
+
+#: src/client/forecast.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "How the week could go"
+msgstr "L’évolution possible de la semaine"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "I already play on another device"
+msgstr "Je joue déjà sur un autre appareil"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "I understand that my profile and its records will be deleted."
+msgstr "Je comprends que mon profil et ses données seront supprimés."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
+msgstr "Si cet appareil n’a plus accès, écris à <0>{CONTACT_EMAIL}</0> au sujet d’une demande non confirmée. Tu peux effacer ci-dessous les données enregistrées et l’accès de ce navigateur. Cela ne confirme pas la suppression sur le serveur et t’empêche de réessayer ici."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
+msgstr "Inspiré par <0>Turnip Prophet</0>. Un projet de fans, sans lien avec Nintendo."
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install"
+msgstr "Installer"
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install Turnip Tycoon"
+msgstr "Installer Turnip Tycoon"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite"
+msgstr "Inviter"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite a player to {groupName}"
+msgstr "Inviter quelqu’un dans {groupName}"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Island"
+msgstr "Île"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "It’s too early to call. {pattern} is most likely, and prices could reach <0>up to {peak} bells</0> {when}."
+msgstr "Trop tôt pour le dire. « {pattern} » est le plus probable, et les prix pourraient atteindre <0>jusqu’à {peak} clochettes</0> {when}."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
+msgstr "Ses données enregistrées et son accès ont été effacés de ce navigateur. Cela peut arriver quand un appareil est retiré, que son profil est supprimé ou que tu choisis d’effacer cet appareil. Cela ne confirme pas à lui seul la suppression sur le serveur."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join {groupName} on Turnip Tycoon"
+msgstr "Rejoins {groupName} sur Turnip Tycoon"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join a group"
+msgstr "Rejoindre un groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join group"
+msgstr "Rejoindre le groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join your friends"
+msgstr "Rejoins tes amis"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Joined {groupName}."
+msgstr "Tu as rejoint {groupName}."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Keep my profile"
+msgstr "Garder mon profil"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Keep this device’s entries"
+msgstr "Garder les entrées de cet appareil"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Kind of trade"
+msgstr "Type de transaction"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Language"
+msgstr "Langue"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Large spike"
+msgstr "Grand pic"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Last chance: Nook’s Cranny closes at 10 PM."
+msgstr "Dernière chance : la Boutique Nook ferme à 22 h."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week"
+msgstr "Semaine dernière"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week’s pattern"
+msgstr "Courbe de la semaine dernière"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Last week’s turnips"
+msgstr "Navets de la semaine dernière"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Later"
+msgstr "Plus tard"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
+msgstr "Quitter {groupName} ? Tu ne partageras plus rien avec ses membres, sauf si vous avez un autre groupe en commun."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave group"
+msgstr "Quitter le groupe"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Licenses"
+msgstr "Licences"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Load older weeks"
+msgstr "Charger les semaines précédentes"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Loading devices…"
+msgstr "Chargement des appareils…"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Loading saved prices…"
+msgstr "Chargement des prix enregistrés…"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Loading saved weeks…"
+msgstr "Chargement des semaines enregistrées…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared history…"
+msgstr "Chargement de l’historique partagé…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared prices…"
+msgstr "Chargement des prix partagés…"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Loading your groups…"
+msgstr "Chargement de tes groupes…"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a purchase"
+msgstr "Noter un achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a sale"
+msgstr "Noter une vente"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log at most {most} turnips at a time."
+msgstr "Note au plus {most} navets à la fois."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log purchase"
+msgstr "Noter l’achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log sale"
+msgstr "Noter la vente"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Looking back"
+msgstr "Bilan"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Low"
+msgstr "Bas"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Lowest buy price in your groups."
+msgstr "Le prix d’achat le plus bas de tes groupes."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Made so far"
+msgstr "Gagné jusqu’ici"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Main navigation"
+msgstr "Navigation principale"
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Missing device credential."
+msgstr "Identifiant de l’appareil manquant."
+
+#. Short label for Monday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon AM"
+msgstr "lun. AM"
+
+#. Short label for Monday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon PM"
+msgstr "lun. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday afternoon"
+msgstr "lundi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday morning"
+msgstr "lundi matin"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Morning"
+msgstr "Matin"
+
+#: src/client/data/identity.ts
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My computer"
+msgstr "Mon ordinateur"
+
+#: src/client/data/identity.ts
+#, fuzzy
+msgid "My phone"
+msgstr "Mon téléphone"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My phone or tablet"
+msgstr "Mon téléphone ou ma tablette"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Name saved"
+msgstr "Nom enregistré"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Next best: {other} on {name}’s island."
+msgstr "Ensuite : {other} sur l’île de {name}."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Next week"
+msgstr "Semaine suivante"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No"
+msgstr "Non"
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No forecast yet"
+msgstr "Pas encore de prévision"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No forecast yet."
+msgstr "Pas encore de prévision."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a {periodLabel} price yet"
+msgstr "Aucun ami n’a encore partagé de prix ({periodLabel})"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a Sunday buy price yet"
+msgstr "Aucun ami n’a encore partagé de prix d’achat du dimanche"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "No half-days left this week"
+msgstr "Plus aucune demi-journée cette semaine"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "No matching forecast"
+msgstr "Aucune prévision ne correspond"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "No new profile has been created. You can close the app, or start again when you are ready."
+msgstr "Aucun nouveau profil n’a été créé. Tu peux fermer l’appli ou recommencer quand tu veux."
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No past weeks yet."
+msgstr "Pas encore de semaines passées."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these prices. Check your entries and week settings. Your prices have been kept."
+msgstr "Aucune courbe ne correspond à ces prix. Vérifie tes entrées et les paramètres de la semaine. Tes prix ont été conservés."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these reported prices."
+msgstr "Aucune courbe ne correspond à ces prix notés."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No price left this week will beat {known}."
+msgstr "Aucun prix restant cette semaine ne dépassera {known}."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this afternoon. {chance} chance it’s already above {price}."
+msgstr "Pas encore de prix cet après-midi. {chance} de chances qu’il dépasse déjà {price}."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this morning. {chance} chance it’s already above {price}."
+msgstr "Pas encore de prix ce matin. {chance} de chances qu’il dépasse déjà {price}."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "No prices were saved for this week."
+msgstr "Aucun prix n’a été enregistré pour cette semaine."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No profit this week"
+msgstr "Pas de bénéfice cette semaine"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought"
+msgstr "Aucun navet acheté"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought. Log a purchase"
+msgstr "Aucun navet acheté. Noter un achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips logged."
+msgstr "Aucun navet noté."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a {periodLabel} price yet."
+msgstr "Personne n’a encore partagé de prix ({periodLabel})."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a Sunday buy price yet."
+msgstr "Personne n’a encore partagé de prix d’achat du dimanche."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny has closed for the week."
+msgstr "La Boutique Nook est fermée pour la semaine."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny opens at 8 AM."
+msgstr "La Boutique Nook ouvre à 8 h."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Nook’s Cranny pays {min}–{max} bells."
+msgstr "La Boutique Nook paie {min}–{max} clochettes."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}; {second}."
+msgstr "Pas pris en compte : {first} ; {second}."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}."
+msgstr "Pas pris en compte : {first}."
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Not entered"
+msgstr "Pas de prix"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Not entered, no forecast available"
+msgstr "Pas de prix, aucune prévision disponible"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Not sure"
+msgstr "Je ne sais pas"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Now"
+msgstr "Maintenant"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Odds explorer"
+msgstr "Explorateur de chances"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Offline · saved on this device"
+msgstr "Hors ligne · enregistré sur cet appareil"
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Offline access could not be prepared. Reconnect and try again."
+msgstr "Impossible de préparer l’accès hors ligne. Reconnecte-toi et réessaie."
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "on {halfDay}"
+msgstr "{halfDay}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "on the {soldCount} sold"
+msgstr "sur les {soldCount} vendus"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "On the device you already use, open Settings, choose “Approve another device” and enter this code."
+msgstr "Sur l’appareil que tu utilises déjà, ouvre les Paramètres, choisis « Autoriser un autre appareil » et saisis ce code."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On the new device, open Settings → Connect this device to an existing profile. Enter its connection code here."
+msgstr "Sur le nouvel appareil, ouvre Paramètres → Connecter cet appareil à un profil existant. Saisis ici son code de connexion."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On your connected device, open Settings and choose “Approve another device”."
+msgstr "Sur ton appareil connecté, ouvre les Paramètres et choisis « Autoriser un autre appareil »."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open {name}’s week"
+msgstr "Ouvrir la semaine de {name}"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Open this request from the app."
+msgstr "Ouvre cette demande depuis l’appli."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open your week"
+msgstr "Ouvrir ta semaine"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Or scan this code on your connected device."
+msgstr "Ou scanne ce code sur ton appareil connecté."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Other device"
+msgstr "Autre appareil"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Out of reach this week"
+msgstr "Hors de portée cette semaine"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past week"
+msgstr "Semaine passée"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Past weeks"
+msgstr "Semaines passées"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Past weeks and their profit"
+msgstr "Semaines passées et leur bénéfice"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past weeks are read-only. <0>Return to this week</0>"
+msgstr "Les semaines passées sont en lecture seule. <0>Revenir à cette semaine</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Paste a group code"
+msgstr "Colle un code de groupe"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Peak day still open"
+msgstr "Jour du pic encore incertain"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Permanently delete profile"
+msgstr "Supprimer définitivement le profil"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try connecting again."
+msgstr "Réessaie de te connecter."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try creating the group again."
+msgstr "Réessaie de créer le groupe."
+
+#. Afternoon, as a column heading
+#. Afternoon, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "PM"
+msgstr "PM"
+
+#. Afternoon, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "PM"
+msgstr "PM"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Possible patterns"
+msgstr "Courbes possibles"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous pattern"
+msgstr "Courbe précédente"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Previous week"
+msgstr "Semaine précédente"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous weeks, shared with your groups."
+msgstr "Semaines précédentes, partagées avec tes groupes."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Price view"
+msgstr "Affichage des prix"
+
+#. Main navigation: the current week's prices and forecast
+#: src/client/calculator.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Prices"
+msgstr "Prix"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Prices don’t match a pattern"
+msgstr "Aucune courbe"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Prices right now"
+msgstr "Prix en ce moment"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will bounce around this week — <0>up to {peak} bells</0> is possible {when}. Sell when you see a price you like."
+msgstr "Les prix vont varier cette semaine : <0>jusqu’à {peak} clochettes</0> sont possibles {when}. Vends quand un prix te plaît."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
+msgstr "Les prix vont très probablement continuer de baisser cette semaine. Si tu as besoin de clochettes, <0>vendre vite</0> vaut mieux qu’attendre."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Privacy"
+msgstr "Confidentialité"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Privacy and data requests"
+msgstr "Confidentialité et demandes de données"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile"
+msgstr "Profil"
+
+#: src/client/data/profile-storage.ts
+#, fuzzy
+msgid "Profile cleanup is in progress. Keep this page open to retry your unsaved edits."
+msgstr "Nettoyage du profil en cours. Garde cette page ouverte pour réessayer tes modifications non enregistrées."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings."
+msgstr "La création du profil a été interrompue. Connecte un profil existant ou utilise un code de récupération dans les Paramètres."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile recovered"
+msgstr "Profil récupéré"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Profit"
+msgstr "Bénéfice"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Profit on these"
+msgstr "Bénéfice sur ceux-ci"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Purchase"
+msgstr "Achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Quick amounts"
+msgstr "Quantités rapides"
+
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Reconnect"
+msgstr "Se reconnecter"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recover profile"
+msgstr "Récupérer le profil"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recovery code"
+msgstr "Code de récupération"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this purchase"
+msgstr "Retirer cet achat"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this sale"
+msgstr "Retirer cette vente"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Removed"
+msgstr "Retiré"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Replace recovery code"
+msgstr "Remplacer le code de récupération"
+
+#: src/client/forecast.tsx
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Reported"
+msgstr "Noté"
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry connection"
+msgstr "Réessayer la connexion"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Retry deletion"
+msgstr "Réessayer la suppression"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry devices"
+msgstr "Recharger les appareils"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Retry history"
+msgstr "Recharger l’historique"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Return to prices"
+msgstr "Retour aux prix"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Return to welcome"
+msgstr "Retour à l’accueil"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Right now"
+msgstr "En ce moment"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Room for another group?"
+msgstr "De la place pour un autre groupe ?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Rotted"
+msgstr "Pourris"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Ruled out"
+msgstr "Exclue"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sale"
+msgstr "Vente"
+
+#. Short label for Saturday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat AM"
+msgstr "sam. AM"
+
+#. Short label for Saturday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat PM"
+msgstr "sam. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday afternoon"
+msgstr "samedi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday morning"
+msgstr "samedi matin"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save and join"
+msgstr "Enregistrer et rejoindre"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save name"
+msgstr "Enregistrer le nom"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved"
+msgstr "Enregistré"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Saved data and unsent edits on this browser will be cleared. Other devices clear their copies when they next check access online. Friends may still have offline copies or screenshots."
+msgstr "Les données enregistrées et les modifications non envoyées de ce navigateur seront effacées. Les autres appareils effaceront leurs copies la prochaine fois qu’ils vérifieront leur accès en ligne. Tes amis peuvent encore avoir des copies hors ligne ou des captures d’écran."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved on this device · sync pending"
+msgstr "Enregistré sur cet appareil · synchro en attente"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Saved on this device. Waiting to sync."
+msgstr "Enregistré sur cet appareil. En attente de synchronisation."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Saved weeks will appear here when a new week starts."
+msgstr "Les semaines enregistrées apparaîtront ici au début d’une nouvelle semaine."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saving…"
+msgstr "Enregistrement…"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Scan this code on your connected device to approve the connection"
+msgstr "Scanne ce code sur ton appareil connecté pour autoriser la connexion"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "See the island board"
+msgstr "Voir le tableau des îles"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "See this week"
+msgstr "Voir cette semaine"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
+msgstr "Sélectionne une demi-journée pour voir sa fourchette possible. Utilise les flèches pour passer d’une demi-journée à l’autre, Début ou Fin pour aller à la première ou à la dernière, et Échap pour fermer les détails."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Select and copy the group code above."
+msgstr "Sélectionne et copie le code de groupe ci-dessus."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Select the code above to copy it manually."
+msgstr "Sélectionne le code ci-dessus pour le copier à la main."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sell all now<0> at {price}</0>"
+msgstr "Tout vendre maintenant<0> à {price}</0>"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell now"
+msgstr "Vendre maintenant"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell tonight"
+msgstr "Vendre ce soir"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling for more than <0>{price}</0> bells"
+msgstr "Vendre à plus de <0>{price}</0> clochettes"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling now looks good"
+msgstr "Mieux vaut vendre maintenant"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling soon looks good"
+msgstr "Mieux vaut vendre bientôt"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request body."
+msgstr "Envoie un corps de requête JSON."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request."
+msgstr "Envoie une requête JSON."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send valid JSON."
+msgstr "Envoie du JSON valide."
+
+#: src/client/main.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share group link"
+msgstr "Partager le lien du groupe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share your group link to bring friends along."
+msgstr "Partage le lien de ton groupe pour faire venir tes amis."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared history"
+msgstr "Historique partagé"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared past weekly prices"
+msgstr "Prix hebdomadaires passés partagés"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared view · read only"
+msgstr "Vue partagée · lecture seule"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Show group"
+msgstr "Afficher le groupe"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Show Turnip Tycoon in"
+msgstr "Afficher Turnip Tycoon en"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Site information"
+msgstr "Informations sur le site"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Skip to content"
+msgstr "Aller au contenu"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small chance of up to {peak}"
+msgstr "Petite chance d’atteindre {peak}"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small spike"
+msgstr "Petit pic"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold"
+msgstr "Vendus"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for"
+msgstr "Vendus à"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for<0>, average per turnip</0>"
+msgstr "Vendus à<0>, moyenne par navet</0>"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold them and forgot to log it?"
+msgstr "Tu les as vendus sans les noter ?"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Some prices are a little off the usual patterns, so treat this as a rough guide."
+msgstr "Certains prix s’écartent un peu des courbes habituelles, alors prends ceci comme une indication approximative."
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by Saturday night"
+msgstr "quelqu’un dépassera {price} d’ici samedi soir"
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by tonight"
+msgstr "quelqu’un dépassera {price} d’ici ce soir"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "Something went wrong. Please try again."
+msgstr "Une erreur s’est produite. Réessaie."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Start a group with friends to compare prices and forecasts."
+msgstr "Crée un groupe avec tes amis pour comparer prix et prévisions."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Start a new profile"
+msgstr "Créer un nouveau profil"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Stay"
+msgstr "Rester"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday"
+msgstr "dimanche"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Sunday buy"
+msgstr "Achat du dimanche"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday buy price"
+msgstr "Prix d’achat du dimanche"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sunday forecast"
+msgstr "Prévision du dimanche"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sunday purchase price in bells"
+msgstr "Prix d’achat du dimanche en clochettes"
+
+#. An example group name
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday turnip crew"
+msgstr "Le club du navet du dimanche"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday, from Daisy Mae"
+msgstr "Dimanche, chez Porcelette"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Terms"
+msgstr "Conditions"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before 10 PM."
+msgstr "C’est {times}× ton prix d’achat : vole là-bas avant 22 h."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before noon."
+msgstr "C’est {times}× ton prix d’achat : vole là-bas avant midi."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid."
+msgstr "C’est {times}× ton prix d’achat."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s less than the {purchase} you paid."
+msgstr "C’est moins que les {purchase} que tu as payées."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "the {price} you paid"
+msgstr "les {price} que tu as payées"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The best {periodLabel} price in your groups."
+msgstr "Le meilleur prix de tes groupes ({periodLabel})."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "The download could not be completed. Please try again."
+msgstr "Le téléchargement n’a pas pu aboutir. Réessaie."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The lowest Sunday price in your groups."
+msgstr "Le prix du dimanche le plus bas de tes groupes."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request body could not be read."
+msgstr "Le corps de la requête n’a pas pu être lu."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request is too large."
+msgstr "La requête est trop volumineuse."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved device credential is invalid."
+msgstr "L’identifiant enregistré de l’appareil n’est pas valide."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved profile is missing its device credential."
+msgstr "Il manque l’identifiant de l’appareil au profil enregistré."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "The server did not return a valid device credential."
+msgstr "Le serveur n’a pas renvoyé d’identifiant d’appareil valide."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "The update is not ready yet. Please try again."
+msgstr "La mise à jour n’est pas encore prête. Réessaie."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "These cost you"
+msgstr "Ils t’ont coûté"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "These prices didn’t match any pattern."
+msgstr "Ces prix ne correspondaient à aucune courbe."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>decreasing</0> week. Use that in this week’s forecast?"
+msgstr "Ces prix indiquent maintenant une semaine <0>décroissante</0>. L’utiliser pour la prévision de cette semaine ?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>fluctuating</0> week. Use that in this week’s forecast?"
+msgstr "Ces prix indiquent maintenant une semaine <0>variable</0>. L’utiliser pour la prévision de cette semaine ?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>large spike</0> week. Use that in this week’s forecast?"
+msgstr "Ces prix indiquent maintenant une semaine à <0>grand pic</0>. L’utiliser pour la prévision de cette semaine ?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>small spike</0> week. Use that in this week’s forecast?"
+msgstr "Ces prix indiquent maintenant une semaine à <0>petit pic</0>. L’utiliser pour la prévision de cette semaine ?"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this afternoon’s {price}"
+msgstr "les {price} de cet après-midi"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not read saved profile access. Enable browser storage or connect an existing profile."
+msgstr "Ce navigateur n’a pas pu lire l’accès au profil enregistré. Active le stockage du navigateur ou connecte un profil existant."
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "This browser could not save prices locally. Check its storage settings before closing this page."
+msgstr "Ce navigateur n’a pas pu enregistrer les prix localement. Vérifie ses paramètres de stockage avant de fermer cette page."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not save your profile access. Keep this tab open and create a recovery code in Settings."
+msgstr "Ce navigateur n’a pas pu enregistrer l’accès à ton profil. Garde cet onglet ouvert et crée un code de récupération dans les Paramètres."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser is connected to a different player."
+msgstr "Ce navigateur est connecté à un autre profil."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser request is not allowed."
+msgstr "Cette requête du navigateur n’est pas autorisée."
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device"
+msgstr "Cet appareil"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer available."
+msgstr "Cet appareil n’est plus disponible."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer connected."
+msgstr "Cet appareil n’est plus connecté."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device is no longer connected. Connect your profile again or use a recovery code in Settings."
+msgstr "Cet appareil n’est plus connecté. Reconnecte ton profil ou utilise un code de récupération dans les Paramètres."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device needs to reconnect. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "Cet appareil doit se reconnecter. Tes prix enregistrés et tes modifications non envoyées sont toujours sur cet appareil. Reconnecte le même profil ou utilise un code de récupération dans les Paramètres."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device’s access expired. Reconnect your profile."
+msgstr "L’accès de cet appareil a expiré. Reconnecte ton profil."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device’s access expired. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "L’accès de cet appareil a expiré. Tes prix enregistrés et tes modifications non envoyées sont toujours sur cet appareil. Reconnecte le même profil ou utilise un code de récupération dans les Paramètres."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device’s name"
+msgstr "Nom de cet appareil"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group code is not available. Check the code and try again."
+msgstr "Ce code de groupe n’est pas disponible. Vérifie le code et réessaie."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is full. A group can have up to 8 players."
+msgstr "Ce groupe est complet. Un groupe peut compter jusqu’à 8 membres."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is no longer available to you."
+msgstr "Ce groupe ne t’est plus accessible."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "This is the highest price your island can reach this week."
+msgstr "C’est le prix le plus élevé que ton île peut atteindre cette semaine."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this morning’s {price}"
+msgstr "les {price} de ce matin"
+
+#: src/client/legal.tsx
+#, fuzzy
+msgid "This page is only available in English."
+msgstr "Cette page n’est disponible qu’en anglais."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code expired or is no longer available. Start again on the new device."
+msgstr "Ce code de connexion a expiré ou n’est plus disponible. Recommence sur le nouvel appareil."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code has already been approved."
+msgstr "Ce code de connexion a déjà été autorisé."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code is no longer available."
+msgstr "Ce code de connexion n’est plus disponible."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
+msgstr "Cette action supprime définitivement de la base de données de l’appli ton nom, ton code ami, ton historique de prix, tes achats, tes ventes et tes groupes."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This player hasn’t entered prices for this week."
+msgstr "Cette personne n’a pas noté de prix cette semaine."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This player is no longer available through your groups."
+msgstr "Cette personne n’est plus accessible via tes groupes."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available to you."
+msgstr "Cette personne ne t’est plus accessible."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available."
+msgstr "Ce profil n’est plus disponible."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This profile is no longer connected"
+msgstr "Ce profil n’est plus connecté"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This recovery code is invalid or has already been replaced."
+msgstr "Ce code de récupération n’est pas valide ou a déjà été remplacé."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This save request was already used for a different edit."
+msgstr "Cette demande d’enregistrement a déjà servi pour une autre modification."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This translation was made by machine and hasn’t been checked by players yet, so some wording may be off."
+msgstr "Cette traduction a été faite automatiquement et n’a pas encore été vérifiée par des joueurs, certaines formulations peuvent donc sembler étranges."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a decreasing week."
+msgstr "C’était une semaine décroissante."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a fluctuating week."
+msgstr "C’était une semaine variable."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a large-spike week."
+msgstr "C’était une semaine à grand pic."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a small-spike week."
+msgstr "C’était une semaine à petit pic."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a decreasing week ({chance})."
+msgstr "C’était très probablement une semaine décroissante ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a fluctuating week ({chance})."
+msgstr "C’était très probablement une semaine variable ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a large-spike week ({chance})."
+msgstr "C’était très probablement une semaine à grand pic ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a small-spike week ({chance})."
+msgstr "C’était très probablement une semaine à petit pic ({chance})."
+
+#: src/client/calculator.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week"
+msgstr "Cette semaine"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week is not available."
+msgstr "Cette semaine n’est pas disponible."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "This week will appear here when a new week starts."
+msgstr "Cette semaine apparaîtra ici au début d’une nouvelle semaine."
+
+#: src/client/outlook.tsx
+#, fuzzy
+msgid "This week’s advice"
+msgstr "Conseil de la semaine"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses decreasing as last week’s pattern."
+msgstr "La prévision de cette semaine utilise maintenant « Décroissante » comme courbe de la semaine dernière."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses fluctuating as last week’s pattern."
+msgstr "La prévision de cette semaine utilise maintenant « Variable » comme courbe de la semaine dernière."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses large spike as last week’s pattern."
+msgstr "La prévision de cette semaine utilise maintenant « Grand pic » comme courbe de la semaine dernière."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses small spike as last week’s pattern."
+msgstr "La prévision de cette semaine utilise maintenant « Petit pic » comme courbe de la semaine dernière."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This week’s pattern"
+msgstr "Courbe de cette semaine"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "This week’s trades"
+msgstr "Transactions de cette semaine"
+
+#. Short label for Thursday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu AM"
+msgstr "jeu. AM"
+
+#. Short label for Thursday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu PM"
+msgstr "jeu. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday afternoon"
+msgstr "jeudi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday morning"
+msgstr "jeudi matin"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Today"
+msgstr "Aujourd’hui"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Today’s <0>{current} bells</0> is as good as it gets this week. Time to sell!"
+msgstr "Les <0>{current} clochettes</0> d’aujourd’hui, c’est le mieux de la semaine. C’est le moment de vendre !"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Too late to sell"
+msgstr "Trop tard pour vendre"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Tops out at {best}"
+msgstr "Plafonne à {best}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Tops out at {ownBest}"
+msgstr "Plafonne à {ownBest}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Trades"
+msgstr "Transactions"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Try again"
+msgstr "Réessayer"
+
+#. Short label for Tuesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue AM"
+msgstr "mar. AM"
+
+#. Short label for Tuesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue PM"
+msgstr "mar. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday afternoon"
+msgstr "mardi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday morning"
+msgstr "mardi matin"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
+msgstr "Turnip Tycoon est distribué sous la licence <0>Apache License, Version 2.0</0>. Les composants tiers conservent leurs licences respectives, notamment les polices <1>Fredoka</1> et <2>Nunito</2>."
+
+#: src/client/history.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips"
+msgstr "Navets"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips come in bunches of 10."
+msgstr "Les navets se vendent par lots de 10."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Turnips rotted"
+msgstr "Navets pourris"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Unavailable"
+msgstr "Indisponible"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
+msgstr "Jusqu’à {maxLength} caractères. Laisse vide pour apparaître sous le nom {defaultName}."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "Jusqu’à 8 personnes. Les membres voient le nom, le code ami, les prix de la semaine et l’historique des autres."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Update now"
+msgstr "Mettre à jour"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Uploads are paused. If the connection was interrupted, the deletion may already have reached the server. We will only show a successful deletion when the server confirms it."
+msgstr "Les envois sont en pause. Si la connexion a été interrompue, la suppression a peut-être déjà atteint le serveur. Nous n’afficherons une suppression réussie qu’une fois confirmée par le serveur."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use a recovery code"
+msgstr "Utiliser un code de récupération"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Use a recovery code instead"
+msgstr "Utiliser plutôt un code de récupération"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use another connected device to bring that profile’s prices here. Switching profiles does not merge prices."
+msgstr "Utilise un autre appareil connecté pour faire venir ici les prix de ce profil. Changer de profil ne fusionne pas les prix."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use for this week"
+msgstr "Utiliser pour cette semaine"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Use HTTPS to connect securely."
+msgstr "Utilise HTTPS pour une connexion sécurisée."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use other device’s entries"
+msgstr "Utiliser les entrées de l’autre appareil"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Waiting for a connection. Your prices stay on this device."
+msgstr "En attente de connexion. Tes prix restent sur cet appareil."
+
+#. Short label for Wednesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed AM"
+msgstr "mer. AM"
+
+#. Short label for Wednesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed PM"
+msgstr "mer. PM"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday afternoon"
+msgstr "mercredi après-midi"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday morning"
+msgstr "mercredi matin"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Week"
+msgstr "Semaine"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Week result"
+msgstr "Bilan de la semaine"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Week settings"
+msgstr "Paramètres de la semaine"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "week total {weekTotal}"
+msgstr "total de la semaine {weekTotal}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Weekly price forecast by half-day"
+msgstr "Prévision hebdomadaire des prix par demi-journée"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Weekly prices"
+msgstr "Prix de la semaine"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Weeks traded"
+msgstr "Semaines avec transactions"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Welcome to Turnip Tycoon!"
+msgstr "Bienvenue sur Turnip Tycoon !"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "What should your friends call you?"
+msgstr "Comment tes amis doivent-ils t’appeler ?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "When"
+msgstr "Quand"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends"
+msgstr "Avec tes amis"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: <0>{chance}</0> chance someone beats {target}"
+msgstr "Avec tes amis : <0>{chance}</0> de chances que quelqu’un dépasse {target}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: a higher price than {target} is certain"
+msgstr "Avec tes amis : un prix plus élevé que {target} est assuré"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: nobody can beat {target} this week"
+msgstr "Avec tes amis : personne ne peut dépasser {target} cette semaine"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Yes"
+msgstr "Oui"
+
+#. A tag after your own name in a list
+#. A tag after your own name in a list
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "you"
+msgstr "toi"
+
+#: src/client/groups.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You"
+msgstr "Toi"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You entered"
+msgstr "Noté"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You get"
+msgstr "Tu reçois"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {groupPrice} right now"
+msgstr "Tu as {groupPrice} en ce moment"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {ownNow} right now"
+msgstr "Tu as {ownNow} en ce moment"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "You no longer share a group with this player."
+msgstr "Tu ne partages plus de groupe avec cette personne."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You paid {ownPrice}"
+msgstr "Tu as payé {ownPrice}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You paid {purchasePrice}"
+msgstr "Tu as payé {purchasePrice}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You pay"
+msgstr "Tu paies"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You’re holding {holding}. Log what you bought first."
+msgstr "Tu en as {holding}. Note d’abord ce que tu as acheté."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You’re invited to <0>{groupName}</0>. What should they call you?"
+msgstr "On t’invite dans <0>{groupName}</0>. Comment doivent-ils t’appeler ?"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} beats everyone right now!"
+msgstr "Tes {mine} battent tout le monde en ce moment !"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} is the best Sunday deal in your groups"
+msgstr "Tes {mine} sont la meilleure offre du dimanche dans tes groupes"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your {ownPrice}"
+msgstr "Tes {ownPrice}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price}"
+msgstr "tes {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from {halfDay}"
+msgstr "tes {price} de {halfDay}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from this morning"
+msgstr "tes {price} de ce matin"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your changes will sync when the connection is restored."
+msgstr "Tes modifications seront synchronisées au retour de la connexion."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your data"
+msgstr "Tes données"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Your display name"
+msgstr "Ton nom affiché"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your download is ready. Check your browser’s downloads."
+msgstr "Ton téléchargement est prêt. Regarde dans les téléchargements de ton navigateur."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your friend code <0>{friendCode}</0>"
+msgstr "Ton code ami <0>{friendCode}</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your groups"
+msgstr "Tes groupes"
+
+#: src/client/groups.tsx
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your island"
+msgstr "Ton île"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Your island tops out at {best}"
+msgstr "Ton île plafonne à {best}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your previous recovery code will stop working. Connected devices will stay connected."
+msgstr "Ton ancien code de récupération ne fonctionnera plus. Les appareils connectés resteront connectés."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Your price"
+msgstr "Ton prix"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your prices"
+msgstr "Tes prix"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile and its records have been removed from the app’s database, and all connected devices have lost access."
+msgstr "Ton profil et ses données ont été supprimés de la base de données de l’appli, et tous les appareils connectés ont perdu l’accès."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Your profile changed in another tab. Please try again."
+msgstr "Ton profil a changé dans un autre onglet. Réessaie."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "Your profile changed. Please start the download again."
+msgstr "Ton profil a changé. Relance le téléchargement."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile changed. Please try again."
+msgstr "Ton profil a changé. Réessaie."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Your profile changed. Review it before deleting."
+msgstr "Ton profil a changé. Vérifie-le avant de le supprimer."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile changed. Start the download again."
+msgstr "Ton profil a changé. Relance le téléchargement."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is connected. Your old recovery code has been replaced."
+msgstr "Ton profil est connecté. Ton ancien code de récupération a été remplacé."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile is deleted"
+msgstr "Ton profil est supprimé"
+
+#: src/client/pwa/index.ts
+#, fuzzy
+msgid "Your profile is still connecting or could not be saved. Try again shortly."
+msgstr "Ton profil est encore en cours de connexion ou n’a pas pu être enregistré. Réessaie dans un instant."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is temporarily unavailable. Prices can still be entered on this device."
+msgstr "Ton profil est temporairement indisponible. Tu peux quand même noter des prix sur cet appareil."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need more turnips than that."
+msgstr "Tes ventes nécessitent plus de navets."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need these turnips. Change or remove a sale first."
+msgstr "Tes ventes ont besoin de ces navets. Modifie ou retire d’abord une vente."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Your saved prices will stay on this device."
+msgstr "Tes prix enregistrés resteront sur cet appareil."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your turnips"
+msgstr "Tes navets"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your week"
+msgstr "Ta semaine"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Your weekly forecast"
+msgstr "Tes prévisions de la semaine"

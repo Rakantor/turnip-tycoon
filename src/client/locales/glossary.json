@@ -12,6 +12,24 @@
           "forms": ["Jorna"],
           "avoid": ["Daisy"],
           "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        },
+        "es": {
+          "term": "Juliana",
+          "forms": ["Juliana"],
+          "avoid": ["Daisy"],
+          "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        },
+        "fr": {
+          "term": "Porcelette",
+          "forms": ["Porcelette"],
+          "avoid": ["Daisy"],
+          "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        },
+        "it": {
+          "term": "Brunella",
+          "forms": ["Brunella"],
+          "avoid": ["Daisy"],
+          "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
         }
       }
     },
@@ -26,6 +44,24 @@
           "forms": ["Nooks Laden"],
           "avoid": ["Cranny"],
           "source": "Nookipedia, Nook's Cranny: names in other languages; German New Horizons guides (GIGA, GamePro)"
+        },
+        "es": {
+          "term": "MiniNook",
+          "forms": ["MiniNook"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages (MiniNook in New Horizons; Almacén Nook in earlier games)"
+        },
+        "fr": {
+          "term": "Boutique Nook",
+          "forms": ["Boutique Nook"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "it": {
+          "term": "Bottega di Nook",
+          "forms": ["Bottega di Nook"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
         }
       }
     },
@@ -40,6 +76,24 @@
           "forms": ["Nepp", "Schlepp"],
           "avoid": ["Timmy", "Tommy"],
           "source": "Game text (special NPC names)"
+        },
+        "es": {
+          "term": "Tendo y Nendo",
+          "forms": ["Tendo", "Nendo"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
+        },
+        "fr": {
+          "term": "Méli et Mélo",
+          "forms": ["Méli", "Mélo"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
+        },
+        "it": {
+          "term": "Mirco e Marco (Timmy is Mirco, Tommy is Marco)",
+          "forms": ["Mirco", "Marco"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
         }
       }
     },
@@ -54,6 +108,24 @@
           "forms": ["Sterni"],
           "avoid": ["Glocke", "Bells"],
           "source": "Game text (e.g. Bell voucher → Sterni-Coupon); Nookipedia, Bell: names in other languages"
+        },
+        "es": {
+          "term": "baya (plural bayas)",
+          "forms": ["baya"],
+          "avoid": ["Bells", "campanas"],
+          "source": "Game text (Bell voucher → cupón de bayas); Nookipedia, Bell: names in other languages"
+        },
+        "fr": {
+          "term": "clochette (plural clochettes)",
+          "forms": ["clochette"],
+          "avoid": ["Bells", "cloches"],
+          "source": "Game text (Bell voucher → ticket clochettes); Nookipedia, Bell: names in other languages"
+        },
+        "it": {
+          "term": "stellina (plural stelline)",
+          "forms": ["stellin"],
+          "avoid": ["Bells", "campanelle"],
+          "source": "Game text (Bell voucher → coupon stelline); Nookipedia, Bell: names in other languages"
         }
       }
     },
@@ -68,6 +140,24 @@
           "forms": ["Rübe"],
           "avoid": ["Turnip", "Steckrübe"],
           "source": "Nookipedia, Turnips (New Horizons item): names in other languages; German New Horizons guides"
+        },
+        "es": {
+          "term": "nabo (plural nabos)",
+          "forms": ["nabo"],
+          "avoid": ["Turnip"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "fr": {
+          "term": "navet (plural navets)",
+          "forms": ["navet"],
+          "avoid": ["Turnip"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "it": {
+          "term": "rapa (plural rape)",
+          "forms": ["rapa", "rape"],
+          "avoid": ["Turnip"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
         }
       }
     },
@@ -82,20 +172,56 @@
           "forms": ["Insel"],
           "avoid": ["Island"],
           "source": "Game text"
+        },
+        "es": {
+          "term": "isla",
+          "forms": ["isla"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "fr": {
+          "term": "île",
+          "forms": ["île"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "it": {
+          "term": "isola (plural isole)",
+          "forms": ["isol"],
+          "avoid": ["island"],
+          "source": "Game text"
         }
       }
     },
     {
       "en": "spoil, rot",
       "kind": "community",
-      "note": "Unsold turnips spoil on Sunday morning. The game’s item name for spoiled turnips is not confirmed for every language; describe it plainly.",
+      "note": "Unsold turnips spoil on Sunday morning. The game calls the item spoiled turnips; use its word where it reads naturally.",
       "match": ["spoil", "rotted", "rot"],
       "translations": {
         "de": {
           "term": "verfaulen (verfaulte Rüben)",
           "forms": ["fault"],
           "avoid": [],
-          "source": "German New Horizons guides (GIGA, GamePro); not confirmed against game text"
+          "source": "Game item: Rüben (verdorben) (Nookipedia, Spoiled turnips); German New Horizons guides (GIGA, GamePro) say verfaulen"
+        },
+        "es": {
+          "term": "pasarse (nabos pasados)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: manojo pasado (Nookipedia, Spoiled turnips)"
+        },
+        "fr": {
+          "term": "pourrir (navets pourris)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: lot de navets pourris (Nookipedia, Spoiled turnips)"
+        },
+        "it": {
+          "term": "marcire (rape marce)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: mazzo di rape marce (Nookipedia, Spoiled turnips)"
         }
       }
     },
@@ -110,6 +236,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "Fluctuante",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation (Apache-2.0)"
+        },
+        "fr": {
+          "term": "Variable",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation (Apache-2.0)"
+        },
+        "it": {
+          "term": "Oscillante",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
         }
       }
     },
@@ -124,6 +268,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "Pico alto",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation (Apache-2.0)"
+        },
+        "fr": {
+          "term": "Grand pic",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation (Apache-2.0)"
+        },
+        "it": {
+          "term": "Grande picco",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
         }
       }
     },
@@ -138,6 +300,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "Decreciente",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation (Apache-2.0)"
+        },
+        "fr": {
+          "term": "Décroissante",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation (Apache-2.0)"
+        },
+        "it": {
+          "term": "Decrescente",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
         }
       }
     },
@@ -152,6 +332,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "Pico moderado",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation (Apache-2.0)"
+        },
+        "fr": {
+          "term": "Petit pic",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation (Apache-2.0)"
+        },
+        "it": {
+          "term": "Piccolo picco",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
         }
       }
     },
@@ -166,6 +364,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "patrón",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation (Apache-2.0)"
+        },
+        "fr": {
+          "term": "courbe",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation (Apache-2.0)"
+        },
+        "it": {
+          "term": "andamento",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation uses comportamento; andamento is the everyday word for how prices move"
         }
       }
     },
@@ -180,6 +396,24 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s German translation (Apache-2.0)"
+        },
+        "es": {
+          "term": "mañana, tarde (AM, PM in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Spanish translation uses AM and PM in its chart"
+        },
+        "fr": {
+          "term": "matin, après-midi (AM, PM in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s French translation uses AM and PM in its chart"
+        },
+        "it": {
+          "term": "mattina, pomeriggio (AM, PM in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Italian translation uses AM and PM in its chart"
         }
       }
     },
@@ -188,7 +422,32 @@
       "kind": "app",
       "note": "Turnip Tycoon’s own code for each player, not the Nintendo Switch friend code.",
       "match": [],
-      "translations": { "de": { "term": "Freundescode", "forms": [], "avoid": [], "source": "" } }
+      "translations": {
+        "de": {
+          "term": "Freundescode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "código de amigo",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "code ami",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "codice amico",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
+      }
     },
     {
       "en": "group, group code",
@@ -196,7 +455,30 @@
       "note": "Up to eight players who share prices.",
       "match": [],
       "translations": {
-        "de": { "term": "Gruppe, Gruppencode", "forms": [], "avoid": [], "source": "" }
+        "de": {
+          "term": "Gruppe, Gruppencode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "grupo, código de grupo",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "groupe, code de groupe",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "gruppo, codice del gruppo",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
       }
     },
     {
@@ -205,7 +487,30 @@
       "match": [],
       "note": "A secret code that brings a profile back on a new device.",
       "translations": {
-        "de": { "term": "Wiederherstellungscode", "forms": [], "avoid": [], "source": "" }
+        "de": {
+          "term": "Wiederherstellungscode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "código de recuperación",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "code de récupération",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "codice di recupero",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
       }
     },
     {
@@ -214,7 +519,30 @@
       "note": "A short-lived code that connects another device to a profile.",
       "match": [],
       "translations": {
-        "de": { "term": "Verbindungscode", "forms": [], "avoid": [], "source": "" }
+        "de": {
+          "term": "Verbindungscode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "código de conexión",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "code de connexion",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "codice di connessione",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
       }
     },
     {
@@ -222,21 +550,96 @@
       "kind": "app",
       "match": [],
       "note": "The app’s price prediction for the week.",
-      "translations": { "de": { "term": "Prognose", "forms": [], "avoid": [], "source": "" } }
+      "translations": {
+        "de": {
+          "term": "Prognose",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "previsión",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "prévision",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "previsione",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
+      }
     },
     {
       "en": "half-day",
       "kind": "app",
       "note": "A morning or afternoon price period.",
       "match": [],
-      "translations": { "de": { "term": "Halbtag", "forms": [], "avoid": [], "source": "" } }
+      "translations": {
+        "de": {
+          "term": "Halbtag",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "media jornada",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "demi-journée",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "mezza giornata",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
+      }
     },
     {
       "en": "Turnip Tycoon",
       "kind": "app",
       "note": "The app’s name. Never translate it.",
       "match": [],
-      "translations": { "de": { "term": "Turnip Tycoon", "forms": [], "avoid": [], "source": "" } }
+      "translations": {
+        "de": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "es": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "fr": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "it": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        }
+      }
     }
   ]
 }

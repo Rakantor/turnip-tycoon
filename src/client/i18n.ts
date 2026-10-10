@@ -12,12 +12,18 @@ export interface Language {
 export const LANGUAGES: Language[] = [
   { locale: 'en', name: 'English' },
   { locale: 'de', name: 'Deutsch', unreviewed: true },
+  { locale: 'es', name: 'Español', unreviewed: true },
+  { locale: 'fr', name: 'Français', unreviewed: true },
+  { locale: 'it', name: 'Italiano', unreviewed: true },
   ...(import.meta.env.DEV ? [{ locale: 'pseudo', name: 'Pseudo' }] : []),
 ];
 
 // English ships with the app, so text stays readable if another catalog can't load.
 const catalogs: Record<string, () => Promise<{ messages: Messages }>> = {
   de: () => import('./locales/de.po'),
+  es: () => import('./locales/es.po'),
+  fr: () => import('./locales/fr.po'),
+  it: () => import('./locales/it.po'),
   ...(import.meta.env.DEV ? { pseudo: () => import('./locales/pseudo.po') } : {}),
 };
 
