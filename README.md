@@ -27,6 +27,26 @@ Bought turnips from Daisy Mae? Enter the prices Nook's Cranny offers, and Turnip
 - **Sell with friends.** Start a group of up to eight islands and see who has the best price right now. Friends see your prices, never your profit.
 - **Take it anywhere.** Install it on your phone, keep going offline, and carry on from your computer.
 
+## Help translate
+
+New languages start as machine drafts and need players who speak them to check the wording.
+
+| Language   | Status             |
+| ---------- | ------------------ |
+| English    | 🟢 Reviewed        |
+| Deutsch    | 🟠 In review       |
+| Español    | 🟠 Needs reviewers |
+| Français   | 🟠 Needs reviewers |
+| Italiano   | 🟠 Needs reviewers |
+| Nederlands | 🔴 Not started     |
+| Русский    | 🔴 Not started     |
+| 日本語     | 🔴 Not started     |
+| 한국어     | 🔴 Not started     |
+| 简体中文   | 🔴 Not started     |
+| 繁體中文   | 🔴 Not started     |
+
+Spot something off? Fix it in [`src/client/locales`](src/client/locales) and open a pull request, right on GitHub if you like. [Contributing](CONTRIBUTING.md#translations) explains the format and the game's terms. Want to help start a 🔴 language? [Open an issue](https://github.com/Rakantor/turnip-tycoon/issues).
+
 <br>
 
 ---
