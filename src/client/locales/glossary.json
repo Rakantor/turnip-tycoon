@@ -36,6 +36,12 @@
           "forms": ["Daisy Mae"],
           "avoid": [],
           "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        },
+        "ru": {
+          "term": "Дейзи-Мей",
+          "forms": ["Дейзи-Мей"],
+          "avoid": ["Мэй", "Daisy"],
+          "source": "Game text (special NPC names: Дейзи-Мей)"
         }
       }
     },
@@ -72,6 +78,12 @@
         "nl": {
           "term": "Nooks Hoek",
           "forms": ["Nooks Hoek"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "ru": {
+          "term": "Лавка Нука (declines: в Лавке Нука, до закрытия Лавки Нука)",
+          "forms": ["Лавка Нука", "Лавки Нука", "Лавке Нука", "Лавку Нука", "Лавкой Нука"],
           "avoid": ["Cranny"],
           "source": "Nookipedia, Nook's Cranny: names in other languages"
         }
@@ -112,6 +124,12 @@
           "forms": ["Timmy", "Tommy"],
           "avoid": [],
           "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
+        },
+        "ru": {
+          "term": "Тимми и Томми",
+          "forms": ["Тимми", "Томми"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (Timmy's poster → постер Тимми, Tommy's poster → постер Томми)"
         }
       }
     },
@@ -150,6 +168,12 @@
           "forms": ["klingel"],
           "avoid": ["Bells", "bellen"],
           "source": "Game text (Bell voucher → klingelbon); Nookipedia, Bell: names in other languages"
+        },
+        "ru": {
+          "term": "динь (2 диня, 5 диней, plural дини, в динях)",
+          "forms": ["дин"],
+          "avoid": ["колокольчик", "колокольчиков", "белл", "беллов", "беллы"],
+          "source": "Game text (Bell voucher → ваучер на дини, Bell-bag rug → «Мешок диней»); Nookipedia, Bell: names in other languages"
         }
       }
     },
@@ -188,6 +212,12 @@
           "forms": ["knol"],
           "avoid": ["Turnip", "raap", "rapen"],
           "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "ru": {
+          "term": "репа (1 репа, 2 репы, 5 реп)",
+          "forms": ["реп"],
+          "avoid": ["турнип", "турнипы", "брюква"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
         }
       }
     },
@@ -224,6 +254,12 @@
         "nl": {
           "term": "eiland",
           "forms": ["eiland"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "ru": {
+          "term": "остров",
+          "forms": ["остров"],
           "avoid": ["island"],
           "source": "Game text"
         }
@@ -264,6 +300,12 @@
           "forms": [],
           "avoid": [],
           "source": "Game item: bedorven knollen (Nookipedia, Spoiled turnips)"
+        },
+        "ru": {
+          "term": "гнить, сгнить (гнилые репы)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: гнилые репы (Nookipedia, Spoiled turnips)"
         }
       }
     },
@@ -302,6 +344,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
+        },
+        "ru": {
+          "term": "Колебания",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation (Apache-2.0) says Колебание стоимости; shortened"
         }
       }
     },
@@ -340,6 +388,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
+        },
+        "ru": {
+          "term": "Большой скачок",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
         }
       }
     },
@@ -378,6 +432,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
+        },
+        "ru": {
+          "term": "Снижение",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation (Apache-2.0) says Постоянное снижение; shortened"
         }
       }
     },
@@ -416,6 +476,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
+        },
+        "ru": {
+          "term": "Малый скачок",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
         }
       }
     },
@@ -454,6 +520,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
+        },
+        "ru": {
+          "term": "модель",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
         }
       }
     },
@@ -492,6 +564,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Dutch translation uses VM and NM"
+        },
+        "ru": {
+          "term": "утро, день (Пн утро, Пн день in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Russian translation uses Утро and День"
         }
       }
     },
@@ -527,6 +605,12 @@
         },
         "nl": {
           "term": "vriendcode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ru": {
+          "term": "код друга",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -568,6 +652,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ru": {
+          "term": "группа, код группы",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -603,6 +693,12 @@
         },
         "nl": {
           "term": "herstelcode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ru": {
+          "term": "код восстановления",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -644,6 +740,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ru": {
+          "term": "код подключения",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -679,6 +781,12 @@
         },
         "nl": {
           "term": "voorspelling",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ru": {
+          "term": "прогноз",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -720,6 +828,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ru": {
+          "term": "период",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -754,6 +868,12 @@
           "source": ""
         },
         "nl": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ru": {
           "term": "Turnip Tycoon",
           "forms": [],
           "avoid": [],

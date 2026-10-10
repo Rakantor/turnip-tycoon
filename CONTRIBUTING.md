@@ -110,7 +110,7 @@ Translations are first drafted by machine, following the style guides in `src/cl
 
 To review a translation, correct its `msgstr` where needed and delete the `#, fuzzy` line above it. When a language has no fuzzy entries left, drop `unreviewed` from its entry in `LANGUAGES` and mark it 🟢 in the README's language table.
 
-To add a language, add it to `locales` in `lingui.config.ts` and to `LANGUAGES` and `catalogs` in `src/client/i18n.ts`, give every `game` term in the glossary its official name in that language (with a source), add a style guide, then extract and translate its catalog, and mark it 🟠 in the README's language table. Check its fonts: Fredoka and Nunito cover Latin scripts, and Nunito covers Cyrillic, but neither covers Chinese, Japanese or Korean.
+To add a language, add it to `locales` in `lingui.config.ts` and to `LANGUAGES` and `catalogs` in `src/client/i18n.ts`, give every `game` term in the glossary its official name in that language (with a source), add a style guide, then extract and translate its catalog, and mark it 🟠 in the README's language table. Check its fonts in `src/client/fonts.css`: Fredoka and Nunito cover Latin scripts, and Nunito's Cyrillic subset covers Russian text and headings, but neither covers Chinese, Japanese or Korean.
 
 The API answers in English. `src/client/data/server-messages.ts` translates each message the server can send, by its exact text, and `tests/client/server-messages.test.ts` keeps it in step with `src/server`. Terms and Privacy are published in English only.
 

@@ -16,8 +16,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  /* Nunito comes before ui-rounded so text Fredoka lacks, like Cyrillic, looks the same everywhere. */
   --font-display:
-    'Fredoka Variable', 'Fredoka', ui-rounded, 'Nunito Variable', system-ui, sans-serif;
+    'Fredoka Variable', 'Fredoka', 'Nunito Variable', ui-rounded, system-ui, sans-serif;
   --bg: #f4ebd3;
   --surface: #fffcf3;
   --field: #ffffff;
