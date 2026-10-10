@@ -322,7 +322,7 @@ msgctxt "chart"
 msgid "AM"
 msgstr ""
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 msgid "An update is ready"
 msgstr ""
 
@@ -334,7 +334,7 @@ msgstr ""
 msgid "Another device changed this week"
 msgstr ""
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 msgid "App update"
 msgstr ""
 
@@ -716,7 +716,7 @@ msgstr ""
 msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
 msgstr ""
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 msgid "Could not check for updates. Reconnect and try again."
 msgstr ""
 
@@ -756,7 +756,7 @@ msgstr ""
 msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
 msgstr ""
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 msgid "Could not update the app."
 msgstr ""
 
@@ -1137,11 +1137,11 @@ msgstr ""
 msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
 msgstr ""
 
-#: src/client/pwa-install.tsx
+#: src/client/pwa/install.tsx
 msgid "Install"
 msgstr ""
 
-#: src/client/pwa-install.tsx
+#: src/client/pwa/install.tsx
 msgid "Install Turnip Tycoon"
 msgstr ""
 
@@ -1221,7 +1221,7 @@ msgstr ""
 msgid "Last week’s turnips"
 msgstr ""
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 msgid "Later"
 msgstr ""
 
@@ -1494,7 +1494,7 @@ msgstr ""
 msgid "Offline · saved on this device"
 msgstr ""
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 msgid "Offline access could not be prepared. Reconnect and try again."
 msgstr ""
 
@@ -2050,7 +2050,7 @@ msgstr ""
 msgid "The server did not return a valid device credential."
 msgstr ""
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 msgid "The update is not ready yet. Please try again."
 msgstr ""
 
@@ -2382,7 +2382,7 @@ msgstr ""
 msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
 msgstr ""
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 msgid "Update now"
 msgstr ""
 
@@ -2652,7 +2652,7 @@ msgstr ""
 msgid "Your profile is deleted"
 msgstr ""
 
-#: src/client/pwa.ts
+#: src/client/pwa/index.ts
 msgid "Your profile is still connecting or could not be saved. Try again shortly."
 msgstr ""
 
@@ -2668,7 +2668,7 @@ msgstr ""
 msgid "Your sales need these turnips. Change or remove a sale first."
 msgstr ""
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 msgid "Your saved prices will stay on this device."
 msgstr ""
 

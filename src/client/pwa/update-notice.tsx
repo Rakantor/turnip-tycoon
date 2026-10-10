@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Button, Notice } from './ui';
-import { updatePwa, usePwa } from './pwa';
+import { Button, Notice } from '../ui';
+import { updatePwa, usePwa } from './index';
 
 export function UpdateNotice() {
   const pwa = usePwa();

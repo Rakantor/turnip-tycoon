@@ -1,8 +1,8 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { t } from '@lingui/core/macro';
-import { PwaController, type PwaState } from './pwa-controller';
-import { canReloadIdentity } from './data/identity';
-import { pendingEdits } from './data/pending-edits';
+import { PwaController, type PwaState } from './controller';
+import { canReloadIdentity } from '../data/identity';
+import { pendingEdits } from '../data/pending-edits';
 
 const inactive: PwaState = { ready: false, updateAvailable: false, updating: false, error: null };
 let controller: PwaController | null = null;

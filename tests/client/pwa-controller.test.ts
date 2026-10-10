@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { PwaController } from '../../src/client/pwa-controller';
+import { PwaController } from '../../src/client/pwa/controller';
 
 class Worker extends EventTarget {
   postMessage = vi.fn();

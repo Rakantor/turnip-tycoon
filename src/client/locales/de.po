@@ -396,7 +396,7 @@ msgctxt "chart"
 msgid "AM"
 msgstr "vm."
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 #, fuzzy
 msgid "An update is ready"
 msgstr "Ein Update ist bereit"
@@ -411,7 +411,7 @@ msgstr "Ein anderes Gerät hat dieselben Einträge geändert"
 msgid "Another device changed this week"
 msgstr "Ein anderes Gerät hat diese Woche geändert"
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 #, fuzzy
 msgid "App update"
 msgstr "App-Update"
@@ -883,7 +883,7 @@ msgstr "Kann so oder so ausgehen"
 msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
 msgstr "Auf die gespeicherten Preise auf diesem Gerät kann nicht zugegriffen werden. Lass diese Seite geöffnet und versuch es erneut, nachdem du den Browserspeicher geprüft hast."
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 #, fuzzy
 msgid "Could not check for updates. Reconnect and try again."
 msgstr "Nach Updates konnte nicht gesucht werden. Verbinde dich neu und versuch es noch einmal."
@@ -933,7 +933,7 @@ msgstr "Die Profilerstellung konnte nicht neu gestartet werden."
 msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
 msgstr "Diese Preise konnten auf diesem Gerät nicht gespeichert werden. Deine nicht gespeicherten Änderungen bleiben auf dieser Seite. Lass sie geöffnet und versuch es erneut, bevor du sie schließt."
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 #, fuzzy
 msgid "Could not update the app."
 msgstr "Die App konnte nicht aktualisiert werden."
@@ -1408,12 +1408,12 @@ msgstr "Falls dieses Gerät keinen Zugriff mehr hat, wende dich wegen einer unbe
 msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
 msgstr "Inspiriert von <0>Turnip Prophet</0>. Ein Fanprojekt, nicht mit Nintendo verbunden."
 
-#: src/client/pwa-install.tsx
+#: src/client/pwa/install.tsx
 #, fuzzy
 msgid "Install"
 msgstr "Installieren"
 
-#: src/client/pwa-install.tsx
+#: src/client/pwa/install.tsx
 #, fuzzy
 msgid "Install Turnip Tycoon"
 msgstr "Turnip Tycoon installieren"
@@ -1513,7 +1513,7 @@ msgstr "Muster der letzten Woche"
 msgid "Last week’s turnips"
 msgstr "Rüben der letzten Woche"
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 #, fuzzy
 msgid "Later"
 msgstr "Später"
@@ -1852,7 +1852,7 @@ msgstr "Chancen erkunden"
 msgid "Offline · saved on this device"
 msgstr "Offline · auf diesem Gerät gespeichert"
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 #, fuzzy
 msgid "Offline access could not be prepared. Reconnect and try again."
 msgstr "Der Offline-Zugriff konnte nicht eingerichtet werden. Verbinde dich neu und versuch es noch einmal."
@@ -2542,7 +2542,7 @@ msgstr "Dem gespeicherten Profil fehlt seine Gerätekennung."
 msgid "The server did not return a valid device credential."
 msgstr "Der Server hat keine gültige Gerätekennung zurückgegeben."
 
-#: src/client/pwa-controller.ts
+#: src/client/pwa/controller.ts
 #, fuzzy
 msgid "The update is not ready yet. Please try again."
 msgstr "Das Update ist noch nicht bereit. Bitte versuch es noch einmal."
@@ -2954,7 +2954,7 @@ msgstr "Bis zu {maxLength} Zeichen. Lass das Feld leer, um als {defaultName} zu 
 msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
 msgstr "Bis zu 8 Personen. Mitglieder sehen gegenseitig Namen, Freundescode, Wochenpreise und Verlauf."
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 #, fuzzy
 msgid "Update now"
 msgstr "Jetzt aktualisieren"
@@ -3289,7 +3289,7 @@ msgstr "Dein Profil ist verbunden. Dein alter Wiederherstellungscode wurde erset
 msgid "Your profile is deleted"
 msgstr "Dein Profil ist gelöscht"
 
-#: src/client/pwa.ts
+#: src/client/pwa/index.ts
 #, fuzzy
 msgid "Your profile is still connecting or could not be saved. Try again shortly."
 msgstr "Dein Profil wird noch verbunden oder konnte nicht gespeichert werden. Versuch es gleich noch einmal."
@@ -3309,7 +3309,7 @@ msgstr "Für diese Verkäufe brauchst du mehr Rüben."
 msgid "Your sales need these turnips. Change or remove a sale first."
 msgstr "Deine Verkäufe brauchen diese Rüben. Ändere oder lösche zuerst einen Verkauf."
 
-#: src/client/pwa-ui.tsx
+#: src/client/pwa/update-notice.tsx
 #, fuzzy
 msgid "Your saved prices will stay on this device."
 msgstr "Deine gespeicherten Preise bleiben auf diesem Gerät."
