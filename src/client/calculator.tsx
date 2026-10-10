@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Check, CloudOff, LoaderCircle, Moon, Sun } from 
 import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { predictWeek } from '../prediction';
+import { predictWeek, type PredictionResult } from '../prediction';
 import { uniquePattern } from '../prediction/previous-pattern';
 import { currentSlot, currentWeekStart, isEditableWeek, shiftWeek } from '../shared/calendar';
 import type { Trade } from '../shared/ledger';
@@ -17,7 +17,7 @@ import { Forecast, rangeLabel } from './forecast';
 import { Outlook } from './outlook';
 import { patternName, PATTERNS, slotName, slotShortName, weekAdvice } from './advice';
 import { afterClosing, islandOdds } from './odds';
-import { HoldOrSell } from './odds-card';
+import { HoldOrSell, OddsExplorerCard, useWeekOdds } from './odds-card';
 import { canCompletePrice, parsePrice, priceRange } from './price-limits';
 import { usePwaReloadGuard } from './pwa';
 import { BellBag, Turnip } from './icons';
@@ -303,6 +303,48 @@ export function Calculator() {
       now={now}
       isCurrent={weekStart === currentWeek}
       editable={isEditableWeek(weekStart, now)}
+    />
+  );
+}
+
+/** This week's forecast, led by whether to hold or sell and followed by the odds explorer. */
+function CurrentForecast({
+  weekStart,
+  week,
+  prediction,
+  now,
+  slot,
+  bestSlot,
+  onTrades,
+}: {
+  weekStart: string;
+  week: OwnWeekRecord;
+  prediction: PredictionResult;
+  now: Date;
+  /** The current half-day, or null on Sunday. */
+  slot: number | null;
+  bestSlot: number | null;
+  onTrades: (trades: Trade[]) => void;
+}) {
+  const weekOdds = useWeekOdds(weekStart, week, prediction, now, slot);
+  return (
+    <Forecast
+      prediction={prediction}
+      prices={week.prices}
+      purchasePrice={week.purchasePrice}
+      currentSlot={slot}
+      bestSlot={bestSlot}
+      lead={
+        <HoldOrSell
+          week={week}
+          prediction={prediction}
+          now={now}
+          slot={slot}
+          weekOdds={weekOdds}
+          onTrades={onTrades}
+        />
+      }
+      explorer={<OddsExplorerCard prediction={prediction} weekOdds={weekOdds} />}
     />
   );
 }
@@ -790,32 +832,32 @@ function WeekCalculator({
             </div>
           </div>
         </section>
-        <Forecast
-          prediction={prediction}
-          prices={week.prices}
-          purchasePrice={week.purchasePrice}
-          currentSlot={slot}
-          bestSlot={bestSlot}
-          lead={
-            isCurrent ? (
-              <HoldOrSell
-                weekStart={weekStart}
-                week={week}
-                prediction={prediction}
-                now={now}
-                slot={slot}
-                onTrades={(trades) => edit({ trades })}
-              />
-            ) : (
+        {isCurrent ? (
+          <CurrentForecast
+            weekStart={weekStart}
+            week={week}
+            prediction={prediction}
+            now={now}
+            slot={slot}
+            bestSlot={bestSlot}
+            onTrades={(trades) => edit({ trades })}
+          />
+        ) : (
+          <Forecast
+            prediction={prediction}
+            prices={week.prices}
+            purchasePrice={week.purchasePrice}
+            bestSlot={bestSlot}
+            lead={
               <PastTurnips
                 week={week}
                 lastWeek={lastWeek}
                 editable={editable}
                 onTrades={(trades) => edit({ trades })}
               />
-            )
-          }
-        />
+            }
+          />
+        )}
       </div>
       {isCurrent && <FriendsPanel weekStart={weekStart} week={week} />}
     </main>

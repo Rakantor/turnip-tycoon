@@ -1,6 +1,6 @@
 import { useId, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, ChartSpline } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { plural, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { predictWeek, type PredictionResult } from '../prediction';
@@ -195,9 +195,10 @@ function OddsExplorer({
     return { low, high, own: ownCurve, friends };
   }, [prediction, own.fromSlot, group, groupNow, ownNow, ownBest, presets]);
   const clamp = (value: number) => Math.min(high, Math.max(low, Math.round(value)));
-  const [chosen, setChosen] = useState(() => group?.price ?? own.price ?? low);
-  // New prices can move the range while the explorer is open.
-  const price = clamp(chosen);
+  // Until a price is picked, the best one right now; friends' prices can arrive later.
+  const [chosen, setChosen] = useState<number | null>(null);
+  // New prices can move the range after one is picked.
+  const price = clamp(chosen ?? group?.price ?? own.price ?? low);
   const show = (value: number) => setChosen(clamp(value));
   const x = (value: number) =>
     CHART.left + ((value - low) / (high - low)) * (CHART.right - CHART.left);
@@ -332,31 +333,33 @@ function OddsExplorer({
   );
 }
 
+export interface WeekOdds {
+  own: IslandOdds;
+  /** Friends' odds with yours; null on Sunday or without friends this week. */
+  group: GroupOdds | null;
+  /** Nook's Cranny has closed for the week. */
+  closed: boolean;
+  /** Your price to beat can be sold at right now. */
+  sellNow: boolean;
+  /** So can the group's best price. */
+  groupNow: boolean;
+}
+
 /**
- * The chance of a better price later this week, on your island and among
- * friends, with the turnips you hold. Only shown for the current week.
+ * The chance of a better price later this week, on your island and among friends,
+ * shared by the hold-or-sell card and the odds explorer. Only for the current week.
  */
-export function HoldOrSell({
-  weekStart,
-  week,
-  prediction,
-  now,
-  slot,
-  onTrades,
-}: {
-  weekStart: string;
-  week: OwnWeekRecord;
-  prediction: PredictionResult;
-  now: Date;
+export function useWeekOdds(
+  weekStart: string,
+  week: OwnWeekRecord,
+  prediction: PredictionResult,
+  now: Date,
   /** The current half-day, or null on Sunday. */
-  slot: number | null;
-  onTrades: (trades: Trade[]) => void;
-}) {
-  const id = useId();
+  slot: number | null,
+): WeekOdds {
   const identity = useApp();
   const data = useGroups(weekStart, identity.session, identity.status);
   const owner = identity.session?.player.id ?? '';
-  const [explorerOpen, setExplorerOpen] = useState(false);
   const friends = useMemo(
     () =>
       data.players
@@ -378,21 +381,78 @@ export function HoldOrSell({
     () => islandOdds(week, prediction, slot, closed),
     [week, prediction, slot, closed],
   );
+  const shown = group !== null && group.islands.some((island) => !island.self) ? group : null;
+  return {
+    own,
+    group: shown,
+    closed,
+    // This half-day's price is in and Nook's Cranny is buying: the odds are about selling now.
+    sellNow: slot !== null && own.priceSlot === slot && !closed,
+    groupNow: shown?.priceSlot === slot && !closed,
+  };
+}
+
+/** The odds explorer, in its own card under the forecast. Only shown for the current week. */
+export function OddsExplorerCard({
+  prediction,
+  weekOdds,
+}: {
+  prediction: PredictionResult;
+  weekOdds: WeekOdds;
+}) {
+  const id = useId();
+  const { own, group, sellNow, groupNow } = weekOdds;
+  if (prediction.status !== 'possible' || own.fromSlot > 11) return null;
+  return (
+    <section className="odds-explorer-card" aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`}>
+        <Trans>Odds explorer</Trans>
+      </h2>
+      <OddsExplorer
+        prediction={prediction}
+        own={own}
+        group={group}
+        sellNow={sellNow}
+        groupNow={groupNow}
+      />
+    </section>
+  );
+}
+
+/**
+ * The chance of a better price later this week, on your island and among
+ * friends, with the turnips you hold. Only shown for the current week.
+ */
+export function HoldOrSell({
+  week,
+  prediction,
+  now,
+  slot,
+  weekOdds,
+  onTrades,
+}: {
+  week: OwnWeekRecord;
+  prediction: PredictionResult;
+  now: Date;
+  /** The current half-day, or null on Sunday. */
+  slot: number | null;
+  weekOdds: WeekOdds;
+  onTrades: (trades: Trade[]) => void;
+}) {
+  const id = useId();
+  const { own, group, closed, sellNow } = weekOdds;
   // Without a forecast, the card still holds this week's turnips.
   const possible = prediction.status === 'possible';
   const held = unsold(totalsOf(week.trades));
 
-  const { price, priceSlot, odds, fromSlot } = own;
-  // This half-day's price is in and Nook's Cranny is buying: the odds are about selling now.
-  const sellNow = slot !== null && priceSlot === slot && !closed;
-  // Otherwise the price to beat is named: what was paid, or when it was seen.
+  const { price, priceSlot, odds } = own;
+  // Unless selling now, the price to beat is named: what was paid, or when it was seen.
   const known =
     price === null
       ? ''
       : slot === null || priceSlot === null
         ? t`the ${price} you paid`
         : reportedPrice(price, priceSlot, slot);
-  const showGroup = group !== null && group.islands.some((island) => !island.self);
   // Every outcome leads with a headline saying what to do; only a missing price has none.
   let headline: string | null = null;
   let message: string | null = null;
@@ -505,30 +565,14 @@ export function HoldOrSell({
             )}
           </div>
         )}
-        <WeekTurnips week={week} slot={slot} onTrades={onTrades} />
-        {possible && group && showGroup && slot !== null && (
-          <FriendsOdds group={group} slot={slot} />
-        )}
-        {possible && fromSlot <= 11 && (
-          <details
-            className="odds-explorer"
-            onToggle={(event) => setExplorerOpen(event.currentTarget.open)}
-          >
-            <summary>
-              <ChartSpline size={16} aria-hidden="true" />
-              <Trans>Odds explorer</Trans>
-            </summary>
-            {explorerOpen && (
-              <OddsExplorer
-                prediction={prediction}
-                own={own}
-                group={showGroup ? group : null}
-                sellNow={sellNow}
-                groupNow={group?.priceSlot === slot && !closed}
-              />
-            )}
-          </details>
-        )}
+        <WeekTurnips
+          week={week}
+          slot={slot}
+          onTrades={onTrades}
+          beforeTrades={
+            possible && group && slot !== null && <FriendsOdds group={group} slot={slot} />
+          }
+        />
       </div>
     </section>
   );

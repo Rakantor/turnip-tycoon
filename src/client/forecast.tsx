@@ -388,6 +388,7 @@ export function Forecast({
   bestSlot = null,
   shared = false,
   lead = null,
+  explorer = null,
 }: {
   prediction: PredictionResult;
   prices: (number | null)[];
@@ -397,6 +398,8 @@ export function Forecast({
   shared?: boolean;
   /** Shown first, across the full width, ahead of the chart. */
   lead?: ReactNode;
+  /** Shown last, across the full width, after the chart and patterns. */
+  explorer?: ReactNode;
 }) {
   const id = useId();
   return (
@@ -455,6 +458,7 @@ export function Forecast({
         )}
       </section>
       {prediction.status === 'possible' && <PatternOdds prediction={prediction} />}
+      {explorer}
     </div>
   );
 }

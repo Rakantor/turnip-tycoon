@@ -496,11 +496,14 @@ export function WeekTurnips({
   week,
   slot,
   onTrades,
+  beforeTrades = null,
 }: {
   week: OwnWeekRecord;
   /** The current half-day, or null on Sunday, when nothing can be sold. */
   slot: number | null;
   onTrades: (trades: Trade[]) => void;
+  /** Shown between the log buttons and the trades. */
+  beforeTrades?: ReactNode;
 }) {
   const [request, setRequest] = useState<SheetRequest | null>(null);
   const actions = useRef<HTMLDivElement>(null);
@@ -563,6 +566,7 @@ export function WeekTurnips({
           </Button>
         )}
       </div>
+      {beforeTrades}
       {week.trades.length > 0 && (
         <section
           className="turnips-trades"

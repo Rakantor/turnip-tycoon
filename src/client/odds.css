@@ -1,7 +1,7 @@
 /* Hold or sell?: the chance of a better price later this week, with the turnips you
    hold. It spans the forecast's full width, so its own width decides whether parts sit
    side by side. Narrow, everything stacks: the forecast, your turnips, the log buttons,
-   the trades, then friends. */
+   friends, then the trades. */
 .odds-card {
   flex: 1 1 100%;
   padding: 24px 26px;
@@ -117,28 +117,14 @@
   background: var(--gold-bright);
 }
 
-/* Odds explorer, collapsed until asked for. */
-.odds-explorer summary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  max-width: 100%;
-  min-height: 40px;
-  padding: 6px 16px;
-  border: 2px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--leaf-dark);
-  font-size: 14px;
-  font-weight: 800;
-  list-style: none;
+/* Odds explorer: its own card across the forecast, after the chart and patterns. */
+.odds-explorer-card {
+  flex: 1 1 100%;
+  padding: 24px 26px;
+  container-type: inline-size;
 }
-.odds-explorer summary::-webkit-details-marker {
-  display: none;
-}
-.odds-explorer[open] summary {
-  margin-bottom: 12px;
+.odds-explorer-card h2 {
+  margin: 0 0 16px;
 }
 .odds-explorer-body {
   display: grid;
@@ -160,7 +146,7 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.odds-explorer input[type='range'] {
+.odds-explorer-body input[type='range'] {
   width: 100%;
   accent-color: var(--leaf);
 }
@@ -277,7 +263,7 @@
 }
 
 /* Wide: the title beside the log buttons, the forecast beside your turnips (or, before
-   any trade, beside friends), then the trades and friends across the card. */
+   any trade, beside friends), then friends and the trades across the card. */
 @container (min-width: 640px) {
   .odds-layout {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -330,17 +316,15 @@
 }
 
 @media (max-width: 999px) {
-  .odds-card {
+  .odds-card,
+  .odds-explorer-card {
     padding: 18px;
   }
 }
 @media (max-width: 720px) {
-  .odds-card {
+  .odds-card,
+  .odds-explorer-card {
     padding: 16px;
-  }
-  .odds-explorer summary {
-    justify-content: center;
-    width: 100%;
   }
   .odds-main {
     grid-template-columns: 72px minmax(0, 1fr);
