@@ -76,6 +76,7 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | `scripts`          | Local database, development server, migrations, and icon generation                          |
 | `tests/api`        | API and database integration tests                                                           |
 | `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                    |
+| `tests/shared`     | Calendar and ledger calculations shared by the client and API                                |
 | `tests/prediction` | Prediction fixtures and regression tests                                                     |
 | `tests/build`      | Generated service-worker behavior                                                            |
 | `public/licenses`  | Distributed upstream licenses and notices                                                    |
