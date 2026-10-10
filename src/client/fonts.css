@@ -1,4 +1,4 @@
-/* Self-hosted so the installed app keeps its look offline. Both fonts use the SIL OFL 1.1.
+/* Self-hosted so the installed app keeps its look offline. All fonts here use the SIL OFL 1.1.
    Fredoka has no Cyrillic, so Russian headings fall back to Nunito's Cyrillic subset. */
 @font-face {
   font-family: 'Fredoka Variable';
@@ -54,4 +54,90 @@
   src: url('@fontsource-variable/nunito/files/nunito-cyrillic-wght-normal.woff2')
     format('woff2-variations');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+/* Japanese, Korean and Chinese fonts, cut down to the app's own text by `pnpm fonts:subset`
+   (see scripts/font-subsets.ts). Fredoka and Nunito still draw Latin letters and digits. Each
+   language names only its own fonts, so other players never download them, and the service
+   worker caches them on first use instead of precaching them for everyone. */
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/cjk/cjk-ja-m-plus-rounded-1c-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'M PLUS Rounded 1c';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./fonts/cjk/cjk-ja-m-plus-rounded-1c-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Jua';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/cjk/cjk-ko-jua-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Resource Han Rounded KR';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/cjk/cjk-ko-resource-han-rounded-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Resource Han Rounded KR';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./fonts/cjk/cjk-ko-resource-han-rounded-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Resource Han Rounded CN';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/cjk/cjk-zh-hans-resource-han-rounded-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Resource Han Rounded CN';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./fonts/cjk/cjk-zh-hans-resource-han-rounded-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Huninn';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/cjk/cjk-zh-hant-huninn-400.woff2') format('woff2');
+}
+
+:root:lang(ja) {
+  --font-text: 'Nunito Variable', 'M PLUS Rounded 1c', ui-rounded, system-ui, sans-serif;
+  --font-display: 'Fredoka Variable', 'M PLUS Rounded 1c', 'Nunito Variable', system-ui, sans-serif;
+  /* Wraps between phrases, not inside words, where the browser supports it. */
+  word-break: auto-phrase;
+}
+/* Jua's chunky strokes carry Fredoka's feel into Korean headings. */
+:root:lang(ko) {
+  --font-text: 'Nunito Variable', 'Resource Han Rounded KR', ui-rounded, system-ui, sans-serif;
+  --font-display:
+    'Fredoka Variable', 'Jua', 'Resource Han Rounded KR', 'Nunito Variable', system-ui, sans-serif;
+  /* Korean wraps between words, not inside them. */
+  word-break: keep-all;
+}
+:root:lang(zh-Hans) {
+  --font-text: 'Nunito Variable', 'Resource Han Rounded CN', ui-rounded, system-ui, sans-serif;
+  --font-display:
+    'Fredoka Variable', 'Resource Han Rounded CN', 'Nunito Variable', system-ui, sans-serif;
+}
+/* Huninn has one weight, so bold Traditional Chinese text stays regular. */
+:root:lang(zh-Hant) {
+  --font-text: 'Nunito Variable', 'Huninn', ui-rounded, system-ui, sans-serif;
+  --font-display: 'Fredoka Variable', 'Huninn', 'Nunito Variable', system-ui, sans-serif;
 }

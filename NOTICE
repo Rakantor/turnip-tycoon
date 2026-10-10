@@ -14,5 +14,6 @@ Original project location: https://github.com/mikebryant/ac-nh-turnip-prices
 Turnip Prophet is licensed under the Apache License, Version 2.0. Its original
 LICENSE, NOTICE, and COPYRIGHT are preserved in public/licenses/turnip-prophet/.
 
-The bundled Fredoka and Nunito fonts are licensed under the SIL Open Font
-License, Version 1.1. Their notices and terms are in public/licenses/fonts/.
+The bundled Fredoka, Nunito, M PLUS Rounded 1c, Jua, Resource Han Rounded and
+Huninn fonts are licensed under the SIL Open Font License, Version 1.1. Their
+notices and terms are in public/licenses/fonts/.

@@ -17,6 +17,10 @@ export const LANGUAGES: Language[] = [
   { locale: 'it', name: 'Italiano', unreviewed: true },
   { locale: 'nl', name: 'Nederlands', unreviewed: true },
   { locale: 'ru', name: 'Русский', unreviewed: true },
+  { locale: 'ja', name: '日本語', unreviewed: true },
+  { locale: 'ko', name: '한국어', unreviewed: true },
+  { locale: 'zh-Hans', name: '简体中文', unreviewed: true },
+  { locale: 'zh-Hant', name: '繁體中文', unreviewed: true },
   ...(import.meta.env.DEV ? [{ locale: 'pseudo', name: 'Pseudo' }] : []),
 ];
 
@@ -28,6 +32,10 @@ const catalogs: Record<string, () => Promise<{ messages: Messages }>> = {
   it: () => import('./locales/it.po'),
   nl: () => import('./locales/nl.po'),
   ru: () => import('./locales/ru.po'),
+  ja: () => import('./locales/ja.po'),
+  ko: () => import('./locales/ko.po'),
+  'zh-Hans': () => import('./locales/zh-Hans.po'),
+  'zh-Hant': () => import('./locales/zh-Hant.po'),
   ...(import.meta.env.DEV ? { pseudo: () => import('./locales/pseudo.po') } : {}),
 };
 
@@ -45,12 +53,22 @@ function storedLocale(): string | null {
   }
 }
 
+/** The app's locale for a browser language tag; Chinese is told apart by script, so zh-TW is zh-Hant. */
+export function localeForTag(tag: string): string | null {
+  try {
+    const locale = new Intl.Locale(tag);
+    return supported(locale.language === 'zh' ? `zh-${locale.maximize().script}` : locale.language);
+  } catch {
+    return null;
+  }
+}
+
 /** The language chosen on this device, otherwise the first one the browser asks for that the app has. */
 export function preferredLocale(): string {
   const stored = storedLocale();
   if (stored) return stored;
   for (const tag of navigator.languages ?? [navigator.language]) {
-    const match = supported(tag.split('-')[0].toLowerCase());
+    const match = localeForTag(tag);
     if (match) return match;
   }
   return 'en';

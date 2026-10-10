@@ -42,6 +42,30 @@
           "forms": ["Дейзи-Мей"],
           "avoid": ["Мэй", "Daisy"],
           "source": "Game text (special NPC names: Дейзи-Мей)"
+        },
+        "ja": {
+          "term": "ウリ",
+          "forms": ["ウリ"],
+          "avoid": ["デイジー"],
+          "source": "Game text (special NPC names)"
+        },
+        "ko": {
+          "term": "무파니",
+          "forms": ["무파니"],
+          "avoid": ["데이지"],
+          "source": "Game text (special NPC names)"
+        },
+        "zh-Hans": {
+          "term": "曹卖",
+          "forms": ["曹卖"],
+          "avoid": ["黛西"],
+          "source": "Game text (special NPC names)"
+        },
+        "zh-Hant": {
+          "term": "曹賣",
+          "forms": ["曹賣"],
+          "avoid": ["黛西"],
+          "source": "Game text (special NPC names)"
         }
       }
     },
@@ -85,6 +109,30 @@
           "term": "Лавка Нука (declines: в Лавке Нука, до закрытия Лавки Нука)",
           "forms": ["Лавка Нука", "Лавки Нука", "Лавке Нука", "Лавку Нука", "Лавкой Нука"],
           "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "ja": {
+          "term": "タヌキ商店",
+          "forms": ["タヌキ商店"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "ko": {
+          "term": "너굴상점",
+          "forms": ["너굴상점"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "zh-Hans": {
+          "term": "Nook商店",
+          "forms": ["Nook商店"],
+          "avoid": ["Cranny", "狸猫商店"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "zh-Hant": {
+          "term": "Nook商店",
+          "forms": ["Nook商店"],
+          "avoid": ["Cranny", "狸貓商店"],
           "source": "Nookipedia, Nook's Cranny: names in other languages"
         }
       }
@@ -130,6 +178,30 @@
           "forms": ["Тимми", "Томми"],
           "avoid": ["Timmy", "Tommy"],
           "source": "Game text (Timmy's poster → постер Тимми, Tommy's poster → постер Томми)"
+        },
+        "ja": {
+          "term": "まめきちとつぶきち (Timmy is まめきち, Tommy is つぶきち)",
+          "forms": ["まめきち", "つぶきち"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (Timmy's poster → まめきちのポスター, Tommy's poster → つぶきちのポスター)"
+        },
+        "ko": {
+          "term": "콩돌이와 밤돌이 (Timmy is 콩돌이, Tommy is 밤돌이)",
+          "forms": ["콩돌이", "밤돌이"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (Timmy's poster → 콩돌이의 포스터, Tommy's poster → 밤돌이의 포스터)"
+        },
+        "zh-Hans": {
+          "term": "豆狸和粒狸 (Timmy is 豆狸, Tommy is 粒狸)",
+          "forms": ["豆狸", "粒狸"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (Timmy's poster → 豆狸的海报, Tommy's poster → 粒狸的海报)"
+        },
+        "zh-Hant": {
+          "term": "豆狸和粒狸 (Timmy is 豆狸, Tommy is 粒狸)",
+          "forms": ["豆狸", "粒狸"],
+          "avoid": ["Timmy", "Tommy"],
+          "source": "Game text (Timmy's poster → 豆狸的海報, Tommy's poster → 粒狸的海報)"
         }
       }
     },
@@ -174,6 +246,30 @@
           "forms": ["дин"],
           "avoid": ["колокольчик", "колокольчиков", "белл", "беллов", "беллы"],
           "source": "Game text (Bell voucher → ваучер на дини, Bell-bag rug → «Мешок диней»); Nookipedia, Bell: names in other languages"
+        },
+        "ja": {
+          "term": "ベル",
+          "forms": ["ベル"],
+          "avoid": ["Bells"],
+          "source": "Game text (Bell voucher → ベルひきかえけん); Nookipedia, Bell: names in other languages"
+        },
+        "ko": {
+          "term": "벨",
+          "forms": ["벨"],
+          "avoid": ["Bells"],
+          "source": "Game text (Bell voucher → 벨 교환권); Nookipedia, Bell: names in other languages"
+        },
+        "zh-Hans": {
+          "term": "铃钱",
+          "forms": ["铃钱"],
+          "avoid": ["Bells", "贝尔"],
+          "source": "Game text (Bell voucher → 铃钱兑换券); Nookipedia, Bell: names in other languages"
+        },
+        "zh-Hant": {
+          "term": "鈴錢",
+          "forms": ["鈴錢"],
+          "avoid": ["Bells", "貝爾"],
+          "source": "Game text (Bell voucher → 鈴錢兌換券); Nookipedia, Bell: names in other languages"
         }
       }
     },
@@ -218,6 +314,30 @@
           "forms": ["реп"],
           "avoid": ["турнип", "турнипы", "брюква"],
           "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "ja": {
+          "term": "カブ (counted in 株: 100株; the price is カブ価)",
+          "forms": ["カブ"],
+          "avoid": ["Turnip"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "ko": {
+          "term": "무 (counted in 개: 무 100개)",
+          "forms": ["무"],
+          "avoid": ["Turnip"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "zh-Hans": {
+          "term": "大头菜 (counted in 棵: 100棵)",
+          "forms": ["大头菜"],
+          "avoid": ["Turnip", "芜菁"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "zh-Hant": {
+          "term": "大頭菜 (counted in 棵: 100棵)",
+          "forms": ["大頭菜"],
+          "avoid": ["Turnip", "蕪菁"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
         }
       }
     },
@@ -260,6 +380,30 @@
         "ru": {
           "term": "остров",
           "forms": ["остров"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "ja": {
+          "term": "島",
+          "forms": ["島"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "ko": {
+          "term": "섬",
+          "forms": ["섬"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "zh-Hans": {
+          "term": "岛",
+          "forms": ["岛"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "zh-Hant": {
+          "term": "島",
+          "forms": ["島"],
           "avoid": ["island"],
           "source": "Game text"
         }
@@ -306,6 +450,30 @@
           "forms": [],
           "avoid": [],
           "source": "Game item: гнилые репы (Nookipedia, Spoiled turnips)"
+        },
+        "ja": {
+          "term": "くさる (くさったカブ)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: くさったカブ (Nookipedia, Spoiled turnips)"
+        },
+        "ko": {
+          "term": "썩다 (썩은 무)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: 썩은 무 (Nookipedia, Spoiled turnips)"
+        },
+        "zh-Hans": {
+          "term": "坏掉 (坏掉的大头菜)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: 坏掉的大头菜 (Nookipedia, Spoiled turnips)"
+        },
+        "zh-Hant": {
+          "term": "壞掉 (壞掉的大頭菜)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: 壞掉的大頭菜 (Nookipedia, Spoiled turnips)"
         }
       }
     },
@@ -350,6 +518,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation (Apache-2.0) says Колебание стоимости; shortened"
+        },
+        "ja": {
+          "term": "波型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "파동형",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "波动型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "波型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -394,6 +586,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
+        },
+        "ja": {
+          "term": "跳ね大型 (also called 3期型)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "큰 급등",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "大幅上涨 (also called 三期型)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "三期型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -438,6 +654,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation (Apache-2.0) says Постоянное снижение; shortened"
+        },
+        "ja": {
+          "term": "ジリ貧型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "감소",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "递减型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "遞減型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -482,6 +722,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
+        },
+        "ja": {
+          "term": "跳ね小型 (also called 4期型)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "작은 급등",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "小幅上涨 (also called 四期型)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "四期型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -526,6 +790,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation (Apache-2.0)"
+        },
+        "ja": {
+          "term": "パターン",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "패턴",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "趋势",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "模型",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -570,6 +858,30 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Russian translation uses Утро and День"
+        },
+        "ja": {
+          "term": "午前, 午後 (月 午前 in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Japanese translation (Apache-2.0)"
+        },
+        "ko": {
+          "term": "오전, 오후 (월 오전 in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Korean translation (Apache-2.0)"
+        },
+        "zh-Hans": {
+          "term": "上午, 下午 (周一上午 in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Simplified Chinese translation (Apache-2.0)"
+        },
+        "zh-Hant": {
+          "term": "上午, 下午 (週一上午 in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Traditional Chinese translation (Apache-2.0)"
         }
       }
     },
@@ -611,6 +923,30 @@
         },
         "ru": {
           "term": "код друга",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ja": {
+          "term": "フレンドコード",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "친구 코드",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "好友码",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "好友代碼",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -658,6 +994,30 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ja": {
+          "term": "グループ, グループコード",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "그룹, 그룹 코드",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "群组, 群组码",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "群組, 群組代碼",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -699,6 +1059,30 @@
         },
         "ru": {
           "term": "код восстановления",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ja": {
+          "term": "復元コード",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "복구 코드",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "恢复码",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "復原代碼",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -746,6 +1130,30 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ja": {
+          "term": "接続コード",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "연결 코드",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "连接码",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "連線代碼",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -787,6 +1195,30 @@
         },
         "ru": {
           "term": "прогноз",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ja": {
+          "term": "予測",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "예측",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "预测",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "預測",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -834,6 +1266,30 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "ja": {
+          "term": "時間帯 (午前か午後)",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "시간대 (오전 또는 오후)",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "时段 (上午或下午)",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
+          "term": "時段 (上午或下午)",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -874,6 +1330,30 @@
           "source": ""
         },
         "ru": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ja": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "ko": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hans": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "zh-Hant": {
           "term": "Turnip Tycoon",
           "forms": [],
           "avoid": [],

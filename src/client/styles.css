@@ -1,14 +1,7 @@
 /* Island Ledger: sand ground, cream cards, leaf-green actions and gold highlights,
    drawn from the mascot. Chunky borders with offset shadows read as game buttons. */
 :root {
-  font-family:
-    'Nunito Variable',
-    'Nunito',
-    ui-rounded,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--font-text);
   color: var(--text);
   background: var(--bg);
   color-scheme: light;
@@ -16,6 +9,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  /* Japanese, Korean and Chinese add their own fonts to both lists, in fonts.css. */
+  --font-text:
+    'Nunito Variable', 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* Nunito comes before ui-rounded so text Fredoka lacks, like Cyrillic, looks the same everywhere. */
   --font-display:
     'Fredoka Variable', 'Fredoka', 'Nunito Variable', ui-rounded, system-ui, sans-serif;
@@ -842,7 +838,7 @@ summary {
 }
 /* An empty box takes the hint's type, so the browser centres the hint like a value. */
 .price-field input:placeholder-shown {
-  font-family: 'Nunito Variable', 'Nunito', system-ui, sans-serif;
+  font-family: var(--font-text);
   font-size: 14px;
   font-weight: 700;
 }

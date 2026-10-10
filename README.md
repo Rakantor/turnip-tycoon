@@ -40,12 +40,12 @@ New languages start as machine drafts and need players who speak them to check t
 | Italiano   | 🟠 Needs reviewers |
 | Nederlands | 🟠 Needs reviewers |
 | Русский    | 🟠 Needs reviewers |
-| 日本語     | 🔴 Not started     |
-| 한국어     | 🔴 Not started     |
-| 简体中文   | 🔴 Not started     |
-| 繁體中文   | 🔴 Not started     |
+| 日本語     | 🟠 Needs reviewers |
+| 한국어     | 🟠 Needs reviewers |
+| 简体中文   | 🟠 Needs reviewers |
+| 繁體中文   | 🟠 Needs reviewers |
 
-Spot something off? Fix it in [`src/client/locales`](src/client/locales) and open a pull request, right on GitHub if you like. [Contributing](CONTRIBUTING.md#translations) explains the format and the game's terms. Want to help start a 🔴 language? [Open an issue](https://github.com/Rakantor/turnip-tycoon/issues).
+Spot something off? Fix it in [`src/client/locales`](src/client/locales) and open a pull request, right on GitHub if you like. [Contributing](CONTRIBUTING.md#translations) explains the format and the game's terms. Missing a language you play in? [Open an issue](https://github.com/Rakantor/turnip-tycoon/issues).
 
 <br>
 

@@ -25,11 +25,20 @@ export const pagesPwaOptions: Partial<VitePWAOptions> = {
       'icons/*.{png,webp}',
       'licenses/turnip-prophet/{COPYRIGHT,LICENSE,NOTICE}',
     ],
+    // Japanese, Korean and Chinese fonts reach only the players who choose those languages.
+    globIgnores: ['assets/cjk-*.woff2'],
     // Pages uses hash routes: only the app's entry document needs a fallback.
     navigateFallback: 'index.html',
     navigateFallbackAllowlist: [/^\/(?:index\.html)?(?:\?.*)?$/],
-    // User data stays in the existing IndexedDB store; API responses are never cached.
-    runtimeCaching: [],
+    // User data stays in the existing IndexedDB store; API responses are never cached. A CJK
+    // font is kept once fetched, so its language keeps its look offline.
+    runtimeCaching: [
+      {
+        urlPattern: /\/assets\/cjk-[^/]+\.woff2$/,
+        handler: 'CacheFirst',
+        options: { cacheName: 'turnip-tycoon-cjk-fonts', expiration: { maxEntries: 16 } },
+      },
+    ],
   },
 };
 

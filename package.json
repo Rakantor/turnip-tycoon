@@ -16,6 +16,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:migrate:prod": "tsx --env-file=.env.production scripts/migrate.ts",
     "icons:generate": "node scripts/generate-icons.mjs",
+    "fonts:subset": "tsx scripts/subset-fonts.ts",
     "i18n:extract": "lingui extract --clean",
     "i18n:check": "lingui check sync",
     "typegen": "wrangler types --config wrangler.jsonc --strict-vars false",
@@ -51,6 +52,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "7z-wasm": "1.2.0",
     "@cloudflare/vite-plugin": "^1.62.5",
     "@cloudflare/workers-types": "^5.20261004.1",
     "@eslint/js": "^10.0.1",
@@ -71,8 +73,10 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "fake-indexeddb": "^6.2.5",
     "globals": "^17.13.0",
+    "harfbuzzjs": "1.6.3",
     "prettier": "^3.9.9",
     "sharp": "0.35.4",
+    "subset-font": "2.9.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",

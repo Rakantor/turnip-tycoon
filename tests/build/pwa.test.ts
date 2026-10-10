@@ -15,6 +15,7 @@ function inspectWorker(source: string) {
     entries: [] as PrecacheEntry[],
     prefix: '',
     routes: [] as NavigationRoute[],
+    runtime: [] as { pattern: RegExp; handler: CacheFirst }[],
     messages: [] as ((event: { data: { type: string } }) => void)[],
     skipWaits: 0,
     claims: 0,
@@ -26,6 +27,12 @@ function inspectWorker(source: string) {
       readonly options: { allowlist: RegExp[] },
     ) {}
   }
+  class ExpirationPlugin {
+    constructor(readonly options: { maxEntries: number }) {}
+  }
+  class CacheFirst {
+    constructor(readonly options: { cacheName: string; plugins: ExpirationPlugin[] }) {}
+  }
   const workbox = {
     setCacheNameDetails: ({ prefix }: { prefix: string }) => {
       calls.prefix = prefix;
@@ -36,8 +43,13 @@ function inspectWorker(source: string) {
     },
     cleanupOutdatedCaches: () => calls.cleanups++,
     createHandlerBoundToURL: (url: string) => url,
-    registerRoute: (route: NavigationRoute) => calls.routes.push(route),
+    registerRoute: (route: NavigationRoute | RegExp, handler?: CacheFirst) => {
+      if (route instanceof NavigationRoute) calls.routes.push(route);
+      else calls.runtime.push({ pattern: route, handler: handler! });
+    },
     NavigationRoute,
+    CacheFirst,
+    ExpirationPlugin,
   };
   const define = (_modules: string[], factory: (api: typeof workbox) => void) => factory(workbox);
   runInNewContext(source, {
@@ -77,6 +89,9 @@ describe('Pages service worker build', () => {
     await mkdir(join(fixture, 'public/api'));
     await writeFile(join(fixture, 'public/api/session.json'), '{"secret":"never cache"}');
     await writeFile(join(fixture, 'public/debug.html'), 'not an app entry point');
+    await mkdir(join(fixture, 'public/assets'));
+    await writeFile(join(fixture, 'public/assets/nunito-latin-test.woff2'), 'latin font');
+    await writeFile(join(fixture, 'public/assets/cjk-ja-test-0123.woff2'), 'japanese font');
     await writeFile(
       join(fixture, 'index.html'),
       '<!doctype html><html><head></head><body><script type="module" src="/entry.js"></script></body></html>',
@@ -102,6 +117,19 @@ describe('Pages service worker build', () => {
     expect(urls).not.toContain('debug.html');
     expect(urls.every((url) => !url.startsWith('/') && !url.includes('://'))).toBe(true);
     expect(first.routes).toHaveLength(1);
+  });
+
+  it('leaves Japanese, Korean and Chinese fonts to the players who use them', () => {
+    const urls = first.entries.map(({ url }) => url);
+    expect(urls).toContain('assets/nunito-latin-test.woff2');
+    expect(urls).not.toContain('assets/cjk-ja-test-0123.woff2');
+    expect(first.runtime).toHaveLength(1);
+    const [{ pattern, handler }] = first.runtime;
+    expect(pattern.test('https://turniptycoon.app/assets/cjk-ja-test-0123.woff2')).toBe(true);
+    expect(pattern.test('https://turniptycoon.app/assets/nunito-latin-test.woff2')).toBe(false);
+    expect(pattern.test('https://api.turniptycoon.app/session')).toBe(false);
+    expect(handler.options.cacheName).toBe('turnip-tycoon-cjk-fonts');
+    expect(handler.options.plugins[0].options.maxEntries).toBeGreaterThan(0);
   });
 
   it('limits navigation fallback to the app entry point', () => {
@@ -140,9 +168,8 @@ describe('Pages service worker build', () => {
     expect(entry(updated.entries, 'index.html')?.revision).not.toBe(
       entry(first.entries, 'index.html')?.revision,
     );
-    expect(updated.entries.find(({ url }) => url.startsWith('assets/'))?.url).not.toBe(
-      first.entries.find(({ url }) => url.startsWith('assets/'))?.url,
-    );
+    const script = ({ url }: PrecacheEntry) => /^assets\/.*\.js$/.test(url);
+    expect(updated.entries.find(script)?.url).not.toBe(first.entries.find(script)?.url);
     expect(entry(updated.entries, 'icons/icon-192.png')?.revision).toBe(
       entry(first.entries, 'icons/icon-192.png')?.revision,
     );

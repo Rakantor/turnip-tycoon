@@ -1,0 +1,3330 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-11 00:15+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ko\n"
+
+#. Marks the current half-day's column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "(now)"
+msgstr "(지금)"
+
+#. placeholder {0}: noPrices.length
+#: src/client/odds.ts
+#, fuzzy
+msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
+msgstr "{0, plural, other {{withoutPrices}(이번 주 가격 없음)}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
+msgstr "{bought, plural, other {무 #개를 샀어요. 내 무 보기}}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} decreasing"
+msgstr "감소 {chance}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} fluctuating"
+msgstr "파동형 {chance}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} large spike"
+msgstr "큰 급등 {chance}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} small spike"
+msgstr "작은 급등 {chance}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{difference} vs. what you paid"
+msgstr "산 가격 대비 {difference}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{earned} earned − {spent} spent"
+msgstr "수입 {earned} − 지출 {spent}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
+msgstr "{friendCount, plural, other {그룹에 친구가 #명 있어요. 나중에 다시 확인해 보세요.}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{friendName}’s {friendPrice}"
+msgstr "{friendName}의 {friendPrice}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} details"
+msgstr "{groupName} 상세 정보"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} players"
+msgstr "{groupName} 멤버"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{halfDay} (now)"
+msgstr "{halfDay}(지금)"
+
+#. halfDay is, e.g., "Monday morning"
+#: src/client/advice.ts
+#, fuzzy
+msgid "{halfDay} forecast"
+msgstr "{halfDay} 예측"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{halfDay} sell price in bells"
+msgstr "{halfDay} 판매 가격(벨)"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: could be {min} to {max} bells"
+msgstr "{halfDay}: {min}~{max}벨 가능"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: expected {min} bells"
+msgstr "{halfDay}: 예상 {min}벨"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: you entered {price} bells"
+msgstr "{halfDay}: 입력한 가격 {price}벨"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{halfDay}’s {price}"
+msgstr "{halfDay}의 {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{held, plural, one {Hold or sell your # turnip?} other {Hold or sell your # turnips?}}"
+msgstr "{held, plural, other {무 #개, 팔까요, 기다릴까요?}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{holderName} has {groupPrice} right now"
+msgstr "{holderName}: 지금 {groupPrice}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} to {highest} vs. what you paid"
+msgstr "산 가격 대비 {lowest}~{highest}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} vs. what you paid"
+msgstr "산 가격 대비 {lowest}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{members} of {capacity} players"
+msgstr "{members}/{capacity}명"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min} to {max} bells"
+msgstr "{min}~{max}벨"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min}–{max} bells"
+msgstr "{min}~{max}벨"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{mismatched}, whose prices don’t match a pattern"
+msgstr "{mismatched}(가격이 어떤 패턴과도 맞지 않음)"
+
+#. More players in the group than the seats shown
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "{more} more"
+msgstr "외 {more}명"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "{name} disconnected."
+msgstr "{name} 연결을 해제했어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price}"
+msgstr "{name}의 {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from {halfDay}"
+msgstr "{name}의 {halfDay} {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from this morning"
+msgstr "{name}의 오늘 오전 {price}"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s history"
+msgstr "{name}의 기록"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island"
+msgstr "{name}의 섬"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island is buying at {other}!"
+msgstr "{name}의 섬에서 {other}벨에 사고 있어요!"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s reported prices, Monday through Saturday"
+msgstr "{name}의 입력 가격(월요일~토요일)"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{name}’s selling pattern probabilities"
+msgstr "{name}의 판매 패턴 확률"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s week"
+msgstr "{name}의 한 주"
+
+#. placeholder {0}: odds.price
+#: src/client/advice.ts
+#, fuzzy
+msgid "{oddsChance} chance of more than {0}"
+msgstr "{0} 초과 확률 {oddsChance}"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern} still possible ({chance})"
+msgstr "{pattern} 아직 가능({chance})"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern}, up to {best}"
+msgstr "{pattern}, 최고 {best}"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: {value} bells reported"
+msgstr "{period}: {value}벨 입력됨"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: possible minimum {min}, maximum {max} bells"
+msgstr "{period}: 예상 최저 {min}, 최고 {max}벨"
+
+#. Turnips bought at a price
+#. Turnips bought at a price
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{quantity} at {price}"
+msgstr "{price}벨에 {quantity}개"
+
+#. Turnips sold at a price; halfDay is short, like “Mon AM”
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{quantity} at {price} on {halfDay}"
+msgstr "{halfDay}, {price}벨에 {quantity}개"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
+msgstr "{rotted, plural, other {일요일에 무 #개가 썩었어요.}}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "{rottedCount} rotted"
+msgstr "썩음 {rottedCount}개"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
+msgstr "{saving, plural, other {내 가격보다 #벨 싸요.}}"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "{times}× what you paid"
+msgstr "산 가격의 {times}배"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{times}× what you paid for yours."
+msgstr "내가 산 가격의 {times}배예요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{tolerance, plural, one {These matches allow a #-bell rounding difference.} other {These matches allow a #-bell rounding difference.}}"
+msgstr "{tolerance, plural, other {이 결과는 반올림 오차를 #벨까지 허용해요.}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{total, plural, one {# bell} other {# bells}}"
+msgstr "{total, plural, other {#벨}}"
+
+#. verdict is a sentence about the week’s pattern, e.g. "This was a decreasing week."
+#: src/client/advice.ts
+#, fuzzy
+msgid "{verdict} Your best price was <0>{bestPrice} bells</0> on {halfDay}."
+msgstr "{verdict} 최고가는 {halfDay}의 <0>{bestPrice}벨</0>이었어요."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
+msgstr "<0>{groupName}</0> 그룹이 지금 꽉 찼어요. 친구들이 뭐라고 부르면 될까요?"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
+msgstr "<0>이 복구 코드를 안전한 곳에 저장하세요.</0> 이 코드는 여기에서만 보이며 내 가격 데이터에 접근할 수 있어요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 fewer"
+msgstr "100 줄이기"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 more"
+msgstr "100 늘리기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "A good price is better shared."
+msgstr "좋은 가격은 나눌수록 좋아요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "A higher price is coming"
+msgstr "더 높은 가격이 와요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A higher price is coming."
+msgstr "더 높은 가격이 와요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "A little data goes a long way."
+msgstr "데이터가 조금만 있어도 큰 도움이 돼요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit could go either way"
+msgstr "이익은 반반"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit is certain"
+msgstr "이익 확실"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks likely"
+msgstr "이익 가능성 높음"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks unlikely"
+msgstr "이익 가능성 낮음"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "A week holds at most 40 purchases and sales."
+msgstr "한 주에 구매와 판매는 최대 40건까지 기록할 수 있어요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Add the prices you know. Leave the rest blank."
+msgstr "아는 가격을 입력하세요. 나머지는 비워 두세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Afternoon"
+msgstr "오후"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
+msgstr "연결된 모든 기기와 복구 코드의 접근 권한이 사라져요. 다른 멤버가 있는 그룹은 기록과 함께 남아요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "All friends"
+msgstr "모든 친구"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "All-time profit"
+msgstr "누적 이익"
+
+#. Morning, as a column heading
+#. Morning, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "AM"
+msgstr "오전"
+
+#. Morning, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "AM"
+msgstr "AM"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "An update is ready"
+msgstr "업데이트 준비 완료"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed the same entries"
+msgstr "다른 기기에서 같은 항목을 변경했어요"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed this week"
+msgstr "다른 기기에서 이번 주를 변경했어요"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "App update"
+msgstr "앱 업데이트"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve another device"
+msgstr "다른 기기 승인"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve device"
+msgstr "기기 승인"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Approve this code from a connected device first."
+msgstr "먼저 연결된 기기에서 이 코드를 승인하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approved. On the new device, select “Finish connecting”."
+msgstr "승인했어요. 새 기기에서 “연결 완료”를 선택하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {averagePaid}"
+msgstr "평균 {averagePaid}벨"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {price}"
+msgstr "개당 {price}벨"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Average cost"
+msgstr "평균 단가"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Back"
+msgstr "뒤로"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Back to friends"
+msgstr "친구로 돌아가기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Back to prices"
+msgstr "가격으로 돌아가기"
+
+#. The unit under a price
+#. The unit under a price
+#. The unit under a price
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "bells"
+msgstr "벨"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "bells per turnip"
+msgstr "무 1개당 벨"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bells per turnip"
+msgstr "무 1개당 벨"
+
+#. Follows a price or a range of prices
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells predicted"
+msgstr "벨(예측)"
+
+#. Follows a price
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells reported"
+msgstr "벨(입력)"
+
+#. Under the all-time profit, which is in bells
+#: src/client/history.tsx
+#, fuzzy
+msgid "bells, with this week’s {thisWeekSoFar} so far"
+msgstr "벨(이번 주 지금까지 {thisWeekSoFar})"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best {shownName} price"
+msgstr "{shownName} 최고가"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best bet"
+msgstr "추천"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Best entered"
+msgstr "입력한 최고가"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best price"
+msgstr "최고가"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until 10 PM"
+msgstr "지금 최고가 · 오후 10시까지"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until noon"
+msgstr "지금 최고가 · 정오까지"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Best week"
+msgstr "최고의 주"
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "between {first} and {last}"
+msgstr "{first}~{last}"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bought"
+msgstr "구매"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Bought {bought}; sold {sold}"
+msgstr "구매 {bought} · 판매 {sold}"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Bought for"
+msgstr "산 가격"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Bought for {purchasePrice}"
+msgstr "산 가격 {purchasePrice}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Bought for<0>, average per turnip</0>"
+msgstr "산 가격<0>(무 1개당 평균)</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Bring your friends along"
+msgstr "친구를 초대하세요"
+
+#. Under “Sun”: the Sunday buy price column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Buy"
+msgstr "구매"
+
+#. Under “Sun” on the week board
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "buy price"
+msgstr "산 가격"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "By Saturday night"
+msgstr "토요일 밤까지"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Cancel"
+msgstr "취소"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Certain"
+msgstr "확실"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Chance for each island"
+msgstr "섬별 확률"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating {halfDay}’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "토요일에 너굴상점이 문을 닫기 전에 {halfDay}의 <0>{price}</0>벨을 넘을 확률."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this afternoon’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "토요일에 너굴상점이 문을 닫기 전에 오늘 오후의 <0>{price}</0>벨을 넘을 확률."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this morning’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "토요일에 너굴상점이 문을 닫기 전에 오늘 오전의 <0>{price}</0>벨을 넘을 확률."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of more than <0>{price}</0> on your island before Nook’s Cranny closes on Saturday."
+msgstr "토요일에 너굴상점이 문을 닫기 전에 내 섬에서 <0>{price}</0>벨을 넘을 확률."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Chance of selling for more than each price from {low} to {high} bells."
+msgstr "{low}~{high}벨의 각 가격보다 비싸게 팔 확률."
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by Saturday night"
+msgstr "토요일 밤까지 누군가 {price}보다 높을 확률"
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by tonight"
+msgstr "오늘 밤까지 누군가 {price}보다 높을 확률"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance you can sell for more than the <0>{price}</0> you paid this week."
+msgstr "이번 주에 산 가격 <0>{price}</0>벨보다 비싸게 팔 확률."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Changes need review"
+msgstr "변경 사항 확인 필요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Cheapest Sunday price"
+msgstr "일요일 최저가"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Check the supplied fields."
+msgstr "입력한 항목을 확인하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Check this entry."
+msgstr "이 항목을 확인하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid device."
+msgstr "올바른 기기를 선택하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid export page."
+msgstr "올바른 내보내기 페이지를 선택하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid group or player."
+msgstr "올바른 그룹이나 플레이어를 선택하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid history date and limit."
+msgstr "올바른 기록 날짜와 개수를 지정하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid Sunday for this week."
+msgstr "이번 주의 올바른 일요일을 선택하세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Choose which entries to keep. Yours are still here until you choose."
+msgstr "남길 항목을 선택하세요. 선택하기 전까지 내 항목은 그대로 남아 있어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Clear this device’s saved data"
+msgstr "이 기기에 저장된 데이터 삭제"
+
+#: src/client/groups.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Close"
+msgstr "닫기"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Close half-day details"
+msgstr "시간대 상세 정보 닫기"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Compare entries"
+msgstr "항목 비교"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Compare your prices and find a good time to sell, together."
+msgstr "함께 가격을 비교하고 팔기 좋은 때를 찾아보세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Connect a device to continue."
+msgstr "계속하려면 기기를 연결하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect an existing profile"
+msgstr "기존 프로필 연결"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect this device to an existing profile"
+msgstr "이 기기를 기존 프로필에 연결"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Connect to load this player’s shared prices."
+msgstr "연결하면 이 플레이어가 공유한 가격을 불러올 수 있어요."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load your saved history."
+msgstr "연결하면 저장된 기록을 불러올 수 있어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Connect to see your friends’ shared prices."
+msgstr "연결하면 친구들이 공유한 가격을 볼 수 있어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect to the internet to delete your profile."
+msgstr "프로필을 삭제하려면 인터넷에 연결하세요."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Connect to your player before updating friends."
+msgstr "친구를 업데이트하기 전에 프로필을 연결하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect using another device instead"
+msgstr "대신 다른 기기로 연결"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Connect your other device"
+msgstr "다른 기기 연결하기"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect your profile online to download or delete its data."
+msgstr "데이터를 다운로드하거나 삭제하려면 프로필을 온라인으로 연결하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected {connected}"
+msgstr "연결 날짜 {connected}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected devices"
+msgstr "연결된 기기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connecting your profile… You can already enter prices."
+msgstr "프로필 연결 중… 가격은 이미 입력할 수 있어요."
+
+#: src/client/pairing.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connection code"
+msgstr "연결 코드"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Connection unavailable. You can keep entering prices on this device."
+msgstr "연결할 수 없어요. 이 기기에서 계속 가격을 입력할 수 있어요."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Contact"
+msgstr "문의"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Continuing creates a profile and saves your prices online and on this device. Read our <0>Terms</0> and <1>Privacy page</1>."
+msgstr "계속하면 프로필이 만들어지고 가격이 온라인과 이 기기에 저장돼요. <0>이용약관</0>과 <1>개인정보 보호 페이지</1>를 읽어 보세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copied"
+msgstr "복사했어요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy {groupName} group code"
+msgstr "{groupName} 그룹 코드 복사"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copy code"
+msgstr "코드 복사"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy this group link to share it."
+msgstr "공유하려면 이 그룹 링크를 복사하세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Correct the highlighted entries. The forecast uses your last valid prices."
+msgstr "표시된 항목을 수정하세요. 예측에는 마지막으로 유효했던 가격을 사용해요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {cost}"
+msgstr "비용 {cost}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {rottedCost}"
+msgstr "비용 {rottedCost}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Could be"
+msgstr "가능 범위"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Could be (min–max)"
+msgstr "가능 범위(최저~최고)"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Could be as low as {floor} then"
+msgstr "하지만 {floor}까지 떨어질 수도 있어요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Could go either way"
+msgstr "반반"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
+msgstr "이 기기에 저장된 가격에 접근할 수 없어요. 이 페이지를 열어 둔 채 브라우저 저장소를 확인한 뒤 다시 시도하세요."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not check for updates. Reconnect and try again."
+msgstr "업데이트를 확인할 수 없어요. 다시 연결한 뒤 다시 시도하세요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not confirm deletion."
+msgstr "삭제를 확인할 수 없어요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not connect this profile."
+msgstr "이 프로필을 연결할 수 없어요."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the license."
+msgstr "라이선스를 불러올 수 없어요."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
+msgstr "라이선스를 불러올 수 없어요. <0>다시 시도</0>하거나 <1>고지</1>와 <2>라이선스</2>를 여세요."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Could not load your groups."
+msgstr "그룹을 불러올 수 없어요."
+
+#: src/client/data/api.ts
+#, fuzzy
+msgid "Could not reach the server."
+msgstr "서버에 연결할 수 없어요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not request deletion."
+msgstr "삭제를 요청할 수 없어요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not restart profile creation."
+msgstr "프로필 만들기를 다시 시작할 수 없어요."
+
+#: src/client/data/pending-edits.ts
+#, fuzzy
+msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
+msgstr "이 기기에 가격을 저장할 수 없어요. 저장하지 않은 변경 사항은 이 페이지에 남아 있어요. 페이지를 닫기 전에 열어 둔 채 다시 시도하세요."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not update the app."
+msgstr "앱을 업데이트할 수 없어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Couldn’t sync"
+msgstr "동기화 실패"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
+msgstr "이 기기에 접근할 수 없게 되었을 때 가격을 되찾을 수 있는 코드를 만드세요. 다른 사람이 볼 수 없는 곳에 보관하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create a group"
+msgstr "그룹 만들기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create group"
+msgstr "그룹 만들기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join a group"
+msgstr "그룹 만들기 또는 참여"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join group"
+msgstr "그룹 만들기 또는 참여"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create recovery code"
+msgstr "복구 코드 만들기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Created {groupName}."
+msgstr "{groupName} 그룹을 만들었어요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Daisy Mae charges {min}–{max} bells."
+msgstr "무파니는 {min}~{max}벨에 팔아요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Daisy Mae is selling for {other} on {name}’s island"
+msgstr "{name}의 섬에서 무파니가 {other}벨에 팔고 있어요"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Day"
+msgstr "요일"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Decreasing"
+msgstr "감소"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete my profile"
+msgstr "프로필 삭제"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete your profile?"
+msgstr "프로필을 삭제할까요?"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deleting your profile…"
+msgstr "프로필 삭제 중…"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deletion needs another check"
+msgstr "삭제를 다시 확인해야 해요"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Devices"
+msgstr "기기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect"
+msgstr "연결 해제"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect {name}? You can connect it again later."
+msgstr "{name} 연결을 해제할까요? 나중에 다시 연결할 수 있어요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect device"
+msgstr "기기 연결 해제"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Display name"
+msgstr "표시 이름"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download my data"
+msgstr "내 데이터 다운로드"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your data first if you want to keep it. This cannot be undone. <0>Backup and log details</0>."
+msgstr "데이터를 보관하려면 먼저 다운로드하세요. 이 작업은 되돌릴 수 없어요. <0>백업과 로그 안내</0>."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
+msgstr "프로필, 저장된 모든 가격과 거래, 그룹 참여 정보, 기기 정보를 JSON 파일로 다운로드해요. 이 브라우저에서 보내지 않은 변경 사항은 따로 포함돼요. 파일은 다른 사람이 볼 수 없는 곳에 보관하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase"
+msgstr "구매 수정"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase of {what}"
+msgstr "{what} 구매 수정"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale"
+msgstr "판매 수정"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale of {what}"
+msgstr "{what} 판매 수정"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Edit your name"
+msgstr "이름 수정"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Editing…"
+msgstr "수정 중…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter how many turnips."
+msgstr "무가 몇 개인지 입력하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter the price per turnip."
+msgstr "무 1개당 가격을 입력하세요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this afternoon’s price to see your odds."
+msgstr "확률을 보려면 오늘 오후 가격을 입력하세요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this morning’s price to see your odds."
+msgstr "확률을 보려면 오늘 오전 가격을 입력하세요."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Enter this week’s prices"
+msgstr "이번 주 가격 입력"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week."
+msgstr "일요일 무파니의 가격이나 알고 있는 아무 가격을 입력하면 한 주를 예측해 드릴게요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter what Daisy Mae charged to see your odds."
+msgstr "확률을 보려면 무파니의 가격을 입력하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Enter your saved recovery code. Switching profiles does not merge prices. Recovery replaces the code with a new one."
+msgstr "저장해 둔 복구 코드를 입력하세요. 프로필을 바꿔도 가격은 합쳐지지 않아요. 복구하면 코드가 새 코드로 바뀌어요."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Entries"
+msgstr "항목"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Entry"
+msgstr "항목"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Even the low end, {floor}, beats what you paid"
+msgstr "최저가({floor})도 산 가격보다 높아요"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night."
+msgstr "이번 주 가격이 모두 입력됐어요. 무는 일요일에 썩으니 토요일 밤 너굴상점이 문을 닫기 전에 파세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Everyone"
+msgstr "모두"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Everything else from both devices is combined. Choose which of these to keep."
+msgstr "나머지는 두 기기의 내용을 합쳤어요. 이 중에서 남길 항목을 선택하세요."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Expires at {expires}. Keep this page open."
+msgstr "{expires}까지 유효해요. 이 페이지를 열어 두세요."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Finish connecting"
+msgstr "연결 완료"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Finish or correct your price entry before updating."
+msgstr "업데이트하기 전에 가격 입력을 마치거나 수정하세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase"
+msgstr "무파니에게 첫 구매"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase on this island?"
+msgstr "이 섬에서 무파니에게 처음 사나요?"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "First purchase on their island"
+msgstr "자기 섬에서 첫 구매"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fluctuating"
+msgstr "파동형"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "for {earned}"
+msgstr "총 {earned}벨"
+
+#. Short label for Friday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri AM"
+msgstr "금 오전"
+
+#. Short label for Friday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri PM"
+msgstr "금 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday afternoon"
+msgstr "금요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday morning"
+msgstr "금요일 오전"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Friend code"
+msgstr "친구 코드"
+
+#: src/client/groups.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Friends"
+msgstr "친구"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends & groups"
+msgstr "친구와 그룹"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices"
+msgstr "친구 가격"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices this week"
+msgstr "이번 주 친구 가격"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Full week"
+msgstr "한 주 전체"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Full week group prices"
+msgstr "한 주 전체 그룹 가격"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Generated by Turnip Tycoon. This code stays the same when you change your name."
+msgstr "Turnip Tycoon이 만든 코드예요. 이름을 바꿔도 그대로예요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Get a connection code"
+msgstr "연결 코드 받기"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Get a new code"
+msgstr "새 코드 받기"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Go online on your other devices first if you want their latest edits included."
+msgstr "다른 기기의 최신 변경 사항도 포함하려면 먼저 그 기기들을 온라인으로 연결하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group action"
+msgstr "그룹 작업"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code"
+msgstr "그룹 코드"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code copied."
+msgstr "그룹 코드를 복사했어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group full"
+msgstr "그룹 꽉 참"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group link copied."
+msgstr "그룹 링크를 복사했어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group name"
+msgstr "그룹 이름"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
+msgstr "그룹 가격(무 1개당 벨). 입력된 가격은 채워진 칸, 예측은 점선 칸에 가능한 범위로 표시돼요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group share link"
+msgstr "그룹 공유 링크"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "조금만 기다려요! 작은 급등이 와요. {when}에 <0>최고 {peak}벨</0>에 팔 수 있을지도 몰라요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "조금만 기다려요! 작은 급등이 올 것 같아요. {when}에 <0>최고 {peak}벨</0>에 팔 수 있을지도 몰라요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "High"
+msgstr "최고"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Highest {shownName} price in your groups."
+msgstr "그룹에서 {shownName} 최고가."
+
+#: src/client/history.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "History"
+msgstr "기록"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept."
+msgstr "음, 이 가격은 어떤 패턴과도 맞지 않아요. 입력한 항목과 주 설정을 확인하세요. 가격은 그대로 저장돼 있어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "무를 아직 팔지 마세요! 큰 급등이 와요. {when}에 <0>최고 {peak}벨</0>에 팔 수 있을지도 몰라요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "무를 아직 팔지 마세요! 큰 급등이 올 것 같아요. {when}에 <0>최고 {peak}벨</0>에 팔 수 있을지도 몰라요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold on to your turnips"
+msgstr "무는 아직 팔지 마세요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold or sell?"
+msgstr "팔까요, 기다릴까요?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding"
+msgstr "보유"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding {holding} → {holdingAfter} turnips"
+msgstr "보유한 무 {holding} → {holdingAfter}개"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Holding looks good"
+msgstr "기다리는 게 좋아 보여요"
+
+#: src/client/forecast.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "How the week could go"
+msgstr "이번 주 전망"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "I already play on another device"
+msgstr "이미 다른 기기에서 플레이하고 있어요"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "I understand that my profile and its records will be deleted."
+msgstr "내 프로필과 기록이 삭제된다는 것을 이해했어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
+msgstr "이 기기에 더 이상 접근 권한이 없다면 확인되지 않은 요청에 대해 <0>{CONTACT_EMAIL}</0>에 문의하세요. 아래에서 이 브라우저에 저장된 데이터와 접근 권한을 지울 수 있어요. 다만 서버에서 삭제가 확인되는 것은 아니며, 여기에서 다시 시도할 수도 없게 돼요."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
+msgstr "<0>Turnip Prophet</0>에서 영감을 받았어요. 닌텐도와 관계없는 팬 프로젝트예요."
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install"
+msgstr "설치"
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install Turnip Tycoon"
+msgstr "Turnip Tycoon 설치"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite"
+msgstr "초대"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite a player to {groupName}"
+msgstr "{groupName}에 플레이어 초대"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Island"
+msgstr "섬"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "It’s too early to call. {pattern} is most likely, and prices could reach <0>up to {peak} bells</0> {when}."
+msgstr "아직 판단하기 일러요. {pattern} 패턴일 가능성이 가장 높고, {when}에 <0>최고 {peak}벨</0>까지 오를 수 있어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
+msgstr "저장된 기록과 접근 권한이 이 브라우저에서 지워졌어요. 기기가 삭제되거나, 프로필이 삭제되거나, 이 기기를 지우기로 했을 때 이렇게 돼요. 이것만으로 서버에서 삭제됐다는 뜻은 아니에요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join {groupName} on Turnip Tycoon"
+msgstr "Turnip Tycoon에서 {groupName}에 참여하세요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join a group"
+msgstr "그룹 참여"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join group"
+msgstr "그룹 참여"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join your friends"
+msgstr "친구와 함께하세요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Joined {groupName}."
+msgstr "{groupName}에 참여했어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Keep my profile"
+msgstr "프로필 유지"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Keep this device’s entries"
+msgstr "이 기기의 항목 유지"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Kind of trade"
+msgstr "거래 종류"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Language"
+msgstr "언어"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Large spike"
+msgstr "큰 급등"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Last chance: Nook’s Cranny closes at 10 PM."
+msgstr "마지막 기회: 너굴상점은 오후 10시에 문을 닫아요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week"
+msgstr "지난주"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week’s pattern"
+msgstr "지난주 패턴"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Last week’s turnips"
+msgstr "지난주 무"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Later"
+msgstr "나중에"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
+msgstr "{groupName}에서 나갈까요? 함께하는 다른 그룹이 없으면 멤버들과 더 이상 공유하지 않아요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave group"
+msgstr "그룹 나가기"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Licenses"
+msgstr "라이선스"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Load older weeks"
+msgstr "이전 주 불러오기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Loading devices…"
+msgstr "기기 불러오는 중…"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Loading saved prices…"
+msgstr "저장된 가격 불러오는 중…"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Loading saved weeks…"
+msgstr "저장된 주 불러오는 중…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared history…"
+msgstr "공유된 기록 불러오는 중…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared prices…"
+msgstr "공유된 가격 불러오는 중…"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Loading your groups…"
+msgstr "그룹 불러오는 중…"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Loading…"
+msgstr "불러오는 중…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a purchase"
+msgstr "구매 기록"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a sale"
+msgstr "판매 기록"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log at most {most} turnips at a time."
+msgstr "무는 한 번에 최대 {most}개까지 기록할 수 있어요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log purchase"
+msgstr "구매 기록"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log sale"
+msgstr "판매 기록"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Looking back"
+msgstr "돌아보기"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Low"
+msgstr "최저"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Lowest buy price in your groups."
+msgstr "그룹에서 가장 낮은 구매 가격."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Made so far"
+msgstr "지금까지 번 금액"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Main navigation"
+msgstr "주 메뉴"
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Missing device credential."
+msgstr "기기 인증 정보가 없어요."
+
+#. Short label for Monday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon AM"
+msgstr "월 오전"
+
+#. Short label for Monday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon PM"
+msgstr "월 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday afternoon"
+msgstr "월요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday morning"
+msgstr "월요일 오전"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Morning"
+msgstr "오전"
+
+#: src/client/data/identity.ts
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My computer"
+msgstr "내 컴퓨터"
+
+#: src/client/data/identity.ts
+#, fuzzy
+msgid "My phone"
+msgstr "내 휴대폰"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My phone or tablet"
+msgstr "내 휴대폰 또는 태블릿"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Name saved"
+msgstr "이름을 저장했어요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Next best: {other} on {name}’s island."
+msgstr "다음으로 높은 가격: {name}의 섬, {other}벨."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Next week"
+msgstr "다음 주"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No"
+msgstr "아니요"
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No forecast yet"
+msgstr "아직 예측 없음"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No forecast yet."
+msgstr "아직 예측이 없어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a {periodLabel} price yet"
+msgstr "아직 {periodLabel} 가격을 공유한 친구가 없어요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a Sunday buy price yet"
+msgstr "아직 일요일 구매 가격을 공유한 친구가 없어요"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "No half-days left this week"
+msgstr "이번 주에 남은 시간대가 없어요"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "No matching forecast"
+msgstr "맞는 예측 없음"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "No new profile has been created. You can close the app, or start again when you are ready."
+msgstr "새 프로필은 만들어지지 않았어요. 앱을 닫거나, 준비되면 다시 시작하세요."
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No past weeks yet."
+msgstr "아직 지난 주가 없어요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these prices. Check your entries and week settings. Your prices have been kept."
+msgstr "이 가격에 맞는 패턴이 없어요. 입력한 항목과 주 설정을 확인하세요. 가격은 그대로 저장돼 있어요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these reported prices."
+msgstr "입력된 가격에 맞는 패턴이 없어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No price left this week will beat {known}."
+msgstr "이번 주 남은 가격 중 {known}보다 높은 가격은 없어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this afternoon. {chance} chance it’s already above {price}."
+msgstr "아직 오늘 오후 가격이 없어요. 이미 {price}벨보다 높을 확률은 {chance}예요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this morning. {chance} chance it’s already above {price}."
+msgstr "아직 오늘 오전 가격이 없어요. 이미 {price}벨보다 높을 확률은 {chance}예요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "No prices were saved for this week."
+msgstr "이번 주에 저장된 가격이 없어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No profit this week"
+msgstr "이번 주 이익 없음"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought"
+msgstr "산 무 없음"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought. Log a purchase"
+msgstr "산 무가 없어요. 구매 기록"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips logged."
+msgstr "기록된 무가 없어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a {periodLabel} price yet."
+msgstr "아직 아무도 {periodLabel} 가격을 공유하지 않았어요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a Sunday buy price yet."
+msgstr "아직 아무도 일요일 구매 가격을 공유하지 않았어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny has closed for the week."
+msgstr "너굴상점은 이번 주 영업을 마쳤어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny opens at 8 AM."
+msgstr "너굴상점은 오전 8시에 문을 열어요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Nook’s Cranny pays {min}–{max} bells."
+msgstr "너굴상점은 {min}~{max}벨에 사요."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}; {second}."
+msgstr "제외: {first}; {second}."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}."
+msgstr "제외: {first}."
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Not entered"
+msgstr "미입력"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Not entered, no forecast available"
+msgstr "미입력, 예측 없음"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Not sure"
+msgstr "잘 모르겠어요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Now"
+msgstr "지금"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Odds explorer"
+msgstr "확률 살펴보기"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Offline · saved on this device"
+msgstr "오프라인 · 이 기기에 저장됨"
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Offline access could not be prepared. Reconnect and try again."
+msgstr "오프라인 사용을 준비할 수 없어요. 다시 연결한 뒤 다시 시도하세요."
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "on {halfDay}"
+msgstr "{halfDay}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "on the {soldCount} sold"
+msgstr "판매한 {soldCount}개 기준"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "On the device you already use, open Settings, choose “Approve another device” and enter this code."
+msgstr "이미 사용 중인 기기에서 설정을 열고 “다른 기기 승인”을 선택한 뒤 이 코드를 입력하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On the new device, open Settings → Connect this device to an existing profile. Enter its connection code here."
+msgstr "새 기기에서 설정 → “이 기기를 기존 프로필에 연결”을 여세요. 그 기기의 연결 코드를 여기에 입력하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On your connected device, open Settings and choose “Approve another device”."
+msgstr "연결된 기기에서 설정을 열고 “다른 기기 승인”을 선택하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open {name}’s week"
+msgstr "{name}의 한 주 열기"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Open this request from the app."
+msgstr "앱에서 이 요청을 여세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open your week"
+msgstr "내 한 주 열기"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Or scan this code on your connected device."
+msgstr "또는 연결된 기기에서 이 코드를 스캔하세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Other device"
+msgstr "다른 기기"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Out of reach this week"
+msgstr "이번 주에는 어려워요"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past week"
+msgstr "지난 주"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Past weeks"
+msgstr "지난 주"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Past weeks and their profit"
+msgstr "지난 주와 이익"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past weeks are read-only. <0>Return to this week</0>"
+msgstr "지난 주는 볼 수만 있어요. <0>이번 주로 돌아가기</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Paste a group code"
+msgstr "그룹 코드 붙여넣기"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Peak day still open"
+msgstr "최고가 요일 미정"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Permanently delete profile"
+msgstr "프로필 영구 삭제"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try connecting again."
+msgstr "다시 연결해 보세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try creating the group again."
+msgstr "그룹을 다시 만들어 보세요."
+
+#. Afternoon, as a column heading
+#. Afternoon, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "PM"
+msgstr "오후"
+
+#. Afternoon, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "PM"
+msgstr "PM"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Possible patterns"
+msgstr "가능한 패턴"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous pattern"
+msgstr "이전 패턴"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Previous week"
+msgstr "이전 주"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous weeks, shared with your groups."
+msgstr "그룹과 공유한 지난 주."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Price view"
+msgstr "가격 보기"
+
+#. Main navigation: the current week's prices and forecast
+#: src/client/calculator.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Prices"
+msgstr "가격"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Prices don’t match a pattern"
+msgstr "맞는 패턴 없음"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Prices right now"
+msgstr "지금 가격"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will bounce around this week — <0>up to {peak} bells</0> is possible {when}. Sell when you see a price you like."
+msgstr "이번 주 가격은 오르락내리락할 거예요. {when}에 <0>최고 {peak}벨</0>도 가능해요. 마음에 드는 가격이 보이면 파세요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
+msgstr "이번 주 가격은 계속 내려갈 가능성이 높아요. 벨이 필요하다면 기다리기보다 <0>빨리 파는 것</0>이 좋아요."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Privacy"
+msgstr "개인정보 보호"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Privacy and data requests"
+msgstr "개인정보 보호 및 데이터 요청"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile"
+msgstr "프로필"
+
+#: src/client/data/profile-storage.ts
+#, fuzzy
+msgid "Profile cleanup is in progress. Keep this page open to retry your unsaved edits."
+msgstr "프로필을 정리하고 있어요. 저장하지 않은 변경 사항을 다시 시도하려면 이 페이지를 열어 두세요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings."
+msgstr "프로필 만들기가 중단됐어요. 설정에서 기존 프로필을 연결하거나 복구 코드를 사용하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile recovered"
+msgstr "프로필을 복구했어요"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Profit"
+msgstr "이익"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Profit on these"
+msgstr "이번 거래 이익"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Purchase"
+msgstr "구매"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Quick amounts"
+msgstr "빠른 선택"
+
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Reconnect"
+msgstr "다시 연결"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recover profile"
+msgstr "프로필 복구"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recovery code"
+msgstr "복구 코드"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this purchase"
+msgstr "이 구매 삭제"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this sale"
+msgstr "이 판매 삭제"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Removed"
+msgstr "삭제됨"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Replace recovery code"
+msgstr "복구 코드 교체"
+
+#: src/client/forecast.tsx
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Reported"
+msgstr "입력됨"
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry connection"
+msgstr "다시 연결"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Retry deletion"
+msgstr "삭제 다시 시도"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry devices"
+msgstr "기기 다시 불러오기"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Retry history"
+msgstr "기록 다시 불러오기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Return to prices"
+msgstr "가격으로 돌아가기"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Return to welcome"
+msgstr "시작 화면으로 돌아가기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Right now"
+msgstr "지금"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Room for another group?"
+msgstr "그룹을 하나 더 만들까요?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Rotted"
+msgstr "썩음"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Ruled out"
+msgstr "제외됨"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sale"
+msgstr "판매"
+
+#. Short label for Saturday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat AM"
+msgstr "토 오전"
+
+#. Short label for Saturday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat PM"
+msgstr "토 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday afternoon"
+msgstr "토요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday morning"
+msgstr "토요일 오전"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Save"
+msgstr "저장"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save and join"
+msgstr "저장하고 참여"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save name"
+msgstr "이름 저장"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved"
+msgstr "저장됨"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Saved data and unsent edits on this browser will be cleared. Other devices clear their copies when they next check access online. Friends may still have offline copies or screenshots."
+msgstr "이 브라우저에 저장된 데이터와 보내지 않은 변경 사항이 지워져요. 다른 기기는 다음에 온라인에서 접근 권한을 확인할 때 사본을 지워요. 친구에게 오프라인 사본이나 스크린샷이 남아 있을 수 있어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved on this device · sync pending"
+msgstr "이 기기에 저장됨 · 동기화 대기 중"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Saved on this device. Waiting to sync."
+msgstr "이 기기에 저장했어요. 동기화를 기다리는 중이에요."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Saved weeks will appear here when a new week starts."
+msgstr "새 주가 시작되면 저장된 주가 여기에 표시돼요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saving…"
+msgstr "저장 중…"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Scan this code on your connected device to approve the connection"
+msgstr "연결을 승인하려면 연결된 기기에서 이 코드를 스캔하세요"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "See the island board"
+msgstr "섬 현황 보기"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "See this week"
+msgstr "이번 주 보기"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
+msgstr "시간대를 선택하면 가능한 가격 범위가 보여요. 화살표 키로 시간대를 옮기고, Home이나 End로 처음이나 끝으로 가고, Escape로 상세 정보를 닫아요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Select and copy the group code above."
+msgstr "위의 그룹 코드를 선택해 복사하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Select the code above to copy it manually."
+msgstr "위의 코드를 선택해 직접 복사하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sell all now<0> at {price}</0>"
+msgstr "지금 모두 팔기<0>({price}벨)</0>"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell now"
+msgstr "지금 팔기"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell tonight"
+msgstr "오늘 밤에 팔기"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling for more than <0>{price}</0> bells"
+msgstr "<0>{price}</0>벨보다 비싸게 팔기"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling now looks good"
+msgstr "지금 파는 게 좋아 보여요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling soon looks good"
+msgstr "곧 파는 게 좋아 보여요"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request body."
+msgstr "JSON 요청 본문을 보내세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request."
+msgstr "JSON 요청을 보내세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send valid JSON."
+msgstr "올바른 JSON을 보내세요."
+
+#: src/client/main.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Settings"
+msgstr "설정"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share group link"
+msgstr "그룹 링크 공유"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share your group link to bring friends along."
+msgstr "그룹 링크를 공유해 친구를 초대하세요."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared history"
+msgstr "공유된 기록"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared past weekly prices"
+msgstr "공유된 지난 주 가격"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared view · read only"
+msgstr "공유 화면 · 읽기 전용"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Show group"
+msgstr "그룹 보기"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Show Turnip Tycoon in"
+msgstr "Turnip Tycoon 표시 언어"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Site information"
+msgstr "사이트 정보"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Skip to content"
+msgstr "본문으로 건너뛰기"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small chance of up to {peak}"
+msgstr "최고 {peak}의 작은 가능성"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small spike"
+msgstr "작은 급등"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold"
+msgstr "판매"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for"
+msgstr "판매 가격"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for<0>, average per turnip</0>"
+msgstr "판매 가격<0>(무 1개당 평균)</0>"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold them and forgot to log it?"
+msgstr "팔고 기록하는 걸 잊었나요?"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Some prices are a little off the usual patterns, so treat this as a rough guide."
+msgstr "일부 가격이 보통 패턴에서 조금 벗어나 있으니 대략적인 참고로만 보세요."
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by Saturday night"
+msgstr "토요일 밤까지 누군가 {price}보다 높은 가격을 받아요"
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by tonight"
+msgstr "오늘 밤까지 누군가 {price}보다 높은 가격을 받아요"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "Something went wrong. Please try again."
+msgstr "문제가 발생했어요. 다시 시도하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Start a group with friends to compare prices and forecasts."
+msgstr "친구와 그룹을 만들어 가격과 예측을 비교해 보세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Start a new profile"
+msgstr "새 프로필 만들기"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Stay"
+msgstr "머무르기"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday"
+msgstr "일요일"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Sunday buy"
+msgstr "일요일 구매"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday buy price"
+msgstr "일요일 구매 가격"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sunday forecast"
+msgstr "일요일 예측"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sunday purchase price in bells"
+msgstr "일요일 구매 가격(벨)"
+
+#. An example group name
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday turnip crew"
+msgstr "일요일 무 클럽"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday, from Daisy Mae"
+msgstr "일요일, 무파니에게서"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Terms"
+msgstr "이용약관"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before 10 PM."
+msgstr "산 가격의 {times}배예요. 오후 10시 전에 날아가 보세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before noon."
+msgstr "산 가격의 {times}배예요. 정오 전에 날아가 보세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid."
+msgstr "산 가격의 {times}배예요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s less than the {purchase} you paid."
+msgstr "산 가격({purchase})보다 낮아요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "the {price} you paid"
+msgstr "산 가격 {price}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The best {periodLabel} price in your groups."
+msgstr "그룹에서 {periodLabel} 최고가."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "The download could not be completed. Please try again."
+msgstr "다운로드를 완료할 수 없어요. 다시 시도하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The lowest Sunday price in your groups."
+msgstr "그룹에서 일요일 최저가."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request body could not be read."
+msgstr "요청 본문을 읽을 수 없어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request is too large."
+msgstr "요청이 너무 커요."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved device credential is invalid."
+msgstr "저장된 기기 인증 정보가 올바르지 않아요."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved profile is missing its device credential."
+msgstr "저장된 프로필에 기기 인증 정보가 없어요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "The server did not return a valid device credential."
+msgstr "서버에서 올바른 기기 인증 정보를 받지 못했어요."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "The update is not ready yet. Please try again."
+msgstr "업데이트가 아직 준비되지 않았어요. 다시 시도하세요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "These cost you"
+msgstr "비용"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "These prices didn’t match any pattern."
+msgstr "이 가격은 어떤 패턴과도 맞지 않았어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>decreasing</0> week. Use that in this week’s forecast?"
+msgstr "이 가격은 이제 <0>감소</0> 패턴을 가리켜요. 이번 주 예측에 반영할까요?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>fluctuating</0> week. Use that in this week’s forecast?"
+msgstr "이 가격은 이제 <0>파동형</0> 패턴을 가리켜요. 이번 주 예측에 반영할까요?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>large spike</0> week. Use that in this week’s forecast?"
+msgstr "이 가격은 이제 <0>큰 급등</0> 패턴을 가리켜요. 이번 주 예측에 반영할까요?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>small spike</0> week. Use that in this week’s forecast?"
+msgstr "이 가격은 이제 <0>작은 급등</0> 패턴을 가리켜요. 이번 주 예측에 반영할까요?"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this afternoon’s {price}"
+msgstr "오늘 오후의 {price}"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not read saved profile access. Enable browser storage or connect an existing profile."
+msgstr "이 브라우저가 저장된 프로필 접근 정보를 읽을 수 없어요. 브라우저 저장소를 켜거나 기존 프로필을 연결하세요."
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "This browser could not save prices locally. Check its storage settings before closing this page."
+msgstr "이 브라우저가 가격을 기기에 저장할 수 없어요. 이 페이지를 닫기 전에 저장소 설정을 확인하세요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not save your profile access. Keep this tab open and create a recovery code in Settings."
+msgstr "이 브라우저가 프로필 접근 정보를 저장할 수 없어요. 이 탭을 열어 둔 채 설정에서 복구 코드를 만드세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser is connected to a different player."
+msgstr "이 브라우저는 다른 플레이어에 연결돼 있어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser request is not allowed."
+msgstr "이 브라우저 요청은 허용되지 않아요."
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device"
+msgstr "이 기기"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer available."
+msgstr "이 기기는 더 이상 사용할 수 없어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer connected."
+msgstr "이 기기는 더 이상 연결돼 있지 않아요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device is no longer connected. Connect your profile again or use a recovery code in Settings."
+msgstr "이 기기는 더 이상 연결돼 있지 않아요. 설정에서 프로필을 다시 연결하거나 복구 코드를 사용하세요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device needs to reconnect. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "이 기기는 다시 연결해야 해요. 저장된 가격과 보내지 않은 변경 사항은 이 기기에 그대로 있어요. 설정에서 같은 프로필을 다시 연결하거나 복구 코드를 사용하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device’s access expired. Reconnect your profile."
+msgstr "이 기기의 접근 권한이 만료됐어요. 프로필을 다시 연결하세요."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device’s access expired. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "이 기기의 접근 권한이 만료됐어요. 저장된 가격과 보내지 않은 변경 사항은 이 기기에 그대로 있어요. 설정에서 같은 프로필을 다시 연결하거나 복구 코드를 사용하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device’s name"
+msgstr "이 기기 이름"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group code is not available. Check the code and try again."
+msgstr "이 그룹 코드는 사용할 수 없어요. 코드를 확인하고 다시 시도하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is full. A group can have up to 8 players."
+msgstr "이 그룹은 꽉 찼어요. 그룹에는 최대 8명까지 있을 수 있어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is no longer available to you."
+msgstr "이 그룹에 더 이상 접근할 수 없어요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "This is the highest price your island can reach this week."
+msgstr "이번 주 내 섬에서 나올 수 있는 최고가예요."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this morning’s {price}"
+msgstr "오늘 오전의 {price}"
+
+#: src/client/legal.tsx
+#, fuzzy
+msgid "This page is only available in English."
+msgstr "이 페이지는 영어로만 제공돼요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code expired or is no longer available. Start again on the new device."
+msgstr "이 연결 코드는 만료됐거나 더 이상 사용할 수 없어요. 새 기기에서 다시 시작하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code has already been approved."
+msgstr "이 연결 코드는 이미 승인됐어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code is no longer available."
+msgstr "이 연결 코드는 더 이상 사용할 수 없어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
+msgstr "이름, 친구 코드, 가격 기록, 구매, 판매, 그룹 참여 정보가 앱 데이터베이스에서 영구적으로 삭제돼요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This player hasn’t entered prices for this week."
+msgstr "이 플레이어는 이번 주 가격을 입력하지 않았어요."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This player is no longer available through your groups."
+msgstr "이 플레이어는 더 이상 그룹을 통해 볼 수 없어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available to you."
+msgstr "이 플레이어에 더 이상 접근할 수 없어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available."
+msgstr "이 플레이어는 더 이상 사용할 수 없어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This profile is no longer connected"
+msgstr "이 프로필은 더 이상 연결돼 있지 않아요"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This recovery code is invalid or has already been replaced."
+msgstr "이 복구 코드가 올바르지 않거나 이미 교체됐어요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This save request was already used for a different edit."
+msgstr "이 저장 요청은 이미 다른 변경에 사용됐어요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This translation was made by machine and hasn’t been checked by players yet, so some wording may be off."
+msgstr "이 번역은 기계로 만들어졌고 아직 플레이어가 확인하지 않아 어색한 표현이 있을 수 있어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a decreasing week."
+msgstr "감소 패턴의 주였어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a fluctuating week."
+msgstr "파동형 패턴의 주였어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a large-spike week."
+msgstr "큰 급등 패턴의 주였어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a small-spike week."
+msgstr "작은 급등 패턴의 주였어요."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a decreasing week ({chance})."
+msgstr "아마 감소 패턴의 주였을 거예요({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a fluctuating week ({chance})."
+msgstr "아마 파동형 패턴의 주였을 거예요({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a large-spike week ({chance})."
+msgstr "아마 큰 급등 패턴의 주였을 거예요({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a small-spike week ({chance})."
+msgstr "아마 작은 급등 패턴의 주였을 거예요({chance})."
+
+#: src/client/calculator.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week"
+msgstr "이번 주"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week is not available."
+msgstr "이 주는 볼 수 없어요."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "This week will appear here when a new week starts."
+msgstr "새 주가 시작되면 이번 주가 여기에 표시돼요."
+
+#: src/client/outlook.tsx
+#, fuzzy
+msgid "This week’s advice"
+msgstr "이번 주 조언"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses decreasing as last week’s pattern."
+msgstr "이번 주 예측에서 지난주 패턴을 감소로 설정했어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses fluctuating as last week’s pattern."
+msgstr "이번 주 예측에서 지난주 패턴을 파동형으로 설정했어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses large spike as last week’s pattern."
+msgstr "이번 주 예측에서 지난주 패턴을 큰 급등으로 설정했어요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses small spike as last week’s pattern."
+msgstr "이번 주 예측에서 지난주 패턴을 작은 급등으로 설정했어요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This week’s pattern"
+msgstr "이번 주 패턴"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "This week’s trades"
+msgstr "이번 주 거래"
+
+#. Short label for Thursday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu AM"
+msgstr "목 오전"
+
+#. Short label for Thursday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu PM"
+msgstr "목 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday afternoon"
+msgstr "목요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday morning"
+msgstr "목요일 오전"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Today"
+msgstr "오늘"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Today’s <0>{current} bells</0> is as good as it gets this week. Time to sell!"
+msgstr "오늘의 <0>{current}벨</0>이 이번 주 최고가예요. 지금 파세요!"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Too late to sell"
+msgstr "팔기엔 너무 늦었어요"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Tops out at {best}"
+msgstr "최고 {best}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Tops out at {ownBest}"
+msgstr "최고 {ownBest}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Trades"
+msgstr "거래"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Try again"
+msgstr "다시 시도"
+
+#. Short label for Tuesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue AM"
+msgstr "화 오전"
+
+#. Short label for Tuesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue PM"
+msgstr "화 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday afternoon"
+msgstr "화요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday morning"
+msgstr "화요일 오전"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
+msgstr "Turnip Tycoon은 <0>Apache License, Version 2.0</0>에 따라 배포돼요. 서드파티 구성 요소는 <1>Fredoka</1>와 <2>Nunito</2> 글꼴을 포함해 각자의 라이선스를 따라요."
+
+#: src/client/history.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips"
+msgstr "무"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips come in bunches of 10."
+msgstr "무는 10개 단위로 팔아요."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Turnips rotted"
+msgstr "썩은 무"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Unavailable"
+msgstr "사용 불가"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
+msgstr "최대 {maxLength}자. 비워 두면 기본 이름({defaultName})을 사용해요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "최대 8명. 멤버끼리 이름, 친구 코드, 주간 가격과 기록을 볼 수 있어요."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Update now"
+msgstr "지금 업데이트"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Uploads are paused. If the connection was interrupted, the deletion may already have reached the server. We will only show a successful deletion when the server confirms it."
+msgstr "업로드를 일시 중지했어요. 연결이 끊겼다면 삭제 요청이 이미 서버에 도착했을 수도 있어요. 서버가 확인한 후에만 삭제 완료를 알려 드려요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use a recovery code"
+msgstr "복구 코드 사용"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Use a recovery code instead"
+msgstr "대신 복구 코드 사용"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use another connected device to bring that profile’s prices here. Switching profiles does not merge prices."
+msgstr "연결된 다른 기기를 사용해 그 프로필의 가격을 여기로 가져오세요. 프로필을 바꿔도 가격은 합쳐지지 않아요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use for this week"
+msgstr "이번 주에 반영"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Use HTTPS to connect securely."
+msgstr "안전하게 연결하려면 HTTPS를 사용하세요."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use other device’s entries"
+msgstr "다른 기기의 항목 사용"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Waiting for a connection. Your prices stay on this device."
+msgstr "연결을 기다리는 중이에요. 가격은 이 기기에 남아 있어요."
+
+#. Short label for Wednesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed AM"
+msgstr "수 오전"
+
+#. Short label for Wednesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed PM"
+msgstr "수 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday afternoon"
+msgstr "수요일 오후"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday morning"
+msgstr "수요일 오전"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Week"
+msgstr "주"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Week result"
+msgstr "주간 결과"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Week settings"
+msgstr "주 설정"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "week total {weekTotal}"
+msgstr "주간 합계 {weekTotal}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Weekly price forecast by half-day"
+msgstr "시간대별 주간 가격 예측"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Weekly prices"
+msgstr "주간 가격"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Weeks traded"
+msgstr "거래한 주"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Welcome to Turnip Tycoon!"
+msgstr "Turnip Tycoon에 오신 걸 환영해요!"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "What should your friends call you?"
+msgstr "친구들이 뭐라고 부르면 될까요?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "When"
+msgstr "언제"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends"
+msgstr "친구와 함께"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: <0>{chance}</0> chance someone beats {target}"
+msgstr "친구와 함께: 누군가 {target}보다 높을 확률 <0>{chance}</0>"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: a higher price than {target} is certain"
+msgstr "친구와 함께: {target}보다 높은 가격 확실"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: nobody can beat {target} this week"
+msgstr "친구와 함께: 이번 주에 {target}보다 높은 사람은 없어요"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Yes"
+msgstr "네"
+
+#. A tag after your own name in a list
+#. A tag after your own name in a list
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "you"
+msgstr "나"
+
+#: src/client/groups.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You"
+msgstr "나"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You entered"
+msgstr "입력한 가격"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You get"
+msgstr "받는 금액"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {groupPrice} right now"
+msgstr "지금 내 가격 {groupPrice}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {ownNow} right now"
+msgstr "지금 내 가격 {ownNow}"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "You no longer share a group with this player."
+msgstr "이 플레이어와 더 이상 같은 그룹이 아니에요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You paid {ownPrice}"
+msgstr "산 가격 {ownPrice}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You paid {purchasePrice}"
+msgstr "산 가격 {purchasePrice}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You pay"
+msgstr "내는 금액"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You’re holding {holding}. Log what you bought first."
+msgstr "무를 {holding}개 갖고 있어요. 먼저 산 무를 기록하세요."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You’re invited to <0>{groupName}</0>. What should they call you?"
+msgstr "<0>{groupName}</0>에 초대받았어요. 뭐라고 부르면 될까요?"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} beats everyone right now!"
+msgstr "지금 내 가격 {mine}, 모두보다 높아요!"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} is the best Sunday deal in your groups"
+msgstr "내 가격 {mine}, 그룹에서 가장 좋은 일요일 가격이에요"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your {ownPrice}"
+msgstr "내 가격 {ownPrice}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price}"
+msgstr "내 {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from {halfDay}"
+msgstr "내 {halfDay} {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from this morning"
+msgstr "내 오늘 오전 {price}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your changes will sync when the connection is restored."
+msgstr "연결이 복구되면 변경 사항이 동기화돼요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your data"
+msgstr "내 데이터"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Your display name"
+msgstr "표시 이름"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your download is ready. Check your browser’s downloads."
+msgstr "다운로드가 준비됐어요. 브라우저의 다운로드를 확인하세요."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your friend code <0>{friendCode}</0>"
+msgstr "내 친구 코드 <0>{friendCode}</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your groups"
+msgstr "내 그룹"
+
+#: src/client/groups.tsx
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your island"
+msgstr "내 섬"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Your island tops out at {best}"
+msgstr "내 섬 최고 {best}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your previous recovery code will stop working. Connected devices will stay connected."
+msgstr "이전 복구 코드는 더 이상 작동하지 않아요. 연결된 기기는 계속 연결돼 있어요."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Your price"
+msgstr "내 가격"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your prices"
+msgstr "내 가격"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile and its records have been removed from the app’s database, and all connected devices have lost access."
+msgstr "프로필과 기록이 앱 데이터베이스에서 삭제됐고, 연결된 모든 기기의 접근 권한이 사라졌어요."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Your profile changed in another tab. Please try again."
+msgstr "다른 탭에서 프로필이 바뀌었어요. 다시 시도하세요."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "Your profile changed. Please start the download again."
+msgstr "프로필이 바뀌었어요. 다운로드를 다시 시작하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile changed. Please try again."
+msgstr "프로필이 바뀌었어요. 다시 시도하세요."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Your profile changed. Review it before deleting."
+msgstr "프로필이 바뀌었어요. 삭제하기 전에 확인하세요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile changed. Start the download again."
+msgstr "프로필이 바뀌었어요. 다운로드를 다시 시작하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is connected. Your old recovery code has been replaced."
+msgstr "프로필이 연결됐어요. 이전 복구 코드는 교체됐어요."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile is deleted"
+msgstr "프로필이 삭제됐어요"
+
+#: src/client/pwa/index.ts
+#, fuzzy
+msgid "Your profile is still connecting or could not be saved. Try again shortly."
+msgstr "프로필이 아직 연결 중이거나 저장할 수 없었어요. 잠시 후 다시 시도하세요."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is temporarily unavailable. Prices can still be entered on this device."
+msgstr "프로필을 잠시 사용할 수 없어요. 이 기기에서는 계속 가격을 입력할 수 있어요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need more turnips than that."
+msgstr "판매하려면 무가 더 필요해요."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need these turnips. Change or remove a sale first."
+msgstr "판매에 이 무가 필요해요. 먼저 판매를 수정하거나 삭제하세요."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Your saved prices will stay on this device."
+msgstr "저장된 가격은 이 기기에 남아요."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your turnips"
+msgstr "내 무"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your week"
+msgstr "내 한 주"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Your weekly forecast"
+msgstr "내 주간 예측"
