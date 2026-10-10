@@ -5,7 +5,7 @@ import sharp from 'sharp';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const source = `${root}assets/branding/turnip-tycoon-source.webp`;
 const web = `${root}public/icons`;
-const stores = `${root}exports/app-icons`;
+const stores = `${root}assets/app-icons`;
 const apple = `${stores}/AppIcon.appiconset`;
 await Promise.all([mkdir(web, { recursive: true }), mkdir(apple, { recursive: true })]);
 
