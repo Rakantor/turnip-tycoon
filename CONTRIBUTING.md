@@ -81,6 +81,8 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | `tests/build`      | Generated service-worker behavior                                                            |
 | `public/licenses`  | Distributed upstream licenses and notices                                                    |
 
+ESLint keeps the `src` directories layered: `src/shared` imports none of the others, `src/prediction` only `src/shared`, the client and server never import each other, and `src/db` serves only the server.
+
 Keep launch focused on price entry with silent identity creation and app-generated friend codes. Weeks use the device's local calendar, start Sunday, and retain unknown observations. The interface edits the current and previous weeks; older weeks are read-only, and queued edits must upload after rollover. Infer the previous pattern only from the immediately preceding week when unique; otherwise use Unknown and preserve saved/manual choices. When an edit to the previous week changes the pattern it identifies, offer it to the current week rather than changing a saved choice.
 
 Each player keeps a private turnip ledger. A week holds at most 40 purchases and sales, in bunches of 10: purchases at 90–110 bells each, sales at 9–660 with their half-day, and never more sold than bought. Trades save with their week under the same revision and mutation ID. A save without `trades` keeps the saved list, so app versions from before the ledger cannot erase it. Only the owner's reads include trades; shared weeks, history, and group responses never do, and `GET /api/ledger` returns the owner's weekly totals. A week's result counts unsold turnips as lost; overall profit adds this week's made-so-far to every finished week.

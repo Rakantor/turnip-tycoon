@@ -3,6 +3,15 @@ import tseslint from 'typescript-eslint';
 import hooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
+/** What each `src` directory must never import: client and Worker meet in shared and prediction. */
+const forbidden = {
+  shared: ['client', 'server', 'db', 'prediction'],
+  prediction: ['client', 'server', 'db'],
+  db: ['client', 'server'],
+  server: ['client'],
+  client: ['server', 'db'],
+};
+
 export default tseslint.config(
   {
     ignores: [
@@ -38,4 +47,18 @@ export default tseslint.config(
     },
     rules: { '@typescript-eslint/no-floating-promises': 'error' },
   },
+  ...Object.entries(forbidden).map(([from, targets]) => ({
+    files: [`src/${from}/**/*.{ts,tsx}`],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: targets.map((target) => ({
+            regex: `^\\.\\.?/(?:\\.\\./)*${target}(?:/|$)`,
+            message: `src/${from} must not import from src/${target}.`,
+          })),
+        },
+      ],
+    },
+  })),
 );
