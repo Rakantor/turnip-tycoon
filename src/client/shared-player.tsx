@@ -10,9 +10,9 @@ import { predictWeek } from '../prediction';
 import { ApiError, request } from './data/api';
 import { forgetSharedPlayer, savedPlayerWeek } from './data/use-groups';
 import { dayName, patternName } from './advice';
-import { PlayerAvatar } from './groups';
+import { PlayerAvatar } from './player-avatar';
 import { Forecast } from './forecast';
-import { HistoryLoading } from './history';
+import { HistoryLoading } from './history-loading';
 import {
   Button,
   dateFromWeek,

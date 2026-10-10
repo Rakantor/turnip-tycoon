@@ -12,6 +12,7 @@ import { oddsPercent, patternName, percent, slotShortName } from './advice';
 import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
 import { GroupPriceTable } from './group-price-table';
+import { PlayerAvatar } from './player-avatar';
 import {
   afterClosing,
   beatsBy,
@@ -79,20 +80,6 @@ function weekLink(member: SharedPlayerWeek, owner: string): string {
     ? '/'
     : `/players/${member.player.id}/weeks/${member.week.weekStart}`;
 }
-export function PlayerAvatar({ name, small = false }: { name: string; small?: boolean }) {
-  const letters = name
-    .split(/[\s-]+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
-  return (
-    <span className={`player-avatar${small ? ' player-avatar-small' : ''}`} aria-hidden="true">
-      {letters}
-    </span>
-  );
-}
-
 function ForecastSummary({ prediction }: { prediction: PredictionResult }) {
   if (prediction.status === 'needs-input')
     return (
@@ -126,7 +113,7 @@ function sparkScale(members: ForecastMember[]): number {
 }
 
 /** Twelve tiny columns: solid for reported prices, a floating range for forecasts. */
-export function PriceSparkline({
+function PriceSparkline({
   week,
   prediction,
   scale,

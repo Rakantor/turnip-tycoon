@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { CircleAlert, Minus, Pencil, Plus, X } from 'lucide-react';
-import { i18n } from '@lingui/core';
 import { plural, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import {
@@ -16,13 +15,9 @@ import {
 } from '../shared/ledger';
 import { PURCHASE_PRICE_RANGE, SELLING_PRICE_RANGE, type OwnWeekRecord } from '../shared/week';
 import { slotName } from './advice';
-import { Button } from './ui';
+import { average, bells, Button, signedBells } from './ui';
 import './turnips.css';
 
-export const bells = (value: number) => i18n.number(Math.round(value));
-export const signedBells = (value: number) => `${value < 0 ? '−' : '+'}${bells(Math.abs(value))}`;
-/** Averages show one decimal only when they aren't whole. */
-export const average = (value: number) => i18n.number(value, { maximumFractionDigits: 1 });
 const tone = (value: number) => (value < 0 ? 'bells-down' : 'bells-up');
 
 /** Where focus goes when a closed sheet's opener is gone. */

@@ -152,3 +152,8 @@ export function weekLabel(weekStart: string): string {
     year: 'numeric',
   }).formatRange(start, end);
 }
+
+export const bells = (value: number) => i18n.number(Math.round(value));
+export const signedBells = (value: number) => `${value < 0 ? '−' : '+'}${bells(Math.abs(value))}`;
+/** Averages show one decimal only when they aren't whole. */
+export const average = (value: number) => i18n.number(value, { maximumFractionDigits: 1 });

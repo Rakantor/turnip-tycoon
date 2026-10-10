@@ -18,13 +18,14 @@ import type { OwnWeekRecord } from '../shared/week';
 import { request } from './data/api';
 import { ownWeek, type StoredWeek } from './data/database';
 import { useLedger } from './data/use-ledger';
-import { average, bells, signedBells } from './turnips';
+import { HistoryLoading } from './history-loading';
 import {
+  average,
+  bells,
   Button,
-  Loading,
   messageOf,
   Notice,
-  Placeholder,
+  signedBells,
   useApp,
   useReveal,
   weekLabel,
@@ -33,39 +34,6 @@ import {
 interface HistoryResponse {
   weeks: StoredWeek[];
   nextCursor: string | null;
-}
-
-/** The history table's frame, with a few rows waiting for their weeks. */
-export function HistoryLoading({ label, columns }: { label: string; columns: string[] }) {
-  return (
-    <Loading label={label}>
-      <div className="history-table-scroll">
-        <table className="history-table">
-          <thead>
-            <tr>
-              {columns.map((column) => (
-                <th key={column}>{column}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {[0, 1, 2, 3].map((row) => (
-              <tr key={row}>
-                <th>
-                  <Placeholder width="8.5em" />
-                </th>
-                {columns.slice(1).map((column) => (
-                  <td key={column}>
-                    <Placeholder width="2.2em" />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Loading>
-  );
 }
 
 /** All-time profit: every finished week's result, plus this week's so far. */

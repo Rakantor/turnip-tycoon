@@ -6,7 +6,7 @@ import { Trans } from '@lingui/react/macro';
 import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
 import type { GroupPreview } from '../shared/groups';
 import { request } from './data/api';
-import { PlayerAvatar } from './groups';
+import { PlayerAvatar } from './player-avatar';
 import { PairingCode } from './pairing';
 import { Button, defaultDeviceName, useApp } from './ui';
 import { assetUrl } from './urls';

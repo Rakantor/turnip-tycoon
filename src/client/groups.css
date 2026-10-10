@@ -426,20 +426,6 @@
   border-color: var(--gold-line);
   box-shadow: 0 3px 0 var(--gold-line);
 }
-.player-avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  flex: none;
-  border-radius: 999px;
-  background: var(--leaf-soft);
-  color: var(--text);
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
-}
 .friend-list li:nth-child(4n + 1) .player-avatar {
   background: #cde3f5;
 }
@@ -451,11 +437,6 @@
 }
 .friend-list li:nth-child(4n + 4) .player-avatar {
   background: var(--pink-soft);
-}
-.player-avatar-small {
-  width: 30px;
-  height: 30px;
-  font-size: 12px;
 }
 .friend-identity {
   display: flex;

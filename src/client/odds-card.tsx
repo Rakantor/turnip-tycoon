@@ -9,7 +9,7 @@ import { totalsOf, unsold, type Trade } from '../shared/ledger';
 import type { OwnWeekRecord } from '../shared/week';
 import { oddsPercent, percent, slotName } from './advice';
 import { useGroups } from './data/use-groups';
-import { PlayerAvatar } from './groups';
+import { PlayerAvatar } from './player-avatar';
 import {
   afterClosing,
   beforeOpening,
