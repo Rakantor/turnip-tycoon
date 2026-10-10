@@ -30,6 +30,12 @@
           "forms": ["Brunella"],
           "avoid": ["Daisy"],
           "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
+        },
+        "nl": {
+          "term": "Daisy Mae (the Dutch game keeps the English name)",
+          "forms": ["Daisy Mae"],
+          "avoid": [],
+          "source": "Game text (special NPC names); Nookipedia, Daisy Mae: names in other languages"
         }
       }
     },
@@ -60,6 +66,12 @@
         "it": {
           "term": "Bottega di Nook",
           "forms": ["Bottega di Nook"],
+          "avoid": ["Cranny"],
+          "source": "Nookipedia, Nook's Cranny: names in other languages"
+        },
+        "nl": {
+          "term": "Nooks Hoek",
+          "forms": ["Nooks Hoek"],
           "avoid": ["Cranny"],
           "source": "Nookipedia, Nook's Cranny: names in other languages"
         }
@@ -94,6 +106,12 @@
           "forms": ["Mirco", "Marco"],
           "avoid": ["Timmy", "Tommy"],
           "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
+        },
+        "nl": {
+          "term": "Timmy en Tommy (the Dutch game keeps the English names)",
+          "forms": ["Timmy", "Tommy"],
+          "avoid": [],
+          "source": "Game text (special NPC names); Nookipedia, Timmy and Tommy"
         }
       }
     },
@@ -126,6 +144,12 @@
           "forms": ["stellin"],
           "avoid": ["Bells", "campanelle"],
           "source": "Game text (Bell voucher → coupon stelline); Nookipedia, Bell: names in other languages"
+        },
+        "nl": {
+          "term": "klingel (plural klingels)",
+          "forms": ["klingel"],
+          "avoid": ["Bells", "bellen"],
+          "source": "Game text (Bell voucher → klingelbon); Nookipedia, Bell: names in other languages"
         }
       }
     },
@@ -158,6 +182,12 @@
           "forms": ["rapa", "rape"],
           "avoid": ["Turnip"],
           "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
+        },
+        "nl": {
+          "term": "knol (plural knollen)",
+          "forms": ["knol"],
+          "avoid": ["Turnip", "raap", "rapen"],
+          "source": "Nookipedia, Turnips (New Horizons item): names in other languages"
         }
       }
     },
@@ -188,6 +218,12 @@
         "it": {
           "term": "isola (plural isole)",
           "forms": ["isol"],
+          "avoid": ["island"],
+          "source": "Game text"
+        },
+        "nl": {
+          "term": "eiland",
+          "forms": ["eiland"],
           "avoid": ["island"],
           "source": "Game text"
         }
@@ -222,6 +258,12 @@
           "forms": [],
           "avoid": [],
           "source": "Game item: mazzo di rape marce (Nookipedia, Spoiled turnips)"
+        },
+        "nl": {
+          "term": "bederven (bedorven knollen)",
+          "forms": [],
+          "avoid": [],
+          "source": "Game item: bedorven knollen (Nookipedia, Spoiled turnips)"
         }
       }
     },
@@ -254,6 +296,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
+        },
+        "nl": {
+          "term": "Schommelend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
         }
       }
     },
@@ -286,6 +334,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
+        },
+        "nl": {
+          "term": "Grote piek",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
         }
       }
     },
@@ -318,6 +372,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
+        },
+        "nl": {
+          "term": "Dalend",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
         }
       }
     },
@@ -350,6 +410,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation (Apache-2.0)"
+        },
+        "nl": {
+          "term": "Kleine piek",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
         }
       }
     },
@@ -382,6 +448,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation uses comportamento; andamento is the everyday word for how prices move"
+        },
+        "nl": {
+          "term": "patroon",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation (Apache-2.0)"
         }
       }
     },
@@ -414,6 +486,12 @@
           "forms": [],
           "avoid": [],
           "source": "Turnip Prophet’s Italian translation uses AM and PM in its chart"
+        },
+        "nl": {
+          "term": "ochtend, middag (vm., nm. in short labels)",
+          "forms": [],
+          "avoid": [],
+          "source": "Turnip Prophet’s Dutch translation uses VM and NM"
         }
       }
     },
@@ -443,6 +521,12 @@
         },
         "it": {
           "term": "codice amico",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "nl": {
+          "term": "vriendcode",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -478,6 +562,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "nl": {
+          "term": "groep, groepscode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -507,6 +597,12 @@
         },
         "it": {
           "term": "codice di recupero",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "nl": {
+          "term": "herstelcode",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -542,6 +638,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "nl": {
+          "term": "koppelcode",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -571,6 +673,12 @@
         },
         "it": {
           "term": "previsione",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "nl": {
+          "term": "voorspelling",
           "forms": [],
           "avoid": [],
           "source": ""
@@ -606,6 +714,12 @@
           "forms": [],
           "avoid": [],
           "source": ""
+        },
+        "nl": {
+          "term": "dagdeel",
+          "forms": [],
+          "avoid": [],
+          "source": ""
         }
       }
     },
@@ -634,6 +748,12 @@
           "source": ""
         },
         "it": {
+          "term": "Turnip Tycoon",
+          "forms": [],
+          "avoid": [],
+          "source": ""
+        },
+        "nl": {
           "term": "Turnip Tycoon",
           "forms": [],
           "avoid": [],

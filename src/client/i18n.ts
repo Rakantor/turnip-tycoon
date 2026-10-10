@@ -15,6 +15,7 @@ export const LANGUAGES: Language[] = [
   { locale: 'es', name: 'Español', unreviewed: true },
   { locale: 'fr', name: 'Français', unreviewed: true },
   { locale: 'it', name: 'Italiano', unreviewed: true },
+  { locale: 'nl', name: 'Nederlands', unreviewed: true },
   ...(import.meta.env.DEV ? [{ locale: 'pseudo', name: 'Pseudo' }] : []),
 ];
 
@@ -24,6 +25,7 @@ const catalogs: Record<string, () => Promise<{ messages: Messages }>> = {
   es: () => import('./locales/es.po'),
   fr: () => import('./locales/fr.po'),
   it: () => import('./locales/it.po'),
+  nl: () => import('./locales/nl.po'),
   ...(import.meta.env.DEV ? { pseudo: () => import('./locales/pseudo.po') } : {}),
 };
 

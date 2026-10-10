@@ -1,0 +1,3330 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-10 12:26+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: nl\n"
+
+#. Marks the current half-day's column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "(now)"
+msgstr "(nu)"
+
+#. placeholder {0}: noPrices.length
+#: src/client/odds.ts
+#, fuzzy
+msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
+msgstr "{0, plural, one {{withoutPrices}, die deze week geen prijzen heeft} other {{withoutPrices}, die deze week geen prijzen hebben}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
+msgstr "{bought, plural, one {# knol gekocht. Naar je knollen} other {# knollen gekocht. Naar je knollen}}"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} decreasing"
+msgstr "{chance} dalend"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} fluctuating"
+msgstr "{chance} schommelend"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} large spike"
+msgstr "{chance} grote piek"
+
+#. The chance of a pattern, as a chip
+#: src/client/advice.ts
+#, fuzzy
+msgid "{chance} small spike"
+msgstr "{chance} kleine piek"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{difference} vs. what you paid"
+msgstr "{difference} t.o.v. je aankoopprijs"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{earned} earned − {spent} spent"
+msgstr "{earned} ontvangen − {spent} uitgegeven"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
+msgstr "{friendCount, plural, one {# vriend in je groepen. Kijk later nog eens.} other {# vrienden in je groepen. Kijk later nog eens.}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{friendName}’s {friendPrice}"
+msgstr "{friendName}: {friendPrice}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} details"
+msgstr "Details van {groupName}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{groupName} players"
+msgstr "Leden van {groupName}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{halfDay} (now)"
+msgstr "{halfDay} (nu)"
+
+#. halfDay is, e.g., "Monday morning"
+#: src/client/advice.ts
+#, fuzzy
+msgid "{halfDay} forecast"
+msgstr "Voorspelling voor {halfDay}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{halfDay} sell price in bells"
+msgstr "Verkoopprijs op {halfDay} in klingels"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: could be {min} to {max} bells"
+msgstr "{halfDay}: mogelijk {min} tot {max} klingels"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: expected {min} bells"
+msgstr "{halfDay}: verwacht {min} klingels"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{halfDay}: you entered {price} bells"
+msgstr "{halfDay}: je hebt {price} klingels ingevuld"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{halfDay}’s {price}"
+msgstr "de {price} van {halfDay}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{held, plural, one {Hold or sell your # turnip?} other {Hold or sell your # turnips?}}"
+msgstr "{held, plural, one {Je # knol houden of verkopen?} other {Je # knollen houden of verkopen?}}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{holderName} has {groupPrice} right now"
+msgstr "{holderName} heeft nu {groupPrice}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} to {highest} vs. what you paid"
+msgstr "{lowest} tot {highest} t.o.v. je aankoopprijs"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{lowest} vs. what you paid"
+msgstr "{lowest} t.o.v. je aankoopprijs"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{members} of {capacity} players"
+msgstr "{members} van {capacity} leden"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min} to {max} bells"
+msgstr "{min} tot {max} klingels"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{min}–{max} bells"
+msgstr "{min}–{max} klingels"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{mismatched}, whose prices don’t match a pattern"
+msgstr "{mismatched}, van wie de prijzen bij geen enkel patroon passen"
+
+#. More players in the group than the seats shown
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "{more} more"
+msgstr "nog {more}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "{name} disconnected."
+msgstr "{name} ontkoppeld."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price}"
+msgstr "de {price} van {name}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from {halfDay}"
+msgstr "de {price} van {name} ({halfDay})"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "{name}’s {price} from this morning"
+msgstr "de {price} van {name} van vanochtend"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s history"
+msgstr "Historie van {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island"
+msgstr "Eiland van {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s island is buying at {other}!"
+msgstr "Het eiland van {name} koopt voor {other}!"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "{name}’s reported prices, Monday through Saturday"
+msgstr "Prijzen van {name}, maandag t/m zaterdag"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{name}’s selling pattern probabilities"
+msgstr "Patroonkansen van {name}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{name}’s week"
+msgstr "Week van {name}"
+
+#. placeholder {0}: odds.price
+#: src/client/advice.ts
+#, fuzzy
+msgid "{oddsChance} chance of more than {0}"
+msgstr "{oddsChance} kans op meer dan {0}"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern} still possible ({chance})"
+msgstr "{pattern} nog mogelijk ({chance})"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "{pattern}, up to {best}"
+msgstr "{pattern}, tot {best}"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: {value} bells reported"
+msgstr "{period}: {value} klingels gemeld"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "{period}: possible minimum {min}, maximum {max} bells"
+msgstr "{period}: mogelijk minimaal {min}, maximaal {max} klingels"
+
+#. Turnips bought at a price
+#. Turnips bought at a price
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{quantity} at {price}"
+msgstr "{quantity} voor {price}"
+
+#. Turnips sold at a price; halfDay is short, like “Mon AM”
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "{quantity} at {price} on {halfDay}"
+msgstr "{quantity} voor {price} ({halfDay})"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
+msgstr "{rotted, plural, one {# knol is zondag bedorven.} other {# knollen zijn zondag bedorven.}}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "{rottedCount} rotted"
+msgstr "{rottedCount} bedorven"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
+msgstr "{saving, plural, one {Dat is # klingel goedkoper dan bij jou.} other {Dat is # klingels goedkoper dan bij jou.}}"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "{times}× what you paid"
+msgstr "{times}× je aankoopprijs"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{times}× what you paid for yours."
+msgstr "{times}× je eigen aankoopprijs."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "{tolerance, plural, one {These matches allow a #-bell rounding difference.} other {These matches allow a #-bell rounding difference.}}"
+msgstr "{tolerance, plural, one {Deze overeenkomsten staan een afrondingsverschil van # klingel toe.} other {Deze overeenkomsten staan een afrondingsverschil van # klingels toe.}}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "{total, plural, one {# bell} other {# bells}}"
+msgstr "{total, plural, one {# klingel} other {# klingels}}"
+
+#. verdict is a sentence about the week’s pattern, e.g. "This was a decreasing week."
+#: src/client/advice.ts
+#, fuzzy
+msgid "{verdict} Your best price was <0>{bestPrice} bells</0> on {halfDay}."
+msgstr "{verdict} Je beste prijs was <0>{bestPrice} klingels</0> op {halfDay}."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
+msgstr "<0>{groupName}</0> is nu vol. Hoe moeten je vrienden je noemen?"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
+msgstr "<0>Bewaar deze herstelcode op een veilige plek.</0> Hij wordt alleen hier getoond en geeft toegang tot je prijzen."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 fewer"
+msgstr "100 minder"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "100 more"
+msgstr "100 meer"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "A good price is better shared."
+msgstr "Een goede prijs is nog beter als je hem deelt."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "A higher price is coming"
+msgstr "Er komt een hogere prijs aan"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A higher price is coming."
+msgstr "Er komt een hogere prijs aan."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "A little data goes a long way."
+msgstr "Een paar gegevens helpen al veel."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit could go either way"
+msgstr "Winst onzeker"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit is certain"
+msgstr "Winst zeker"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks likely"
+msgstr "Winst waarschijnlijk"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "A profit looks unlikely"
+msgstr "Winst onwaarschijnlijk"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "A week holds at most 40 purchases and sales."
+msgstr "Een week bevat maximaal 40 aankopen en verkopen."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Add the prices you know. Leave the rest blank."
+msgstr "Vul de prijzen in die je kent. Laat de rest leeg."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Afternoon"
+msgstr "Middag"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
+msgstr "Alle gekoppelde apparaten en je herstelcode verliezen de toegang. Groepen met andere leden blijven bestaan, samen met hun gegevens."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "All friends"
+msgstr "Alle vrienden"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "All-time profit"
+msgstr "Totale winst"
+
+#. Morning, as a column heading
+#. Morning, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "AM"
+msgstr "vm."
+
+#. Morning, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "AM"
+msgstr "vm."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "An update is ready"
+msgstr "Er is een update klaar"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed the same entries"
+msgstr "Een ander apparaat heeft dezelfde invoer gewijzigd"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Another device changed this week"
+msgstr "Een ander apparaat heeft deze week gewijzigd"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "App update"
+msgstr "App-update"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve another device"
+msgstr "Ander apparaat goedkeuren"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approve device"
+msgstr "Apparaat goedkeuren"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Approve this code from a connected device first."
+msgstr "Keur deze code eerst goed op een gekoppeld apparaat."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Approved. On the new device, select “Finish connecting”."
+msgstr "Goedgekeurd. Kies op het nieuwe apparaat “Koppelen afronden”."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {averagePaid}"
+msgstr "voor gem. {averagePaid}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "at {price}"
+msgstr "voor {price}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Average cost"
+msgstr "Gemiddelde prijs"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Back"
+msgstr "Terug"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Back to friends"
+msgstr "Terug naar vrienden"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Back to prices"
+msgstr "Terug naar prijzen"
+
+#. The unit under a price
+#. The unit under a price
+#. The unit under a price
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "bells"
+msgstr "klingels"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "bells per turnip"
+msgstr "klingels per knol"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bells per turnip"
+msgstr "Klingels per knol"
+
+#. Follows a price or a range of prices
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells predicted"
+msgstr "klingels voorspeld"
+
+#. Follows a price
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "bells reported"
+msgstr "klingels gemeld"
+
+#. Under the all-time profit, which is in bells
+#: src/client/history.tsx
+#, fuzzy
+msgid "bells, with this week’s {thisWeekSoFar} so far"
+msgstr "klingels, waarvan {thisWeekSoFar} deze week tot nu toe"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best {shownName} price"
+msgstr "Beste prijs · {shownName}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best bet"
+msgstr "Meest waarschijnlijk"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Best entered"
+msgstr "Beste invoer"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Best price"
+msgstr "Beste prijs"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until 10 PM"
+msgstr "Beste prijs nu · tot 22.00 uur"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Best price right now · until noon"
+msgstr "Beste prijs nu · tot 12.00 uur"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Best week"
+msgstr "Beste week"
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "between {first} and {last}"
+msgstr "tussen {first} en {last}"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Bought"
+msgstr "Gekocht"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Bought {bought}; sold {sold}"
+msgstr "Gekocht: {bought}; verkocht: {sold}"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Bought for"
+msgstr "Gekocht voor"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Bought for {purchasePrice}"
+msgstr "Gekocht voor {purchasePrice}"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Bought for<0>, average per turnip</0>"
+msgstr "Gekocht voor<0>, gemiddeld per knol</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Bring your friends along"
+msgstr "Haal je vrienden erbij"
+
+#. Under “Sun”: the Sunday buy price column
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Buy"
+msgstr "Koop"
+
+#. Under “Sun” on the week board
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "buy price"
+msgstr "aankoopprijs"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "By Saturday night"
+msgstr "Tot zaterdagavond"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Certain"
+msgstr "Zeker"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Chance for each island"
+msgstr "Kans per eiland"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating {halfDay}’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "kans om de <0>{price}</0> van {halfDay} te verslaan voordat Nooks Hoek zaterdag sluit."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this afternoon’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "kans om de <0>{price}</0> van vanmiddag te verslaan voordat Nooks Hoek zaterdag sluit."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of beating this morning’s <0>{price}</0> before Nook’s Cranny closes on Saturday."
+msgstr "kans om de <0>{price}</0> van vanochtend te verslaan voordat Nooks Hoek zaterdag sluit."
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance of more than <0>{price}</0> on your island before Nook’s Cranny closes on Saturday."
+msgstr "kans op meer dan <0>{price}</0> op je eiland voordat Nooks Hoek zaterdag sluit."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Chance of selling for more than each price from {low} to {high} bells."
+msgstr "Kans om voor meer dan elke prijs te verkopen, van {low} tot {high} klingels."
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by Saturday night"
+msgstr "kans dat iemand {price} verslaat vóór zaterdagavond"
+
+#. Follows a percentage in bold, e.g. “42%”
+#: src/client/odds.ts
+#, fuzzy
+msgid "chance someone beats {price} by tonight"
+msgstr "kans dat iemand {price} verslaat vóór vanavond"
+
+#. Follows the chance, shown in a ring
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "chance you can sell for more than the <0>{price}</0> you paid this week."
+msgstr "kans om deze week voor meer te verkopen dan de <0>{price}</0> die je betaalde."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Changes need review"
+msgstr "Wijzigingen controleren"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Cheapest Sunday price"
+msgstr "Goedkoopste zondagsprijs"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Check the supplied fields."
+msgstr "Controleer de ingevulde velden."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Check this entry."
+msgstr "Controleer deze invoer."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid device."
+msgstr "Kies een geldig apparaat."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid export page."
+msgstr "Kies een geldige exportpagina."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid group or player."
+msgstr "Kies een geldige groep of persoon."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid history date and limit."
+msgstr "Kies een geldige datum en limiet voor de historie."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Choose a valid Sunday for this week."
+msgstr "Kies een geldige zondag voor deze week."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Choose which entries to keep. Yours are still here until you choose."
+msgstr "Kies welke invoer je wilt houden. De jouwe blijft hier tot je kiest."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Clear this device’s saved data"
+msgstr "Opgeslagen gegevens van dit apparaat wissen"
+
+#: src/client/groups.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Close"
+msgstr "Sluiten"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Close half-day details"
+msgstr "Details van dagdeel sluiten"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Compare entries"
+msgstr "Invoer vergelijken"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Compare your prices and find a good time to sell, together."
+msgstr "Vergelijk jullie prijzen en vind samen een goed moment om te verkopen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Connect a device to continue."
+msgstr "Koppel een apparaat om door te gaan."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect an existing profile"
+msgstr "Bestaand profiel koppelen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect this device to an existing profile"
+msgstr "Dit apparaat aan een bestaand profiel koppelen"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Connect to load this player’s shared prices."
+msgstr "Maak verbinding om de gedeelde prijzen van deze persoon te laden."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load your saved history."
+msgstr "Maak verbinding om je opgeslagen historie te laden."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Connect to see your friends’ shared prices."
+msgstr "Maak verbinding om de gedeelde prijzen van je vrienden te zien."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect to the internet to delete your profile."
+msgstr "Maak verbinding met internet om je profiel te verwijderen."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Connect to your player before updating friends."
+msgstr "Koppel je profiel voordat je vrienden bijwerkt."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connect using another device instead"
+msgstr "Koppelen met een ander apparaat"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Connect your other device"
+msgstr "Koppel je andere apparaat"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Connect your profile online to download or delete its data."
+msgstr "Koppel je profiel online om de gegevens te downloaden of te verwijderen."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected {connected}"
+msgstr "Gekoppeld op {connected}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connected devices"
+msgstr "Gekoppelde apparaten"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connecting your profile… You can already enter prices."
+msgstr "Je profiel wordt gekoppeld… Je kunt al prijzen invullen."
+
+#: src/client/pairing.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Connection code"
+msgstr "Koppelcode"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Connection unavailable. You can keep entering prices on this device."
+msgstr "Geen verbinding. Je kunt op dit apparaat prijzen blijven invullen."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Contact"
+msgstr "Contact"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Continuing creates a profile and saves your prices online and on this device. Read our <0>Terms</0> and <1>Privacy page</1>."
+msgstr "Als je doorgaat, wordt er een profiel aangemaakt en worden je prijzen online en op dit apparaat opgeslagen. Lees onze <0>Voorwaarden</0> en <1>privacypagina</1>."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copied"
+msgstr "Gekopieerd"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy {groupName} group code"
+msgstr "Groepscode van {groupName} kopiëren"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Copy code"
+msgstr "Code kopiëren"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Copy this group link to share it."
+msgstr "Kopieer deze groepslink om hem te delen."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Correct the highlighted entries. The forecast uses your last valid prices."
+msgstr "Verbeter de gemarkeerde invoer. De voorspelling gebruikt je laatste geldige prijzen."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {cost}"
+msgstr "kosten {cost}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "cost {rottedCost}"
+msgstr "kosten {rottedCost}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Could be"
+msgstr "Mogelijk"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Could be (min–max)"
+msgstr "Mogelijk (min.–max.)"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Could be as low as {floor} then"
+msgstr "Kan dan ook maar {floor} zijn"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Could go either way"
+msgstr "Kan alle kanten op"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Could not access saved prices on this device. Keep this page open and retry after checking browser storage."
+msgstr "Geen toegang tot de opgeslagen prijzen op dit apparaat. Houd deze pagina open en probeer het opnieuw nadat je de browseropslag hebt gecontroleerd."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not check for updates. Reconnect and try again."
+msgstr "Kon niet op updates controleren. Maak opnieuw verbinding en probeer het nog eens."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not confirm deletion."
+msgstr "Kon de verwijdering niet bevestigen."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not connect this profile."
+msgstr "Kon dit profiel niet koppelen."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the license."
+msgstr "Kon de licentie niet laden."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
+msgstr "Kon de licenties niet laden. <0>Probeer het opnieuw</0> of open de <1>kennisgeving</1> en <2>licentie</2>."
+
+#: src/client/data/use-groups.ts
+#, fuzzy
+msgid "Could not load your groups."
+msgstr "Kon je groepen niet laden."
+
+#: src/client/data/api.ts
+#, fuzzy
+msgid "Could not reach the server."
+msgstr "Kon de server niet bereiken."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not request deletion."
+msgstr "Kon de verwijdering niet aanvragen."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Could not restart profile creation."
+msgstr "Kon het aanmaken van het profiel niet opnieuw starten."
+
+#: src/client/data/pending-edits.ts
+#, fuzzy
+msgid "Could not save these prices on this device. Your unsaved edits remain on this page. Keep it open and retry before closing it."
+msgstr "Kon deze prijzen niet op dit apparaat opslaan. Je niet-opgeslagen wijzigingen blijven op deze pagina. Houd deze pagina open en probeer het opnieuw voordat je hem sluit."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Could not update the app."
+msgstr "Kon de app niet bijwerken."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Couldn’t sync"
+msgstr "Synchroniseren mislukt"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
+msgstr "Maak een code aan om je prijzen terug te krijgen als je geen toegang meer hebt tot dit apparaat. Bewaar hem op een privéplek."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create a group"
+msgstr "Groep aanmaken"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create group"
+msgstr "Groep aanmaken"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join a group"
+msgstr "Groep aanmaken of lid worden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Create or join group"
+msgstr "Groep aanmaken of lid worden"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Create recovery code"
+msgstr "Herstelcode aanmaken"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Created {groupName}."
+msgstr "{groupName} aangemaakt."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Daisy Mae charges {min}–{max} bells."
+msgstr "Daisy Mae vraagt {min}–{max} klingels."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Daisy Mae is selling for {other} on {name}’s island"
+msgstr "Daisy Mae verkoopt voor {other} op het eiland van {name}"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Day"
+msgstr "Dag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Decreasing"
+msgstr "Dalend"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete my profile"
+msgstr "Mijn profiel verwijderen"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Delete your profile?"
+msgstr "Je profiel verwijderen?"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deleting your profile…"
+msgstr "Je profiel wordt verwijderd…"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Deletion needs another check"
+msgstr "Verwijdering moet opnieuw worden gecontroleerd"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Devices"
+msgstr "Apparaten"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect"
+msgstr "Ontkoppelen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect {name}? You can connect it again later."
+msgstr "{name} ontkoppelen? Je kunt het later weer koppelen."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Disconnect device"
+msgstr "Apparaat ontkoppelen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Display name"
+msgstr "Weergavenaam"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download my data"
+msgstr "Mijn gegevens downloaden"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your data first if you want to keep it. This cannot be undone. <0>Backup and log details</0>."
+msgstr "Download je gegevens eerst als je ze wilt bewaren. Dit kan niet ongedaan worden gemaakt. <0>Details over back-ups en logs</0>."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
+msgstr "Download je profiel, alle opgeslagen prijzen en transacties, je groepslidmaatschappen en apparaatgegevens als JSON-bestand. Niet-verzonden wijzigingen in deze browser worden apart meegenomen. Bewaar het bestand op een privéplek."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase"
+msgstr "Aankoop bewerken"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit purchase of {what}"
+msgstr "Aankoop bewerken: {what}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale"
+msgstr "Verkoop bewerken"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Edit sale of {what}"
+msgstr "Verkoop bewerken: {what}"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Edit your name"
+msgstr "Je naam wijzigen"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Editing…"
+msgstr "Bezig met bewerken…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter how many turnips."
+msgstr "Vul in hoeveel knollen."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Enter the price per turnip."
+msgstr "Vul de prijs per knol in."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this afternoon’s price to see your odds."
+msgstr "Vul de prijs van vanmiddag in om je kansen te zien."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter this morning’s price to see your odds."
+msgstr "Vul de prijs van vanochtend in om je kansen te zien."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Enter this week’s prices"
+msgstr "Prijzen van deze week invullen"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Enter what Daisy Mae charged on Sunday, or any price you’ve seen, and I’ll forecast your week."
+msgstr "Vul in wat Daisy Mae zondag vroeg, of een andere prijs die je hebt gezien, en ik voorspel je week."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Enter what Daisy Mae charged to see your odds."
+msgstr "Vul in wat Daisy Mae vroeg om je kansen te zien."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Enter your saved recovery code. Switching profiles does not merge prices. Recovery replaces the code with a new one."
+msgstr "Vul je opgeslagen herstelcode in. Wisselen van profiel voegt geen prijzen samen. Herstellen vervangt de code door een nieuwe."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Entries"
+msgstr "Invoer"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Entry"
+msgstr "Invoer"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Even the low end, {floor}, beats what you paid"
+msgstr "Zelfs in het slechtste geval, {floor}, meer dan je aankoopprijs"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Every price this week is in. Turnips spoil on Sunday, so sell before Nook’s Cranny closes on Saturday night."
+msgstr "Alle prijzen van deze week zijn ingevuld. Knollen bederven op zondag, dus verkoop ze voordat Nooks Hoek zaterdagavond sluit."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Everyone"
+msgstr "Iedereen"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Everything else from both devices is combined. Choose which of these to keep."
+msgstr "Al het andere van beide apparaten is samengevoegd. Kies welke van deze invoer je wilt houden."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Expires at {expires}. Keep this page open."
+msgstr "Verloopt om {expires}. Houd deze pagina open."
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Finish connecting"
+msgstr "Koppelen afronden"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Finish or correct your price entry before updating."
+msgstr "Rond je prijsinvoer af of verbeter die voordat je bijwerkt."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase"
+msgstr "Eerste aankoop bij Daisy Mae"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "First Daisy Mae purchase on this island?"
+msgstr "Eerste aankoop bij Daisy Mae op dit eiland?"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "First purchase on their island"
+msgstr "Eerste aankoop op eigen eiland"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fluctuating"
+msgstr "Schommelend"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "for {earned}"
+msgstr "voor {earned}"
+
+#. Short label for Friday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri AM"
+msgstr "vr vm."
+
+#. Short label for Friday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Fri PM"
+msgstr "vr nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday afternoon"
+msgstr "vrijdagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Friday morning"
+msgstr "vrijdagochtend"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Friend code"
+msgstr "Vriendcode"
+
+#: src/client/groups.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Friends"
+msgstr "Vrienden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends & groups"
+msgstr "Vrienden en groepen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices"
+msgstr "Prijzen van vrienden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Friends’ prices this week"
+msgstr "Prijzen van vrienden deze week"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Full week"
+msgstr "Hele week"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Full week group prices"
+msgstr "Groepsprijzen van de hele week"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Generated by Turnip Tycoon. This code stays the same when you change your name."
+msgstr "Gemaakt door Turnip Tycoon. Deze code blijft hetzelfde als je je naam wijzigt."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Get a connection code"
+msgstr "Koppelcode aanvragen"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Get a new code"
+msgstr "Nieuwe code aanvragen"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Go online on your other devices first if you want their latest edits included."
+msgstr "Ga eerst met je andere apparaten online als je hun laatste wijzigingen wilt meenemen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group action"
+msgstr "Groepsactie"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code"
+msgstr "Groepscode"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group code copied."
+msgstr "Groepscode gekopieerd."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group full"
+msgstr "Groep vol"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group link copied."
+msgstr "Groepslink gekopieerd."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group name"
+msgstr "Groepsnaam"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
+msgstr "Groepsprijzen in klingels per knol. Gemelde prijzen zijn gevuld; voorspellingen zijn mogelijke bereiken in gestippelde vakjes."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Group share link"
+msgstr "Link om de groep te delen"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Wacht nog even! Er komt een kleine piek aan: je knollen kunnen <0>tot {peak} klingels</0> opbrengen {when}."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Wacht nog even! Een kleine piek is waarschijnlijk: je knollen kunnen <0>tot {peak} klingels</0> opbrengen {when}."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "High"
+msgstr "Hoog"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Highest {shownName} price in your groups."
+msgstr "Hoogste prijs in je groepen ({shownName})."
+
+#: src/client/history.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "History"
+msgstr "Historie"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hmm, these prices don’t match any pattern. Check your entries and week settings — your prices are kept."
+msgstr "Hmm, deze prijzen passen bij geen enkel patroon. Controleer je invoer en weekinstellingen; je prijzen blijven bewaard."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike is coming — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Houd die knollen vast! Er komt een grote piek aan: ze kunnen <0>tot {peak} klingels</0> opbrengen {when}."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Hold on to those turnips! A big spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
+msgstr "Houd die knollen vast! Een grote piek is waarschijnlijk: ze kunnen <0>tot {peak} klingels</0> opbrengen {when}."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold on to your turnips"
+msgstr "Houd je knollen"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Hold or sell?"
+msgstr "Houden of verkopen?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding"
+msgstr "In bezit"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Holding {holding} → {holdingAfter} turnips"
+msgstr "In bezit: {holding} → {holdingAfter} knollen"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Holding looks good"
+msgstr "Houden loont"
+
+#: src/client/forecast.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "How the week could go"
+msgstr "Zo kan de week verlopen"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "I already play on another device"
+msgstr "Ik speel al op een ander apparaat"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "I understand that my profile and its records will be deleted."
+msgstr "Ik begrijp dat mijn profiel en de gegevens ervan worden verwijderd."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
+msgstr "Als dit apparaat geen toegang meer heeft, neem dan contact op met <0>{CONTACT_EMAIL}</0> over een onbevestigd verzoek. Hieronder kun je de opgeslagen gegevens en toegang van deze browser wissen. Dat bevestigt geen verwijdering op de server, en je kunt het hier daarna niet opnieuw proberen."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
+msgstr "Geïnspireerd door <0>Turnip Prophet</0>. Een fanproject, niet verbonden aan Nintendo."
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install"
+msgstr "Installeren"
+
+#: src/client/pwa/install.tsx
+#, fuzzy
+msgid "Install Turnip Tycoon"
+msgstr "Turnip Tycoon installeren"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite"
+msgstr "Uitnodigen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Invite a player to {groupName}"
+msgstr "Iemand uitnodigen voor {groupName}"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Island"
+msgstr "Eiland"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "It’s too early to call. {pattern} is most likely, and prices could reach <0>up to {peak} bells</0> {when}."
+msgstr "Het is nog te vroeg om te zeggen. “{pattern}” is het waarschijnlijkst, en de prijzen kunnen <0>tot {peak} klingels</0> bereiken {when}."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
+msgstr "De opgeslagen gegevens en toegang zijn uit deze browser gewist. Dat kan gebeuren als een apparaat wordt verwijderd, het profiel wordt verwijderd of je ervoor kiest dit apparaat te wissen. Dat bevestigt op zich nog geen verwijdering van de server."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join {groupName} on Turnip Tycoon"
+msgstr "Word lid van {groupName} op Turnip Tycoon"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join a group"
+msgstr "Lid worden van een groep"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join group"
+msgstr "Lid worden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Join your friends"
+msgstr "Doe mee met je vrienden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Joined {groupName}."
+msgstr "Je bent lid van {groupName}."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Keep my profile"
+msgstr "Mijn profiel houden"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Keep this device’s entries"
+msgstr "Invoer van dit apparaat houden"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Kind of trade"
+msgstr "Soort transactie"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Language"
+msgstr "Taal"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Large spike"
+msgstr "Grote piek"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Last chance: Nook’s Cranny closes at 10 PM."
+msgstr "Laatste kans: Nooks Hoek sluit om 22.00 uur."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week"
+msgstr "Vorige week"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Last week’s pattern"
+msgstr "Patroon van vorige week"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Last week’s turnips"
+msgstr "Knollen van vorige week"
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Later"
+msgstr "Later"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
+msgstr "{groupName} verlaten? Je deelt dan niets meer met deze leden, tenzij jullie nog een andere groep delen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Leave group"
+msgstr "Groep verlaten"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Licenses"
+msgstr "Licenties"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Load older weeks"
+msgstr "Oudere weken laden"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Loading devices…"
+msgstr "Apparaten laden…"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Loading saved prices…"
+msgstr "Opgeslagen prijzen laden…"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Loading saved weeks…"
+msgstr "Opgeslagen weken laden…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared history…"
+msgstr "Gedeelde historie laden…"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Loading shared prices…"
+msgstr "Gedeelde prijzen laden…"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Loading your groups…"
+msgstr "Je groepen laden…"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Loading…"
+msgstr "Laden…"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a purchase"
+msgstr "Aankoop noteren"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log a sale"
+msgstr "Verkoop noteren"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log at most {most} turnips at a time."
+msgstr "Noteer maximaal {most} knollen tegelijk."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log purchase"
+msgstr "Aankoop noteren"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Log sale"
+msgstr "Verkoop noteren"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Looking back"
+msgstr "Terugblik"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Low"
+msgstr "Laag"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Lowest buy price in your groups."
+msgstr "Laagste aankoopprijs in je groepen."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Made so far"
+msgstr "Tot nu toe verdiend"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Main navigation"
+msgstr "Hoofdnavigatie"
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Missing device credential."
+msgstr "Apparaatsleutel ontbreekt."
+
+#. Short label for Monday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon AM"
+msgstr "ma vm."
+
+#. Short label for Monday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Mon PM"
+msgstr "ma nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday afternoon"
+msgstr "maandagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Monday morning"
+msgstr "maandagochtend"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Morning"
+msgstr "Ochtend"
+
+#: src/client/data/identity.ts
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My computer"
+msgstr "Mijn computer"
+
+#: src/client/data/identity.ts
+#, fuzzy
+msgid "My phone"
+msgstr "Mijn telefoon"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "My phone or tablet"
+msgstr "Mijn telefoon of tablet"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Name saved"
+msgstr "Naam opgeslagen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Next best: {other} on {name}’s island."
+msgstr "Daarna: {other} op het eiland van {name}."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Next week"
+msgstr "Volgende week"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No"
+msgstr "Nee"
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No forecast yet"
+msgstr "Nog geen voorspelling"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No forecast yet."
+msgstr "Nog geen voorspelling."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a {periodLabel} price yet"
+msgstr "Nog geen vrienden hebben een prijs gedeeld ({periodLabel})"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No friends have shared a Sunday buy price yet"
+msgstr "Nog geen vrienden hebben een zondagse aankoopprijs gedeeld"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "No half-days left this week"
+msgstr "Deze week geen dagdelen meer"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "No matching forecast"
+msgstr "Geen passende voorspelling"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "No new profile has been created. You can close the app, or start again when you are ready."
+msgstr "Er is geen nieuw profiel aangemaakt. Je kunt de app sluiten of opnieuw beginnen wanneer je zover bent."
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "No past weeks yet."
+msgstr "Nog geen eerdere weken."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these prices. Check your entries and week settings. Your prices have been kept."
+msgstr "Geen patroon past bij deze prijzen. Controleer je invoer en weekinstellingen. Je prijzen zijn bewaard."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "No pattern matches these reported prices."
+msgstr "Geen patroon past bij deze gemelde prijzen."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No price left this week will beat {known}."
+msgstr "Geen enkele resterende prijs deze week verslaat {known}."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this afternoon. {chance} chance it’s already above {price}."
+msgstr "Nog geen prijs vanmiddag. {chance} kans dat hij al boven {price} ligt."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "No price yet this morning. {chance} chance it’s already above {price}."
+msgstr "Nog geen prijs vanochtend. {chance} kans dat hij al boven {price} ligt."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "No prices were saved for this week."
+msgstr "Voor deze week zijn geen prijzen opgeslagen."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "No profit this week"
+msgstr "Deze week geen winst"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought"
+msgstr "Geen knollen gekocht"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips bought. Log a purchase"
+msgstr "Geen knollen gekocht. Aankoop noteren"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "No turnips logged."
+msgstr "Geen knollen genoteerd."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a {periodLabel} price yet."
+msgstr "Nog niemand heeft een prijs gedeeld ({periodLabel})."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Nobody has shared a Sunday buy price yet."
+msgstr "Nog niemand heeft een zondagse aankoopprijs gedeeld."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny has closed for the week."
+msgstr "Nooks Hoek is deze week gesloten."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Nook’s Cranny opens at 8 AM."
+msgstr "Nooks Hoek gaat om 8.00 uur open."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Nook’s Cranny pays {min}–{max} bells."
+msgstr "Nooks Hoek betaalt {min}–{max} klingels."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}; {second}."
+msgstr "Niet meegeteld: {first}; {second}."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Not counted: {first}."
+msgstr "Niet meegeteld: {first}."
+
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Not entered"
+msgstr "Geen prijs"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Not entered, no forecast available"
+msgstr "Geen prijs, geen voorspelling beschikbaar"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Not sure"
+msgstr "Weet ik niet"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Now"
+msgstr "Nu"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Odds explorer"
+msgstr "Kansen verkennen"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Offline · saved on this device"
+msgstr "Offline · opgeslagen op dit apparaat"
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "Offline access could not be prepared. Reconnect and try again."
+msgstr "Offline toegang kon niet worden voorbereid. Maak opnieuw verbinding en probeer het nog eens."
+
+#. When the peak could come; ends a sentence
+#: src/client/advice.ts
+#, fuzzy
+msgid "on {halfDay}"
+msgstr "op {halfDay}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "on the {soldCount} sold"
+msgstr "op de {soldCount} verkochte"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "On the device you already use, open Settings, choose “Approve another device” and enter this code."
+msgstr "Open op het apparaat dat je al gebruikt Instellingen, kies “Ander apparaat goedkeuren” en vul deze code in."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On the new device, open Settings → Connect this device to an existing profile. Enter its connection code here."
+msgstr "Open op het nieuwe apparaat Instellingen → Dit apparaat aan een bestaand profiel koppelen. Vul hier de koppelcode in."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "On your connected device, open Settings and choose “Approve another device”."
+msgstr "Open op je gekoppelde apparaat Instellingen en kies “Ander apparaat goedkeuren”."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open {name}’s week"
+msgstr "Week van {name} openen"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Open this request from the app."
+msgstr "Open dit verzoek vanuit de app."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Open your week"
+msgstr "Je week openen"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Or scan this code on your connected device."
+msgstr "Of scan deze code op je gekoppelde apparaat."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Other device"
+msgstr "Ander apparaat"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Out of reach this week"
+msgstr "Deze week buiten bereik"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past week"
+msgstr "Afgelopen week"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Past weeks"
+msgstr "Eerdere weken"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Past weeks and their profit"
+msgstr "Eerdere weken en hun winst"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Past weeks are read-only. <0>Return to this week</0>"
+msgstr "Eerdere weken zijn alleen-lezen. <0>Terug naar deze week</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Paste a group code"
+msgstr "Plak een groepscode"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Peak day still open"
+msgstr "Piekdag nog open"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Permanently delete profile"
+msgstr "Profiel definitief verwijderen"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try connecting again."
+msgstr "Probeer opnieuw te koppelen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please try creating the group again."
+msgstr "Probeer de groep opnieuw aan te maken."
+
+#. Afternoon, as a column heading
+#. Afternoon, as a column heading
+#: src/client/group-price-table.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "PM"
+msgstr "nm."
+
+#. Afternoon, under one of twelve narrow chart columns: keep it very short
+#: src/client/forecast.tsx
+#, fuzzy
+msgctxt "chart"
+msgid "PM"
+msgstr "nm."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Possible patterns"
+msgstr "Mogelijke patronen"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous pattern"
+msgstr "Vorig patroon"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Previous week"
+msgstr "Vorige week"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Previous weeks, shared with your groups."
+msgstr "Eerdere weken, gedeeld met je groepen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Price view"
+msgstr "Prijsweergave"
+
+#. Main navigation: the current week's prices and forecast
+#: src/client/calculator.tsx
+#: src/client/main.tsx
+#, fuzzy
+msgid "Prices"
+msgstr "Prijzen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Prices don’t match a pattern"
+msgstr "Geen patroon"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Prices right now"
+msgstr "Prijzen op dit moment"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will bounce around this week — <0>up to {peak} bells</0> is possible {when}. Sell when you see a price you like."
+msgstr "De prijzen schommelen deze week: <0>tot {peak} klingels</0> is mogelijk {when}. Verkoop als je een prijs ziet die je bevalt."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
+msgstr "De prijzen dalen deze week waarschijnlijk verder. Als je klingels nodig hebt, is <0>snel verkopen</0> beter dan wachten."
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Privacy"
+msgstr "Privacy"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Privacy and data requests"
+msgstr "Privacy en gegevensverzoeken"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile"
+msgstr "Profiel"
+
+#: src/client/data/profile-storage.ts
+#, fuzzy
+msgid "Profile cleanup is in progress. Keep this page open to retry your unsaved edits."
+msgstr "Het profiel wordt opgeschoond. Houd deze pagina open om je niet-opgeslagen wijzigingen opnieuw te proberen."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Profile creation was interrupted. Connect an existing profile or use a recovery code in Settings."
+msgstr "Het aanmaken van het profiel is onderbroken. Koppel een bestaand profiel of gebruik een herstelcode in Instellingen."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Profile recovered"
+msgstr "Profiel hersteld"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Profit"
+msgstr "Winst"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Profit on these"
+msgstr "Winst hierop"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Purchase"
+msgstr "Aankoop"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Quick amounts"
+msgstr "Snelle aantallen"
+
+#: src/client/groups.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Reconnect"
+msgstr "Opnieuw verbinden"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recover profile"
+msgstr "Profiel herstellen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Recovery code"
+msgstr "Herstelcode"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this purchase"
+msgstr "Deze aankoop verwijderen"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Remove this sale"
+msgstr "Deze verkoop verwijderen"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Removed"
+msgstr "Verwijderd"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Replace recovery code"
+msgstr "Herstelcode vervangen"
+
+#: src/client/forecast.tsx
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Reported"
+msgstr "Gemeld"
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry connection"
+msgstr "Opnieuw verbinden"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Retry deletion"
+msgstr "Verwijdering opnieuw proberen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Retry devices"
+msgstr "Apparaten opnieuw laden"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Retry history"
+msgstr "Historie opnieuw laden"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Return to prices"
+msgstr "Terug naar prijzen"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Return to welcome"
+msgstr "Terug naar welkom"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Right now"
+msgstr "Op dit moment"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Room for another group?"
+msgstr "Ruimte voor nog een groep?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Rotted"
+msgstr "Bedorven"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Ruled out"
+msgstr "Uitgesloten"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sale"
+msgstr "Verkoop"
+
+#. Short label for Saturday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat AM"
+msgstr "za vm."
+
+#. Short label for Saturday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sat PM"
+msgstr "za nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday afternoon"
+msgstr "zaterdagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Saturday morning"
+msgstr "zaterdagochtend"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save and join"
+msgstr "Opslaan en lid worden"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Save name"
+msgstr "Naam opslaan"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved"
+msgstr "Opgeslagen"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Saved data and unsent edits on this browser will be cleared. Other devices clear their copies when they next check access online. Friends may still have offline copies or screenshots."
+msgstr "Opgeslagen gegevens en niet-verzonden wijzigingen in deze browser worden gewist. Andere apparaten wissen hun kopieën zodra ze de volgende keer online hun toegang controleren. Vrienden kunnen nog offline kopieën of screenshots hebben."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saved on this device · sync pending"
+msgstr "Opgeslagen op dit apparaat · synchronisatie in afwachting"
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "Saved on this device. Waiting to sync."
+msgstr "Opgeslagen op dit apparaat. Wacht op synchronisatie."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Saved weeks will appear here when a new week starts."
+msgstr "Opgeslagen weken verschijnen hier zodra een nieuwe week begint."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Saving…"
+msgstr "Opslaan…"
+
+#: src/client/pairing.tsx
+#, fuzzy
+msgid "Scan this code on your connected device to approve the connection"
+msgstr "Scan deze code op je gekoppelde apparaat om de koppeling goed te keuren"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "See the island board"
+msgstr "Bekijk het eilandoverzicht"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "See this week"
+msgstr "Bekijk deze week"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
+msgstr "Kies een dagdeel om het mogelijke bereik te zien. Gebruik de pijltjestoetsen om tussen dagdelen te wisselen, Home of End om naar het eerste of laatste te springen, en Escape om de details te sluiten."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Select and copy the group code above."
+msgstr "Selecteer en kopieer de groepscode hierboven."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Select the code above to copy it manually."
+msgstr "Selecteer de code hierboven om hem handmatig te kopiëren."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sell all now<0> at {price}</0>"
+msgstr "Nu alles verkopen<0> voor {price}</0>"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell now"
+msgstr "Nu verkopen"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Sell tonight"
+msgstr "Vanavond verkopen"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling for more than <0>{price}</0> bells"
+msgstr "Verkopen voor meer dan <0>{price}</0> klingels"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling now looks good"
+msgstr "Nu verkopen loont"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Selling soon looks good"
+msgstr "Snel verkopen loont"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request body."
+msgstr "Stuur een JSON-verzoekbody."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send a JSON request."
+msgstr "Stuur een JSON-verzoek."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Send valid JSON."
+msgstr "Stuur geldige JSON."
+
+#: src/client/main.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Settings"
+msgstr "Instellingen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share group link"
+msgstr "Groepslink delen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Share your group link to bring friends along."
+msgstr "Deel je groepslink om je vrienden erbij te halen."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared history"
+msgstr "Gedeelde historie"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared past weekly prices"
+msgstr "Gedeelde eerdere weekprijzen"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Shared view · read only"
+msgstr "Gedeelde weergave · alleen-lezen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Show group"
+msgstr "Groep tonen"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Show Turnip Tycoon in"
+msgstr "Turnip Tycoon tonen in"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Site information"
+msgstr "Site-informatie"
+
+#: src/client/main.tsx
+#, fuzzy
+msgid "Skip to content"
+msgstr "Naar inhoud"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small chance of up to {peak}"
+msgstr "Kleine kans op maximaal {peak}"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Small spike"
+msgstr "Kleine piek"
+
+#: src/client/calculator.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold"
+msgstr "Verkocht"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for"
+msgstr "Verkocht voor"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Sold for<0>, average per turnip</0>"
+msgstr "Verkocht voor<0>, gemiddeld per knol</0>"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sold them and forgot to log it?"
+msgstr "Verkocht en vergeten te noteren?"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Some prices are a little off the usual patterns, so treat this as a rough guide."
+msgstr "Sommige prijzen wijken wat af van de gebruikelijke patronen, dus zie dit als een ruwe schatting."
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by Saturday night"
+msgstr "verslaat iemand {price} vóór zaterdagavond"
+
+#. Follows “Certain” in bold
+#: src/client/odds.ts
+#, fuzzy
+msgid "someone beats {price} by tonight"
+msgstr "verslaat iemand {price} vóór vanavond"
+
+#: src/client/ui.tsx
+#, fuzzy
+msgid "Something went wrong. Please try again."
+msgstr "Er ging iets mis. Probeer het opnieuw."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Start a group with friends to compare prices and forecasts."
+msgstr "Begin een groep met vrienden om prijzen en voorspellingen te vergelijken."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Start a new profile"
+msgstr "Nieuw profiel beginnen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Stay"
+msgstr "Blijven"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday"
+msgstr "zondag"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Sunday buy"
+msgstr "Zondagse aankoop"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday buy price"
+msgstr "Zondagse aankoopprijs"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Sunday forecast"
+msgstr "Zondagse voorspelling"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Sunday purchase price in bells"
+msgstr "Aankoopprijs op zondag in klingels"
+
+#. An example group name
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Sunday turnip crew"
+msgstr "Zondagse knollenclub"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Sunday, from Daisy Mae"
+msgstr "Zondag, bij Daisy Mae"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Terms"
+msgstr "Voorwaarden"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before 10 PM."
+msgstr "Dat is {times}× je aankoopprijs: vlieg er vóór 22.00 uur heen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid — fly over before noon."
+msgstr "Dat is {times}× je aankoopprijs: vlieg er vóór 12.00 uur heen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s {times}× what you paid."
+msgstr "Dat is {times}× je aankoopprijs."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "That’s less than the {purchase} you paid."
+msgstr "Dat is minder dan de {purchase} die je betaalde."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "the {price} you paid"
+msgstr "de {price} die je betaalde"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The best {periodLabel} price in your groups."
+msgstr "De beste prijs in je groepen ({periodLabel})."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "The download could not be completed. Please try again."
+msgstr "Het downloaden is niet gelukt. Probeer het opnieuw."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "The lowest Sunday price in your groups."
+msgstr "De laagste zondagsprijs in je groepen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request body could not be read."
+msgstr "De verzoekbody kon niet worden gelezen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "The request is too large."
+msgstr "Het verzoek is te groot."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved device credential is invalid."
+msgstr "De opgeslagen apparaatsleutel is ongeldig."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "The saved profile is missing its device credential."
+msgstr "Het opgeslagen profiel mist de apparaatsleutel."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "The server did not return a valid device credential."
+msgstr "De server gaf geen geldige apparaatsleutel terug."
+
+#: src/client/pwa/controller.ts
+#, fuzzy
+msgid "The update is not ready yet. Please try again."
+msgstr "De update is nog niet klaar. Probeer het opnieuw."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "These cost you"
+msgstr "Deze kostten je"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "These prices didn’t match any pattern."
+msgstr "Deze prijzen pasten bij geen enkel patroon."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>decreasing</0> week. Use that in this week’s forecast?"
+msgstr "Deze prijzen wijzen nu op een <0>dalende</0> week. Dat gebruiken voor de voorspelling van deze week?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>fluctuating</0> week. Use that in this week’s forecast?"
+msgstr "Deze prijzen wijzen nu op een <0>schommelende</0> week. Dat gebruiken voor de voorspelling van deze week?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>large spike</0> week. Use that in this week’s forecast?"
+msgstr "Deze prijzen wijzen nu op een week met een <0>grote piek</0>. Dat gebruiken voor de voorspelling van deze week?"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "These prices now point to a <0>small spike</0> week. Use that in this week’s forecast?"
+msgstr "Deze prijzen wijzen nu op een week met een <0>kleine piek</0>. Dat gebruiken voor de voorspelling van deze week?"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this afternoon’s {price}"
+msgstr "de {price} van vanmiddag"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not read saved profile access. Enable browser storage or connect an existing profile."
+msgstr "Deze browser kon de opgeslagen profieltoegang niet lezen. Schakel browseropslag in of koppel een bestaand profiel."
+
+#: src/client/data/use-week.ts
+#, fuzzy
+msgid "This browser could not save prices locally. Check its storage settings before closing this page."
+msgstr "Deze browser kon de prijzen niet lokaal opslaan. Controleer de opslaginstellingen voordat je deze pagina sluit."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This browser could not save your profile access. Keep this tab open and create a recovery code in Settings."
+msgstr "Deze browser kon je profieltoegang niet opslaan. Houd dit tabblad open en maak een herstelcode aan in Instellingen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser is connected to a different player."
+msgstr "Deze browser is aan een ander profiel gekoppeld."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This browser request is not allowed."
+msgstr "Dit browserverzoek is niet toegestaan."
+
+#: src/client/calculator.tsx
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device"
+msgstr "Dit apparaat"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer available."
+msgstr "Dit apparaat is niet meer beschikbaar."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device is no longer connected."
+msgstr "Dit apparaat is niet meer gekoppeld."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device is no longer connected. Connect your profile again or use a recovery code in Settings."
+msgstr "Dit apparaat is niet meer gekoppeld. Koppel je profiel opnieuw of gebruik een herstelcode in Instellingen."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device needs to reconnect. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "Dit apparaat moet opnieuw worden gekoppeld. Je opgeslagen prijzen en niet-verzonden wijzigingen staan nog op dit apparaat. Koppel hetzelfde profiel opnieuw of gebruik een herstelcode in Instellingen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This device’s access expired. Reconnect your profile."
+msgstr "De toegang van dit apparaat is verlopen. Koppel je profiel opnieuw."
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "This device’s access expired. Your saved prices and unsent edits are still on this device. Connect the same profile again or use a recovery code in Settings."
+msgstr "De toegang van dit apparaat is verlopen. Je opgeslagen prijzen en niet-verzonden wijzigingen staan nog op dit apparaat. Koppel hetzelfde profiel opnieuw of gebruik een herstelcode in Instellingen."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This device’s name"
+msgstr "Naam van dit apparaat"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group code is not available. Check the code and try again."
+msgstr "Deze groepscode is niet beschikbaar. Controleer de code en probeer het opnieuw."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is full. A group can have up to 8 players."
+msgstr "Deze groep is vol. Een groep kan maximaal 8 leden hebben."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This group is no longer available to you."
+msgstr "Deze groep is niet meer voor je beschikbaar."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "This is the highest price your island can reach this week."
+msgstr "Dit is de hoogste prijs die je eiland deze week kan halen."
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "this morning’s {price}"
+msgstr "de {price} van vanochtend"
+
+#: src/client/legal.tsx
+#, fuzzy
+msgid "This page is only available in English."
+msgstr "Deze pagina is alleen in het Engels beschikbaar."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code expired or is no longer available. Start again on the new device."
+msgstr "Deze koppelcode is verlopen of niet meer beschikbaar. Begin opnieuw op het nieuwe apparaat."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code has already been approved."
+msgstr "Deze koppelcode is al goedgekeurd."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This pairing code is no longer available."
+msgstr "Deze koppelcode is niet meer beschikbaar."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
+msgstr "Hiermee worden je naam, vriendcode, prijshistorie, aankopen, verkopen en groepslidmaatschappen definitief uit de database van de app verwijderd."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This player hasn’t entered prices for this week."
+msgstr "Deze persoon heeft deze week geen prijzen ingevuld."
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This player is no longer available through your groups."
+msgstr "Deze persoon is niet meer bereikbaar via je groepen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available to you."
+msgstr "Deze persoon is niet meer voor je beschikbaar."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player is no longer available."
+msgstr "Dit profiel is niet meer beschikbaar."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "This profile is no longer connected"
+msgstr "Dit profiel is niet meer gekoppeld"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This recovery code is invalid or has already been replaced."
+msgstr "Deze herstelcode is ongeldig of al vervangen."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This save request was already used for a different edit."
+msgstr "Dit opslagverzoek is al gebruikt voor een andere wijziging."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "This translation was made by machine and hasn’t been checked by players yet, so some wording may be off."
+msgstr "Deze vertaling is automatisch gemaakt en nog niet door spelers gecontroleerd, dus sommige formuleringen kunnen vreemd zijn."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a decreasing week."
+msgstr "Dit was een dalende week."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a fluctuating week."
+msgstr "Dit was een schommelende week."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a large-spike week."
+msgstr "Dit was een week met een grote piek."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was a small-spike week."
+msgstr "Dit was een week met een kleine piek."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a decreasing week ({chance})."
+msgstr "Dit was waarschijnlijk een dalende week ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a fluctuating week ({chance})."
+msgstr "Dit was waarschijnlijk een schommelende week ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a large-spike week ({chance})."
+msgstr "Dit was waarschijnlijk een week met een grote piek ({chance})."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "This was most likely a small-spike week ({chance})."
+msgstr "Dit was waarschijnlijk een week met een kleine piek ({chance})."
+
+#: src/client/calculator.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week"
+msgstr "Deze week"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This week is not available."
+msgstr "Deze week is niet beschikbaar."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "This week will appear here when a new week starts."
+msgstr "Deze week verschijnt hier zodra een nieuwe week begint."
+
+#: src/client/outlook.tsx
+#, fuzzy
+msgid "This week’s advice"
+msgstr "Advies voor deze week"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses decreasing as last week’s pattern."
+msgstr "De voorspelling van deze week gebruikt nu “Dalend” als patroon van vorige week."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses fluctuating as last week’s pattern."
+msgstr "De voorspelling van deze week gebruikt nu “Schommelend” als patroon van vorige week."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses large spike as last week’s pattern."
+msgstr "De voorspelling van deze week gebruikt nu “Grote piek” als patroon van vorige week."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "This week’s forecast now uses small spike as last week’s pattern."
+msgstr "De voorspelling van deze week gebruikt nu “Kleine piek” als patroon van vorige week."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "This week’s pattern"
+msgstr "Patroon van deze week"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "This week’s trades"
+msgstr "Transacties van deze week"
+
+#. Short label for Thursday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu AM"
+msgstr "do vm."
+
+#. Short label for Thursday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thu PM"
+msgstr "do nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday afternoon"
+msgstr "donderdagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Thursday morning"
+msgstr "donderdagochtend"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Today"
+msgstr "Vandaag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Today’s <0>{current} bells</0> is as good as it gets this week. Time to sell!"
+msgstr "De <0>{current} klingels</0> van vandaag zijn het beste van deze week. Tijd om te verkopen!"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Too late to sell"
+msgstr "Te laat om te verkopen"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Tops out at {best}"
+msgstr "Maximaal {best}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Tops out at {ownBest}"
+msgstr "Maximaal {ownBest}"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Trades"
+msgstr "Transacties"
+
+#: src/client/calculator.tsx
+#: src/client/groups.tsx
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Try again"
+msgstr "Opnieuw proberen"
+
+#. Short label for Tuesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue AM"
+msgstr "di vm."
+
+#. Short label for Tuesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tue PM"
+msgstr "di nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday afternoon"
+msgstr "dinsdagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Tuesday morning"
+msgstr "dinsdagochtend"
+
+#: src/client/about.tsx
+#, fuzzy
+msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
+msgstr "Turnip Tycoon valt onder de <0>Apache License, Version 2.0</0>. Onderdelen van derden behouden hun eigen licenties, waaronder de lettertypen <1>Fredoka</1> en <2>Nunito</2>."
+
+#: src/client/history.tsx
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips"
+msgstr "Knollen"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Turnips come in bunches of 10."
+msgstr "Knollen komen in bosjes van 10."
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Turnips rotted"
+msgstr "Bedorven knollen"
+
+#: src/client/group-price-table.tsx
+#, fuzzy
+msgid "Unavailable"
+msgstr "Niet beschikbaar"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
+msgstr "Maximaal {maxLength} tekens. Laat leeg om als {defaultName} te verschijnen."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "Maximaal 8 personen. Leden zien elkaars naam, vriendcode, weekprijzen en historie."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Update now"
+msgstr "Nu bijwerken"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Uploads are paused. If the connection was interrupted, the deletion may already have reached the server. We will only show a successful deletion when the server confirms it."
+msgstr "Uploads zijn gepauzeerd. Als de verbinding is onderbroken, heeft de verwijdering de server misschien al bereikt. We tonen een geslaagde verwijdering pas als de server die bevestigt."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use a recovery code"
+msgstr "Herstelcode gebruiken"
+
+#: src/client/settings.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Use a recovery code instead"
+msgstr "In plaats daarvan een herstelcode gebruiken"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Use another connected device to bring that profile’s prices here. Switching profiles does not merge prices."
+msgstr "Gebruik een ander gekoppeld apparaat om de prijzen van dat profiel hierheen te halen. Wisselen van profiel voegt geen prijzen samen."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use for this week"
+msgstr "Gebruiken voor deze week"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Use HTTPS to connect securely."
+msgstr "Gebruik HTTPS voor een veilige verbinding."
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Use other device’s entries"
+msgstr "Invoer van het andere apparaat gebruiken"
+
+#: src/client/data/session-controller.ts
+#, fuzzy
+msgid "Waiting for a connection. Your prices stay on this device."
+msgstr "Wacht op verbinding. Je prijzen blijven op dit apparaat."
+
+#. Short label for Wednesday morning, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed AM"
+msgstr "wo vm."
+
+#. Short label for Wednesday afternoon, in tight table columns
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wed PM"
+msgstr "wo nm."
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday afternoon"
+msgstr "woensdagmiddag"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Wednesday morning"
+msgstr "woensdagochtend"
+
+#: src/client/history.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Week"
+msgstr "Week"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Week result"
+msgstr "Weekresultaat"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Week settings"
+msgstr "Weekinstellingen"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "week total {weekTotal}"
+msgstr "weektotaal {weekTotal}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Weekly price forecast by half-day"
+msgstr "Wekelijkse prijsvoorspelling per dagdeel"
+
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Weekly prices"
+msgstr "Weekprijzen"
+
+#: src/client/history.tsx
+#, fuzzy
+msgid "Weeks traded"
+msgstr "Weken met transacties"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Welcome to Turnip Tycoon!"
+msgstr "Welkom bij Turnip Tycoon!"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "What should your friends call you?"
+msgstr "Hoe moeten je vrienden je noemen?"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "When"
+msgstr "Wanneer"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends"
+msgstr "Met vrienden"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: <0>{chance}</0> chance someone beats {target}"
+msgstr "Met vrienden: <0>{chance}</0> kans dat iemand {target} verslaat"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: a higher price than {target} is certain"
+msgstr "Met vrienden: een hogere prijs dan {target} is zeker"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "With friends: nobody can beat {target} this week"
+msgstr "Met vrienden: niemand kan deze week {target} verslaan"
+
+#: src/client/calculator.tsx
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "Yes"
+msgstr "Ja"
+
+#. A tag after your own name in a list
+#. A tag after your own name in a list
+#: src/client/group-price-table.tsx
+#: src/client/groups.tsx
+#, fuzzy
+msgid "you"
+msgstr "jij"
+
+#: src/client/groups.tsx
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You"
+msgstr "Jij"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You entered"
+msgstr "Ingevuld"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You get"
+msgstr "Je krijgt"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {groupPrice} right now"
+msgstr "Je hebt nu {groupPrice}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You have {ownNow} right now"
+msgstr "Je hebt nu {ownNow}"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "You no longer share a group with this player."
+msgstr "Je zit niet meer in een groep met deze persoon."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "You paid {ownPrice}"
+msgstr "Betaald: {ownPrice}"
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "You paid {purchasePrice}"
+msgstr "Betaald: {purchasePrice}"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You pay"
+msgstr "Je betaalt"
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "You’re holding {holding}. Log what you bought first."
+msgstr "Je hebt er {holding}. Noteer eerst wat je hebt gekocht."
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "You’re invited to <0>{groupName}</0>. What should they call you?"
+msgstr "Je bent uitgenodigd voor <0>{groupName}</0>. Hoe moeten ze je noemen?"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} beats everyone right now!"
+msgstr "Jouw {mine} verslaat nu iedereen!"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your {mine} is the best Sunday deal in your groups"
+msgstr "Jouw {mine} is de beste zondagsdeal in je groepen"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your {ownPrice}"
+msgstr "Jouw {ownPrice}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price}"
+msgstr "jouw {price}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from {halfDay}"
+msgstr "jouw {price} van {halfDay}"
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "your {price} from this morning"
+msgstr "jouw {price} van vanochtend"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your changes will sync when the connection is restored."
+msgstr "Je wijzigingen worden gesynchroniseerd zodra de verbinding terug is."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your data"
+msgstr "Je gegevens"
+
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "Your display name"
+msgstr "Je weergavenaam"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your download is ready. Check your browser’s downloads."
+msgstr "Je download is klaar. Kijk bij de downloads van je browser."
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your friend code <0>{friendCode}</0>"
+msgstr "Je vriendcode <0>{friendCode}</0>"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your groups"
+msgstr "Je groepen"
+
+#: src/client/groups.tsx
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your island"
+msgstr "Je eiland"
+
+#: src/client/odds.ts
+#, fuzzy
+msgid "Your island tops out at {best}"
+msgstr "Je eiland haalt maximaal {best}"
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your previous recovery code will stop working. Connected devices will stay connected."
+msgstr "Je vorige herstelcode werkt dan niet meer. Gekoppelde apparaten blijven gekoppeld."
+
+#: src/client/forecast.tsx
+#, fuzzy
+msgid "Your price"
+msgstr "Je prijs"
+
+#: src/client/calculator.tsx
+#, fuzzy
+msgid "Your prices"
+msgstr "Je prijzen"
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile and its records have been removed from the app’s database, and all connected devices have lost access."
+msgstr "Je profiel en de gegevens ervan zijn uit de database van de app verwijderd, en alle gekoppelde apparaten hebben de toegang verloren."
+
+#: src/client/data/session-vault.ts
+#, fuzzy
+msgid "Your profile changed in another tab. Please try again."
+msgstr "Je profiel is in een ander tabblad gewijzigd. Probeer het opnieuw."
+
+#: src/client/data/profile-export.ts
+#, fuzzy
+msgid "Your profile changed. Please start the download again."
+msgstr "Je profiel is gewijzigd. Start de download opnieuw."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile changed. Please try again."
+msgstr "Je profiel is gewijzigd. Probeer het opnieuw."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Your profile changed. Review it before deleting."
+msgstr "Je profiel is gewijzigd. Controleer het voordat je het verwijdert."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile changed. Start the download again."
+msgstr "Je profiel is gewijzigd. Start de download opnieuw."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is connected. Your old recovery code has been replaced."
+msgstr "Je profiel is gekoppeld. Je oude herstelcode is vervangen."
+
+#: src/client/profile-data.tsx
+#, fuzzy
+msgid "Your profile is deleted"
+msgstr "Je profiel is verwijderd"
+
+#: src/client/pwa/index.ts
+#, fuzzy
+msgid "Your profile is still connecting or could not be saved. Try again shortly."
+msgstr "Je profiel wordt nog gekoppeld of kon niet worden opgeslagen. Probeer het zo opnieuw."
+
+#: src/client/settings.tsx
+#, fuzzy
+msgid "Your profile is temporarily unavailable. Prices can still be entered on this device."
+msgstr "Je profiel is tijdelijk niet beschikbaar. Je kunt op dit apparaat nog steeds prijzen invullen."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need more turnips than that."
+msgstr "Voor je verkopen heb je meer knollen nodig."
+
+#: src/client/turnips.tsx
+#, fuzzy
+msgid "Your sales need these turnips. Change or remove a sale first."
+msgstr "Je verkopen hebben deze knollen nodig. Wijzig of verwijder eerst een verkoop."
+
+#: src/client/pwa/update-notice.tsx
+#, fuzzy
+msgid "Your saved prices will stay on this device."
+msgstr "Je opgeslagen prijzen blijven op dit apparaat."
+
+#: src/client/odds-card.tsx
+#, fuzzy
+msgid "Your turnips"
+msgstr "Je knollen"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Your week"
+msgstr "Je week"
+
+#: src/client/advice.ts
+#, fuzzy
+msgid "Your weekly forecast"
+msgstr "Je weekvoorspelling"

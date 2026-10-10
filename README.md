@@ -38,7 +38,7 @@ New languages start as machine drafts and need players who speak them to check t
 | Español    | 🟠 Needs reviewers |
 | Français   | 🟠 Needs reviewers |
 | Italiano   | 🟠 Needs reviewers |
-| Nederlands | 🔴 Not started     |
+| Nederlands | 🟠 Needs reviewers |
 | Русский    | 🔴 Not started     |
 | 日本語     | 🔴 Not started     |
 | 한국어     | 🔴 Not started     |

@@ -6,7 +6,7 @@ export default defineConfig({
   sourceLocale: 'en',
   // `pseudo` stretches and brackets every extracted message, so text that was missed stands out.
   // Development builds offer it in Settings; production builds never load it.
-  locales: ['en', 'de', 'es', 'fr', 'it', 'pseudo'],
+  locales: ['en', 'de', 'es', 'fr', 'it', 'nl', 'pseudo'],
   pseudoLocale: { locale: 'pseudo', prepend: '⟦', append: '⟧', extend: 0.3 },
   fallbackLocales: { default: 'en' },
   catalogs: [{ path: '<rootDir>/src/client/locales/{locale}', include: ['<rootDir>/src/client'] }],
