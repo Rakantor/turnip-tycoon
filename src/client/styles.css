@@ -226,6 +226,9 @@ p {
     transform 80ms ease,
     box-shadow 80ms ease;
 }
+.site-header nav a svg {
+  flex-shrink: 0;
+}
 .site-header nav a:hover {
   background: #fff;
 }
@@ -1570,6 +1573,12 @@ span.sunday-turnips {
   .brand-mark {
     width: 36px;
     height: 36px;
+  }
+  /* Longer labels, like French “Historique”, don't fit beside their icons. */
+  .site-header nav a {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 13px;
   }
   .weekly-entry {
     padding: 12px;
