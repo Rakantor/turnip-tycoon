@@ -1697,7 +1697,7 @@ msgstr "No"
 #: src/client/groups.tsx
 #, fuzzy
 msgid "No forecast yet"
-msgstr "Nessuna previsione per ora"
+msgstr "Nessuna previsione"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -1825,12 +1825,12 @@ msgstr "Non conteggiati: {first}."
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Not entered"
-msgstr "Nessun prezzo"
+msgstr "Non inserito"
 
 #: src/client/group-price-table.tsx
 #, fuzzy
 msgid "Not entered, no forecast available"
-msgstr "Nessun prezzo, nessuna previsione disponibile"
+msgstr "Non inserito, nessuna previsione disponibile"
 
 #: src/client/calculator.tsx
 #, fuzzy

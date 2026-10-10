@@ -1697,7 +1697,7 @@ msgstr "Non"
 #: src/client/groups.tsx
 #, fuzzy
 msgid "No forecast yet"
-msgstr "Pas encore de prévision"
+msgstr "Pas de prévision"
 
 #: src/client/forecast.tsx
 #, fuzzy
