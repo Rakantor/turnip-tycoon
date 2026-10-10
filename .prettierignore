@@ -8,5 +8,4 @@ output
 worker-configuration.d.ts
 drizzle/meta
 pnpm-lock.yaml
-turnip-app-plan.md
 src/prediction/vendor/predictions.js
