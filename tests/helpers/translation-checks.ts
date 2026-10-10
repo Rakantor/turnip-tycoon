@@ -100,17 +100,3 @@ export function translationProblems(source: string, translation: string, locale:
   }
   return problems;
 }
-
-/** The glossary entries for one language, as a list for translators. */
-export function glossaryFor(locale: string): string {
-  return glossary.terms
-    .filter((term) => term.translations[locale])
-    .map((term) => {
-      const target = term.translations[locale];
-      const kind = { game: 'official game term', community: 'players’ term', app: 'app term' }[
-        term.kind
-      ];
-      return `- ${term.en} → ${target.term} (${kind})${term.note ? `. ${term.note}` : ''}${target.avoid.length ? ` Never: ${target.avoid.join(', ')}.` : ''}`;
-    })
-    .join('\n');
-}

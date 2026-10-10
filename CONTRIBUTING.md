@@ -73,7 +73,7 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, and shared reads         |
 | `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                    |
 | `drizzle`          | Versioned SQL migrations and snapshots                                                       |
-| `scripts`          | Local database, development server, migrations, icon generation, and machine translation     |
+| `scripts`          | Local database, development server, migrations, and icon generation                          |
 | `tests/api`        | API and database integration tests                                                           |
 | `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                    |
 | `tests/prediction` | Prediction fixtures and regression tests                                                     |
@@ -103,9 +103,9 @@ Interface text goes through [Lingui](https://lingui.dev). Write the English in p
 
 Catalogs are `src/client/locales/{locale}.po`. English is the source and ships with the app; other languages load on demand and are precached for offline use. After changing text, run `pnpm i18n:extract`; `pnpm check` fails while catalogs are stale. In development, Settings offers a `pseudo` language that stretches and brackets every extracted message, so text that missed extraction stands out.
 
-`pnpm i18n:translate <locale>` translates untranslated messages with Claude (it needs `ANTHROPIC_API_KEY`), following the style guides in `src/client/locales/style/` and the glossary. It checks each translation and saves it marked fuzzy, which translation tools show as needing review. `tests/client/translations.test.ts` checks every committed translation: placeholders, tags and plural forms must survive, and Animal Crossing terms must use the game's official names from `src/client/locales/glossary.json`. Settings marks unreviewed languages as machine-translated; German is one.
+Translations are first drafted by machine, following the style guides in `src/client/locales/style/` and the glossary, and committed marked fuzzy, which translation tools show as needing review. `tests/client/translations.test.ts` checks every committed translation: placeholders, tags and plural forms must survive, and Animal Crossing terms must use the game's official names from `src/client/locales/glossary.json`. Settings marks unreviewed languages as machine-translated; German is one.
 
-To add a language, add it to `locales` in `lingui.config.ts` and to `LANGUAGES` and `catalogs` in `src/client/i18n.ts`, give every `game` term in the glossary its official name in that language (with a source), add a style guide, then extract and translate. Check its fonts: Fredoka and Nunito cover Latin scripts, and Nunito covers Cyrillic, but neither covers Chinese, Japanese or Korean.
+To add a language, add it to `locales` in `lingui.config.ts` and to `LANGUAGES` and `catalogs` in `src/client/i18n.ts`, give every `game` term in the glossary its official name in that language (with a source), add a style guide, then extract and translate its catalog. Check its fonts: Fredoka and Nunito cover Latin scripts, and Nunito covers Cyrillic, but neither covers Chinese, Japanese or Korean.
 
 The API answers in English. `src/client/data/server-messages.ts` translates each message the server can send, by its exact text, and `tests/client/server-messages.test.ts` keeps it in step with `src/server`. Terms and Privacy are published in English only.
 

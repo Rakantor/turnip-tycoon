@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { entries, readCatalog, TARGET_LOCALES } from '../../scripts/i18n/catalog';
-import { glossary, translationProblems } from '../../scripts/i18n/checks';
+import { entries, readCatalog, TARGET_LOCALES } from '../helpers/catalog';
+import { glossary, translationProblems } from '../helpers/translation-checks';
 
 describe.each(TARGET_LOCALES)('%s translations', (locale) => {
   it('keep placeholders, tags and plurals, and use the game’s terms', async () => {
