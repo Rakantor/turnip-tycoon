@@ -332,6 +332,11 @@ msgstr "100 menos"
 msgid "100 more"
 msgstr "100 más"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+msgstr "Un proyecto de fans, sin relación con Nintendo. Previsiones adaptadas de <0>Turnip Prophet</0>."
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "A good price is better shared."
@@ -879,7 +884,7 @@ msgstr "Código de conexión"
 msgid "Connection unavailable. You can keep entering prices on this device."
 msgstr "Sin conexión. Puedes seguir anotando precios en este dispositivo."
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Contact"
 msgstr "Contacto"
@@ -973,16 +978,6 @@ msgstr "No se pudo confirmar la eliminación."
 #, fuzzy
 msgid "Could not connect this profile."
 msgstr "No se pudo conectar este perfil."
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the license."
-msgstr "No se pudo cargar la licencia."
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
-msgstr "No se pudieron cargar las licencias. <0>Inténtalo de nuevo</0> o abre el <1>aviso</1> y la <2>licencia</2>."
 
 #: src/client/data/use-groups.ts
 #, fuzzy
@@ -1276,6 +1271,11 @@ msgstr "Fluctuante"
 msgid "for {earned}"
 msgstr "por {earned}"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "For anything private, email <0>{CONTACT_EMAIL}</0>"
+msgstr "Para asuntos privados, escribe a <0>{CONTACT_EMAIL}</0>"
+
 #. Short label for Friday morning, in tight table columns
 #: src/client/advice.ts
 #, fuzzy
@@ -1430,6 +1430,11 @@ msgstr "¡Espera! Se acerca un pico moderado: tus nabos podrían venderse por <0
 msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 msgstr "¡Espera! Es probable un pico moderado: tus nabos podrían venderse por <0>hasta {peak} bayas</0> {when}."
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Help translate"
+msgstr "Ayuda a traducir"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "High"
@@ -1502,15 +1507,15 @@ msgstr "Ya juego en otro dispositivo"
 msgid "I understand that my profile and its records will be deleted."
 msgstr "Entiendo que mi perfil y sus registros se eliminarán."
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Ideas and questions"
+msgstr "Ideas y preguntas"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
 msgstr "Si este dispositivo ya no tiene acceso, escribe a <0>{CONTACT_EMAIL}</0> sobre una solicitud sin confirmar. Abajo puedes borrar los datos guardados y el acceso de este navegador. Eso no confirma la eliminación en el servidor y quita la posibilidad de volver a intentarlo aquí."
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
-msgstr "Inspirado en <0>Turnip Prophet</0>. Un proyecto de fans, sin relación con Nintendo."
 
 #: src/client/pwa/install.tsx
 #, fuzzy
@@ -1634,7 +1639,7 @@ msgstr "¿Salir de {groupName}? Dejarás de compartir con sus miembros, salvo qu
 msgid "Leave group"
 msgstr "Salir del grupo"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Licenses"
 msgstr "Licencias"
@@ -1674,11 +1679,6 @@ msgstr "Cargando precios compartidos…"
 #, fuzzy
 msgid "Loading your friends…"
 msgstr "Cargando tus amigos…"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Loading…"
-msgstr "Cargando…"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1984,6 +1984,11 @@ msgstr "No se pudo preparar el acceso sin conexión. Vuelve a conectarte e inté
 msgid "on {halfDay}"
 msgstr "el {halfDay}"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "On GitHub"
+msgstr "En GitHub"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "on the {soldCount} sold"
@@ -2008,6 +2013,11 @@ msgstr "En tu dispositivo conectado, abre Ajustes y elige «Aprobar otro disposi
 #, fuzzy
 msgid "Open {name}’s week"
 msgstr "Abrir la semana de {name}"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Open source under the <0>Apache License 2.0</0>"
+msgstr "Código abierto bajo la <0>licencia Apache 2.0</0>"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2157,7 +2167,7 @@ msgstr "Los precios van a subir y bajar esta semana: podrían llegar <0>hasta {p
 msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 msgstr "Lo más probable es que los precios sigan bajando esta semana. Si necesitas bayas, <0>vender pronto</0> es mejor que esperar."
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Privacy"
 msgstr "Privacidad"
@@ -2254,6 +2264,11 @@ msgstr "Eliminado"
 #, fuzzy
 msgid "Replace recovery code"
 msgstr "Sustituir código de recuperación"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Report a bug"
+msgstr "Informar de un error"
 
 #: src/client/forecast.tsx
 #: src/client/group-price-table.tsx
@@ -2532,11 +2547,6 @@ msgstr "Ver perfil"
 msgid "Show Turnip Tycoon in"
 msgstr "Mostrar Turnip Tycoon en"
 
-#: src/client/about.tsx
-#, fuzzy
-msgid "Site information"
-msgstr "Información del sitio"
-
 #: src/client/main.tsx
 #, fuzzy
 msgid "Skip to content"
@@ -2595,6 +2605,11 @@ msgstr "que alguien supera {price} antes de esta noche"
 msgid "Something went wrong. Please try again."
 msgstr "Algo salió mal. Inténtalo de nuevo."
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Source code"
+msgstr "Código fuente"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Start a new group"
@@ -2647,10 +2662,15 @@ msgstr "Club del nabo dominical"
 msgid "Sunday, from Daisy Mae"
 msgstr "Domingo, a Juliana"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Terms"
 msgstr "Condiciones"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
+msgstr "Gracias a <0>Ninji</0>, quien descubrió primero cómo fija el juego el precio de los nabos."
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2691,6 +2711,11 @@ msgstr "El mejor precio entre tus amigos ({periodLabel})."
 #, fuzzy
 msgid "The download could not be completed. Please try again."
 msgstr "No se pudo completar la descarga. Inténtalo de nuevo."
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "The fine print"
+msgstr "La letra pequeña"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -3119,11 +3144,6 @@ msgstr "martes por la tarde"
 #, fuzzy
 msgid "Tuesday morning"
 msgstr "martes por la mañana"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
-msgstr "Turnip Tycoon se publica bajo la <0>Apache License, Version 2.0</0>. Los componentes de terceros conservan sus respectivas licencias, incluidas las fuentes <1>Fredoka</1> y <2>Nunito</2>."
 
 #: src/client/history.tsx
 #: src/client/turnips.tsx

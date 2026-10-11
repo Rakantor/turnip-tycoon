@@ -1,11 +1,13 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { CONTACT_EMAIL } from '../shared/contact';
+import projectNotice from '../../NOTICE?raw';
+import { assetUrl } from './urls';
+import { CONTACT_EMAIL, REPOSITORY_URL } from '../shared/contact';
 import './legal.css';
 
 export function isLegalPath(pathname: string): boolean {
-  return /^\/(?:privacy|terms)\/?$/i.test(pathname);
+  return /^\/(?:privacy|terms|licenses)\/?$/i.test(pathname);
 }
 
 function Contact() {
@@ -15,10 +17,12 @@ function Contact() {
 function LegalPage({
   title,
   intro,
+  dated = true,
   children,
 }: {
   title: string;
   intro: string;
+  dated?: boolean;
   children: ReactNode;
 }) {
   const { i18n } = useLingui();
@@ -38,17 +42,20 @@ function LegalPage({
           <Trans>This page is only available in English.</Trans>
         </p>
       )}
-      <nav lang="en" className="segmented-control legal-navigation" aria-label="Terms and privacy">
+      <nav lang="en" className="segmented-control legal-navigation" aria-label="The fine print">
         <NavLink to="/terms">Terms</NavLink>
         <NavLink to="/privacy">Privacy</NavLink>
+        <NavLink to="/licenses">Licenses</NavLink>
       </nav>
       <article lang="en" className="legal-document">
         <header>
           <h1>{title}</h1>
           <p className="legal-intro">{intro}</p>
-          <p className="legal-date">
-            Last updated <time dateTime="2026-10-11">11 October 2026</time>
-          </p>
+          {dated && (
+            <p className="legal-date">
+              Last updated <time dateTime="2026-10-11">11 October 2026</time>
+            </p>
+          )}
         </header>
         {children}
       </article>
@@ -439,6 +446,110 @@ export function Privacy() {
           we use or share your data, we’ll show a notice in the app, and ask for your consent where
           the law requires it.
         </p>
+      </section>
+    </LegalPage>
+  );
+}
+
+const PROPHET_LICENSES = assetUrl('licenses/turnip-prophet');
+
+const FONT_LICENSES = [
+  ['Fredoka', 'Fredoka-OFL.txt'],
+  ['Nunito', 'Nunito-OFL.txt'],
+  ['M PLUS Rounded 1c', 'MPLUSRounded1c-OFL.txt'],
+  ['Jua', 'Jua-OFL.txt'],
+  ['Resource Han Rounded', 'ResourceHanRounded-OFL.txt'],
+  ['Huninn', 'Huninn-OFL.txt'],
+] as const;
+
+export function Licenses() {
+  const [text, setText] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    let current = true;
+    Promise.all(
+      ['NOTICE', 'LICENSE'].map(async (name) => {
+        const response = await fetch(`${PROPHET_LICENSES}/${name}`);
+        if (!response.ok) throw new Error(`Could not load ${name}.`);
+        return response.text();
+      }),
+    ).then(
+      (texts) => {
+        if (current) setText([projectNotice, ...texts].join('\n\n'));
+      },
+      () => {
+        if (current) setFailed(true);
+      },
+    );
+    return () => {
+      current = false;
+    };
+  }, [attempt]);
+
+  return (
+    <LegalPage
+      title="Licenses"
+      intro="Turnip Tycoon is open source, and stands on the work of others."
+      dated={false}
+    >
+      <section aria-labelledby="licenses-app">
+        <h2 id="licenses-app">Turnip Tycoon</h2>
+        <p>
+          Turnip Tycoon is licensed under the{' '}
+          <a href={`${PROPHET_LICENSES}/LICENSE`}>Apache License, Version 2.0</a>. Its{' '}
+          <a href={REPOSITORY_URL}>source code</a> is on GitHub.
+        </p>
+      </section>
+
+      <section aria-labelledby="licenses-third-party">
+        <h2 id="licenses-third-party">Third-party components</h2>
+        <p>These keep their own licenses.</p>
+        <ul>
+          <li>
+            The forecasts are adapted from{' '}
+            <a href="https://github.com/mikebryant/ac-nh-turnip-prices">Turnip Prophet</a>,
+            developed by Mike Bryant with great thanks to Ninji, under the Apache License, Version
+            2.0. See its <a href={`${PROPHET_LICENSES}/NOTICE`}>notice</a> and{' '}
+            <a href={`${PROPHET_LICENSES}/COPYRIGHT`}>copyright</a>.
+          </li>
+          <li>
+            The fonts{' '}
+            {FONT_LICENSES.map(([font, file], index) => (
+              <span key={file}>
+                {index > 0 && (index === FONT_LICENSES.length - 1 ? ' and ' : ', ')}
+                <a href={assetUrl(`licenses/fonts/${file}`)}>{font}</a>
+              </span>
+            ))}{' '}
+            are licensed under the SIL Open Font License, Version 1.1.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="licenses-text">
+        <h2 id="licenses-text">Notices and license text</h2>
+        {failed ? (
+          <p role="alert">
+            Could not load the license text.{' '}
+            <button
+              type="button"
+              className="legal-retry"
+              onClick={() => {
+                setFailed(false);
+                setAttempt((count) => count + 1);
+              }}
+            >
+              Try again
+            </button>{' '}
+            or open the <a href={`${PROPHET_LICENSES}/NOTICE`}>notice</a> and{' '}
+            <a href={`${PROPHET_LICENSES}/LICENSE`}>license</a>.
+          </p>
+        ) : (
+          <pre className="legal-license-text" aria-busy={text === null}>
+            {text ?? 'Loading…'}
+          </pre>
+        )}
       </section>
     </LegalPage>
   );

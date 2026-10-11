@@ -270,6 +270,10 @@ msgstr ""
 msgid "100 more"
 msgstr ""
 
+#: src/client/footer.tsx
+msgid "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+msgstr ""
+
 #: src/client/groups.tsx
 msgid "A good price is better shared."
 msgstr ""
@@ -714,7 +718,7 @@ msgstr ""
 msgid "Connection unavailable. You can keep entering prices on this device."
 msgstr ""
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Contact"
 msgstr ""
 
@@ -788,14 +792,6 @@ msgstr ""
 
 #: src/client/data/session-controller.ts
 msgid "Could not connect this profile."
-msgstr ""
-
-#: src/client/about.tsx
-msgid "Could not load the license."
-msgstr ""
-
-#: src/client/about.tsx
-msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
 msgstr ""
 
 #: src/client/data/use-groups.ts
@@ -1032,6 +1028,10 @@ msgstr ""
 msgid "for {earned}"
 msgstr ""
 
+#: src/client/footer.tsx
+msgid "For anything private, email <0>{CONTACT_EMAIL}</0>"
+msgstr ""
+
 #. Short label for Friday morning, in tight table columns
 #: src/client/advice.ts
 msgid "Fri AM"
@@ -1156,6 +1156,10 @@ msgstr ""
 msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 msgstr ""
 
+#: src/client/footer.tsx
+msgid "Help translate"
+msgstr ""
+
 #: src/client/forecast.tsx
 msgid "High"
 msgstr ""
@@ -1214,12 +1218,12 @@ msgstr ""
 msgid "I understand that my profile and its records will be deleted."
 msgstr ""
 
-#: src/client/profile-data.tsx
-msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
+#: src/client/footer.tsx
+msgid "Ideas and questions"
 msgstr ""
 
-#: src/client/about.tsx
-msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
+#: src/client/profile-data.tsx
+msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
 msgstr ""
 
 #: src/client/pwa/install.tsx
@@ -1320,7 +1324,7 @@ msgstr ""
 msgid "Leave group"
 msgstr ""
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Licenses"
 msgstr ""
 
@@ -1351,10 +1355,6 @@ msgstr ""
 
 #: src/client/groups.tsx
 msgid "Loading your friends…"
-msgstr ""
-
-#: src/client/about.tsx
-msgid "Loading…"
 msgstr ""
 
 #: src/client/turnips.tsx
@@ -1602,6 +1602,10 @@ msgstr ""
 msgid "on {halfDay}"
 msgstr ""
 
+#: src/client/footer.tsx
+msgid "On GitHub"
+msgstr ""
+
 #: src/client/turnips.tsx
 msgid "on the {soldCount} sold"
 msgstr ""
@@ -1620,6 +1624,10 @@ msgstr ""
 
 #: src/client/groups.tsx
 msgid "Open {name}’s week"
+msgstr ""
+
+#: src/client/footer.tsx
+msgid "Open source under the <0>Apache License 2.0</0>"
 msgstr ""
 
 #: src/client/data/server-messages.ts
@@ -1742,7 +1750,7 @@ msgstr ""
 msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 msgstr ""
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Privacy"
 msgstr ""
 
@@ -1819,6 +1827,10 @@ msgstr ""
 
 #: src/client/settings.tsx
 msgid "Replace recovery code"
+msgstr ""
+
+#: src/client/footer.tsx
+msgid "Report a bug"
 msgstr ""
 
 #: src/client/forecast.tsx
@@ -2044,10 +2056,6 @@ msgstr ""
 msgid "Show Turnip Tycoon in"
 msgstr ""
 
-#: src/client/about.tsx
-msgid "Site information"
-msgstr ""
-
 #: src/client/main.tsx
 msgid "Skip to content"
 msgstr ""
@@ -2095,6 +2103,10 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
+#: src/client/footer.tsx
+msgid "Source code"
+msgstr ""
+
 #: src/client/people.tsx
 msgid "Start a new group"
 msgstr ""
@@ -2137,8 +2149,12 @@ msgstr ""
 msgid "Sunday, from Daisy Mae"
 msgstr ""
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Terms"
+msgstr ""
+
+#: src/client/footer.tsx
+msgid "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
 msgstr ""
 
 #: src/client/people.tsx
@@ -2171,6 +2187,10 @@ msgstr ""
 
 #: src/client/data/profile-export.ts
 msgid "The download could not be completed. Please try again."
+msgstr ""
+
+#: src/client/footer.tsx
+msgid "The fine print"
 msgstr ""
 
 #: src/client/groups.tsx
@@ -2516,10 +2536,6 @@ msgstr ""
 
 #: src/client/advice.ts
 msgid "Tuesday morning"
-msgstr ""
-
-#: src/client/about.tsx
-msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
 msgstr ""
 
 #: src/client/history.tsx

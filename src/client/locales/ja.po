@@ -332,6 +332,11 @@ msgstr "100減らす"
 msgid "100 more"
 msgstr "100増やす"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+msgstr "任天堂とは関係のないファンプロジェクトです。予測は<0>Turnip Prophet</0>をもとにしています。"
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "A good price is better shared."
@@ -879,7 +884,7 @@ msgstr "接続コード"
 msgid "Connection unavailable. You can keep entering prices on this device."
 msgstr "接続できません。この端末で引き続き価格を入力できます。"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Contact"
 msgstr "お問い合わせ"
@@ -973,16 +978,6 @@ msgstr "削除を確認できませんでした。"
 #, fuzzy
 msgid "Could not connect this profile."
 msgstr "このプロフィールに接続できませんでした。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the license."
-msgstr "ライセンスを読み込めませんでした。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
-msgstr "ライセンスを読み込めませんでした。<0>再試行</0>するか、<1>通知</1>と<2>ライセンス</2>を開いてください。"
 
 #: src/client/data/use-groups.ts
 #, fuzzy
@@ -1276,6 +1271,11 @@ msgstr "波型"
 msgid "for {earned}"
 msgstr "計{earned}ベル"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "For anything private, email <0>{CONTACT_EMAIL}</0>"
+msgstr "非公開で連絡したい場合は<0>{CONTACT_EMAIL}</0>へメールしてください"
+
 #. Short label for Friday morning, in tight table columns
 #: src/client/advice.ts
 #, fuzzy
@@ -1430,6 +1430,11 @@ msgstr "もう少し待って！ 跳ね小型が来ます。{when}に<0>最高{p
 msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 msgstr "もう少し待って！ 跳ね小型になりそうです。{when}に<0>最高{peak}ベル</0>で売れるかもしれません。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Help translate"
+msgstr "翻訳に協力"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "High"
@@ -1502,15 +1507,15 @@ msgstr "ほかの端末ですでにプレイしています"
 msgid "I understand that my profile and its records will be deleted."
 msgstr "プロフィールとその記録が削除されることを理解しました。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Ideas and questions"
+msgstr "アイデアと質問"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
 msgstr "この端末がもうアクセスできない場合は、未確認のリクエストについて<0>{CONTACT_EMAIL}</0>までご連絡ください。下でこのブラウザの保存データとアクセスを消去できます。ただし、サーバーでの削除が確認されるわけではなく、ここから再試行することもできなくなります。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
-msgstr "<0>Turnip Prophet</0>に着想を得ています。任天堂とは関係のないファンプロジェクトです。"
 
 #: src/client/pwa/install.tsx
 #, fuzzy
@@ -1634,7 +1639,7 @@ msgstr "{groupName}から退出しますか？ ほかに共通のグループが
 msgid "Leave group"
 msgstr "グループから退出"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Licenses"
 msgstr "ライセンス"
@@ -1674,11 +1679,6 @@ msgstr "共有された価格を読み込み中…"
 #, fuzzy
 msgid "Loading your friends…"
 msgstr "フレンドを読み込み中…"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Loading…"
-msgstr "読み込み中…"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1984,6 +1984,11 @@ msgstr "オフラインで使う準備ができませんでした。接続し直
 msgid "on {halfDay}"
 msgstr "{halfDay}"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "On GitHub"
+msgstr "GitHubで"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "on the {soldCount} sold"
@@ -2008,6 +2013,11 @@ msgstr "接続済みの端末で設定を開き、「別の端末を承認」を
 #, fuzzy
 msgid "Open {name}’s week"
 msgstr "{name}の1週間を開く"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Open source under the <0>Apache License 2.0</0>"
+msgstr "<0>Apache License 2.0</0>のオープンソースです"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2157,7 +2167,7 @@ msgstr "今週の価格は上がったり下がったり。{when}に<0>最高{pe
 msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 msgstr "今週の価格は下がり続けそうです。ベルが必要なら、待つより<0>早めに売る</0>のがおすすめです。"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Privacy"
 msgstr "プライバシー"
@@ -2254,6 +2264,11 @@ msgstr "削除済み"
 #, fuzzy
 msgid "Replace recovery code"
 msgstr "復元コードを作り直す"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Report a bug"
+msgstr "不具合を報告"
 
 #: src/client/forecast.tsx
 #: src/client/group-price-table.tsx
@@ -2532,11 +2547,6 @@ msgstr "プロフィールを見る"
 msgid "Show Turnip Tycoon in"
 msgstr "Turnip Tycoonの表示言語"
 
-#: src/client/about.tsx
-#, fuzzy
-msgid "Site information"
-msgstr "サイト情報"
-
 #: src/client/main.tsx
 #, fuzzy
 msgid "Skip to content"
@@ -2595,6 +2605,11 @@ msgstr "今夜までに誰かが{price}を超える"
 msgid "Something went wrong. Please try again."
 msgstr "問題が発生しました。もう一度お試しください。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Source code"
+msgstr "ソースコード"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Start a new group"
@@ -2647,10 +2662,15 @@ msgstr "日曜カブ仲間"
 msgid "Sunday, from Daisy Mae"
 msgstr "日曜日、ウリから"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Terms"
 msgstr "利用規約"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
+msgstr "カブ価の決まり方を最初に解き明かした<0>Ninji</0>さんに感謝します。"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2691,6 +2711,11 @@ msgstr "フレンド内の{periodLabel}の最高値。"
 #, fuzzy
 msgid "The download could not be completed. Please try again."
 msgstr "ダウンロードを完了できませんでした。もう一度お試しください。"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "The fine print"
+msgstr "法的情報"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -3119,11 +3144,6 @@ msgstr "火曜日の午後"
 #, fuzzy
 msgid "Tuesday morning"
 msgstr "火曜日の午前"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
-msgstr "Turnip Tycoonは<0>Apache License, Version 2.0</0>で提供されています。サードパーティのコンポーネントは、<1>Fredoka</1>と<2>Nunito</2>のフォントを含め、それぞれのライセンスに従います。"
 
 #: src/client/history.tsx
 #: src/client/turnips.tsx

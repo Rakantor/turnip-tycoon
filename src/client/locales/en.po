@@ -270,6 +270,10 @@ msgstr "100 fewer"
 msgid "100 more"
 msgstr "100 more"
 
+#: src/client/footer.tsx
+msgid "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+msgstr "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+
 #: src/client/groups.tsx
 msgid "A good price is better shared."
 msgstr "A good price is better shared."
@@ -714,7 +718,7 @@ msgstr "Connection code"
 msgid "Connection unavailable. You can keep entering prices on this device."
 msgstr "Connection unavailable. You can keep entering prices on this device."
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Contact"
 msgstr "Contact"
 
@@ -789,14 +793,6 @@ msgstr "Could not confirm deletion."
 #: src/client/data/session-controller.ts
 msgid "Could not connect this profile."
 msgstr "Could not connect this profile."
-
-#: src/client/about.tsx
-msgid "Could not load the license."
-msgstr "Could not load the license."
-
-#: src/client/about.tsx
-msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
-msgstr "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
 
 #: src/client/data/use-groups.ts
 msgid "Could not load your friends."
@@ -1032,6 +1028,10 @@ msgstr "Fluctuating"
 msgid "for {earned}"
 msgstr "for {earned}"
 
+#: src/client/footer.tsx
+msgid "For anything private, email <0>{CONTACT_EMAIL}</0>"
+msgstr "For anything private, email <0>{CONTACT_EMAIL}</0>"
+
 #. Short label for Friday morning, in tight table columns
 #: src/client/advice.ts
 msgid "Fri AM"
@@ -1156,6 +1156,10 @@ msgstr "Hang on! A small spike is coming — they could sell for <0>up to {peak}
 msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 msgstr "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 
+#: src/client/footer.tsx
+msgid "Help translate"
+msgstr "Help translate"
+
 #: src/client/forecast.tsx
 msgid "High"
 msgstr "High"
@@ -1214,13 +1218,13 @@ msgstr "I already play on another device"
 msgid "I understand that my profile and its records will be deleted."
 msgstr "I understand that my profile and its records will be deleted."
 
+#: src/client/footer.tsx
+msgid "Ideas and questions"
+msgstr "Ideas and questions"
+
 #: src/client/profile-data.tsx
 msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
 msgstr "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
-
-#: src/client/about.tsx
-msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
-msgstr "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
 
 #: src/client/pwa/install.tsx
 msgid "Install"
@@ -1320,7 +1324,7 @@ msgstr "Leave {groupName}? You’ll stop sharing with players unless you share a
 msgid "Leave group"
 msgstr "Leave group"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Licenses"
 msgstr "Licenses"
 
@@ -1352,10 +1356,6 @@ msgstr "Loading shared prices…"
 #: src/client/groups.tsx
 msgid "Loading your friends…"
 msgstr "Loading your friends…"
-
-#: src/client/about.tsx
-msgid "Loading…"
-msgstr "Loading…"
 
 #: src/client/turnips.tsx
 msgid "Log a purchase"
@@ -1602,6 +1602,10 @@ msgstr "Offline access could not be prepared. Reconnect and try again."
 msgid "on {halfDay}"
 msgstr "on {halfDay}"
 
+#: src/client/footer.tsx
+msgid "On GitHub"
+msgstr "On GitHub"
+
 #: src/client/turnips.tsx
 msgid "on the {soldCount} sold"
 msgstr "on the {soldCount} sold"
@@ -1621,6 +1625,10 @@ msgstr "On your connected device, open Settings and choose “Approve another de
 #: src/client/groups.tsx
 msgid "Open {name}’s week"
 msgstr "Open {name}’s week"
+
+#: src/client/footer.tsx
+msgid "Open source under the <0>Apache License 2.0</0>"
+msgstr "Open source under the <0>Apache License 2.0</0>"
 
 #: src/client/data/server-messages.ts
 msgid "Open this request from the app."
@@ -1742,7 +1750,7 @@ msgstr "Prices will bounce around this week — <0>up to {peak} bells</0> is pos
 msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 msgstr "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1820,6 +1828,10 @@ msgstr "Removed"
 #: src/client/settings.tsx
 msgid "Replace recovery code"
 msgstr "Replace recovery code"
+
+#: src/client/footer.tsx
+msgid "Report a bug"
+msgstr "Report a bug"
 
 #: src/client/forecast.tsx
 #: src/client/group-price-table.tsx
@@ -2044,10 +2056,6 @@ msgstr "Show profile"
 msgid "Show Turnip Tycoon in"
 msgstr "Show Turnip Tycoon in"
 
-#: src/client/about.tsx
-msgid "Site information"
-msgstr "Site information"
-
 #: src/client/main.tsx
 msgid "Skip to content"
 msgstr "Skip to content"
@@ -2095,6 +2103,10 @@ msgstr "someone beats {price} by tonight"
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
 
+#: src/client/footer.tsx
+msgid "Source code"
+msgstr "Source code"
+
 #: src/client/people.tsx
 msgid "Start a new group"
 msgstr "Start a new group"
@@ -2137,9 +2149,13 @@ msgstr "Sunday turnip crew"
 msgid "Sunday, from Daisy Mae"
 msgstr "Sunday, from Daisy Mae"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 msgid "Terms"
 msgstr "Terms"
+
+#: src/client/footer.tsx
+msgid "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
+msgstr "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
 
 #: src/client/people.tsx
 msgid "That link couldn’t be saved, so it won’t work. Share a new one."
@@ -2172,6 +2188,10 @@ msgstr "The best {periodLabel} price among your friends."
 #: src/client/data/profile-export.ts
 msgid "The download could not be completed. Please try again."
 msgstr "The download could not be completed. Please try again."
+
+#: src/client/footer.tsx
+msgid "The fine print"
+msgstr "The fine print"
 
 #: src/client/groups.tsx
 msgid "The lowest Sunday price among your friends."
@@ -2517,10 +2537,6 @@ msgstr "Tuesday afternoon"
 #: src/client/advice.ts
 msgid "Tuesday morning"
 msgstr "Tuesday morning"
-
-#: src/client/about.tsx
-msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
-msgstr "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
 
 #: src/client/history.tsx
 #: src/client/turnips.tsx

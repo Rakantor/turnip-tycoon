@@ -1,0 +1,168 @@
+/* A cream band across the whole window, its top edge scalloped like a shop awning. */
+.site-footer {
+  position: relative;
+  margin-top: 64px;
+  background: var(--surface);
+}
+
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 0;
+  left: 0;
+  height: 16px;
+  background: radial-gradient(
+      circle at 14px 16px,
+      var(--surface) 12px,
+      var(--border) 12px 14px,
+      transparent 14px
+    )
+    0 0 / 28px 16px repeat-x;
+}
+
+.site-footer-columns,
+.site-footer-base {
+  width: min(1120px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.site-footer-columns {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.8fr;
+  gap: 32px 48px;
+  padding: 34px 0 30px;
+}
+
+.site-footer p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.site-footer-credits {
+  max-width: 36ch;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.site-footer-credits p + p {
+  margin-top: 12px;
+}
+
+.site-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--heading);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.site-footer-brand img {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.site-footer h2 {
+  margin-bottom: 10px;
+  color: var(--leaf-dark);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.site-footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  color: var(--heading);
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.site-footer li a:hover {
+  color: var(--leaf-deep);
+  text-decoration: underline;
+}
+
+.site-footer li svg {
+  flex-shrink: 0;
+  color: var(--leaf-dark);
+}
+
+.site-footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding: 14px 0 24px;
+  border-top: 2px dashed var(--border);
+  color: var(--subtle);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.site-footer-base a {
+  color: inherit;
+}
+
+.site-footer-base a:hover {
+  color: var(--heading);
+}
+
+@media (max-width: 720px) {
+  .site-footer-columns,
+  .site-footer-base {
+    width: calc(100% - 32px);
+  }
+
+  .site-footer-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 16px;
+    padding-top: 28px;
+  }
+
+  .site-footer-about {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer-credits {
+    max-width: none;
+  }
+
+  .site-footer-base {
+    flex-direction: column;
+  }
+}
+
+/* Below this width the first credit wraps in nearly every language, so both run on as one paragraph. */
+@media (max-width: 620px) {
+  .site-footer-credits p {
+    display: inline;
+  }
+
+  .site-footer-credits p + p::before {
+    content: ' ';
+  }
+
+  /* Japanese and Chinese sentences follow one another without a space. */
+  :is(:lang(ja), :lang(zh)) .site-footer-credits p + p::before {
+    content: none;
+  }
+}

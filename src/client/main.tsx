@@ -29,8 +29,8 @@ import { History } from './history';
 import { Connect, Recover, Settings } from './settings';
 import { Groups } from './groups';
 import { SharedPlayer, SharedHistory } from './shared-player';
-import { About } from './about';
-import { isLegalPath, Privacy, Terms } from './legal';
+import { SiteFooter } from './footer';
+import { isLegalPath, Licenses, Privacy, Terms } from './legal';
 import { ProfileRemovalNotice } from './profile-data';
 import { WelcomeDialog } from './welcome';
 import { assetUrl, hashRouting } from './urls';
@@ -162,10 +162,11 @@ function App() {
               <Route path="/recover" element={<Recover />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/licenses" element={<Licenses />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           )}
-          <About />
+          <SiteFooter />
           {!isLegalPath(location.pathname) && <WelcomeDialog />}
         </Fragment>
       </div>

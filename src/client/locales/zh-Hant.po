@@ -332,6 +332,11 @@ msgstr "減少100"
 msgid "100 more"
 msgstr "增加100"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "A fan project, not affiliated with Nintendo. Forecasts adapted from <0>Turnip Prophet</0>."
+msgstr "粉絲專案，與任天堂無關。預測改編自<0>Turnip Prophet</0>。"
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "A good price is better shared."
@@ -879,7 +884,7 @@ msgstr "連線代碼"
 msgid "Connection unavailable. You can keep entering prices on this device."
 msgstr "無法連線。你可以繼續在這台裝置上輸入價格。"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Contact"
 msgstr "聯絡我們"
@@ -973,16 +978,6 @@ msgstr "無法確認刪除。"
 #, fuzzy
 msgid "Could not connect this profile."
 msgstr "無法連線這個個人檔案。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the license."
-msgstr "無法載入授權條款。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> and <2>license</2>."
-msgstr "無法載入授權條款。<0>再試一次</0>，或開啟<1>聲明</1>和<2>授權條款</2>。"
 
 #: src/client/data/use-groups.ts
 #, fuzzy
@@ -1276,6 +1271,11 @@ msgstr "波型"
 msgid "for {earned}"
 msgstr "共{earned}"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "For anything private, email <0>{CONTACT_EMAIL}</0>"
+msgstr "不便公開的事請寄信至<0>{CONTACT_EMAIL}</0>"
+
 #. Short label for Friday morning, in tight table columns
 #: src/client/advice.ts
 #, fuzzy
@@ -1430,6 +1430,11 @@ msgstr "再等等！四期型要來了，{when}可能賣到<0>最高{peak}鈴錢
 msgid "Hang on! A small spike looks likely — they could sell for <0>up to {peak} bells</0> {when}."
 msgstr "再等等！很可能是四期型，{when}可能賣到<0>最高{peak}鈴錢</0>。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Help translate"
+msgstr "協助翻譯"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "High"
@@ -1502,15 +1507,15 @@ msgstr "我已經在另一台裝置上使用"
 msgid "I understand that my profile and its records will be deleted."
 msgstr "我了解我的個人檔案及其紀錄將被刪除。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Ideas and questions"
+msgstr "建議與問題"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "If this device no longer has access, contact <0>{CONTACT_EMAIL}</0> about an unconfirmed request. You can clear this browser’s saved data and access below. That does not confirm server deletion, and removes the ability to retry here."
 msgstr "如果這台裝置已無法存取，請就未確認的要求聯絡<0>{CONTACT_EMAIL}</0>。你可以在下方清除這個瀏覽器儲存的資料和存取權。這並不代表伺服器已確認刪除，而且之後將無法在這裡再試一次。"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Inspired by <0>Turnip Prophet</0>. A fan project, not affiliated with Nintendo."
-msgstr "靈感來自<0>Turnip Prophet</0>。粉絲專案，與任天堂無關。"
 
 #: src/client/pwa/install.tsx
 #, fuzzy
@@ -1634,7 +1639,7 @@ msgstr "要退出{groupName}嗎？除非你們還在其他群組中，否則你�
 msgid "Leave group"
 msgstr "退出群組"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Licenses"
 msgstr "授權條款"
@@ -1674,11 +1679,6 @@ msgstr "正在載入分享的價格…"
 #, fuzzy
 msgid "Loading your friends…"
 msgstr "正在載入你的好友…"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Loading…"
-msgstr "載入中…"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1984,6 +1984,11 @@ msgstr "無法準備離線存取。請重新連線後再試一次。"
 msgid "on {halfDay}"
 msgstr "在{halfDay}"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "On GitHub"
+msgstr "在GitHub上"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "on the {soldCount} sold"
@@ -2008,6 +2013,11 @@ msgstr "在已連線的裝置上開啟設定，選擇「核准另一台裝置」
 #, fuzzy
 msgid "Open {name}’s week"
 msgstr "開啟{name}的一週"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Open source under the <0>Apache License 2.0</0>"
+msgstr "採用<0>Apache License 2.0</0>開放原始碼"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2157,7 +2167,7 @@ msgstr "本週價格會忽高忽低，{when}可能達到<0>最高{peak}鈴錢</0
 msgid "Prices will most likely keep sliding this week. If you need bells, <0>selling soon</0> beats waiting."
 msgstr "本週價格很可能繼續下跌。如果你需要鈴錢，<0>盡快賣出</0>比等待更好。"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Privacy"
 msgstr "隱私權"
@@ -2254,6 +2264,11 @@ msgstr "已移除"
 #, fuzzy
 msgid "Replace recovery code"
 msgstr "更換復原代碼"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Report a bug"
+msgstr "回報錯誤"
 
 #: src/client/forecast.tsx
 #: src/client/group-price-table.tsx
@@ -2532,11 +2547,6 @@ msgstr "查看個人檔案"
 msgid "Show Turnip Tycoon in"
 msgstr "Turnip Tycoon的顯示語言"
 
-#: src/client/about.tsx
-#, fuzzy
-msgid "Site information"
-msgstr "網站資訊"
-
 #: src/client/main.tsx
 #, fuzzy
 msgid "Skip to content"
@@ -2595,6 +2605,11 @@ msgstr "今晚前有人會超過{price}"
 msgid "Something went wrong. Please try again."
 msgstr "發生問題，請再試一次。"
 
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Source code"
+msgstr "原始碼"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Start a new group"
@@ -2647,10 +2662,15 @@ msgstr "週日大頭菜小隊"
 msgid "Sunday, from Daisy Mae"
 msgstr "週日，向曹賣購買"
 
-#: src/client/about.tsx
+#: src/client/footer.tsx
 #, fuzzy
 msgid "Terms"
 msgstr "條款"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "Thanks to <0>Ninji</0>, who first worked out how the game sets turnip prices."
+msgstr "感謝<0>Ninji</0>率先破解了遊戲決定大頭菜價格的方式。"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2691,6 +2711,11 @@ msgstr "好友中{periodLabel}的最高價。"
 #, fuzzy
 msgid "The download could not be completed. Please try again."
 msgstr "下載未能完成，請再試一次。"
+
+#: src/client/footer.tsx
+#, fuzzy
+msgid "The fine print"
+msgstr "法律資訊"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -3119,11 +3144,6 @@ msgstr "星期二下午"
 #, fuzzy
 msgid "Tuesday morning"
 msgstr "星期二上午"
-
-#: src/client/about.tsx
-#, fuzzy
-msgid "Turnip Tycoon is licensed under the <0>Apache License, Version 2.0</0>. Third-party components retain their respective licenses, including the <1>Fredoka</1> and <2>Nunito</2> fonts."
-msgstr "Turnip Tycoon採用<0>Apache License, Version 2.0</0>授權。第三方元件保留各自的授權條款，包括<1>Fredoka</1>和<2>Nunito</2>字型。"
 
 #: src/client/history.tsx
 #: src/client/turnips.tsx

@@ -48,6 +48,11 @@
   font-size: 18px;
 }
 
+/* Pages without a date keep the same gap before the first section. */
+.legal-intro:last-child {
+  margin-bottom: 24px;
+}
+
 .legal-date {
   margin-bottom: 24px;
   color: var(--muted);
@@ -80,6 +85,29 @@
   margin-bottom: 0;
 }
 
+.legal-license-text {
+  max-height: 60vh;
+  margin: 0;
+  overflow: auto;
+  padding: 14px;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.legal-retry {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--leaf-dark);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @media (max-width: 560px) {
   .legal-document {
     padding: 22px 18px;
@@ -88,7 +116,7 @@
 
 @media print {
   body:has(.legal-page) .site-header,
-  body:has(.legal-page) .about-footer,
+  body:has(.legal-page) .site-footer,
   .legal-navigation {
     display: none;
   }
