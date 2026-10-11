@@ -30,6 +30,9 @@
 .friends-panel {
   margin-top: 30px;
 }
+.friends-postcard + .friends-postcard {
+  margin-top: 16px;
+}
 .friends-postcard {
   display: flex;
   flex-wrap: wrap;
@@ -724,25 +727,6 @@
 .group-connection p {
   font-size: 14px;
   font-weight: 700;
-}
-.your-friend-code {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 30px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-}
-.your-friend-code strong {
-  margin-left: 4px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-weight: 600;
-}
-.your-friend-code a {
-  margin-left: 6px;
 }
 
 /* A friend's shared week */

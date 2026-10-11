@@ -41,6 +41,9 @@ describe('Profile download and deletion', () => {
     expect((await friend.request('POST', '/api/groups/join', { code: group.code })).status).toBe(
       200,
     );
+    const request = await owner.request('POST', '/api/friends', { code: other.player.friendCode });
+    expect(request.status).toBe(200);
+    expect((await friend.request('PUT', `/api/friends/${profile.player.id}`)).status).toBe(200);
     const solo = (
       (await (await owner.request('POST', '/api/groups', { name: 'Solo' })).json()) as {
         group: GroupSummary;
@@ -102,6 +105,10 @@ describe('Profile download and deletion', () => {
     expect(output.groups).toHaveLength(2);
     expect(output.pairing).toHaveLength(1);
     expect(output.syncRecords).toHaveLength(1);
+    // The one exception to other players' data: whom you're friends with, by ID only.
+    expect(output.friends).toEqual([
+      { id: f.other.player.id, sentAt: expect.any(String), receivedAt: expect.any(String) },
+    ]);
     expect(output.weeks).toEqual([
       expect.objectContaining({
         weekStart: '2026-10-04',
@@ -112,10 +119,11 @@ describe('Profile download and deletion', () => {
         ],
       }),
     ]);
+    expect(JSON.stringify({ ...output, friends: [] })).not.toContain(f.other.player.id);
     const text = JSON.stringify(output);
     for (const forbidden of [
-      f.other.player.id,
       f.other.player.displayName,
+      f.other.player.friendCode,
       f.profile.recoveryCode,
       f.owner.cookies.get(sessionCookie)!,
       'tokenHash',
@@ -179,6 +187,7 @@ describe('Profile download and deletion', () => {
     expect((await client.query('select id from turnip_private.players')).rows).toEqual([
       { id: f.other.player.id },
     ]);
+    expect((await client.query('select * from turnip_private.friend_links')).rows).toEqual([]);
     expect((await client.query('select id from turnip_private.groups')).rows).toEqual([
       { id: f.group.id },
     ]);

@@ -56,12 +56,14 @@ export async function renewSession(db: Database, tokenHash: string): Promise<boo
   return renewed.length > 0;
 }
 
+// No key update serializes every session of a player just as strictly, while another
+// player's friend request can still reference the row without waiting for this one.
 export async function lockPlayer(tx: Transaction, playerId: string): Promise<void> {
   const [player] = await tx
     .select({ id: players.id })
     .from(players)
     .where(eq(players.id, playerId))
-    .for('update');
+    .for('no key update');
   if (!player) throw new ApiError(401, 'DEVICE_REMOVED', 'This player is no longer available.');
 }
 

@@ -68,12 +68,18 @@ describe('Groups and shared player prices', () => {
     expect((await browser.request('PUT', `/api/weeks/${date}`, input)).status).toBe(200);
     return input;
   }
+  const nobody: GroupsResponse = {
+    groups: [],
+    players: [],
+    friendIds: [],
+    requests: { received: [], sent: [] },
+  };
   const memberWeek = (id: string) => `/api/players/${id}/weeks/${weekStart}`;
   const memberHistory = (id: string) => `/api/players/${id}/weeks`;
 
   it('creates an equal first member, trims the name, and exposes no access credentials', async () => {
     const owner = await player();
-    expect(await overview(owner.browser)).toEqual({ groups: [], players: [] });
+    expect(await overview(owner.browser)).toEqual(nobody);
     const group = await create(owner.browser, '  Weekend turnips  ');
     expect(group).toEqual({
       id: expect.any(String),
@@ -84,6 +90,7 @@ describe('Groups and shared player prices', () => {
     });
     const data = await overview(owner.browser);
     expect(data).toEqual({
+      ...nobody,
       groups: [group],
       players: [
         {
@@ -209,7 +216,7 @@ describe('Groups and shared player prices', () => {
     ]) {
       await expectError(await outsider.browser.request('GET', path), 404);
     }
-    expect(await overview(outsider.browser)).toEqual({ groups: [], players: [] });
+    expect(await overview(outsider.browser)).toEqual(nobody);
     expect(
       (await owner.browser.request('PUT', memberWeek(friend.session.player.id), {})).status,
     ).toBe(404);

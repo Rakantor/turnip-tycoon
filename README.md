@@ -24,7 +24,7 @@ Bought turnips from Daisy Mae? Enter the prices Nook's Cranny offers, and Turnip
 
 - **See what's coming.** Get your week's likely pattern, a price range for every half-day, and the chance of a better price before Saturday.
 - **Track your turnips.** Log what you buy and sell, at whatever price, and see what you made each week and all time.
-- **Sell with friends.** Start a group of up to twelve islands and see who has the best price right now. Friends see your prices, never your profit.
+- **Sell with friends.** Add friends by their friend code or start a group of up to twelve islands, and see who has the best price right now. Friends see your prices, never your profit.
 - **Take it anywhere.** Install it on your phone, keep going offline, and carry on from your computer.
 
 ## Help translate

@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { serverMessage, serverMessages } from '../../src/client/data/server-messages';
+import { FRIEND_LIMIT } from '../../src/server/friends';
 import { GROUP_CAPACITY } from '../../src/server/groups';
 
 const SERVER = join(import.meta.dirname, '../../src/server');
@@ -15,7 +16,11 @@ function apiErrorMessages(): string[] {
       /new ApiError\(\s*\d+,\s*'[A-Z_]+',\s*(['`])((?:(?!\1)[^\\]|\\.)*)\1/g,
     );
     for (const [, , text] of calls)
-      messages.add(text.replaceAll('${GROUP_CAPACITY}', String(GROUP_CAPACITY)));
+      messages.add(
+        text
+          .replaceAll('${GROUP_CAPACITY}', String(GROUP_CAPACITY))
+          .replaceAll('${FRIEND_LIMIT}', String(FRIEND_LIMIT)),
+      );
   }
   // Validation reports its first issue, falling back to this.
   messages.add('Check the supplied fields.');

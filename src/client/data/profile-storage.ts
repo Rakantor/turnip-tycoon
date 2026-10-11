@@ -4,6 +4,16 @@ import type { TurnipDatabase } from './database';
 import type { Table } from 'dexie';
 
 export const blockedProfileKey = (owner: string) => `blocked-profile:${owner}`;
+const list = <T>(value: T[] | undefined): T[] => (Array.isArray(value) ? value : []);
+
+/** Every player a saved groups response holds, sharing prices or waiting on a request. */
+export function playersIn(data: Partial<GroupsResponse>): string[] {
+  return [
+    ...list(data.players),
+    ...list(data.requests?.received),
+    ...list(data.requests?.sent),
+  ].map((entry) => entry.player.id);
+}
 
 export class ProfileWriteBlockedError extends Error {
   constructor() {
@@ -50,7 +60,7 @@ export async function eraseProfileCopies(
     } else if (phase === 'deleted' && row.key.startsWith('shared-groups:')) {
       const value = row.value as Partial<GroupsResponse> | undefined;
       // Another profile on this browser may have cached the deleted player as a friend.
-      if (value?.players?.some((entry) => entry.player.id === owner)) await db.meta.delete(row.key);
+      if (value && playersIn(value).includes(owner)) await db.meta.delete(row.key);
     }
   }
 }

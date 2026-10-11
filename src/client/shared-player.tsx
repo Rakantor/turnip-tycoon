@@ -61,7 +61,7 @@ function accessLost(error: unknown): boolean {
 function sharedError(error: unknown, owner: string, playerId: string) {
   if (accessLost(error)) {
     void forgetSharedPlayer(owner, playerId).catch(() => undefined);
-    return t`This player is no longer available through your groups.`;
+    return t`This player no longer shares prices with you.`;
   }
   return messageOf(error);
 }
@@ -425,7 +425,7 @@ export function SharedHistory() {
         <div>
           <h1>{shown ? t`${name}’s history` : t`Shared history`}</h1>
           <p>
-            <Trans>Previous weeks, shared with your groups.</Trans>
+            <Trans>Previous weeks, shared with you.</Trans>
           </p>
         </div>
         {shown && (

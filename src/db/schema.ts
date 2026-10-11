@@ -132,6 +132,28 @@ export const memberships = privateSchema
   )
   .enableRLS();
 
+// One row per direction: a player asked, by friend code, to share prices with another.
+// Rows both ways make them friends; a row only one way is a request still waiting.
+export const friendLinks = privateSchema
+  .table(
+    'friend_links',
+    {
+      playerId: uuid('player_id')
+        .notNull()
+        .references(() => players.id, { onDelete: 'cascade' }),
+      friendId: uuid('friend_id')
+        .notNull()
+        .references(() => players.id, { onDelete: 'cascade' }),
+      createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+      primaryKey({ columns: [table.playerId, table.friendId] }),
+      index('friend_links_friend_player_idx').on(table.friendId, table.playerId),
+      check('friend_links_not_self', sql`${table.playerId} <> ${table.friendId}`),
+    ],
+  )
+  .enableRLS();
+
 export const weeks = privateSchema
   .table(
     'weeks',

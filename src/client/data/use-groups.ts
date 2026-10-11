@@ -1,12 +1,17 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { t } from '@lingui/core/macro';
 import type { SessionResponse } from '../../shared/api';
-import type { GroupSummary, GroupsResponse, SharedPlayerWeek } from '../../shared/groups';
+import type {
+  FriendResult,
+  GroupSummary,
+  GroupsResponse,
+  SharedPlayerWeek,
+} from '../../shared/groups';
 import { ApiError, request } from './api';
 import { database } from './database';
 import { activeIdentity } from './runtime';
 import type { IdentityState } from './session-controller';
-import { SharedGroupsCache, withoutGroup, withoutPlayer } from './shared-groups';
+import { SharedGroupsCache, withoutFriend, withoutGroup, withoutPlayer } from './shared-groups';
 import { writeForProfile } from './profile-storage';
 
 type GroupState = GroupsResponse & {
@@ -31,9 +36,14 @@ interface GroupStore {
 }
 const stores = new Map<string, GroupStore>();
 const cache = new SharedGroupsCache(database);
-const empty: GroupState = {
+const nobody: GroupsResponse = {
   groups: [],
   players: [],
+  friendIds: [],
+  requests: { received: [], sent: [] },
+};
+const empty: GroupState = {
+  ...nobody,
   status: 'loading',
   error: null,
   hydrated: false,
@@ -102,21 +112,21 @@ async function forget(owner: string, failed?: GroupStore): Promise<void> {
     else invalidate(store);
     store.version++;
     store.saved = false;
-    publish(store, { groups: [], players: [], hydrated: true });
+    publish(store, { ...nobody, hydrated: true });
   }
   await cache.forget(owner);
 }
 export const forgetSharedGroups = (owner: string) => forget(owner);
 
-/** A friend who is no longer reachable through any group disappears straight away. */
+/** A player who no longer shares prices through any group or friendship disappears straight away. */
 export async function forgetSharedPlayer(owner: string, playerId: string): Promise<void> {
   for (const store of stores.values()) {
     if (store.owner !== owner) continue;
     invalidate(store);
     store.version++;
-    publish(store, withoutPlayer(store.state, playerId));
+    publish(store, withoutPlayer(store.state, playerId, owner));
   }
-  await cache.update(owner, (data) => withoutPlayer(data, playerId));
+  await cache.update(owner, (data) => withoutPlayer(data, playerId, owner));
 }
 
 /** This week's saved entry for one friend, for reading their week offline. */
@@ -166,18 +176,19 @@ async function fetchGroups(store: GroupStore, quiet = false): Promise<void> {
       const players = [
         ...new Map(result.players.map((entry) => [entry.player.id, entry])).values(),
       ];
+      const data: GroupsResponse = {
+        groups: result.groups,
+        players,
+        // An API from before friend codes sends neither.
+        friendIds: result.friendIds ?? [],
+        requests: result.requests ?? nobody.requests,
+      };
       store.loaded = true;
       store.saved = true;
       store.version++;
-      publish(store, {
-        groups: result.groups,
-        players,
-        status: 'ready',
-        error: null,
-        hydrated: true,
-      });
+      publish(store, { ...data, status: 'ready', error: null, hydrated: true });
       try {
-        await cache.write(store.owner, store.weekStart, { groups: result.groups, players });
+        await cache.write(store.owner, store.weekStart, data);
       } catch {
         /* Friends then stay available online only. */
       }
@@ -191,7 +202,7 @@ async function fetchGroups(store: GroupStore, quiet = false): Promise<void> {
     } catch (error) {
       if (generation !== store.generation) return;
       store.loaded = false;
-      const message = error instanceof Error ? error.message : t`Could not load your groups.`;
+      const message = error instanceof Error ? error.message : t`Could not load your friends.`;
       if (error instanceof ApiError && [401, 403].includes(error.status)) {
         await forget(store.owner, store).catch(() => undefined);
         publish(store, { status: 'error', error: message });
@@ -244,20 +255,30 @@ export function useGroups(
     return () => invalidate(store);
   }, [connected, owner, store]);
 
-  async function change(path: string, method: string, body?: unknown, left?: string) {
+  /** Sends a change, applies what it removes locally straight away, then reads the server. */
+  async function change<T>(
+    path: string,
+    method: string,
+    body?: unknown,
+    removed?: (data: GroupsResponse) => GroupsResponse,
+  ): Promise<T> {
     assertOwner(owner);
-    const result = await request<{ group: GroupSummary }>(path, { method, body });
+    const result = await request<T>(path, { method, body });
     assertOwner(owner);
     invalidate(store);
-    if (left) {
+    if (removed) {
       store.version++;
-      publish(store, withoutGroup(store.state, left));
-      await cache.update(owner, (data) => withoutGroup(data, left)).catch(() => undefined);
+      publish(store, removed(store.state));
+      await cache.update(owner, removed).catch(() => undefined);
     }
     if (store.pending) await store.pending;
     if (!store.loaded) await fetchGroups(store);
-    return result.group;
+    return result;
   }
+  const changeGroup = async (path: string, body: unknown) =>
+    (await change<{ group: GroupSummary }>(path, 'POST', body)).group;
+  const changeFriend = async (path: string, method: string, body?: unknown) =>
+    (await change<{ friend: FriendResult }>(path, method, body)).friend;
   const status: GroupState['status'] = connected
     ? state.status
     : identity === 'connecting' || (owner && !state.hydrated)
@@ -268,10 +289,21 @@ export function useGroups(
     ...(connected ? {} : { status, error: null }),
     /** Reads the server now, past the once-a-minute limit, e.g. after an error. */
     retry: () => fetchGroups(store),
-    create: (name: string) => change('/groups', 'POST', { name }),
-    join: (code: string) => change('/groups/join', 'POST', { code }),
+    create: (name: string) => changeGroup('/groups', { name }),
+    join: (code: string) => changeGroup('/groups/join', { code }),
     leave: async (id: string) => {
-      await change(`/groups/${id}/membership`, 'DELETE', undefined, id);
+      await change(`/groups/${id}/membership`, 'DELETE', undefined, (data) =>
+        withoutGroup(data, id, owner),
+      );
+    },
+    /** Sends a friend request, or accepts theirs if they already asked you. */
+    addFriend: (code: string) => changeFriend('/friends', 'POST', { code }),
+    acceptFriend: (playerId: string) => changeFriend(`/friends/${playerId}`, 'PUT'),
+    /** Removes a friend, or declines or withdraws a request. */
+    removeFriend: async (playerId: string) => {
+      await change(`/friends/${playerId}`, 'DELETE', undefined, (data) =>
+        withoutFriend(data, playerId, owner),
+      );
     },
   };
 }

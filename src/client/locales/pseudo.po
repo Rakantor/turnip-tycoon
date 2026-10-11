@@ -17,6 +17,11 @@ msgstr ""
 msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
 msgstr ""
 
+#. placeholder {0}: received.length
+#: src/client/groups.tsx
+msgid "{0, plural, one {# player wants to share prices with you} other {# players want to share prices with you}}"
+msgstr ""
+
 #: src/client/turnips.tsx
 msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
 msgstr ""
@@ -50,7 +55,7 @@ msgid "{earned} earned − {spent} spent"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
+msgid "{friendCount, plural, one {# friend shares prices with you. Check back later.} other {# friends share prices with you. Check back later.}}"
 msgstr ""
 
 #: src/client/odds-card.tsx
@@ -204,6 +209,10 @@ msgstr ""
 msgid "{quantity} at {price} on {halfDay}"
 msgstr ""
 
+#: src/client/groups.tsx
+msgid "{requester} wants to share prices with you"
+msgstr ""
+
 #: src/client/turnips.tsx
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 msgstr ""
@@ -287,6 +296,27 @@ msgstr ""
 
 #: src/client/turnips.tsx
 msgid "A week holds at most 40 purchases and sales."
+msgstr ""
+
+#. Button: accept a friend request
+#: src/client/friends.tsx
+msgid "Accept"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Accept {name}’s friend request"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Accept on Friends to compare your prices and forecasts."
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Add friends"
+msgstr ""
+
+#: src/client/groups.tsx
+msgid "Add friends or start a group to compare prices and forecasts."
 msgstr ""
 
 #: src/client/forecast.tsx
@@ -487,6 +517,14 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Cancel request"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Cancel your friend request to {name}"
+msgstr ""
+
 #: src/client/groups.tsx
 msgid "Certain"
 msgstr ""
@@ -684,6 +722,10 @@ msgstr ""
 msgid "Copy this group link to share it."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Copy your friend code"
+msgstr ""
+
 #: src/client/calculator.tsx
 msgid "Correct the highlighted entries. The forecast uses your last valid prices."
 msgstr ""
@@ -737,7 +779,7 @@ msgid "Could not load the licenses. <0>Try again</0> or open the <1>notice</1> a
 msgstr ""
 
 #: src/client/data/use-groups.ts
-msgid "Could not load your groups."
+msgid "Could not load your friends."
 msgstr ""
 
 #: src/client/data/api.ts
@@ -777,10 +819,6 @@ msgid "Create group"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Create or join a group"
-msgstr ""
-
-#: src/client/groups.tsx
 msgid "Create or join group"
 msgstr ""
 
@@ -802,6 +840,15 @@ msgstr ""
 
 #: src/client/shared-player.tsx
 msgid "Day"
+msgstr ""
+
+#. Button: decline a friend request
+#: src/client/friends.tsx
+msgid "Decline"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Decline {name}’s friend request"
 msgstr ""
 
 #: src/client/advice.ts
@@ -870,10 +917,6 @@ msgstr ""
 
 #: src/client/turnips.tsx
 msgid "Edit sale of {what}"
-msgstr ""
-
-#: src/client/groups.tsx
-msgid "Edit your name"
 msgstr ""
 
 #: src/client/calculator.tsx
@@ -986,8 +1029,21 @@ msgstr ""
 msgid "Friday morning"
 msgstr ""
 
+#: src/client/friends.tsx
 #: src/client/settings.tsx
 msgid "Friend code"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Friend code copied."
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Friend request sent to {name}."
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Friend requests"
 msgstr ""
 
 #: src/client/groups.tsx
@@ -1076,7 +1132,7 @@ msgid "High"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Highest {shownName} price in your groups."
+msgid "Highest {shownName} price among your friends."
 msgstr ""
 
 #: src/client/history.tsx
@@ -1185,6 +1241,11 @@ msgstr ""
 msgid "Joined {groupName}."
 msgstr ""
 
+#. Button: keep a friend instead of removing them
+#: src/client/friends.tsx
+msgid "Keep"
+msgstr ""
+
 #: src/client/profile-data.tsx
 msgid "Keep my profile"
 msgstr ""
@@ -1263,7 +1324,7 @@ msgid "Loading shared prices…"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Loading your groups…"
+msgid "Loading your friends…"
 msgstr ""
 
 #: src/client/about.tsx
@@ -1299,7 +1360,7 @@ msgid "Low"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Lowest buy price in your groups."
+msgid "Lowest buy price among your friends."
 msgstr ""
 
 #: src/client/turnips.tsx
@@ -1406,6 +1467,10 @@ msgstr ""
 
 #: src/client/forecast.tsx
 msgid "No pattern matches these reported prices."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "No player has this friend code. Check the code and try again."
 msgstr ""
 
 #: src/client/odds-card.tsx
@@ -1519,6 +1584,10 @@ msgstr ""
 msgid "On your connected device, open Settings and choose “Approve another device”."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Once they accept, you can see each other’s name, friend code, weekly prices and history."
+msgstr ""
+
 #: src/client/groups.tsx
 msgid "Open {name}’s week"
 msgstr ""
@@ -1557,6 +1626,10 @@ msgstr ""
 
 #: src/client/calculator.tsx
 msgid "Past weeks are read-only. <0>Return to this week</0>"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Paste a friend code"
 msgstr ""
 
 #: src/client/groups.tsx
@@ -1605,7 +1678,7 @@ msgid "Previous week"
 msgstr ""
 
 #: src/client/shared-player.tsx
-msgid "Previous weeks, shared with your groups."
+msgid "Previous weeks, shared with you."
 msgstr ""
 
 #: src/client/groups.tsx
@@ -1687,6 +1760,20 @@ msgstr ""
 msgid "Recovery code"
 msgstr ""
 
+#. Button: remove a friend
+#. Button: remove a friend
+#: src/client/friends.tsx
+msgid "Remove"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Remove {name}"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Remove {name} from your friends? You’ll stop sharing prices unless you share a group."
+msgstr ""
+
 #: src/client/turnips.tsx
 msgid "Remove this purchase"
 msgstr ""
@@ -1706,6 +1793,11 @@ msgstr ""
 #: src/client/forecast.tsx
 #: src/client/group-price-table.tsx
 msgid "Reported"
+msgstr ""
+
+#. A friend request that the other player hasn't answered yet
+#: src/client/friends.tsx
+msgid "Request sent"
 msgstr ""
 
 #: src/client/calculator.tsx
@@ -1813,6 +1905,10 @@ msgid "Scan this code on your connected device to approve the connection"
 msgstr ""
 
 #: src/client/groups.tsx
+msgid "See friend requests"
+msgstr ""
+
+#: src/client/groups.tsx
 msgid "See the island board"
 msgstr ""
 
@@ -1826,6 +1922,10 @@ msgstr ""
 
 #: src/client/groups.tsx
 msgid "Select and copy the group code above."
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Select and copy your friend code above."
 msgstr ""
 
 #: src/client/settings.tsx
@@ -1864,6 +1964,10 @@ msgstr ""
 msgid "Send a JSON request."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Send request"
+msgstr ""
+
 #: src/client/data/server-messages.ts
 msgid "Send valid JSON."
 msgstr ""
@@ -1878,7 +1982,7 @@ msgid "Share group link"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Share your group link to bring friends along."
+msgid "Share your friend code or group link to bring friends along."
 msgstr ""
 
 #: src/client/shared-player.tsx
@@ -1952,10 +2056,6 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: src/client/groups.tsx
-msgid "Start a group with friends to compare prices and forecasts."
-msgstr ""
-
 #: src/client/settings.tsx
 msgid "Start a new profile"
 msgstr ""
@@ -2019,7 +2119,7 @@ msgid "the {price} you paid"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "The best {periodLabel} price in your groups."
+msgid "The best {periodLabel} price among your friends."
 msgstr ""
 
 #: src/client/data/profile-export.ts
@@ -2027,7 +2127,7 @@ msgid "The download could not be completed. Please try again."
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "The lowest Sunday price in your groups."
+msgid "The lowest Sunday price among your friends."
 msgstr ""
 
 #: src/client/data/server-messages.ts
@@ -2136,6 +2236,10 @@ msgid "This device’s name"
 msgstr ""
 
 #: src/client/data/server-messages.ts
+msgid "This friend request is no longer available."
+msgstr ""
+
+#: src/client/data/server-messages.ts
 msgid "This group code is not available. Check the code and try again."
 msgstr ""
 
@@ -2149,6 +2253,10 @@ msgstr ""
 
 #: src/client/odds-card.tsx
 msgid "This is the highest price your island can reach this week."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr ""
 
 #: src/client/odds.ts
@@ -2179,16 +2287,17 @@ msgstr ""
 msgid "This player hasn’t entered prices for this week."
 msgstr ""
 
-#: src/client/shared-player.tsx
-msgid "This player is no longer available through your groups."
-msgstr ""
-
 #: src/client/data/server-messages.ts
 msgid "This player is no longer available to you."
 msgstr ""
 
 #: src/client/data/server-messages.ts
 msgid "This player is no longer available."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+#: src/client/shared-player.tsx
+msgid "This player no longer shares prices with you."
 msgstr ""
 
 #: src/client/profile-data.tsx
@@ -2511,6 +2620,14 @@ msgstr ""
 msgid "You"
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "You and {name} are now friends."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "You can have up to 50 friends and requests. Remove one to add another."
+msgstr ""
+
 #: src/client/forecast.tsx
 msgid "You entered"
 msgstr ""
@@ -2525,10 +2642,6 @@ msgstr ""
 
 #: src/client/odds-card.tsx
 msgid "You have {ownNow} right now"
-msgstr ""
-
-#: src/client/data/server-messages.ts
-msgid "You no longer share a group with this player."
 msgstr ""
 
 #: src/client/odds-card.tsx
@@ -2556,7 +2669,7 @@ msgid "Your {mine} beats everyone right now!"
 msgstr ""
 
 #: src/client/groups.tsx
-msgid "Your {mine} is the best Sunday deal in your groups"
+msgid "Your {mine} is the best Sunday deal among your friends"
 msgstr ""
 
 #: src/client/odds-card.tsx
@@ -2591,8 +2704,12 @@ msgstr ""
 msgid "Your download is ready. Check your browser’s downloads."
 msgstr ""
 
-#: src/client/groups.tsx
-msgid "Your friend code <0>{friendCode}</0>"
+#: src/client/friends.tsx
+msgid "Your friend code"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Your friends"
 msgstr ""
 
 #: src/client/groups.tsx

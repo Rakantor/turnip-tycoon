@@ -21,7 +21,30 @@ export interface GroupPreview {
   members: string[];
 }
 
+/** A friend request either player can still withdraw: no prices are shared yet. */
+export interface FriendRequest {
+  player: Player;
+  sentAt: string;
+}
+
+export interface FriendRequests {
+  /** Waiting for you to accept, newest first. */
+  received: FriendRequest[];
+  /** Waiting for the other player, newest first. */
+  sent: FriendRequest[];
+}
+
+/** Everyone sharing prices with you: your groups' members and the friends you added by code. */
 export interface GroupsResponse {
   groups: GroupSummary[];
   players: SharedPlayerWeek[];
+  /** Friends added by friend code. Each also appears in players, in a shared group or not. */
+  friendIds: string[];
+  requests: FriendRequests;
+}
+
+/** A friend code request's outcome: friends straight away when they had already asked you. */
+export interface FriendResult {
+  player: Player;
+  status: 'friends' | 'requested';
 }

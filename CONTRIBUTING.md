@@ -50,7 +50,7 @@ Run `pnpm build:pages` as well when changing the frontend or deployment configur
 
 Tests cover temporary PostgreSQL databases, authentication and ownership, concurrent/idempotent writes, groups, browser storage/sync, PWA generation and updates, and prediction fixtures.
 
-For browser changes, test saves/reloads, trades, groups, pairing, revocation, and recovery in independent profiles; edit the same week on two devices to check merging. Check shared links, Pages with third-party cookies blocked, keyboard/touch chart controls, and the horizontally scrolling price table at 320 pixels.
+For browser changes, test saves/reloads, trades, groups, friend requests, pairing, revocation, and recovery in independent profiles; edit the same week on two devices to check merging. Check shared links, Pages with third-party cookies blocked, keyboard/touch chart controls, and the horizontally scrolling price table at 320 pixels.
 
 Use **Conventional Commits with single-line messages**, for example:
 
@@ -68,9 +68,9 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 | ------------------ | -------------------------------------------------------------------------------------------- |
 | `src/client`       | Calculator, forecasts, turnip trades, Friends, history, Settings, and PWA controls           |
 | `src/client/data`  | Browser API, identity bootstrap, IndexedDB, sync queue, and merging edits from other devices |
-| `src/shared`       | API/week/group contracts, ledger calculations, and device-local calendar helpers             |
+| `src/shared`       | API/week/group/friend contracts, ledger calculations, and device-local calendar helpers      |
 | `src/prediction`   | Standalone prediction adapter and audited upstream engine                                    |
-| `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, and shared reads         |
+| `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, friends, shared reads    |
 | `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                    |
 | `drizzle`          | Versioned SQL migrations and snapshots                                                       |
 | `scripts`          | Local database, development server, migrations, and icon generation                          |
@@ -89,13 +89,15 @@ Each player keeps a private turnip ledger. A week holds at most 40 purchases and
 
 Groups allow twelve equal members and unlimited memberships. Store prices once, deduplicate overlapping friends, and delete empty groups without deleting prices. Opening Prices or Friends reads the server at most once a minute, silently, with no refresh button; own uploads, group changes and error retries bypass that limit. Prices also re-reads its week when the app is shown or focused again, within the same limit, so another device's saves appear before anything is typed. Display observations separately from predictions and order all pattern probabilities highest first. Odds of a better price don't wait for the current half-day: until its price is entered (or, among friends, shared), they compare with the latest price and name its half-day, never presenting it as current. An unreported half-day stays open until Nook's Cranny closes at 10 PM.
 
+Players can also add each other by friend code, without a group. A code only sends a request: nothing is shared until the other player accepts, and two players who enter each other's codes become friends straight away. `friend_links` holds one row per direction, so rows both ways are a friendship and a single row is a waiting request. Declining, withdrawing and removing all delete both rows, and either player can do it. Friends then share exactly what group members do, shared reads accept a common group or a friendship, and the board includes your own island when you have friends but no group. Friends and the requests you sent count together towards a limit of 50. Friend codes are read without case, spaces or dashes, and an O or I as 0 or 1, since no code contains those letters.
+
 ### Access and security invariants
 
 - Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; the custom domain keeps that origin to this app alone.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
 - Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
-- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval. Membership never grants editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
+- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval: groups first, then friend links in key order. Removing a friend and deleting a profile take the matching update locks in the same order. Each player inserts only their own direction of a friend link; the player lock is `FOR NO KEY UPDATE`, so that insert's foreign-key check never waits on the other player's session, and simultaneous requests both ways can't deadlock. Membership and friendship never grant editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes, friends and requests included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
 
 The `turnip_private` schema enables RLS without public policies and must stay outside the Supabase Data API. Use a trusted database role that owns the tables, or has explicit privileges plus BYPASSRLS. Never expose database credentials or a Supabase service key to browsers.
@@ -206,17 +208,19 @@ confirmed on 2026-10-06 (email setup on 2026-10-11):
 
 `src/server/profile-data.ts` implements authenticated `DELETE /api/profile` and
 `GET /api/profile/export?section=…&after=…`. Deletion requires the expected player ID and an
-explicit confirmation, takes the normal player/session lock, locks groups in ID order, and
-deletes the player and any resulting empty groups in one transaction. Foreign-key cascades
-remove prices, weeks, trades, memberships, devices, recovery verifiers, approved pairing
-challenges, and mutation records. Unapproved pairing challenges have no player association.
+explicit confirmation, takes the normal player/session lock, locks groups in ID order, then its
+friend links, and deletes the player and any resulting empty groups in one transaction.
+Foreign-key cascades remove prices, weeks, trades, memberships, friend links both ways, devices,
+recovery verifiers, approved pairing challenges, and mutation records. Unapproved pairing
+challenges have no player association.
 Other players and nonempty groups stay. The existing origin checks and no-store headers apply.
 
 Export reads at most 100 records per page, including expired device metadata and all historical
 weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,
-and other players' data. The client downloads one versioned JSON file, with this profile's local
-weeks, unsent edits, and conflicts separate from server records. Each batch rechecks the session;
-the file records its start/end times and is not a database-wide point-in-time snapshot.
+and other players' data, except that friend links name the other player by ID. The client
+downloads one versioned JSON file, with this profile's local weeks, unsent edits, and conflicts
+separate from server records. Each batch rechecks the session; the file records its start/end
+times and is not a database-wide point-in-time snapshot.
 
 `SessionVault` persists deletion intent before sending the request. Profile writes use
 `writeForProfile` to check a per-profile block marker inside the IndexedDB transaction, preventing
@@ -277,6 +281,7 @@ Facts that must stay accurate:
 | Profile creation waits for a welcome answer, including skipping the name                             | `src/client/data/session-controller.ts`, `src/client/welcome.tsx`                                      |
 | Device credentials, code verifiers, memberships, weekly data, trades, sync metadata                  | `src/db/schema.ts`, `src/server/app.ts`, `src/server/http.ts`                                          |
 | Invite previews expose group/member names without authentication; joining requires no host approval  | `src/server/groups.ts`                                                                                 |
+| A friend request shows both players each other's name and friend code; prices wait for acceptance    | `src/server/friends.ts`                                                                                |
 | Shared members can read prior weeks; own trade records are excluded                                  | `src/server/groups.ts`, `src/server/weeks.ts`, `src/server/ledger.ts`                                  |
 | Local profile access, history, unsent edits, the latest current-week group snapshot, language choice | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`, `src/client/i18n.ts` |
 | Forecasts run locally; fonts are bundled; no third-party audience analytics are included             | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts`                   |

@@ -28,6 +28,7 @@ import {
 } from './validation';
 import { registerWeekRoutes } from './weeks';
 import { registerLedgerRoutes } from './ledger';
+import { registerFriendRoutes } from './friends';
 import { registerGroupRoutes } from './groups';
 import { registerProfileDataRoutes } from './profile-data';
 
@@ -465,6 +466,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
   registerWeekRoutes(app);
   registerLedgerRoutes(app);
   registerGroupRoutes(app);
+  registerFriendRoutes(app);
   registerProfileDataRoutes(app);
 
   app.notFound((c) =>

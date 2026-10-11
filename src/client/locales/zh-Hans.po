@@ -19,6 +19,12 @@ msgstr "（现在）"
 msgid "{0, plural, one {{withoutPrices}, who has no prices this week} other {{withoutPrices}, who have no prices this week}}"
 msgstr "{0, plural, other {{withoutPrices}（本周没有价格）}}"
 
+#. placeholder {0}: received.length
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{0, plural, one {# player wants to share prices with you} other {# players want to share prices with you}}"
+msgstr "{0, plural, other {有#位玩家想和你分享价格}}"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "{bought, plural, one {# turnip bought. Go to your turnips} other {# turnips bought. Go to your turnips}}"
@@ -60,8 +66,8 @@ msgstr "收入 {earned} − 支出 {spent}"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "{friendCount, plural, one {# friend in your groups. Check back later.} other {# friends in your groups. Check back later.}}"
-msgstr "{friendCount, plural, other {你的群组里有#位好友。稍后再来看看吧。}}"
+msgid "{friendCount, plural, one {# friend shares prices with you. Check back later.} other {# friends share prices with you. Check back later.}}"
+msgstr "{friendCount, plural, other {有#位好友和你分享价格。稍后再来看看吧。}}"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -250,6 +256,11 @@ msgstr "{quantity}棵，单价{price}"
 msgid "{quantity} at {price} on {halfDay}"
 msgstr "{halfDay}，{quantity}棵，单价{price}"
 
+#: src/client/groups.tsx
+#, fuzzy
+msgid "{requester} wants to share prices with you"
+msgstr "{requester}想和你分享价格"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
@@ -355,6 +366,32 @@ msgstr "不太可能盈利"
 #, fuzzy
 msgid "A week holds at most 40 purchases and sales."
 msgstr "每周最多记录40笔买入和卖出。"
+
+#. Button: accept a friend request
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Accept"
+msgstr "接受"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Accept {name}’s friend request"
+msgstr "接受{name}的好友请求"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Accept on Friends to compare your prices and forecasts."
+msgstr "在好友页面接受后，即可比较彼此的价格和预测。"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Add friends"
+msgstr "添加好友"
+
+#: src/client/groups.tsx
+#, fuzzy
+msgid "Add friends or start a group to compare prices and forecasts."
+msgstr "添加好友或创建群组，比较价格和预测。"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -598,6 +635,16 @@ msgstr "周六晚上前"
 #, fuzzy
 msgid "Cancel"
 msgstr "取消"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Cancel request"
+msgstr "取消请求"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Cancel your friend request to {name}"
+msgstr "取消发给{name}的好友请求"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -843,6 +890,11 @@ msgstr "复制代码"
 msgid "Copy this group link to share it."
 msgstr "复制此群组链接即可分享。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Copy your friend code"
+msgstr "复制你的好友码"
+
 #: src/client/calculator.tsx
 #, fuzzy
 msgid "Correct the highlighted entries. The forecast uses your last valid prices."
@@ -910,8 +962,8 @@ msgstr "无法加载许可证。<0>重试</0>，或打开<1>声明</1>和<2>许�
 
 #: src/client/data/use-groups.ts
 #, fuzzy
-msgid "Could not load your groups."
-msgstr "无法加载你的群组。"
+msgid "Could not load your friends."
+msgstr "无法加载你的好友。"
 
 #: src/client/data/api.ts
 #, fuzzy
@@ -960,11 +1012,6 @@ msgstr "创建群组"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Create or join a group"
-msgstr "创建或加入群组"
-
-#: src/client/groups.tsx
-#, fuzzy
 msgid "Create or join group"
 msgstr "创建或加入群组"
 
@@ -992,6 +1039,17 @@ msgstr "曹卖在{name}的岛上以{other}出售"
 #, fuzzy
 msgid "Day"
 msgstr "星期"
+
+#. Button: decline a friend request
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Decline"
+msgstr "拒绝"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Decline {name}’s friend request"
+msgstr "拒绝{name}的好友请求"
 
 #: src/client/advice.ts
 #, fuzzy
@@ -1077,11 +1135,6 @@ msgstr "编辑卖出"
 #, fuzzy
 msgid "Edit sale of {what}"
 msgstr "编辑{what}的卖出"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Edit your name"
-msgstr "修改名字"
 
 #: src/client/calculator.tsx
 #, fuzzy
@@ -1220,10 +1273,26 @@ msgstr "星期五下午"
 msgid "Friday morning"
 msgstr "星期五上午"
 
+#: src/client/friends.tsx
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Friend code"
 msgstr "好友码"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend code copied."
+msgstr "已复制好友码。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend request sent to {name}."
+msgstr "已向{name}发送好友请求。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend requests"
+msgstr "好友请求"
 
 #: src/client/groups.tsx
 #: src/client/main.tsx
@@ -1333,8 +1402,8 @@ msgstr "最高"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Highest {shownName} price in your groups."
-msgstr "群组中{shownName}的最高价。"
+msgid "Highest {shownName} price among your friends."
+msgstr "好友中{shownName}的最高价。"
 
 #: src/client/history.tsx
 #: src/client/main.tsx
@@ -1468,6 +1537,12 @@ msgstr "加入你的好友"
 msgid "Joined {groupName}."
 msgstr "已加入{groupName}。"
 
+#. Button: keep a friend instead of removing them
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Keep"
+msgstr "保留"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "Keep my profile"
@@ -1566,8 +1641,8 @@ msgstr "正在加载分享的价格…"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Loading your groups…"
-msgstr "正在加载你的群组…"
+msgid "Loading your friends…"
+msgstr "正在加载你的好友…"
 
 #: src/client/about.tsx
 #, fuzzy
@@ -1611,8 +1686,8 @@ msgstr "最低"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Lowest buy price in your groups."
-msgstr "群组中最低的买入价。"
+msgid "Lowest buy price among your friends."
+msgstr "好友中最低的买入价。"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1744,6 +1819,11 @@ msgstr "没有趋势符合这些价格。请检查你的条目和本周设置。
 #, fuzzy
 msgid "No pattern matches these reported prices."
 msgstr "没有趋势符合这些报告的价格。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "No player has this friend code. Check the code and try again."
+msgstr "没有玩家使用此好友码。请检查代码后重试。"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -1883,6 +1963,11 @@ msgstr "在新设备上打开设置 → 将此设备连接到现有的个人资�
 msgid "On your connected device, open Settings and choose “Approve another device”."
 msgstr "在已连接的设备上打开设置，选择“批准另一台设备”。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Once they accept, you can see each other’s name, friend code, weekly prices and history."
+msgstr "对方接受后，你们可以互相看到名字、好友码、每周价格和历史。"
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Open {name}’s week"
@@ -1932,6 +2017,11 @@ msgstr "过去的周及其盈利"
 #, fuzzy
 msgid "Past weeks are read-only. <0>Return to this week</0>"
 msgstr "过去的周为只读。<0>返回本周</0>"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Paste a friend code"
+msgstr "粘贴好友码"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1990,8 +2080,8 @@ msgstr "上一周"
 
 #: src/client/shared-player.tsx
 #, fuzzy
-msgid "Previous weeks, shared with your groups."
-msgstr "与你的群组分享的过去几周。"
+msgid "Previous weeks, shared with you."
+msgstr "与你分享的过去几周。"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2091,6 +2181,23 @@ msgstr "恢复个人资料"
 msgid "Recovery code"
 msgstr "恢复码"
 
+#. Button: remove a friend
+#. Button: remove a friend
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Remove"
+msgstr "删除"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Remove {name}"
+msgstr "删除{name}"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Remove {name} from your friends? You’ll stop sharing prices unless you share a group."
+msgstr "要将{name}从好友中删除吗？除非你们在同一群组中，否则将不再分享价格。"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Remove this purchase"
@@ -2116,6 +2223,12 @@ msgstr "更换恢复码"
 #, fuzzy
 msgid "Reported"
 msgstr "已报告"
+
+#. A friend request that the other player hasn't answered yet
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Request sent"
+msgstr "已发送请求"
 
 #: src/client/calculator.tsx
 #: src/client/settings.tsx
@@ -2248,6 +2361,11 @@ msgstr "在已连接的设备上扫描此代码以批准连接"
 
 #: src/client/groups.tsx
 #, fuzzy
+msgid "See friend requests"
+msgstr "查看好友请求"
+
+#: src/client/groups.tsx
+#, fuzzy
 msgid "See the island board"
 msgstr "查看岛屿面板"
 
@@ -2265,6 +2383,11 @@ msgstr "选择一个时段即可查看其可能范围。使用方向键在时段
 #, fuzzy
 msgid "Select and copy the group code above."
 msgstr "选中并复制上方的群组码。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Select and copy your friend code above."
+msgstr "选中并复制上方你的好友码。"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2311,6 +2434,11 @@ msgstr "请发送JSON请求正文。"
 msgid "Send a JSON request."
 msgstr "请发送JSON请求。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Send request"
+msgstr "发送请求"
+
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
@@ -2329,8 +2457,8 @@ msgstr "分享群组链接"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Share your group link to bring friends along."
-msgstr "分享你的群组链接，邀请好友加入。"
+msgid "Share your friend code or group link to bring friends along."
+msgstr "分享你的好友码或群组链接，邀请好友加入。"
 
 #: src/client/shared-player.tsx
 #, fuzzy
@@ -2420,11 +2548,6 @@ msgstr "今晚前有人会超过{price}"
 msgid "Something went wrong. Please try again."
 msgstr "出了点问题，请重试。"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Start a group with friends to compare prices and forecasts."
-msgstr "和好友创建群组，比较价格和预测。"
-
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Start a new profile"
@@ -2504,8 +2627,8 @@ msgstr "你买入时的{price}"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "The best {periodLabel} price in your groups."
-msgstr "群组中{periodLabel}的最高价。"
+msgid "The best {periodLabel} price among your friends."
+msgstr "好友中{periodLabel}的最高价。"
 
 #: src/client/data/profile-export.ts
 #, fuzzy
@@ -2514,8 +2637,8 @@ msgstr "下载未能完成，请重试。"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "The lowest Sunday price in your groups."
-msgstr "群组中最低的周日价格。"
+msgid "The lowest Sunday price among your friends."
+msgstr "好友中最低的周日价格。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2650,6 +2773,11 @@ msgstr "此设备的名称"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
+msgid "This friend request is no longer available."
+msgstr "此好友请求已失效。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
 msgid "This group code is not available. Check the code and try again."
 msgstr "此群组码不可用。请检查代码后重试。"
 
@@ -2667,6 +2795,11 @@ msgstr "你已无法访问此群组。"
 #, fuzzy
 msgid "This is the highest price your island can reach this week."
 msgstr "这是你的岛本周能达到的最高价。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This is your own friend code. Enter a friend’s code instead."
+msgstr "这是你自己的好友码。请输入好友的代码。"
 
 #: src/client/odds.ts
 #, fuzzy
@@ -2703,11 +2836,6 @@ msgstr "这将从应用数据库中永久删除你的名字、好友码、价格
 msgid "This player hasn’t entered prices for this week."
 msgstr "此玩家尚未输入本周价格。"
 
-#: src/client/shared-player.tsx
-#, fuzzy
-msgid "This player is no longer available through your groups."
-msgstr "无法再通过你的群组查看此玩家。"
-
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "This player is no longer available to you."
@@ -2717,6 +2845,12 @@ msgstr "你已无法访问此玩家。"
 #, fuzzy
 msgid "This player is no longer available."
 msgstr "此玩家已不可用。"
+
+#: src/client/data/server-messages.ts
+#: src/client/shared-player.tsx
+#, fuzzy
+msgid "This player no longer shares prices with you."
+msgstr "此玩家已不再和你分享价格。"
 
 #: src/client/profile-data.tsx
 #, fuzzy
@@ -3113,6 +3247,16 @@ msgstr "你"
 msgid "You"
 msgstr "你"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "You and {name} are now friends."
+msgstr "你和{name}已成为好友。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "You can have up to 50 friends and requests. Remove one to add another."
+msgstr "好友和请求合计最多50个。请删除一个再添加。"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "You entered"
@@ -3132,11 +3276,6 @@ msgstr "你现在是{groupPrice}"
 #, fuzzy
 msgid "You have {ownNow} right now"
 msgstr "你现在是{ownNow}"
-
-#: src/client/data/server-messages.ts
-#, fuzzy
-msgid "You no longer share a group with this player."
-msgstr "你和此玩家已不在同一群组。"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -3170,8 +3309,8 @@ msgstr "你的{mine}现在最高！"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Your {mine} is the best Sunday deal in your groups"
-msgstr "你的{mine}是群组中最划算的周日价格"
+msgid "Your {mine} is the best Sunday deal among your friends"
+msgstr "你的{mine}是好友中最划算的周日价格"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -3213,10 +3352,15 @@ msgstr "你的显示名称"
 msgid "Your download is ready. Check your browser’s downloads."
 msgstr "下载已就绪。请查看浏览器的下载内容。"
 
-#: src/client/groups.tsx
+#: src/client/friends.tsx
 #, fuzzy
-msgid "Your friend code <0>{friendCode}</0>"
-msgstr "你的好友码<0>{friendCode}</0>"
+msgid "Your friend code"
+msgstr "你的好友码"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Your friends"
+msgstr "你的好友"
 
 #: src/client/groups.tsx
 #, fuzzy

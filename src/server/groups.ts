@@ -4,13 +4,20 @@ import type { Hono } from 'hono';
 import { z } from 'zod';
 import type { Transaction } from '../db/connection';
 import { groups, memberships, players, weeks } from '../db/schema';
-import type { GroupPreview, GroupSummary, SharedPlayerWeek } from '../shared/groups';
+import type {
+  GroupPreview,
+  GroupsResponse,
+  GroupSummary,
+  SharedPlayerWeek,
+} from '../shared/groups';
 import { emptyWeek } from '../shared/week';
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
 import { ApiError } from './errors';
+import { areFriends, friendsOf } from './friends';
 import { readJson } from './http';
 import { formatCode, normalizeCode, randomCode } from './secrets';
+import { parseId } from './validation';
 import { attachPrices, historyInput, parseWeekStart, readHistory, readWeek } from './weeks';
 
 // A single limit covers creation, admission, and the capacity shown to members.
@@ -26,14 +33,6 @@ const joinInput = z
       .pipe(z.string().regex(/^[A-HJ-NP-Z2-9]{12}$/)),
   })
   .strict();
-const uuidInput = z.string().uuid();
-
-function parseId(value: string): string {
-  const parsed = uuidInput.safeParse(value);
-  if (!parsed.success) throw new ApiError(400, 'INVALID_INPUT', 'Choose a valid group or player.');
-  return parsed.data;
-}
-
 function unavailable(): ApiError {
   return new ApiError(404, 'GROUP_UNAVAILABLE', 'This group is no longer available to you.');
 }
@@ -77,28 +76,37 @@ async function lockGroups(tx: Transaction, ids: string[]) {
     .for('share');
 }
 
-async function comparison(tx: Transaction, groupIds: string[], weekStart: string) {
-  if (!groupIds.length) return { counts: new Map<string, number>(), players: [] };
-  const members = await tx
-    .select({ groupId: memberships.groupId, player: players })
-    .from(memberships)
-    .innerJoin(players, eq(players.id, memberships.playerId))
-    .where(inArray(memberships.groupId, groupIds))
-    .orderBy(asc(players.displayName), asc(players.id));
+/** The groups' members, plus players shared another way, such as friends added by code. */
+async function comparison(
+  tx: Transaction,
+  groupIds: string[],
+  weekStart: string,
+  alsoShared: string[] = [],
+) {
+  const members = groupIds.length
+    ? await tx
+        .select({ groupId: memberships.groupId, playerId: memberships.playerId })
+        .from(memberships)
+        .where(inArray(memberships.groupId, groupIds))
+    : [];
   const counts = new Map<string, number>();
-  const unique = new Map<string, SharedPlayerWeek>();
+  const groupsOf = new Map<string, string[]>(alsoShared.map((id) => [id, []]));
   for (const member of members) {
     counts.set(member.groupId, (counts.get(member.groupId) ?? 0) + 1);
-    const existing = unique.get(member.player.id);
-    if (existing) existing.groupIds.push(member.groupId);
-    else
-      unique.set(member.player.id, {
-        player: member.player,
-        groupIds: [member.groupId],
-        week: emptyWeek(member.player.id, weekStart),
-      });
+    groupsOf.set(member.playerId, [...(groupsOf.get(member.playerId) ?? []), member.groupId]);
   }
-  if (!unique.size) return { counts, players: [] };
+  if (!groupsOf.size) return { counts, players: [] };
+  const people = await tx
+    .select()
+    .from(players)
+    .where(inArray(players.id, [...groupsOf.keys()]))
+    .orderBy(asc(players.displayName), asc(players.id));
+  const unique = new Map<string, SharedPlayerWeek>(
+    people.map((player) => [
+      player.id,
+      { player, groupIds: groupsOf.get(player.id)!, week: emptyWeek(player.id, weekStart) },
+    ]),
+  );
   // Holding each existing week protects the two-query week/price snapshot from
   // a concurrent owner upload. The owner may continue editing other weeks.
   const records = await tx
@@ -129,11 +137,14 @@ async function sharedPlayer(tx: Transaction, viewerId: string, playerId: string)
     // A target may have left while we waited for a group's lock.
     const current = await common();
     const locked = new Set(candidates.map((row) => row.groupId));
-    if (!current.some((row) => locked.has(row.groupId)))
+    if (
+      !current.some((row) => locked.has(row.groupId)) &&
+      !(await areFriends(tx, viewerId, playerId))
+    )
       throw new ApiError(
         404,
         'PLAYER_UNAVAILABLE',
-        'You no longer share a group with this player.',
+        'This player no longer shares prices with you.',
       );
   }
   const [player] = await tx.select().from(players).where(eq(players.id, playerId));
@@ -154,15 +165,20 @@ export function registerGroupRoutes(app: Hono<AppEnvironment>): void {
         tx,
         memberOf.map((row) => row.groupId),
       );
+      const friends = await friendsOf(tx, session.player.id);
+      // With friends but no group, your own island still joins the comparison.
       const compared = await comparison(
         tx,
         records.map((row) => row.id),
         weekStart,
+        friends.friendIds.length ? [session.player.id, ...friends.friendIds] : [],
       );
       return {
         groups: records.map((group) => summary(group, compared.counts.get(group.id) ?? 0)),
         players: compared.players,
-      };
+        friendIds: friends.friendIds,
+        requests: friends.requests,
+      } satisfies GroupsResponse;
     });
     return c.json(result);
   });

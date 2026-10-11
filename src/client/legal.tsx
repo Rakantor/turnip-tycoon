@@ -47,7 +47,7 @@ function LegalPage({
           <h1>{title}</h1>
           <p className="legal-intro">{intro}</p>
           <p className="legal-date">
-            Last updated <time dateTime="2026-10-06">6 October 2026</time>
+            Last updated <time dateTime="2026-10-11">11 October 2026</time>
           </p>
         </header>
         {children}
@@ -141,8 +141,8 @@ export function Terms() {
         <h2 id="terms-content">Your content and our code</h2>
         <p>
           Your names and records stay yours. You let us store and show them as needed to run the
-          features you use, such as sharing your island prices with your groups. We don’t use them
-          for anything else.
+          features you use, such as sharing your island prices with your friends and groups. We
+          don’t use them for anything else.
         </p>
         <p>
           The app’s original code and materials are licensed under the Apache License 2.0. Other
@@ -176,11 +176,11 @@ export function Privacy() {
         <ul>
           <li>No email or password needed. A nickname is enough, or none at all.</li>
           <li>
-            We save your turnip prices, optional trade records, and groups so they sync between your
-            devices.
+            We save your turnip prices, optional trade records, groups, and friends so they sync
+            between your devices.
           </li>
           <li>
-            <Link to="/privacy#sharing">Friends in your groups</Link> see your island prices, never
+            <Link to="/privacy#sharing">Your friends and groups</Link> see your island prices, never
             your purchases, sales, or profit.
           </li>
           <li>No ads, no tracking, and we never sell your data.</li>
@@ -217,6 +217,10 @@ export function Privacy() {
             <strong>Groups:</strong> group names, invite codes, and who is a member.
           </li>
           <li>
+            <strong>Friends:</strong> who you sent a friend request to or received one from, when,
+            and whether it was accepted.
+          </li>
+          <li>
             <strong>Devices:</strong> a name such as “My phone”, when each device was connected, and
             when its access expires. Access secrets and codes are only stored in a protected,
             unreadable form.
@@ -247,9 +251,14 @@ export function Privacy() {
         <h2 id="sharing">Who can see it</h2>
         <ul>
           <li>
-            <strong>People in your groups</strong> see your display name, friend code, and your
-            current and past island prices with their forecasts. They can’t see your purchases,
-            sales, or profit, and they can’t edit anything.
+            <strong>People in your groups and friends you’ve accepted</strong> see your display
+            name, friend code, and your current and past island prices with their forecasts. They
+            can’t see your purchases, sales, or profit, and they can’t edit anything.
+          </li>
+          <li>
+            <strong>Anyone with your friend code</strong> can send you a friend request. A request
+            shows each of you the other’s display name and friend code, and nothing else is shared
+            unless it’s accepted. Either of you can withdraw, decline, or remove it.
           </li>
           <li>
             <strong>Anyone with a group invite</strong> can see the group’s name and its members’
@@ -265,9 +274,10 @@ export function Privacy() {
           </li>
         </ul>
         <p>
-          Leaving a group stops its members seeing your prices, unless you share another group. We
-          can’t take back screenshots or copies someone already made, and a friend’s offline screen
-          may show old prices until it refreshes.
+          Leaving a group stops its members seeing your prices, and removing a friend stops them
+          seeing yours, unless you still share a group or a friendship. We can’t take back
+          screenshots or copies someone already made, and a friend’s offline screen may show old
+          prices until it refreshes.
         </p>
       </section>
 
@@ -339,8 +349,9 @@ export function Privacy() {
         <h2 id="storage">What stays on your device</h2>
         <p>
           The app saves your profile access, your weeks and trades, unsent edits, the latest prices
-          from your groups, and your language choice in your browser’s storage, so it works offline.
-          These are needed for the app to work. We don’t use advertising or analytics cookies.
+          from your friends and groups, your friend requests, and your language choice in your
+          browser’s storage, so it works offline. These are needed for the app to work. We don’t use
+          advertising or analytics cookies.
         </p>
         <p>
           Clearing your browser data removes these copies, possibly including unsent edits and your
@@ -358,19 +369,19 @@ export function Privacy() {
         <ul>
           <li>
             <strong>Download my data</strong> gives you a file with your profile, devices, groups,
-            and all your prices and trades, plus anything this browser hasn’t synced yet. Access
-            secrets and other players’ data are left out.
+            friends, and all your prices and trades, plus anything this browser hasn’t synced yet.
+            Access secrets and other players’ data are left out; friends appear by player ID only.
           </li>
           <li>
             <strong>Delete my profile</strong> permanently removes your profile, prices, trades,
-            devices, recovery code, and group memberships. Groups with other members stay. You’ll be
-            asked to confirm, and it can’t be undone.
+            devices, recovery code, group memberships, friends, and friend requests. Groups with
+            other members stay. You’ll be asked to confirm, and it can’t be undone.
           </li>
         </ul>
         <p>
           Both need an internet connection. Bring your other devices online first if you want their
           latest edits in the download. In the app you can also change your name, edit this and last
-          week’s prices, leave groups, and remove devices.
+          week’s prices, leave groups, remove friends, and remove devices.
         </p>
         <p>
           Under the GDPR, you can also ask us to show, correct, delete, or hand over your data, or
@@ -406,8 +417,8 @@ export function Privacy() {
           <li>Handling rights requests: our legal obligation (Article 6(1)(c)).</li>
         </ul>
         <p>
-          You don’t have to use a real name, record trades, or join groups. Without a profile, we
-          can’t save or sync your prices.
+          You don’t have to use a real name, record trades, join groups, or add friends. Without a
+          profile, we can’t save or sync your prices.
         </p>
       </section>
 

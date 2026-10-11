@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { ArrowRight, Check, Copy, Plane, Plus, Share2, Users, X } from 'lucide-react';
+import { ArrowRight, Copy, Plane, Plus, Share2, UserPlus, Users, X } from 'lucide-react';
 import { i18n } from '@lingui/core';
 import { plural, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
@@ -11,6 +11,7 @@ import type { WeekRecord } from '../shared/week';
 import { oddsPercent, patternName, percent, slotShortName } from './advice';
 import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
+import { FriendRequests, YourFriends } from './friends';
 import { GroupPriceTable } from './group-price-table';
 import { PlayerAvatar } from './player-avatar';
 import {
@@ -263,8 +264,8 @@ function RightNow({
             <p>
               {ratio === null
                 ? shown === 0
-                  ? t`Lowest buy price in your groups.`
-                  : t`Highest ${shownName} price in your groups.`
+                  ? t`Lowest buy price among your friends.`
+                  : t`Highest ${shownName} price among your friends.`
                 : best.player.id === owner
                   ? t`That’s ${times}× what you paid.`
                   : t`${times}× what you paid for yours.`}
@@ -696,7 +697,7 @@ function ConnectionMessage({ data }: { data: GroupData }) {
 
 function FriendsPostcardLoading() {
   return (
-    <Loading label={t`Loading your groups…`}>
+    <Loading label={t`Loading your friends…`}>
       <div className="friends-postcard">
         <span className="friends-postcard-icon">
           <Plane size={26} />
@@ -717,7 +718,7 @@ function FriendsPostcardLoading() {
 
 function IslandBoardLoading() {
   return (
-    <Loading label={t`Loading your groups…`} className="friends-comparison">
+    <Loading label={t`Loading your friends…`} className="friends-comparison">
       <div className="friends-toolbar">
         <div className="group-filters">
           <Placeholder className="placeholder-control" width={120} />
@@ -805,10 +806,10 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
     const saving = mine === null ? 0 : mine - other;
     headline = cheaper
       ? t`Daisy Mae is selling for ${other} on ${name}’s island`
-      : t`Your ${mine} is the best Sunday deal in your groups`;
+      : t`Your ${mine} is the best Sunday deal among your friends`;
     detail = cheaper
       ? mine === null
-        ? t`The lowest Sunday price in your groups.`
+        ? t`The lowest Sunday price among your friends.`
         : plural(saving, {
             one: 'That’s # bell cheaper than yours.',
             other: 'That’s # bells cheaper than yours.',
@@ -823,7 +824,7 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
           ? t`That’s ${times}× what you paid — fly over before noon.`
           : t`That’s ${times}× what you paid — fly over before 10 PM.`
         : t`That’s less than the ${purchase} you paid.`
-      : t`The best ${periodLabel} price in your groups.`;
+      : t`The best ${periodLabel} price among your friends.`;
   } else if (bestOther && other !== null && mine !== null) {
     headline = t`Your ${mine} beats everyone right now!`;
     detail = t`Next best: ${other} on ${name}’s island.`;
@@ -834,12 +835,14 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
         : t`No friends have shared a ${periodLabel} price yet`;
     detail =
       friendCount === 0
-        ? t`Share your group link to bring friends along.`
+        ? t`Share your friend code or group link to bring friends along.`
         : plural(friendCount, {
-            one: '# friend in your groups. Check back later.',
-            other: '# friends in your groups. Check back later.',
+            one: '# friend shares prices with you. Check back later.',
+            other: '# friends share prices with you. Check back later.',
           });
   }
+  const received = data.requests.received;
+  const requester = received[0]?.player.displayName ?? '';
   return (
     <section className="friends-panel" aria-labelledby="friends-panel-title">
       <h2 id="friends-panel-title" className="sr-only">
@@ -847,24 +850,50 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
       </h2>
       <ConnectionMessage data={data} />
       {loading && <FriendsPostcardLoading />}
-      {data.status === 'ready' && !data.groups.length && (
+      {received.length > 0 && (
         <div className={`friends-postcard friends-postcard-invite ${reveal}`}>
           <span className="friends-postcard-icon">
-            <Users size={26} aria-hidden="true" />
+            <UserPlus size={26} aria-hidden="true" />
           </span>
           <div className="friends-postcard-text">
             <p className="friends-postcard-title">
-              <Trans>A good price is better shared.</Trans>
+              {received.length === 1
+                ? t`${requester} wants to share prices with you`
+                : plural(received.length, {
+                    one: '# player wants to share prices with you',
+                    other: '# players want to share prices with you',
+                  })}
             </p>
             <p>
-              <Trans>Start a group with friends to compare prices and forecasts.</Trans>
+              <Trans>Accept on Friends to compare your prices and forecasts.</Trans>
             </p>
           </div>
           <Link className="button" to="/groups">
-            <Trans>Create or join a group</Trans> <ArrowRight size={17} aria-hidden="true" />
+            <Trans>See friend requests</Trans> <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
       )}
+      {data.status === 'ready' &&
+        !data.groups.length &&
+        !data.friendIds.length &&
+        !received.length && (
+          <div className={`friends-postcard friends-postcard-invite ${reveal}`}>
+            <span className="friends-postcard-icon">
+              <Users size={26} aria-hidden="true" />
+            </span>
+            <div className="friends-postcard-text">
+              <p className="friends-postcard-title">
+                <Trans>A good price is better shared.</Trans>
+              </p>
+              <p>
+                <Trans>Add friends or start a group to compare prices and forecasts.</Trans>
+              </p>
+            </div>
+            <Link className="button" to="/groups">
+              <Trans>Add friends</Trans> <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+        )}
       {players.length > 0 && (
         <div className={`friends-postcard ${reveal}`}>
           <span className="friends-postcard-icon">
@@ -913,9 +942,11 @@ export function Groups() {
       ? shared
       : shared.filter((member) => member.groupIds.includes(existingSelection));
   const hasGroups = data.groups.length > 0;
-  const loading = data.status === 'loading' && !hasGroups;
+  // Friends added by code fill the board too, with or without a group.
+  const sharing = hasGroups || data.friendIds.length > 0;
+  const loading = data.status === 'loading' && !sharing;
   const reveal = useReveal(loading);
-  const formOpen = linkCode || showForm || (!hasGroups && data.status === 'ready');
+  const formOpen = linkCode || showForm || (!sharing && data.status === 'ready');
   const friendCode = identity.session?.player.friendCode;
   return (
     <main className="page groups-page" id="main-content">
@@ -926,7 +957,7 @@ export function Groups() {
           </h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
-        {hasGroups && (
+        {sharing && (
           <Button secondary onClick={() => setShowForm(!showForm)}>
             {showForm ? <X size={16} /> : <Plus size={16} />}
             {showForm ? t`Close` : t`Create or join group`}
@@ -934,6 +965,7 @@ export function Groups() {
         )}
       </div>
       <ConnectionMessage data={data} />
+      <FriendRequests data={data} />
       {formOpen && (
         <section className="group-create-card">
           <div className="section-heading">
@@ -968,7 +1000,7 @@ export function Groups() {
         </section>
       )}
       {loading && <IslandBoardLoading />}
-      {hasGroups && (
+      {sharing && (
         <>
           <section
             className={`friends-comparison ${reveal}`}
@@ -1040,33 +1072,23 @@ export function Groups() {
               <GroupPriceTable players={players} owner={owner} currentSlot={currentSlot(now)} />
             )}
           </section>
-          <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
-            <div className="section-heading">
-              <h2 id="your-groups-title">
-                <Trans>Your groups</Trans>
-              </h2>
-            </div>
-            <div className="group-card-grid">
-              {data.groups.map((group) => (
-                <GroupDetails key={group.id} group={group} data={data} owner={owner} />
-              ))}
-            </div>
-          </section>
+          {hasGroups && (
+            <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
+              <div className="section-heading">
+                <h2 id="your-groups-title">
+                  <Trans>Your groups</Trans>
+                </h2>
+              </div>
+              <div className="group-card-grid">
+                {data.groups.map((group) => (
+                  <GroupDetails key={group.id} group={group} data={data} owner={owner} />
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
-      {identity.session && (
-        <div className="your-friend-code">
-          <Check size={15} aria-hidden="true" />
-          <span>
-            <Trans>
-              Your friend code <strong>{friendCode}</strong>
-            </Trans>
-          </span>
-          <Link to="/settings">
-            <Trans>Edit your name</Trans>
-          </Link>
-        </div>
-      )}
+      {friendCode && <YourFriends data={data} friendCode={friendCode} />}
     </main>
   );
 }

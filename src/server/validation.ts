@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
+import { ApiError } from './errors';
 import { normalizeCode } from './secrets';
 
 export const profileInput = z
@@ -31,5 +32,21 @@ export const recoveryInput = z
     deviceName: deviceInput.shape.deviceName,
   })
   .strict();
+export const friendCodeInput = z
+  .object({
+    code: z
+      .string()
+      .max(40)
+      // No friend code has an O or an I, so read them as the 0 and 1 that older codes can have.
+      .transform((code) => normalizeCode(code).replaceAll('O', '0').replaceAll('I', '1'))
+      .pipe(z.string().regex(/^[A-Z0-9]{12}$/)),
+  })
+  .strict();
 export const emptyInput = z.object({}).strict();
 export const deviceIdInput = z.string().uuid();
+
+export function parseId(value: string): string {
+  const parsed = z.string().uuid().safeParse(value);
+  if (!parsed.success) throw new ApiError(400, 'INVALID_INPUT', 'Choose a valid group or player.');
+  return parsed.data;
+}

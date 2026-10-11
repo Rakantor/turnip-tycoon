@@ -4,6 +4,7 @@ import { z } from 'zod';
 import type { Transaction } from '../db/connection';
 import {
   devices,
+  friendLinks,
   groups,
   memberships,
   mutations,
@@ -21,6 +22,7 @@ import {
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
 import { ApiError } from './errors';
+import { lockFriendLinks } from './friends';
 import { readJson, writeCredential } from './http';
 
 const PAGE_SIZE = 100;
@@ -54,6 +56,40 @@ async function readPage(tx: Transaction, owner: string, section: ExportSection, 
         .where(and(eq(memberships.playerId, owner), after ? gt(groups.id, after) : undefined))
         .orderBy(asc(groups.id))
         .limit(PAGE_SIZE + 1);
+    case 'friends': {
+      // One record per player you sent a friend request to or received one from: friends when
+      // both dates are set. Only their ID is included; name and code are their own profile data.
+      const sent = await tx
+        .select({ id: friendLinks.friendId, at: friendLinks.createdAt })
+        .from(friendLinks)
+        .where(
+          and(eq(friendLinks.playerId, owner), after ? gt(friendLinks.friendId, after) : undefined),
+        )
+        .orderBy(asc(friendLinks.friendId))
+        .limit(PAGE_SIZE + 1);
+      const received = await tx
+        .select({ id: friendLinks.playerId, at: friendLinks.createdAt })
+        .from(friendLinks)
+        .where(
+          and(eq(friendLinks.friendId, owner), after ? gt(friendLinks.playerId, after) : undefined),
+        )
+        .orderBy(asc(friendLinks.playerId))
+        .limit(PAGE_SIZE + 1);
+      // The first page of either list holds every player on the first page of both.
+      const records = new Map<
+        string,
+        { id: string; sentAt: Date | null; receivedAt: Date | null }
+      >();
+      const record = (id: string) => {
+        if (!records.has(id)) records.set(id, { id, sentAt: null, receivedAt: null });
+        return records.get(id)!;
+      };
+      for (const link of sent) record(link.id).sentAt = link.at;
+      for (const link of received) record(link.id).receivedAt = link.at;
+      return [...records.values()]
+        .sort((left, right) => (left.id < right.id ? -1 : 1))
+        .slice(0, PAGE_SIZE + 1);
+    }
     case 'pairing':
       return tx
         .select({
@@ -154,8 +190,9 @@ export function registerProfileDataRoutes(app: Hono<AppEnvironment>): void {
             .where(inArray(groups.id, ids))
             .orderBy(asc(groups.id))
             .for('update');
+        await lockFriendLinks(tx, session.player.id);
         // Foreign keys remove all owned weeks, prices, trades, devices, recovery,
-        // approved pairing challenges, memberships, and mutation receipts atomically.
+        // approved pairing challenges, memberships, friend links, and mutation receipts atomically.
         await tx.delete(players).where(eq(players.id, session.player.id));
         if (ids.length)
           await tx

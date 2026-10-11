@@ -88,6 +88,11 @@ describe('local profile cleanup', () => {
       { key: `refresh:${owner}|${week}`, value: 1 },
       { key: 'ledger:other', value: { weeks: [] } },
       { key: 'shared-groups:other', value: { players: [{ player: profile }] } },
+      // Known only through a friend request, the deleted player must still disappear.
+      {
+        key: 'shared-groups:third',
+        value: { players: [], requests: { received: [{ player: profile }], sent: [] } },
+      },
     ]);
     await h.vault.beginRemoval(owner, revision);
     await h.vault.finishRemoval(owner, 'deleted');
@@ -95,6 +100,7 @@ describe('local profile cleanup', () => {
     expect(await h.db.meta.get(`ledger:${owner}`)).toBeUndefined();
     expect(await h.db.meta.get(`refresh:${owner}|${week}`)).toBeUndefined();
     expect(await h.db.meta.get('shared-groups:other')).toBeUndefined();
+    expect(await h.db.meta.get('shared-groups:third')).toBeUndefined();
     expect(await h.db.meta.get('ledger:other')).toBeDefined();
     expect(await h.vault.read()).toMatchObject({ session: null, token: null });
     await expect(h.store.edit(owner, week, { purchasePrice: 110 })).rejects.toBeInstanceOf(
@@ -140,7 +146,12 @@ describe('local profile cleanup', () => {
     await h.db.meta.put({ key: blockedProfileKey(owner), value: 'deleted' });
     finish({ weeks: [] });
     await fetching;
-    await new SharedGroupsCache(h.db).write(owner, week, { groups: [], players: [] });
+    await new SharedGroupsCache(h.db).write(owner, week, {
+      groups: [],
+      players: [],
+      friendIds: [],
+      requests: { received: [], sent: [] },
+    });
     expect(await ledger.read(owner)).toBeNull();
     expect(await new SharedGroupsCache(h.db).read(owner, week)).toBeNull();
     const pending = new PendingEdits(async () => {

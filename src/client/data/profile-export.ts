@@ -26,6 +26,7 @@ export async function collectProfileExport(
   const records: Record<ExportSection, unknown[]> = {
     devices: [],
     groups: [],
+    friends: [],
     weeks: [],
     pairing: [],
     syncRecords: [],
@@ -58,6 +59,7 @@ export async function collectProfileExport(
       'Server records are read in batches during this download, not as a single point-in-time snapshot.',
       'localWeeks contains this device’s saved copy, including unsynced changes and unresolved conflicts. It is separate from server records.',
       'Access tokens, recovery secrets, their verifiers, group invite codes, and other players’ records are excluded.',
+      'friends lists each player you sent a friend request to, or received one from, by player ID. You are friends when both sentAt and receivedAt are set.',
       `Provider logs, backups, and support emails are not in the app database. Contact ${CONTACT_EMAIL} about those records.`,
       'Week dates start on Sunday. Server selling days run from 1 (Monday) to 6 (Saturday), with AM/PM slots. Local price arrays run from Monday AM to Saturday PM.',
     ],
