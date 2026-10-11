@@ -14,6 +14,8 @@ export function serverMessages(): Record<string, string> {
     'Choose a valid history date and limit.': t`Choose a valid history date and limit.`,
     'Check the supplied fields.': t`Check the supplied fields.`,
     'Connect a device to continue.': t`Connect a device to continue.`,
+    'Enter a 12-character friend or group code.': t`Enter a 12-character friend or group code.`,
+    'No group or player has this code. Check it and try again.': t`No group or player has this code. Check it and try again.`,
     'No player has this friend code. Check the code and try again.': t`No player has this friend code. Check the code and try again.`,
     'Open this request from the app.': t`Open this request from the app.`,
     'Please share your friend link again.': t`Please share your friend link again.`,

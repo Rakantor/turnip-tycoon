@@ -42,6 +42,17 @@ export const friendCodeInput = z
       .pipe(z.string().regex(/^[A-Z0-9]{12}$/)),
   })
   .strict();
+/** A group invite or a friend code, typed into the one field that takes either. */
+export const codeInput = z
+  .object({
+    code: z
+      .string()
+      .max(40)
+      // Neither kind of code has an O or an I; older friend codes can have 0 and 1.
+      .transform((code) => normalizeCode(code).replaceAll('O', '0').replaceAll('I', '1'))
+      .pipe(z.string().regex(/^[A-Z0-9]{12}$/, 'Enter a 12-character friend or group code.')),
+  })
+  .strict();
 /** The code in a shared friend link, made up by the sharing app. */
 export const friendInviteInput = z
   .object({

@@ -5,6 +5,7 @@ import { z } from 'zod';
 import type { Transaction } from '../db/connection';
 import { groups, memberships, players, weeks } from '../db/schema';
 import type {
+  CodeResult,
   GroupPreview,
   GroupsResponse,
   GroupSummary,
@@ -14,10 +15,10 @@ import { emptyWeek } from '../shared/week';
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
 import { ApiError } from './errors';
-import { areFriends, friendsOf } from './friends';
+import { areFriends, friendsOf, requestFriend } from './friends';
 import { readJson } from './http';
 import { formatCode, normalizeCode, randomCode } from './secrets';
-import { parseId } from './validation';
+import { codeInput, parseId } from './validation';
 import { attachPrices, historyInput, parseWeekStart, readHistory, readWeek } from './weeks';
 
 // A single limit covers creation, admission, and the capacity shown to members.
@@ -53,6 +54,30 @@ async function memberCount(tx: Transaction, groupId: string): Promise<number> {
     .from(memberships)
     .where(eq(memberships.groupId, groupId));
   return row.total;
+}
+
+/** Joins the group with this invite code; null when no group has it. */
+async function joinGroup(
+  tx: Transaction,
+  playerId: string,
+  shareCode: string,
+): Promise<GroupSummary | null> {
+  const [record] = await tx
+    .select()
+    .from(groups)
+    .where(eq(groups.shareCode, shareCode))
+    .for('update');
+  if (!record) return null;
+  const total = await memberCount(tx, record.id);
+  if (await isMember(tx, record.id, playerId)) return summary(record, total);
+  if (total >= GROUP_CAPACITY)
+    throw new ApiError(
+      409,
+      'GROUP_FULL',
+      `This group is full. A group can have up to ${GROUP_CAPACITY} players.`,
+    );
+  await tx.insert(memberships).values({ groupId: record.id, playerId });
+  return summary(record, total + 1);
 }
 
 async function isMember(tx: Transaction, groupId: string, playerId: string): Promise<boolean> {
@@ -204,29 +229,39 @@ export function registerGroupRoutes(app: Hono<AppEnvironment>): void {
   app.post('/api/groups/join', async (c) => {
     const input = await readJson(c, joinInput);
     const group = await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
-      const [record] = await tx
-        .select()
-        .from(groups)
-        .where(eq(groups.shareCode, formatCode(input.code)))
-        .for('update');
-      if (!record)
+      const joined = await joinGroup(tx, session.player.id, formatCode(input.code));
+      if (!joined)
         throw new ApiError(
           404,
           'GROUP_UNAVAILABLE',
           'This group code is not available. Check the code and try again.',
         );
-      const total = await memberCount(tx, record.id);
-      if (await isMember(tx, record.id, session.player.id)) return summary(record, total);
-      if (total >= GROUP_CAPACITY)
-        throw new ApiError(
-          409,
-          'GROUP_FULL',
-          `This group is full. A group can have up to ${GROUP_CAPACITY} players.`,
-        );
-      await tx.insert(memberships).values({ groupId: record.id, playerId: session.player.id });
-      return summary(record, total + 1);
+      return joined;
     });
     return c.json({ group });
+  });
+
+  // One field takes either code: a group's invite joins it, a player's friend code asks them.
+  // Both codes are random, so a code that belongs to both is never expected; the group wins.
+  app.post('/api/codes', async (c) => {
+    const input = await readJson(c, codeInput);
+    const result = await withSession(
+      c.get('db'),
+      await sessionHash(c),
+      async (tx, session): Promise<CodeResult> => {
+        const code = formatCode(input.code);
+        const group = await joinGroup(tx, session.player.id, code);
+        if (group) return { group };
+        const friend = await requestFriend(tx, session.player.id, code);
+        if (friend) return { friend };
+        throw new ApiError(
+          404,
+          'CODE_UNAVAILABLE',
+          'No group or player has this code. Check it and try again.',
+        );
+      },
+    );
+    return c.json(result);
   });
 
   // An invite code may show who is in its group before the visitor has a profile:

@@ -2,6 +2,7 @@ import { Fragment, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import {
   BrowserRouter,
@@ -19,8 +20,10 @@ import {
   Users,
   History as HistoryIcon,
 } from 'lucide-react';
+import { currentWeekStart } from '../shared/calendar';
 import { useIdentity } from './data/identity';
-import { AppContext } from './ui';
+import { useGroups } from './data/use-groups';
+import { AppContext, useApp } from './ui';
 import { Calculator } from './calculator';
 import { History } from './history';
 import { Connect, Recover, Settings } from './settings';
@@ -93,7 +96,10 @@ function App() {
               </Trans>
             </NavLink>
             <NavLink to="/groups">
-              <Users size={18} aria-hidden="true" />
+              <span className="nav-icon">
+                <Users size={18} aria-hidden="true" />
+                <FriendRequestBadge />
+              </span>
               <Trans>Friends</Trans>
             </NavLink>
             <NavLink to="/history">
@@ -165,6 +171,27 @@ function App() {
       </div>
       <UpdateNotice />
     </AppContext.Provider>
+  );
+}
+
+/** Friend requests waiting for an answer, counted on the Friends tab wherever you are. */
+function FriendRequestBadge() {
+  const identity = useApp();
+  const data = useGroups(currentWeekStart(), identity.session, identity.status);
+  const count = data.requests.received.length;
+  if (!count) return null;
+  return (
+    <>
+      <span className="nav-badge" aria-hidden="true">
+        {count}
+      </span>
+      <span className="sr-only">
+        {plural(count, {
+          one: '# friend request waiting',
+          other: '# friend requests waiting',
+        })}
+      </span>
+    </>
   );
 }
 

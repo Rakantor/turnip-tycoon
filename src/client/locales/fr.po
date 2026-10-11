@@ -54,6 +54,11 @@ msgstr "{chance} grand pic"
 msgid "{chance} small spike"
 msgstr "{chance} petit pic"
 
+#: src/client/main.tsx
+#, fuzzy
+msgid "{count, plural, one {# friend request waiting} other {# friend requests waiting}}"
+msgstr "{count, plural, one {# demande d’ami en attente} other {# demandes d’ami en attente}}"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "{difference} vs. what you paid"
@@ -74,12 +79,12 @@ msgstr "{friendCount, plural, one {# ami partage ses prix avec toi. Reviens plus
 msgid "{friendName}’s {friendPrice}"
 msgstr "{friendName} : {friendPrice}"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "{groupName} details"
-msgstr "Détails de {groupName}"
+msgid "{groupName} is full right now."
+msgstr "{groupName} est complet pour le moment."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{groupName} players"
 msgstr "Membres de {groupName}"
@@ -140,7 +145,7 @@ msgstr "De {lowest} à {highest} par rapport à ton prix d’achat"
 msgid "{lowest} vs. what you paid"
 msgstr "{lowest} par rapport à ton prix d’achat"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{members} of {capacity} players"
 msgstr "{members} membres sur {capacity}"
@@ -170,11 +175,6 @@ msgstr "{more} de plus"
 #, fuzzy
 msgid "{name} disconnected."
 msgstr "{name} déconnecté."
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "{name} wants to be your friend"
-msgstr "{name} t’invite à devenir amis"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -216,7 +216,7 @@ msgstr "Prix notés par {name}, du lundi au samedi"
 msgid "{name}’s selling pattern probabilities"
 msgstr "Probabilités des courbes de {name}"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{name}’s week"
 msgstr "Semaine de {name}"
@@ -379,12 +379,12 @@ msgstr "Une semaine compte au plus 40 achats et ventes."
 
 #. Button: accept a friend request
 #. Button: accept a friend request
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Accept"
 msgstr "Accepter"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Accept {name}’s friend request"
 msgstr "Accepter la demande d’ami de {name}"
@@ -394,10 +394,11 @@ msgstr "Accepter la demande d’ami de {name}"
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr "Accepte dans Amis pour comparer vos prix et vos prévisions."
 
-#: src/client/friends.tsx
+#. Button: add a friend or group
+#: src/client/people.tsx
 #, fuzzy
-msgid "Accept to see each other’s prices and forecasts."
-msgstr "Accepte pour voir les prix et les prévisions l’un de l’autre."
+msgid "Add"
+msgstr "Ajouter"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -409,7 +410,7 @@ msgstr "Ajouter des amis"
 msgid "Add friends or start a group to compare prices and forecasts."
 msgstr "Ajoute des amis ou crée un groupe pour comparer prix et prévisions."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Add me as a friend on Turnip Tycoon"
 msgstr "Ajoute-moi en ami sur Turnip Tycoon"
@@ -424,15 +425,16 @@ msgstr "Note les prix que tu connais. Laisse le reste vide."
 msgid "Afternoon"
 msgstr "Après-midi"
 
+#. Filter chip: everyone sharing prices with you
+#: src/client/groups.tsx
+#, fuzzy
+msgid "All"
+msgstr "Tous"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
 msgstr "Tous les appareils connectés et ton code de récupération perdront l’accès. Les groupes avec d’autres membres resteront, avec leurs données."
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "All friends"
-msgstr "Tous les amis"
 
 #: src/client/history.tsx
 #, fuzzy
@@ -630,11 +632,6 @@ msgstr "Achetés à {purchasePrice}"
 msgid "Bought for<0>, average per turnip</0>"
 msgstr "Achetés à<0>, moyenne par navet</0>"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Bring your friends along"
-msgstr "Fais venir tes amis"
-
 #. Under “Sun”: the Sunday buy price column
 #: src/client/group-price-table.tsx
 #, fuzzy
@@ -652,17 +649,13 @@ msgstr "prix d’achat"
 msgid "By Saturday night"
 msgstr "D’ici samedi soir"
 
+#: src/client/people.tsx
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Cancel request"
-msgstr "Annuler la demande"
-
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Cancel your friend request to {name}"
 msgstr "Annuler ta demande d’ami à {name}"
@@ -744,10 +737,15 @@ msgstr "Vérifie les champs envoyés."
 msgid "Check this entry."
 msgstr "Vérifie cette entrée."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Checking this friend link…"
 msgstr "Vérification du lien d’ami…"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Checking this group link…"
+msgstr "Vérification du lien de groupe…"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -784,8 +782,7 @@ msgstr "Choisis les entrées à garder. Les tiennes restent là tant que tu n’
 msgid "Clear this device’s saved data"
 msgstr "Effacer les données enregistrées sur cet appareil"
 
-#: src/client/friends.tsx
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Close"
@@ -800,11 +797,6 @@ msgstr "Fermer les détails de la demi-journée"
 #, fuzzy
 msgid "Compare entries"
 msgstr "Comparer les entrées"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Compare your prices and find a good time to sell, together."
-msgstr "Comparez vos prix et trouvez ensemble le bon moment pour vendre."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -902,7 +894,7 @@ msgstr "En continuant, tu crées un profil et tes prix sont enregistrés en lign
 msgid "Copied"
 msgstr "Copié"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy {groupName} group code"
 msgstr "Copier le code du groupe {groupName}"
@@ -912,17 +904,17 @@ msgstr "Copier le code du groupe {groupName}"
 msgid "Copy code"
 msgstr "Copier le code"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy this friend link to share it."
 msgstr "Copie ce lien d’ami pour le partager."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy this group link to share it."
 msgstr "Copie ce lien de groupe pour le partager."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy your friend code"
 msgstr "Copier ton code ami"
@@ -1032,27 +1024,17 @@ msgstr "Échec de la synchronisation"
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "Crée un code pour récupérer tes prix si tu perds l’accès à cet appareil. Range-le dans un endroit privé."
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Create a group"
-msgstr "Créer un groupe"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Create group"
 msgstr "Créer le groupe"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Create or join group"
-msgstr "Créer ou rejoindre un groupe"
 
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create recovery code"
 msgstr "Créer un code de récupération"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Created {groupName}."
 msgstr "Groupe {groupName} créé."
@@ -1073,12 +1055,12 @@ msgid "Day"
 msgstr "Jour"
 
 #. Button: decline a friend request
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Decline"
 msgstr "Refuser"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Decline {name}’s friend request"
 msgstr "Refuser la demande d’ami de {name}"
@@ -1148,7 +1130,7 @@ msgstr "Télécharge d’abord tes données si tu veux les garder. Cette action 
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr "Télécharge ton profil, tous tes prix et transactions enregistrés, tes groupes et les détails de tes appareils dans un fichier JSON. Les modifications non envoyées de ce navigateur sont incluses à part. Range le fichier dans un endroit privé."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Each link adds one friend and works for 7 days."
 msgstr "Chaque lien ajoute un ami et reste valable 7 jours."
@@ -1177,6 +1159,11 @@ msgstr "Modifier la vente : {what}"
 #, fuzzy
 msgid "Editing…"
 msgstr "Modification…"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Enter a 12-character friend or group code."
+msgstr "Saisis un code ami ou un code de groupe de 12 caractères."
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1310,47 +1297,42 @@ msgstr "vendredi après-midi"
 msgid "Friday morning"
 msgstr "vendredi matin"
 
-#: src/client/friends.tsx
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Friend code"
 msgstr "Code ami"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend code copied."
 msgstr "Code ami copié."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend link"
 msgstr "Lien d’ami"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend link copied."
 msgstr "Lien d’ami copié."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
+#, fuzzy
+msgid "Friend or group code"
+msgstr "Code ami ou code de groupe"
+
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend request sent to {name}."
 msgstr "Demande d’ami envoyée à {name}."
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Friend requests"
-msgstr "Demandes d’ami"
-
 #: src/client/groups.tsx
 #: src/client/main.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friends"
 msgstr "Amis"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Friends & groups"
-msgstr "Amis et groupes"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1392,32 +1374,32 @@ msgstr "Obtenir un nouveau code"
 msgid "Go online on your other devices first if you want their latest edits included."
 msgstr "Connecte d’abord tes autres appareils à Internet si tu veux inclure leurs dernières modifications."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "Group action"
-msgstr "Action de groupe"
+msgid "Got a code?"
+msgstr "Tu as un code ?"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group code"
 msgstr "Code de groupe"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group code copied."
 msgstr "Code de groupe copié."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group full"
 msgstr "Groupe complet"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group link copied."
 msgstr "Lien du groupe copié."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group name"
 msgstr "Nom du groupe"
@@ -1427,10 +1409,15 @@ msgstr "Nom du groupe"
 msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
 msgstr "Prix du groupe en clochettes par navet. Les prix notés sont pleins ; les prévisions sont des fourchettes possibles en pointillés."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group share link"
 msgstr "Lien de partage du groupe"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Groups"
+msgstr "Groupes"
 
 #: src/client/advice.ts
 #, fuzzy
@@ -1535,11 +1522,17 @@ msgid "Install Turnip Tycoon"
 msgstr "Installer Turnip Tycoon"
 
 #: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Invite"
 msgstr "Inviter"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
+#, fuzzy
+msgid "Invite a friend"
+msgstr "Inviter un ami"
+
+#: src/client/people.tsx
 #, fuzzy
 msgid "Invite a player to {groupName}"
 msgstr "Inviter quelqu’un dans {groupName}"
@@ -1559,33 +1552,23 @@ msgstr "Trop tôt pour le dire. « {pattern} » est le plus probable, et les p
 msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
 msgstr "Ses données enregistrées et son accès ont été effacés de ce navigateur. Cela peut arriver quand un appareil est retiré, que son profil est supprimé ou que tu choisis d’effacer cet appareil. Cela ne confirme pas à lui seul la suppression sur le serveur."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Join {groupName} on Turnip Tycoon"
 msgstr "Rejoins {groupName} sur Turnip Tycoon"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Join a group"
-msgstr "Rejoindre un groupe"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Join group"
 msgstr "Rejoindre le groupe"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Join your friends"
-msgstr "Rejoins tes amis"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Joined {groupName}."
 msgstr "Tu as rejoint {groupName}."
 
 #. Button: keep a friend instead of removing them
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Keep"
 msgstr "Garder"
@@ -1640,12 +1623,12 @@ msgstr "Navets de la semaine dernière"
 msgid "Later"
 msgstr "Plus tard"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
 msgstr "Quitter {groupName} ? Tu ne partageras plus rien avec ses membres, sauf si vous avez un autre groupe en commun."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Leave group"
 msgstr "Quitter le groupe"
@@ -1836,6 +1819,11 @@ msgstr "Aucun ami n’a encore partagé de prix ({periodLabel})"
 msgid "No friends have shared a Sunday buy price yet"
 msgstr "Aucun ami n’a encore partagé de prix d’achat du dimanche"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "No group or player has this code. Check it and try again."
+msgstr "Ce code n’appartient à aucun groupe ni à personne. Vérifie-le et réessaie."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "No half-days left this week"
@@ -1959,7 +1947,7 @@ msgstr "Pas de prix"
 msgid "Not entered, no forecast available"
 msgstr "Pas de prix, aucune prévision disponible"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Not now"
 msgstr "Plus tard"
@@ -2015,11 +2003,6 @@ msgstr "Sur le nouvel appareil, ouvre Paramètres → Connecter cet appareil à 
 msgid "On your connected device, open Settings and choose “Approve another device”."
 msgstr "Sur ton appareil connecté, ouvre les Paramètres et choisis « Autoriser un autre appareil »."
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Once they accept, you can see each other’s name, friend code, weekly prices and history."
-msgstr "Une fois la demande acceptée, chacun voit le nom, le code ami, les prix de la semaine et l’historique de l’autre."
-
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Open {name}’s week"
@@ -2069,16 +2052,6 @@ msgstr "Semaines passées et leur bénéfice"
 #, fuzzy
 msgid "Past weeks are read-only. <0>Return to this week</0>"
 msgstr "Les semaines passées sont en lecture seule. <0>Revenir à cette semaine</0>"
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Paste a friend code"
-msgstr "Colle un code ami"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Paste a group code"
-msgstr "Colle un code de groupe"
 
 #: src/client/advice.ts
 #, fuzzy
@@ -2239,18 +2212,17 @@ msgid "Recovery code"
 msgstr "Code de récupération"
 
 #. Button: remove a friend
-#. Button: remove a friend
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "Retirer"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove {name}"
 msgstr "Retirer {name}"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove {name} from your friends? You’ll stop sharing prices unless you share a group."
 msgstr "Retirer {name} de tes amis ? Vous ne partagerez plus vos prix, sauf si vous avez un groupe en commun."
@@ -2282,7 +2254,7 @@ msgid "Reported"
 msgstr "Noté"
 
 #. A friend request that the other player hasn't answered yet
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Request sent"
 msgstr "Demande envoyée"
@@ -2322,11 +2294,6 @@ msgstr "Retour à l’accueil"
 #, fuzzy
 msgid "Right now"
 msgstr "En ce moment"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Room for another group?"
-msgstr "De la place pour un autre groupe ?"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -2441,12 +2408,12 @@ msgstr "Voir cette semaine"
 msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
 msgstr "Sélectionne une demi-journée pour voir sa fourchette possible. Utilise les flèches pour passer d’une demi-journée à l’autre, Début ou Fin pour aller à la première ou à la dernière, et Échap pour fermer les détails."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Select and copy the group code above."
 msgstr "Sélectionne et copie le code de groupe ci-dessus."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Select and copy your friend code above."
 msgstr "Sélectionne et copie ton code ami ci-dessus."
@@ -2496,15 +2463,20 @@ msgstr "Envoie un corps de requête JSON."
 msgid "Send a JSON request."
 msgstr "Envoie une requête JSON."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "Send request"
-msgstr "Envoyer la demande"
+msgid "Send a link. One tap and you’re friends, no code to type."
+msgstr "Envoie un lien. Il suffit d’un geste pour devenir amis, sans code à saisir."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
 msgstr "Envoie du JSON valide."
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Sent you a friend link"
+msgstr "T’a envoyé un lien d’ami"
 
 #: src/client/main.tsx
 #: src/client/settings.tsx
@@ -2512,12 +2484,12 @@ msgstr "Envoie du JSON valide."
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Share friend link"
 msgstr "Partager un lien d’ami"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Share group link"
 msgstr "Partager le lien du groupe"
@@ -2544,8 +2516,8 @@ msgstr "Vue partagée · lecture seule"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Show group"
-msgstr "Afficher le groupe"
+msgid "Show players"
+msgstr "Choisir qui afficher"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2615,12 +2587,17 @@ msgstr "quelqu’un dépassera {price} d’ici ce soir"
 msgid "Something went wrong. Please try again."
 msgstr "Une erreur s’est produite. Réessaie."
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Start a new group"
+msgstr "Créer un nouveau groupe"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Start a new profile"
 msgstr "Créer un nouveau profil"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Stay"
 msgstr "Rester"
@@ -2652,7 +2629,7 @@ msgid "Sunday purchase price in bells"
 msgstr "Prix d’achat du dimanche en clochettes"
 
 #. An example group name
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Sunday turnip crew"
 msgstr "Le club du navet du dimanche"
@@ -2667,7 +2644,7 @@ msgstr "Dimanche, chez Porcelette"
 msgid "Terms"
 msgstr "Conditions"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "That link couldn’t be saved, so it won’t work. Share a new one."
 msgstr "Ce lien n’a pas pu être enregistré, il ne fonctionnera pas. Partage-en un nouveau."
@@ -2879,7 +2856,7 @@ msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr "C’est ton propre code ami. Saisis plutôt le code d’un ami."
 
 #: src/client/data/server-messages.ts
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "This is your own friend link. Share it with a friend instead."
 msgstr "C’est ton propre lien d’ami. Partage-le plutôt avec un ami."
@@ -3105,9 +3082,9 @@ msgid "Trades"
 msgstr "Transactions"
 
 #: src/client/calculator.tsx
-#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
+#: src/client/people.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Try again"
@@ -3172,7 +3149,7 @@ msgstr "Inconnu"
 msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
 msgstr "Jusqu’à {maxLength} caractères. Laisse vide pour apparaître sous le nom {defaultName}."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
 msgstr "Jusqu’à 12 personnes. Les membres voient le nom, le code ami, les prix de la semaine et l’historique des autres."
@@ -3222,6 +3199,11 @@ msgstr "Utiliser les entrées de l’autre appareil"
 #, fuzzy
 msgid "Waiting for a connection. Your prices stay on this device."
 msgstr "En attente de connexion. Tes prix restent sur cet appareil."
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Waiting for you"
+msgstr "En attente de ta réponse"
 
 #. Short label for Wednesday morning, in tight table columns
 #: src/client/advice.ts
@@ -3331,17 +3313,18 @@ msgid "you"
 msgstr "toi"
 
 #: src/client/groups.tsx
+#: src/client/people.tsx
 #: src/client/welcome.tsx
 #, fuzzy
 msgid "You"
 msgstr "Toi"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "You and {name} are already friends."
 msgstr "{name} et toi êtes déjà amis."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "You and {name} are now friends."
 msgstr "{name} et toi êtes maintenant amis."
@@ -3385,6 +3368,11 @@ msgstr "Tu as payé {purchasePrice}"
 #, fuzzy
 msgid "You pay"
 msgstr "Tu paies"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "You’re already in {groupName}."
+msgstr "Tu es déjà dans {groupName}."
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -3446,20 +3434,10 @@ msgstr "Ton nom affiché"
 msgid "Your download is ready. Check your browser’s downloads."
 msgstr "Ton téléchargement est prêt. Regarde dans les téléchargements de ton navigateur."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Your friend code"
 msgstr "Ton code ami"
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Your friends"
-msgstr "Tes amis"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Your groups"
-msgstr "Tes groupes"
 
 #: src/client/groups.tsx
 #: src/client/odds-card.tsx
@@ -3471,6 +3449,11 @@ msgstr "Ton île"
 #, fuzzy
 msgid "Your island tops out at {best}"
 msgstr "Ton île plafonne à {best}"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Your people"
+msgstr "Tes amis et groupes"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -3557,7 +3540,7 @@ msgstr "Tes prix enregistrés resteront sur cet appareil."
 msgid "Your turnips"
 msgstr "Tes navets"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Your week"
 msgstr "Ta semaine"

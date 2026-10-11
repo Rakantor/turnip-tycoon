@@ -49,6 +49,9 @@ export interface FriendInvitePreview {
   expiresAt: string;
 }
 
+/** One code field joins a group or asks a player to be friends, whichever the code belongs to. */
+export type CodeResult = { group: GroupSummary } | { friend: FriendResult };
+
 /** A friend code request's outcome: friends straight away when they had already asked you. */
 export interface FriendResult {
   player: Player;

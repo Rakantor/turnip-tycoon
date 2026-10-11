@@ -150,30 +150,41 @@ async function addLink(tx: Transaction, playerId: string, friend: Player): Promi
   return { player: friend, status: reverse ? 'friends' : 'requested' };
 }
 
+/** Asks the player with this friend code to be friends; null when nobody has it. */
+export async function requestFriend(
+  tx: Transaction,
+  playerId: string,
+  friendCode: string,
+): Promise<FriendResult | null> {
+  // Holding the row keeps a profile deletion from slipping in before the request.
+  const [player] = await tx
+    .select()
+    .from(players)
+    .where(eq(players.friendCode, friendCode))
+    .for('key share');
+  if (!player) return null;
+  if (player.id === playerId)
+    throw new ApiError(
+      400,
+      'OWN_FRIEND_CODE',
+      'This is your own friend code. Enter a friend’s code instead.',
+    );
+  return addLink(tx, playerId, player);
+}
+
 export function registerFriendRoutes(app: Hono<AppEnvironment>): void {
   // A friend code only sends a request: nothing is shared until the other player accepts.
   app.post('/api/friends', async (c) => {
     const input = await readJson(c, friendCodeInput);
     const friend = await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
-      // Holding the row keeps a profile deletion from slipping in before the request.
-      const [player] = await tx
-        .select()
-        .from(players)
-        .where(eq(players.friendCode, formatCode(input.code)))
-        .for('key share');
-      if (!player)
+      const result = await requestFriend(tx, session.player.id, formatCode(input.code));
+      if (!result)
         throw new ApiError(
           404,
           'FRIEND_CODE_UNAVAILABLE',
           'No player has this friend code. Check the code and try again.',
         );
-      if (player.id === session.player.id)
-        throw new ApiError(
-          400,
-          'OWN_FRIEND_CODE',
-          'This is your own friend code. Enter a friend’s code instead.',
-        );
-      return addLink(tx, session.player.id, player);
+      return result;
     });
     return c.json({ friend });
   });

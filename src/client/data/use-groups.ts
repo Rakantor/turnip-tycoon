@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { t } from '@lingui/core/macro';
 import type { SessionResponse } from '../../shared/api';
 import type {
+  CodeResult,
   FriendResult,
   GroupSummary,
   GroupsResponse,
@@ -296,6 +297,8 @@ export function useGroups(
         withoutGroup(data, id, owner),
       );
     },
+    /** Joins the group or asks the player a code belongs to, whichever it is. */
+    redeem: (code: string) => change<CodeResult>('/codes', 'POST', { code }),
     /** Sends a friend request, or accepts theirs if they already asked you. */
     addFriend: (code: string) => changeFriend('/friends', 'POST', { code }),
     acceptFriend: (playerId: string) => changeFriend(`/friends/${playerId}`, 'PUT'),

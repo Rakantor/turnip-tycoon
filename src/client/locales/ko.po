@@ -54,6 +54,11 @@ msgstr "큰 급등 {chance}"
 msgid "{chance} small spike"
 msgstr "작은 급등 {chance}"
 
+#: src/client/main.tsx
+#, fuzzy
+msgid "{count, plural, one {# friend request waiting} other {# friend requests waiting}}"
+msgstr "{count, plural, other {친구 요청 #개가 기다리고 있어요}}"
+
 #: src/client/forecast.tsx
 #, fuzzy
 msgid "{difference} vs. what you paid"
@@ -74,12 +79,12 @@ msgstr "{friendCount, plural, other {친구 #명이 가격을 공유하고 있�
 msgid "{friendName}’s {friendPrice}"
 msgstr "{friendName}의 {friendPrice}"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "{groupName} details"
-msgstr "{groupName} 상세 정보"
+msgid "{groupName} is full right now."
+msgstr "지금은 {groupName}에 자리가 없어요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{groupName} players"
 msgstr "{groupName} 멤버"
@@ -140,7 +145,7 @@ msgstr "산 가격 대비 {lowest}~{highest}"
 msgid "{lowest} vs. what you paid"
 msgstr "산 가격 대비 {lowest}"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{members} of {capacity} players"
 msgstr "{members}/{capacity}명"
@@ -170,11 +175,6 @@ msgstr "외 {more}명"
 #, fuzzy
 msgid "{name} disconnected."
 msgstr "{name} 연결을 해제했어요."
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "{name} wants to be your friend"
-msgstr "{name}에게서 친구 초대가 왔어요"
 
 #: src/client/odds-card.tsx
 #, fuzzy
@@ -216,7 +216,7 @@ msgstr "{name}의 입력 가격(월요일~토요일)"
 msgid "{name}’s selling pattern probabilities"
 msgstr "{name}의 판매 패턴 확률"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "{name}’s week"
 msgstr "{name}의 한 주"
@@ -379,12 +379,12 @@ msgstr "한 주에 구매와 판매는 최대 40건까지 기록할 수 있어�
 
 #. Button: accept a friend request
 #. Button: accept a friend request
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Accept"
 msgstr "수락"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Accept {name}’s friend request"
 msgstr "{name}의 친구 요청 수락"
@@ -394,10 +394,11 @@ msgstr "{name}의 친구 요청 수락"
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr "친구 탭에서 수락하면 가격과 예측을 비교할 수 있어요."
 
-#: src/client/friends.tsx
+#. Button: add a friend or group
+#: src/client/people.tsx
 #, fuzzy
-msgid "Accept to see each other’s prices and forecasts."
-msgstr "수락하면 서로의 가격과 예측을 볼 수 있어요."
+msgid "Add"
+msgstr "추가"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -409,7 +410,7 @@ msgstr "친구 추가"
 msgid "Add friends or start a group to compare prices and forecasts."
 msgstr "친구를 추가하거나 그룹을 만들어 가격과 예측을 비교해 보세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Add me as a friend on Turnip Tycoon"
 msgstr "Turnip Tycoon에서 친구가 되어 주세요"
@@ -424,15 +425,16 @@ msgstr "아는 가격을 입력하세요. 나머지는 비워 두세요."
 msgid "Afternoon"
 msgstr "오후"
 
+#. Filter chip: everyone sharing prices with you
+#: src/client/groups.tsx
+#, fuzzy
+msgid "All"
+msgstr "전체"
+
 #: src/client/profile-data.tsx
 #, fuzzy
 msgid "All connected devices and your recovery code will lose access. Groups with other members will stay, along with their records."
 msgstr "연결된 모든 기기와 복구 코드의 접근 권한이 사라져요. 다른 멤버가 있는 그룹은 기록과 함께 남아요."
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "All friends"
-msgstr "모든 친구"
 
 #: src/client/history.tsx
 #, fuzzy
@@ -630,11 +632,6 @@ msgstr "산 가격 {purchasePrice}"
 msgid "Bought for<0>, average per turnip</0>"
 msgstr "산 가격<0>(무 1개당 평균)</0>"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Bring your friends along"
-msgstr "친구를 초대하세요"
-
 #. Under “Sun”: the Sunday buy price column
 #: src/client/group-price-table.tsx
 #, fuzzy
@@ -652,17 +649,13 @@ msgstr "산 가격"
 msgid "By Saturday night"
 msgstr "토요일 밤까지"
 
+#: src/client/people.tsx
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Cancel"
 msgstr "취소"
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Cancel request"
-msgstr "요청 취소"
-
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Cancel your friend request to {name}"
 msgstr "{name}에게 보낸 친구 요청 취소"
@@ -744,10 +737,15 @@ msgstr "입력한 항목을 확인하세요."
 msgid "Check this entry."
 msgstr "이 항목을 확인하세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Checking this friend link…"
 msgstr "친구 링크 확인 중…"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Checking this group link…"
+msgstr "그룹 링크 확인 중…"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -784,8 +782,7 @@ msgstr "남길 항목을 선택하세요. 선택하기 전까지 내 항목은 �
 msgid "Clear this device’s saved data"
 msgstr "이 기기에 저장된 데이터 삭제"
 
-#: src/client/friends.tsx
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Close"
@@ -800,11 +797,6 @@ msgstr "시간대 상세 정보 닫기"
 #, fuzzy
 msgid "Compare entries"
 msgstr "항목 비교"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Compare your prices and find a good time to sell, together."
-msgstr "함께 가격을 비교하고 팔기 좋은 때를 찾아보세요."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -902,7 +894,7 @@ msgstr "계속하면 프로필이 만들어지고 가격이 온라인과 이 기
 msgid "Copied"
 msgstr "복사했어요"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy {groupName} group code"
 msgstr "{groupName} 그룹 코드 복사"
@@ -912,17 +904,17 @@ msgstr "{groupName} 그룹 코드 복사"
 msgid "Copy code"
 msgstr "코드 복사"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy this friend link to share it."
 msgstr "공유하려면 이 친구 링크를 복사하세요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy this group link to share it."
 msgstr "공유하려면 이 그룹 링크를 복사하세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Copy your friend code"
 msgstr "내 친구 코드 복사"
@@ -1032,27 +1024,17 @@ msgstr "동기화 실패"
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "이 기기에 접근할 수 없게 되었을 때 가격을 되찾을 수 있는 코드를 만드세요. 다른 사람이 볼 수 없는 곳에 보관하세요."
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Create a group"
-msgstr "그룹 만들기"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Create group"
 msgstr "그룹 만들기"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Create or join group"
-msgstr "그룹 만들기 또는 참여"
 
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create recovery code"
 msgstr "복구 코드 만들기"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Created {groupName}."
 msgstr "{groupName} 그룹을 만들었어요."
@@ -1073,12 +1055,12 @@ msgid "Day"
 msgstr "요일"
 
 #. Button: decline a friend request
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Decline"
 msgstr "거절"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Decline {name}’s friend request"
 msgstr "{name}의 친구 요청 거절"
@@ -1148,7 +1130,7 @@ msgstr "데이터를 보관하려면 먼저 다운로드하세요. 이 작업은
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr "프로필, 저장된 모든 가격과 거래, 그룹 참여 정보, 기기 정보를 JSON 파일로 다운로드해요. 이 브라우저에서 보내지 않은 변경 사항은 따로 포함돼요. 파일은 다른 사람이 볼 수 없는 곳에 보관하세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Each link adds one friend and works for 7 days."
 msgstr "링크 하나로 친구 한 명을 추가할 수 있고, 7일 동안 유효해요."
@@ -1177,6 +1159,11 @@ msgstr "{what} 판매 수정"
 #, fuzzy
 msgid "Editing…"
 msgstr "수정 중…"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Enter a 12-character friend or group code."
+msgstr "12자리 친구 코드나 그룹 코드를 입력하세요."
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -1310,47 +1297,42 @@ msgstr "금요일 오후"
 msgid "Friday morning"
 msgstr "금요일 오전"
 
-#: src/client/friends.tsx
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Friend code"
 msgstr "친구 코드"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend code copied."
 msgstr "친구 코드를 복사했어요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend link"
 msgstr "친구 링크"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend link copied."
 msgstr "친구 링크를 복사했어요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
+#, fuzzy
+msgid "Friend or group code"
+msgstr "친구 코드 또는 그룹 코드"
+
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friend request sent to {name}."
 msgstr "{name}에게 친구 요청을 보냈어요."
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Friend requests"
-msgstr "친구 요청"
-
 #: src/client/groups.tsx
 #: src/client/main.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Friends"
 msgstr "친구"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Friends & groups"
-msgstr "친구와 그룹"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1392,32 +1374,32 @@ msgstr "새 코드 받기"
 msgid "Go online on your other devices first if you want their latest edits included."
 msgstr "다른 기기의 최신 변경 사항도 포함하려면 먼저 그 기기들을 온라인으로 연결하세요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "Group action"
-msgstr "그룹 작업"
+msgid "Got a code?"
+msgstr "코드가 있나요?"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group code"
 msgstr "그룹 코드"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group code copied."
 msgstr "그룹 코드를 복사했어요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group full"
 msgstr "그룹 꽉 참"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group link copied."
 msgstr "그룹 링크를 복사했어요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group name"
 msgstr "그룹 이름"
@@ -1427,10 +1409,15 @@ msgstr "그룹 이름"
 msgid "Group prices in bells per turnip. Reported prices are solid; predictions are possible ranges in dashed boxes."
 msgstr "그룹 가격(무 1개당 벨). 입력된 가격은 채워진 칸, 예측은 점선 칸에 가능한 범위로 표시돼요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Group share link"
 msgstr "그룹 공유 링크"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Groups"
+msgstr "그룹"
 
 #: src/client/advice.ts
 #, fuzzy
@@ -1535,11 +1522,17 @@ msgid "Install Turnip Tycoon"
 msgstr "Turnip Tycoon 설치"
 
 #: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Invite"
 msgstr "초대"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
+#, fuzzy
+msgid "Invite a friend"
+msgstr "친구 초대하기"
+
+#: src/client/people.tsx
 #, fuzzy
 msgid "Invite a player to {groupName}"
 msgstr "{groupName}에 플레이어 초대"
@@ -1559,33 +1552,23 @@ msgstr "아직 판단하기 일러요. {pattern} 패턴일 가능성이 가장 �
 msgid "Its saved records and access have been cleared from this browser. This can happen when a device is removed, its profile is deleted, or you choose to clear this device. It does not by itself confirm deletion from the server."
 msgstr "저장된 기록과 접근 권한이 이 브라우저에서 지워졌어요. 기기가 삭제되거나, 프로필이 삭제되거나, 이 기기를 지우기로 했을 때 이렇게 돼요. 이것만으로 서버에서 삭제됐다는 뜻은 아니에요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Join {groupName} on Turnip Tycoon"
 msgstr "Turnip Tycoon에서 {groupName}에 참여하세요"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Join a group"
-msgstr "그룹 참여"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Join group"
 msgstr "그룹 참여"
 
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Join your friends"
-msgstr "친구와 함께하세요"
-
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Joined {groupName}."
 msgstr "{groupName}에 참여했어요."
 
 #. Button: keep a friend instead of removing them
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Keep"
 msgstr "유지"
@@ -1640,12 +1623,12 @@ msgstr "지난주 무"
 msgid "Later"
 msgstr "나중에"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
 msgstr "{groupName}에서 나갈까요? 함께하는 다른 그룹이 없으면 멤버들과 더 이상 공유하지 않아요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Leave group"
 msgstr "그룹 나가기"
@@ -1836,6 +1819,11 @@ msgstr "아직 {periodLabel} 가격을 공유한 친구가 없어요"
 msgid "No friends have shared a Sunday buy price yet"
 msgstr "아직 일요일 구매 가격을 공유한 친구가 없어요"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "No group or player has this code. Check it and try again."
+msgstr "이 코드를 가진 그룹이나 플레이어가 없어요. 코드를 확인하고 다시 시도하세요."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "No half-days left this week"
@@ -1959,7 +1947,7 @@ msgstr "미입력"
 msgid "Not entered, no forecast available"
 msgstr "미입력, 예측 없음"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Not now"
 msgstr "나중에"
@@ -2015,11 +2003,6 @@ msgstr "새 기기에서 설정 → “이 기기를 기존 프로필에 연결�
 msgid "On your connected device, open Settings and choose “Approve another device”."
 msgstr "연결된 기기에서 설정을 열고 “다른 기기 승인”을 선택하세요."
 
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Once they accept, you can see each other’s name, friend code, weekly prices and history."
-msgstr "상대가 수락하면 서로의 이름, 친구 코드, 주간 가격과 기록을 볼 수 있어요."
-
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Open {name}’s week"
@@ -2069,16 +2052,6 @@ msgstr "지난 주와 이익"
 #, fuzzy
 msgid "Past weeks are read-only. <0>Return to this week</0>"
 msgstr "지난 주는 볼 수만 있어요. <0>이번 주로 돌아가기</0>"
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Paste a friend code"
-msgstr "친구 코드 붙여넣기"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Paste a group code"
-msgstr "그룹 코드 붙여넣기"
 
 #: src/client/advice.ts
 #, fuzzy
@@ -2239,18 +2212,17 @@ msgid "Recovery code"
 msgstr "복구 코드"
 
 #. Button: remove a friend
-#. Button: remove a friend
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "삭제"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove {name}"
 msgstr "{name} 삭제"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Remove {name} from your friends? You’ll stop sharing prices unless you share a group."
 msgstr "{name} 친구를 삭제할까요? 함께하는 그룹이 없으면 더 이상 가격을 공유하지 않아요."
@@ -2282,7 +2254,7 @@ msgid "Reported"
 msgstr "입력됨"
 
 #. A friend request that the other player hasn't answered yet
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Request sent"
 msgstr "요청 보냄"
@@ -2322,11 +2294,6 @@ msgstr "시작 화면으로 돌아가기"
 #, fuzzy
 msgid "Right now"
 msgstr "지금"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Room for another group?"
-msgstr "그룹을 하나 더 만들까요?"
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -2441,12 +2408,12 @@ msgstr "이번 주 보기"
 msgid "Select a half-day to see its possible range. Use the arrow keys to move between half-days, Home or End to jump to the first or last, and Escape to close the details."
 msgstr "시간대를 선택하면 가능한 가격 범위가 보여요. 화살표 키로 시간대를 옮기고, Home이나 End로 처음이나 끝으로 가고, Escape로 상세 정보를 닫아요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Select and copy the group code above."
 msgstr "위의 그룹 코드를 선택해 복사하세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Select and copy your friend code above."
 msgstr "위의 내 친구 코드를 선택해 복사하세요."
@@ -2496,15 +2463,20 @@ msgstr "JSON 요청 본문을 보내세요."
 msgid "Send a JSON request."
 msgstr "JSON 요청을 보내세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
-msgid "Send request"
-msgstr "요청 보내기"
+msgid "Send a link. One tap and you’re friends, no code to type."
+msgstr "링크를 보내 보세요. 한 번만 탭하면 친구가 되고, 코드를 입력할 필요가 없어요."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
 msgstr "올바른 JSON을 보내세요."
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Sent you a friend link"
+msgstr "친구 링크를 보냈어요"
 
 #: src/client/main.tsx
 #: src/client/settings.tsx
@@ -2512,12 +2484,12 @@ msgstr "올바른 JSON을 보내세요."
 msgid "Settings"
 msgstr "설정"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Share friend link"
 msgstr "친구 링크 공유"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Share group link"
 msgstr "그룹 링크 공유"
@@ -2544,8 +2516,8 @@ msgstr "공유 화면 · 읽기 전용"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Show group"
-msgstr "그룹 보기"
+msgid "Show players"
+msgstr "표시할 플레이어"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2615,12 +2587,17 @@ msgstr "오늘 밤까지 누군가 {price}보다 높은 가격을 받아요"
 msgid "Something went wrong. Please try again."
 msgstr "문제가 발생했어요. 다시 시도하세요."
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Start a new group"
+msgstr "새 그룹 만들기"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Start a new profile"
 msgstr "새 프로필 만들기"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Stay"
 msgstr "머무르기"
@@ -2652,7 +2629,7 @@ msgid "Sunday purchase price in bells"
 msgstr "일요일 구매 가격(벨)"
 
 #. An example group name
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Sunday turnip crew"
 msgstr "일요일 무 클럽"
@@ -2667,7 +2644,7 @@ msgstr "일요일, 무파니에게서"
 msgid "Terms"
 msgstr "이용약관"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "That link couldn’t be saved, so it won’t work. Share a new one."
 msgstr "링크를 저장하지 못해서 사용할 수 없어요. 새 링크를 공유하세요."
@@ -2879,7 +2856,7 @@ msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr "내 친구 코드예요. 친구의 코드를 입력하세요."
 
 #: src/client/data/server-messages.ts
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "This is your own friend link. Share it with a friend instead."
 msgstr "내 친구 링크예요. 친구에게 공유하세요."
@@ -3105,9 +3082,9 @@ msgid "Trades"
 msgstr "거래"
 
 #: src/client/calculator.tsx
-#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
+#: src/client/people.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Try again"
@@ -3172,7 +3149,7 @@ msgstr "알 수 없음"
 msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
 msgstr "최대 {maxLength}자. 비워 두면 기본 이름({defaultName})을 사용해요."
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
 msgstr "최대 12명. 멤버끼리 이름, 친구 코드, 주간 가격과 기록을 볼 수 있어요."
@@ -3222,6 +3199,11 @@ msgstr "다른 기기의 항목 사용"
 #, fuzzy
 msgid "Waiting for a connection. Your prices stay on this device."
 msgstr "연결을 기다리는 중이에요. 가격은 이 기기에 남아 있어요."
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Waiting for you"
+msgstr "답을 기다리고 있어요"
 
 #. Short label for Wednesday morning, in tight table columns
 #: src/client/advice.ts
@@ -3331,17 +3313,18 @@ msgid "you"
 msgstr "나"
 
 #: src/client/groups.tsx
+#: src/client/people.tsx
 #: src/client/welcome.tsx
 #, fuzzy
 msgid "You"
 msgstr "나"
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "You and {name} are already friends."
 msgstr "이미 {name}의 친구예요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "You and {name} are now friends."
 msgstr "이제 {name}의 친구가 되었어요."
@@ -3385,6 +3368,11 @@ msgstr "산 가격 {purchasePrice}"
 #, fuzzy
 msgid "You pay"
 msgstr "내는 금액"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "You’re already in {groupName}."
+msgstr "이미 {groupName}에 있어요."
 
 #: src/client/turnips.tsx
 #, fuzzy
@@ -3446,20 +3434,10 @@ msgstr "표시 이름"
 msgid "Your download is ready. Check your browser’s downloads."
 msgstr "다운로드가 준비됐어요. 브라우저의 다운로드를 확인하세요."
 
-#: src/client/friends.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Your friend code"
 msgstr "내 친구 코드"
-
-#: src/client/friends.tsx
-#, fuzzy
-msgid "Your friends"
-msgstr "내 친구"
-
-#: src/client/groups.tsx
-#, fuzzy
-msgid "Your groups"
-msgstr "내 그룹"
 
 #: src/client/groups.tsx
 #: src/client/odds-card.tsx
@@ -3471,6 +3449,11 @@ msgstr "내 섬"
 #, fuzzy
 msgid "Your island tops out at {best}"
 msgstr "내 섬 최고 {best}"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Your people"
+msgstr "친구와 그룹"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -3557,7 +3540,7 @@ msgstr "저장된 가격은 이 기기에 남아요."
 msgid "Your turnips"
 msgstr "내 무"
 
-#: src/client/groups.tsx
+#: src/client/people.tsx
 #, fuzzy
 msgid "Your week"
 msgstr "내 한 주"

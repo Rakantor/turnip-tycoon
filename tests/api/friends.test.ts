@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
+import { GROUP_CAPACITY } from '../../src/server/groups';
 import { FRIEND_INVITE_DAYS, FRIEND_INVITE_LIMIT, FRIEND_LIMIT } from '../../src/server/friends';
 import type { SessionResponse } from '../../src/shared/api';
 import type {
@@ -553,6 +554,92 @@ describe('Friends added by friend code', () => {
         await expectError(await new Browser(app).request('POST', path, body), 401);
       }
       expect((await overview(rosa)).friendIds).toEqual([]);
+    });
+  });
+
+  describe('one code field for groups and friends', () => {
+    const redeem = (from: Player, code: string) =>
+      from.browser.request('POST', '/api/codes', { code });
+    async function group(owner: Player) {
+      const response = await owner.browser.request('POST', '/api/groups', { name: 'Crew' });
+      return ((await response.json()) as { group: GroupSummary }).group;
+    }
+
+    it('joins a group from its invite code, typed loosely', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const crew = await group(rosa);
+      const response = await redeem(mika, ` ${crew.code.toLowerCase().replaceAll('-', ' ')} `);
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ group: { ...crew, memberCount: 2 } });
+      expect((await overview(mika)).groups.map((entry) => entry.id)).toEqual([crew.id]);
+    });
+
+    it('asks a player to be friends from their friend code', async () => {
+      const rosa = await player('Rosa');
+      const mika = await player();
+      const asked = await redeem(mika, rosa.code);
+      expect(asked.status).toBe(200);
+      expect(await asked.json()).toEqual({
+        friend: { player: rosa.session.player, status: 'requested' },
+      });
+      const back = await redeem(rosa, mika.code.toLowerCase());
+      expect(((await back.json()) as { friend: FriendResult }).friend.status).toBe('friends');
+    });
+
+    it('explains a code that is nobody’s, your own, malformed, or a full group', async () => {
+      const rosa = await player();
+      const missing = await expectError(await redeem(rosa, 'ZZZZ-ZZZZ-ZZZZ'), 404);
+      expect(missing.error).toEqual({
+        code: 'CODE_UNAVAILABLE',
+        message: 'No group or player has this code. Check it and try again.',
+      });
+      const own = await expectError(await redeem(rosa, rosa.code), 400);
+      expect(own.error.code).toBe('OWN_FRIEND_CODE');
+      for (const code of ['', 'ABCD-EFGH', 'ABCD-EFGH-JKL!']) {
+        const invalid = await expectError(await redeem(rosa, code), 400);
+        expect(invalid.error.message).toBe('Enter a 12-character friend or group code.');
+      }
+      const crew = await group(rosa);
+      await client.query(
+        `with others as (
+          insert into turnip_private.players (display_name, friend_code)
+          select 'Extra', 'FAKE-' || lpad(n::text, 4, '0') || '-CCCC' from generate_series(1, $2::int) n
+          returning id
+        )
+        insert into turnip_private.memberships (group_id, player_id) select $1, id from others`,
+        [crew.id, GROUP_CAPACITY - 1],
+      );
+      const full = await expectError(await redeem(await player(), crew.code), 409);
+      expect(full.error.code).toBe('GROUP_FULL');
+    });
+
+    it('protects the route like every other change', async () => {
+      const rosa = await player();
+      const mika = await player();
+      await expectError(
+        await rosa.browser.request(
+          'POST',
+          '/api/codes',
+          { code: mika.code },
+          { origin: 'https://elsewhere.test' },
+        ),
+        403,
+      );
+      await expectError(
+        await rosa.browser.request(
+          'POST',
+          '/api/codes',
+          { code: mika.code },
+          { playerId: mika.id },
+        ),
+        409,
+      );
+      await expectError(
+        await new Browser(app).request('POST', '/api/codes', { code: mika.code }),
+        401,
+      );
+      expect((await client.query('select * from turnip_private.friend_links')).rows).toEqual([]);
     });
   });
 });

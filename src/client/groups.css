@@ -1,5 +1,3 @@
-.group-create-card,
-.group-detail-card,
 .shared-prices-card,
 .friend-row,
 .right-now-empty {
@@ -9,7 +7,6 @@
   background: var(--surface);
   box-shadow: 0 5px 0 var(--border);
 }
-.groups-page .section-heading,
 .card-heading {
   display: flex;
   align-items: center;
@@ -17,7 +14,6 @@
   gap: 16px;
   margin-bottom: 18px;
 }
-.groups-page .section-heading h2,
 .card-heading h2 {
   margin-bottom: 0;
 }
@@ -91,45 +87,6 @@
 /* Friends page */
 .groups-page .page-heading {
   flex-wrap: wrap;
-}
-.group-create-card {
-  margin-bottom: 26px;
-  padding: 26px 28px;
-}
-.group-create-card > p {
-  font-size: 15px;
-}
-.group-badge {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  flex: none;
-  border-radius: 16px;
-  background: var(--leaf-soft);
-  color: var(--leaf-dark);
-}
-.group-form-wrap {
-  max-width: 600px;
-}
-.group-entry-form {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  margin-top: 20px;
-}
-.group-entry-form .field {
-  flex: 1;
-  margin-bottom: 0;
-}
-.group-entry-form .field input {
-  min-width: 0;
-}
-.group-entry-form .button {
-  white-space: nowrap;
-}
-.group-form-wrap > .hint {
-  margin-top: 14px;
 }
 .friends-comparison {
   margin-bottom: 34px;
@@ -547,42 +504,7 @@
   line-height: 1.2;
   text-align: right;
 }
-
-/* Your groups */
-.your-groups {
-  margin-top: 10px;
-}
-.your-groups > .section-heading > .muted {
-  font-size: 13px;
-  font-weight: 700;
-}
-.group-card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-.group-detail-card {
-  padding: 22px;
-}
-.group-card-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-.group-card-heading h3 {
-  margin: 0 0 4px;
-  font-size: 21px;
-  overflow-wrap: anywhere;
-}
-.group-card-heading p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-}
-/* Seats: one per place in the group, four to a row (three on the narrowest phones). */
+/* Seats: a group’s players and a seat to invite more, four to a row (three on the narrowest phones). */
 .group-seats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -685,20 +607,6 @@
   width: 38px;
   height: 38px;
   box-shadow: none;
-}
-.group-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
-}
-.group-card-actions .text-button {
-  color: var(--muted);
-}
-.group-detail-card > .hint {
-  margin: 12px 0 0;
 }
 .share-fallback {
   margin-top: 10px;
@@ -956,11 +864,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
-@media (max-width: 780px) {
-  .group-card-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
+
 @media (max-width: 720px) {
   .friends-panel {
     margin-top: 22px;
@@ -984,14 +888,6 @@
   }
   .friends-postcard .button {
     width: 100%;
-  }
-  .group-create-card {
-    padding: 20px;
-  }
-  .group-entry-form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
   }
   .view-bar {
     flex-direction: column;
@@ -1039,14 +935,6 @@
   }
   .reported-price {
     font-size: 22px;
-  }
-  .your-groups > .section-heading {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .group-detail-card {
-    padding: 18px;
   }
   .calculator-layout.shared-calculator-layout {
     grid-template-columns: minmax(0, 1fr);

@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { ArrowRight, Copy, Plane, Plus, Share2, UserPlus, Users, X } from 'lucide-react';
+import { ArrowRight, Plane, UserPlus, Users } from 'lucide-react';
 import { i18n } from '@lingui/core';
 import { plural, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { predictWeek, type PredictionResult } from '../prediction';
 import { currentSlot, currentWeekStart } from '../shared/calendar';
-import type { GroupSummary, SharedPlayerWeek } from '../shared/groups';
+import type { SharedPlayerWeek } from '../shared/groups';
 import type { WeekRecord } from '../shared/week';
 import { oddsPercent, patternName, percent, slotShortName } from './advice';
 import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
-import { FriendInvite, FriendRequests, YourFriends } from './friends';
 import { GroupPriceTable } from './group-price-table';
+import { WaitingForYou, YourPeople } from './people';
 import { PlayerAvatar } from './player-avatar';
 import {
   afterClosing,
@@ -23,19 +23,7 @@ import {
   type ForecastMember,
   type GroupOdds,
 } from './odds';
-import {
-  Button,
-  Field,
-  Loading,
-  messageOf,
-  Notice,
-  Placeholder,
-  useApp,
-  useReveal,
-  weekLabel,
-} from './ui';
-import { appUrl } from './urls';
-import { clearWelcomeJoin, isWelcomeJoin } from './welcome-join';
+import { Button, Loading, Notice, Placeholder, useApp, useReveal, weekLabel } from './ui';
 import './groups.css';
 
 type GroupData = ReturnType<typeof useGroups>;
@@ -329,337 +317,6 @@ function RightNow({
   );
 }
 
-function GroupForm({
-  data,
-  initialCode = '',
-  onDone,
-}: {
-  data: GroupData;
-  initialCode?: string;
-  onDone?: () => void;
-}) {
-  const [mode, setMode] = useState<'create' | 'join'>(initialCode ? 'join' : 'create');
-  const [name, setName] = useState('');
-  const [code, setCode] = useState(initialCode);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const [done, setDone] = useState('');
-  // Someone who chose “Save and join” in the welcome dialog joins without a second tap.
-  const autoJoin = useRef(Boolean(initialCode) && isWelcomeJoin(initialCode));
-  useEffect(() => {
-    if (!autoJoin.current || data.status !== 'ready') return;
-    autoJoin.current = false;
-    clearWelcomeJoin();
-    void submit();
-  });
-  async function submit() {
-    setBusy(true);
-    setError('');
-    setDone('');
-    try {
-      const group =
-        mode === 'create' ? await data.create(name.trim()) : await data.join(code.trim());
-      const groupName = group.name;
-      setDone(mode === 'create' ? t`Created ${groupName}.` : t`Joined ${groupName}.`);
-      setName('');
-      setCode('');
-      onDone?.();
-    } catch (error) {
-      setError(messageOf(error));
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <div className="group-form-wrap">
-      <div className="segmented-control" aria-label={t`Group action`}>
-        <button
-          type="button"
-          aria-pressed={mode === 'create'}
-          onClick={() => {
-            setMode('create');
-            setError('');
-          }}
-        >
-          <Trans>Create a group</Trans>
-        </button>
-        <button
-          type="button"
-          aria-pressed={mode === 'join'}
-          onClick={() => {
-            setMode('join');
-            setError('');
-          }}
-        >
-          <Trans>Join a group</Trans>
-        </button>
-      </div>
-      <form
-        className="group-entry-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void submit();
-        }}
-      >
-        {mode === 'create' ? (
-          <Field
-            label={t`Group name`}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder={t({ message: 'Sunday turnip crew', comment: 'An example group name' })}
-            maxLength={60}
-            required
-            autoComplete="off"
-          />
-        ) : (
-          <Field
-            label={t`Group code`}
-            value={code}
-            onChange={(event) => setCode(event.target.value.toUpperCase())}
-            placeholder={t`Paste a group code`}
-            maxLength={24}
-            required
-            autoComplete="off"
-            autoCapitalize="characters"
-            spellCheck={false}
-          />
-        )}
-        <Button
-          type="submit"
-          busy={busy}
-          disabled={
-            data.status === 'offline' ||
-            data.status === 'loading' ||
-            (mode === 'create' ? !name.trim() : !code.trim())
-          }
-        >
-          {mode === 'create' ? <Plus size={16} /> : <Users size={16} />}
-          {mode === 'create' ? t`Create group` : t`Join group`}
-        </Button>
-      </form>
-      <p className="hint">
-        <Trans>
-          Up to 12 players. Members can see each other’s name, friend code, weekly prices and
-          history.
-        </Trans>
-      </p>
-      {error && <Notice>{error}</Notice>}
-      {done && <Notice success>{done}</Notice>}
-    </div>
-  );
-}
-
-/**
- * One seat per place in the group: members first (you, then by name), then open
- * seats that share the group link. Four to a row, three on the narrowest phones.
- */
-function GroupSeats({
-  group,
-  players,
-  owner,
-  onInvite,
-}: {
-  group: GroupSummary;
-  players: SharedPlayerWeek[];
-  owner: string;
-  onInvite: () => void;
-}) {
-  const members = players
-    .filter((member) => member.groupIds.includes(group.id))
-    .sort(
-      (left, right) =>
-        Number(right.player.id === owner) - Number(left.player.id === owner) ||
-        left.player.displayName.localeCompare(right.player.displayName),
-    );
-  const open = Math.max(0, group.capacity - Math.max(group.memberCount, members.length));
-  const groupName = group.name;
-  return (
-    <ul className="group-seats" aria-label={t`${groupName} players`}>
-      {members.map((member) => {
-        const self = member.player.id === owner;
-        const name = member.player.displayName;
-        return (
-          <li key={member.player.id} className={self ? 'group-seat-self' : undefined}>
-            <Link to={weekLink(member, owner)} aria-label={self ? t`Your week` : t`${name}’s week`}>
-              <PlayerAvatar name={name} />
-              <span className="group-seat-name">{self ? t`You` : name}</span>
-            </Link>
-          </li>
-        );
-      })}
-      {Array.from({ length: open }, (_, index) => (
-        <li key={`open-${index}`} className="group-seat-open">
-          <button type="button" onClick={onInvite} aria-label={t`Invite a player to ${groupName}`}>
-            <span className="group-seat-invite">
-              <Plus size={18} aria-hidden="true" />
-            </span>
-            <span className="group-seat-name">
-              <Trans>Invite</Trans>
-            </span>
-          </button>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function GroupDetails({
-  group,
-  data,
-  owner,
-}: {
-  group: GroupSummary;
-  data: GroupData;
-  owner: string;
-}) {
-  const [message, setMessage] = useState('');
-  const [fallbackLink, setFallbackLink] = useState('');
-  const [leaving, setLeaving] = useState(false);
-  const [confirmLeave, setConfirmLeave] = useState(false);
-  const groupName = group.name;
-  const members = group.memberCount;
-  const capacity = group.capacity;
-  async function share() {
-    const url = appUrl(`/groups/join?code=${encodeURIComponent(group.code)}`);
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: group.name,
-          text: t`Join ${groupName} on Turnip Tycoon`,
-          url,
-        });
-        return;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      setMessage(t`Group link copied.`);
-      setFallbackLink('');
-    } catch {
-      setFallbackLink(url);
-      setMessage(t`Copy this group link to share it.`);
-    }
-  }
-  async function copyCode() {
-    try {
-      await navigator.clipboard.writeText(group.code);
-      setMessage(t`Group code copied.`);
-    } catch {
-      setMessage(t`Select and copy the group code above.`);
-    }
-  }
-  async function leave() {
-    setLeaving(true);
-    setMessage('');
-    try {
-      await data.leave(group.id);
-    } catch (error) {
-      setMessage(messageOf(error));
-    } finally {
-      setLeaving(false);
-    }
-  }
-  return (
-    <section className="group-detail-card" aria-label={t`${groupName} details`}>
-      <div className="group-card-heading">
-        <div>
-          <h3>{group.name}</h3>
-          <p>
-            <Trans>
-              {members} of {capacity} players
-            </Trans>
-          </p>
-        </div>
-        <span className="group-badge">
-          <Users size={18} />
-        </span>
-      </div>
-      <GroupSeats
-        group={group}
-        players={data.players}
-        owner={owner}
-        onInvite={() => {
-          void share();
-        }}
-      />
-      <div className="group-code-line">
-        <span>
-          <Trans>Group code</Trans>
-        </span>
-        <code>{group.code}</code>
-        <button
-          className="icon-button"
-          type="button"
-          aria-label={t`Copy ${groupName} group code`}
-          onClick={() => {
-            void copyCode();
-          }}
-        >
-          <Copy size={15} />
-        </button>
-      </div>
-      <div className="group-card-actions">
-        <Button
-          secondary
-          onClick={() => {
-            void share();
-          }}
-          disabled={group.memberCount >= group.capacity}
-        >
-          <Share2 size={15} />
-          {group.memberCount >= group.capacity ? t`Group full` : t`Share group link`}
-        </Button>
-        <button
-          className="text-button muted"
-          type="button"
-          disabled={data.status === 'offline'}
-          onClick={() => setConfirmLeave(true)}
-        >
-          <Trans>Leave group</Trans>
-        </button>
-      </div>
-      {confirmLeave && (
-        <div className="leave-confirmation">
-          <p>
-            <Trans>
-              Leave {groupName}? You’ll stop sharing with players unless you share another group.
-            </Trans>
-          </p>
-          <div>
-            <Button secondary onClick={() => setConfirmLeave(false)}>
-              <Trans>Stay</Trans>
-            </Button>
-            <Button
-              busy={leaving}
-              onClick={() => {
-                void leave();
-              }}
-            >
-              <Trans>Leave group</Trans>
-            </Button>
-          </div>
-        </div>
-      )}
-      {message && (
-        <p className="hint" role="status">
-          {message}
-        </p>
-      )}
-      {fallbackLink && (
-        <input
-          aria-label={t`Group share link`}
-          className="share-fallback"
-          readOnly
-          value={fallbackLink}
-          onFocus={(event) => event.target.select()}
-        />
-      )}
-    </section>
-  );
-}
-
 function ConnectionMessage({ data }: { data: GroupData }) {
   const identity = useApp();
   if (data.status === 'offline' && !data.players.length)
@@ -718,7 +375,7 @@ function FriendsPostcardLoading() {
 
 function IslandBoardLoading() {
   return (
-    <Loading label={t`Loading your friends…`} className="friends-comparison">
+    <Loading label={t`Loading your friends…`} className="friends-comparison friends-board">
       <div className="friends-toolbar">
         <div className="group-filters">
           <Placeholder className="placeholder-control" width={120} />
@@ -915,9 +572,9 @@ export function FriendsPanel({ weekStart, week }: { weekStart: string; week?: We
 export function Groups() {
   const identity = useApp();
   const [params, setParams] = useSearchParams();
-  const linkCode = params.get('code') ?? '';
+  const groupCode = params.get('code') ?? '';
   const inviteCode = params.get('invite') ?? '';
-  const [inviteDone, setInviteDone] = useState('');
+  const [notice, setNotice] = useState('');
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
@@ -930,26 +587,45 @@ export function Groups() {
   const data = useGroups(weekStart, identity.session, identity.status);
   const [selectedGroup, setSelectedGroup] = useState(groupId ?? 'all');
   useEffect(() => setSelectedGroup(groupId ?? 'all'), [groupId]);
-  const [showForm, setShowForm] = useState(false);
   const [view, setView] = useState<'now' | 'week'>('now');
   const owner = identity.session?.player.id ?? '';
   // The board's copy can be a minute old; your own prices come from this device.
   const own = useWeek(weekStart, identity.session, identity.status === 'ready');
   const shared = withOwnWeek(data.players, owner, own.stored ? own.week : null);
-  const existingSelection = data.groups.some((group) => group.id === selectedGroup)
-    ? selectedGroup
-    : 'all';
+  const friendIds = new Set(data.friendIds);
+  const existingSelection =
+    (selectedGroup === 'friends' && friendIds.size > 0) ||
+    data.groups.some((group) => group.id === selectedGroup)
+      ? selectedGroup
+      : 'all';
+  // Your own island stays on the board whichever players are shown.
   const players =
     existingSelection === 'all'
       ? shared
-      : shared.filter((member) => member.groupIds.includes(existingSelection));
-  const hasGroups = data.groups.length > 0;
+      : existingSelection === 'friends'
+        ? shared.filter((member) => member.player.id === owner || friendIds.has(member.player.id))
+        : shared.filter((member) => member.groupIds.includes(existingSelection));
+  const others = (list: SharedPlayerWeek[]) =>
+    list.filter((member) => member.player.id !== owner).length;
   // Friends added by code fill the board too, with or without a group.
-  const sharing = hasGroups || data.friendIds.length > 0;
+  const sharing = data.groups.length > 0 || friendIds.size > 0;
   const loading = data.status === 'loading' && !sharing;
   const reveal = useReveal(loading);
-  const formOpen = linkCode || showForm || (!sharing && !inviteCode && data.status === 'ready');
   const friendCode = identity.session?.player.friendCode;
+  function closeLink(link: 'code' | 'invite', done?: string) {
+    if (done) setNotice(done);
+    const next = new URLSearchParams(params);
+    next.delete(link);
+    setParams(next, { replace: true });
+  }
+  /** On phones the invite card sits below the board; this brings it up. */
+  function showInvite() {
+    const card = document.getElementById('invite-friends');
+    if (!card) return;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+    card.querySelector<HTMLButtonElement>('.people-share .button')?.focus({ preventScroll: true });
+  }
   return (
     <main className="page groups-page" id="main-content">
       <div className="page-heading">
@@ -959,78 +635,50 @@ export function Groups() {
           </h1>
           <p>{weekLabel(weekStart)}</p>
         </div>
-        {sharing && (
-          <Button secondary onClick={() => setShowForm(!showForm)}>
-            {showForm ? <X size={16} /> : <Plus size={16} />}
-            {showForm ? t`Close` : t`Create or join group`}
+        {friendCode && (
+          <Button secondary className="people-jump" onClick={showInvite}>
+            <UserPlus size={16} aria-hidden="true" />
+            <Trans>Invite</Trans>
           </Button>
         )}
       </div>
       <ConnectionMessage data={data} />
-      {inviteCode && (
-        <FriendInvite
-          key={inviteCode}
-          code={inviteCode}
+      {notice && <Notice success>{notice}</Notice>}
+      <div className={`friends-layout${sharing || loading ? '' : ' friends-layout-solo'}`}>
+        <WaitingForYou
+          className="friends-waiting"
           data={data}
           owner={owner}
-          onClose={(done) => {
-            setInviteDone(done ?? '');
-            setParams({}, { replace: true });
-          }}
+          groupCode={groupCode}
+          inviteCode={inviteCode}
+          onClose={closeLink}
+          onDone={setNotice}
         />
-      )}
-      {inviteDone && <Notice success>{inviteDone}</Notice>}
-      <FriendRequests data={data} />
-      {formOpen && (
-        <section className="group-create-card">
-          <div className="section-heading">
-            <div>
-              <span className="section-eyebrow">
-                <Trans>Friends &amp; groups</Trans>
-              </span>
-              <h2>
-                {linkCode
-                  ? t`Join your friends`
-                  : hasGroups
-                    ? t`Room for another group?`
-                    : t`Bring your friends along`}
-              </h2>
-            </div>
-            <span className="group-badge">
-              <Users size={22} aria-hidden="true" />
-            </span>
-          </div>
-          <p className="muted">
-            <Trans>Compare your prices and find a good time to sell, together.</Trans>
-          </p>
-          <GroupForm
-            key={linkCode || 'group-form'}
-            data={data}
-            initialCode={linkCode}
-            onDone={() => {
-              setShowForm(false);
-              setParams({});
-            }}
-          />
-        </section>
-      )}
-      {loading && <IslandBoardLoading />}
-      {sharing && (
-        <>
+        {loading && <IslandBoardLoading />}
+        {sharing && (
           <section
-            className={`friends-comparison ${reveal}`}
+            className={`friends-comparison friends-board ${reveal}`}
             aria-label={t`Friends’ prices this week`}
           >
             <div className="friends-toolbar">
-              <div className="group-filters" role="group" aria-label={t`Show group`}>
+              <div className="group-filters" role="group" aria-label={t`Show players`}>
                 <button
                   type="button"
                   aria-pressed={existingSelection === 'all'}
                   onClick={() => setSelectedGroup('all')}
                 >
-                  <Trans>All friends</Trans>{' '}
-                  <span>{data.players.filter((member) => member.player.id !== owner).length}</span>
+                  <Trans comment="Filter chip: everyone sharing prices with you">All</Trans>{' '}
+                  <span>{others(shared)}</span>
                 </button>
+                {friendIds.size > 0 && (
+                  <button
+                    type="button"
+                    aria-pressed={existingSelection === 'friends'}
+                    onClick={() => setSelectedGroup('friends')}
+                  >
+                    <Trans>Friends</Trans> <span>{friendIds.size}</span>
+                  </button>
+                )}
                 {data.groups.map((group) => (
                   <button
                     key={group.id}
@@ -1038,7 +686,10 @@ export function Groups() {
                     aria-pressed={existingSelection === group.id}
                     onClick={() => setSelectedGroup(group.id)}
                   >
-                    {group.name}
+                    {group.name}{' '}
+                    <span>
+                      {others(shared.filter((member) => member.groupIds.includes(group.id)))}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -1087,23 +738,16 @@ export function Groups() {
               <GroupPriceTable players={players} owner={owner} currentSlot={currentSlot(now)} />
             )}
           </section>
-          {hasGroups && (
-            <section className={`your-groups ${reveal}`} aria-labelledby="your-groups-title">
-              <div className="section-heading">
-                <h2 id="your-groups-title">
-                  <Trans>Your groups</Trans>
-                </h2>
-              </div>
-              <div className="group-card-grid">
-                {data.groups.map((group) => (
-                  <GroupDetails key={group.id} group={group} data={data} owner={owner} />
-                ))}
-              </div>
-            </section>
-          )}
-        </>
-      )}
-      {friendCode && <YourFriends data={data} friendCode={friendCode} />}
+        )}
+        {friendCode && (
+          <YourPeople
+            className={`friends-people ${reveal}`}
+            data={data}
+            owner={owner}
+            friendCode={friendCode}
+          />
+        )}
+      </div>
     </main>
   );
 }
