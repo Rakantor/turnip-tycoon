@@ -826,13 +826,14 @@ msgstr "Could not update the app."
 msgid "Couldn’t sync"
 msgstr "Couldn’t sync"
 
+#. Button: create a group
+#: src/client/people.tsx
+msgid "Create"
+msgstr "Create"
+
 #: src/client/settings.tsx
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
-
-#: src/client/people.tsx
-msgid "Create group"
-msgstr "Create group"
 
 #: src/client/settings.tsx
 msgid "Create recovery code"
@@ -1629,6 +1630,15 @@ msgstr "Open this request from the app."
 msgid "Open your week"
 msgstr "Open your week"
 
+#: src/client/people.tsx
+msgid "Options for {name}"
+msgstr "Options for {name}"
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+msgid "or"
+msgstr "or"
+
 #: src/client/pairing.tsx
 msgid "Or scan this code on your connected device."
 msgstr "Or scan this code on your connected device."
@@ -1786,13 +1796,10 @@ msgid "Recovery code"
 msgstr "Recovery code"
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 msgid "Remove"
 msgstr "Remove"
-
-#: src/client/people.tsx
-msgid "Remove {name}"
-msgstr "Remove {name}"
 
 #: src/client/people.tsx
 msgid "Remove {name} from your friends? You’ll stop sharing prices unless you share a group."
@@ -1988,10 +1995,6 @@ msgstr "Send a JSON request body."
 msgid "Send a JSON request."
 msgstr "Send a JSON request."
 
-#: src/client/people.tsx
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr "Send a link. One tap and you’re friends, no code to type."
-
 #: src/client/data/server-messages.ts
 msgid "Send valid JSON."
 msgstr "Send valid JSON."
@@ -2032,6 +2035,10 @@ msgstr "Shared view · read only"
 #: src/client/groups.tsx
 msgid "Show players"
 msgstr "Show players"
+
+#: src/client/people.tsx
+msgid "Show profile"
+msgstr "Show profile"
 
 #: src/client/settings.tsx
 msgid "Show Turnip Tycoon in"

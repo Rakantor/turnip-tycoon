@@ -1019,15 +1019,16 @@ msgstr "Impossibile aggiornare l’app."
 msgid "Couldn’t sync"
 msgstr "Sincronizzazione non riuscita"
 
+#. Button: create a group
+#: src/client/people.tsx
+#, fuzzy
+msgid "Create"
+msgstr "Crea"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "Crea un codice per recuperare i tuoi prezzi se perdi l’accesso a questo dispositivo. Conservalo in un posto privato."
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Create group"
-msgstr "Crea gruppo"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2018,6 +2019,17 @@ msgstr "Apri questa richiesta dall’app."
 msgid "Open your week"
 msgstr "Apri la tua settimana"
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Options for {name}"
+msgstr "Opzioni per {name}"
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+#, fuzzy
+msgid "or"
+msgstr "oppure"
+
 #: src/client/pairing.tsx
 #, fuzzy
 msgid "Or scan this code on your connected device."
@@ -2212,15 +2224,11 @@ msgid "Recovery code"
 msgstr "Codice di recupero"
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "Rimuovi"
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Remove {name}"
-msgstr "Rimuovi {name}"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2463,11 +2471,6 @@ msgstr "Invia il corpo della richiesta in JSON."
 msgid "Send a JSON request."
 msgstr "Invia una richiesta JSON."
 
-#: src/client/people.tsx
-#, fuzzy
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr "Invia un link. Basta un tocco per diventare amici, senza codici da digitare."
-
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
@@ -2518,6 +2521,11 @@ msgstr "Vista condivisa · sola lettura"
 #, fuzzy
 msgid "Show players"
 msgstr "Scegli chi mostrare"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Show profile"
+msgstr "Vedi profilo"
 
 #: src/client/settings.tsx
 #, fuzzy

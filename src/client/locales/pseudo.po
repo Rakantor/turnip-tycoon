@@ -826,12 +826,13 @@ msgstr ""
 msgid "Couldn’t sync"
 msgstr ""
 
-#: src/client/settings.tsx
-msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
+#. Button: create a group
+#: src/client/people.tsx
+msgid "Create"
 msgstr ""
 
-#: src/client/people.tsx
-msgid "Create group"
+#: src/client/settings.tsx
+msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr ""
 
 #: src/client/settings.tsx
@@ -1629,6 +1630,15 @@ msgstr ""
 msgid "Open your week"
 msgstr ""
 
+#: src/client/people.tsx
+msgid "Options for {name}"
+msgstr ""
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+msgid "or"
+msgstr ""
+
 #: src/client/pairing.tsx
 msgid "Or scan this code on your connected device."
 msgstr ""
@@ -1786,12 +1796,9 @@ msgid "Recovery code"
 msgstr ""
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 msgid "Remove"
-msgstr ""
-
-#: src/client/people.tsx
-msgid "Remove {name}"
 msgstr ""
 
 #: src/client/people.tsx
@@ -1988,10 +1995,6 @@ msgstr ""
 msgid "Send a JSON request."
 msgstr ""
 
-#: src/client/people.tsx
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr ""
-
 #: src/client/data/server-messages.ts
 msgid "Send valid JSON."
 msgstr ""
@@ -2031,6 +2034,10 @@ msgstr ""
 
 #: src/client/groups.tsx
 msgid "Show players"
+msgstr ""
+
+#: src/client/people.tsx
+msgid "Show profile"
 msgstr ""
 
 #: src/client/settings.tsx

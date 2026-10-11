@@ -1019,15 +1019,16 @@ msgstr "Die App konnte nicht aktualisiert werden."
 msgid "Couldn’t sync"
 msgstr "Synchronisierung fehlgeschlagen"
 
+#. Button: create a group
+#: src/client/people.tsx
+#, fuzzy
+msgid "Create"
+msgstr "Erstellen"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "Erstelle einen Code, mit dem du deine Preise zurückbekommst, falls du keinen Zugriff mehr auf dieses Gerät hast. Bewahre ihn privat auf."
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Create group"
-msgstr "Gruppe erstellen"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2018,6 +2019,17 @@ msgstr "Öffne diese Anfrage aus der App."
 msgid "Open your week"
 msgstr "Deine Woche öffnen"
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Options for {name}"
+msgstr "Optionen für {name}"
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+#, fuzzy
+msgid "or"
+msgstr "oder"
+
 #: src/client/pairing.tsx
 #, fuzzy
 msgid "Or scan this code on your connected device."
@@ -2212,15 +2224,11 @@ msgid "Recovery code"
 msgstr "Wiederherstellungscode"
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "Entfernen"
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Remove {name}"
-msgstr "{name} entfernen"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2463,11 +2471,6 @@ msgstr "Sende einen JSON-Anfragetext."
 msgid "Send a JSON request."
 msgstr "Sende eine JSON-Anfrage."
 
-#: src/client/people.tsx
-#, fuzzy
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr "Schick einen Link. Ein Tipp, und ihr seid befreundet – ganz ohne Code."
-
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
@@ -2518,6 +2521,11 @@ msgstr "Geteilte Ansicht · nur lesen"
 #, fuzzy
 msgid "Show players"
 msgstr "Personen anzeigen"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Show profile"
+msgstr "Profil anzeigen"
 
 #: src/client/settings.tsx
 #, fuzzy

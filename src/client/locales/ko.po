@@ -1019,15 +1019,16 @@ msgstr "앱을 업데이트할 수 없어요."
 msgid "Couldn’t sync"
 msgstr "동기화 실패"
 
+#. Button: create a group
+#: src/client/people.tsx
+#, fuzzy
+msgid "Create"
+msgstr "만들기"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "이 기기에 접근할 수 없게 되었을 때 가격을 되찾을 수 있는 코드를 만드세요. 다른 사람이 볼 수 없는 곳에 보관하세요."
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Create group"
-msgstr "그룹 만들기"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2018,6 +2019,17 @@ msgstr "앱에서 이 요청을 여세요."
 msgid "Open your week"
 msgstr "내 한 주 열기"
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Options for {name}"
+msgstr "{name} 옵션"
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+#, fuzzy
+msgid "or"
+msgstr "또는"
+
 #: src/client/pairing.tsx
 #, fuzzy
 msgid "Or scan this code on your connected device."
@@ -2212,15 +2224,11 @@ msgid "Recovery code"
 msgstr "복구 코드"
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "삭제"
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Remove {name}"
-msgstr "{name} 삭제"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2463,11 +2471,6 @@ msgstr "JSON 요청 본문을 보내세요."
 msgid "Send a JSON request."
 msgstr "JSON 요청을 보내세요."
 
-#: src/client/people.tsx
-#, fuzzy
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr "링크를 보내 보세요. 한 번만 탭하면 친구가 되고, 코드를 입력할 필요가 없어요."
-
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
@@ -2518,6 +2521,11 @@ msgstr "공유 화면 · 읽기 전용"
 #, fuzzy
 msgid "Show players"
 msgstr "표시할 플레이어"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Show profile"
+msgstr "프로필 보기"
 
 #: src/client/settings.tsx
 #, fuzzy

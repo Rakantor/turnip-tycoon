@@ -367,10 +367,12 @@
   padding: 0;
   list-style: none;
 }
+/* Two side by side match heights, even when a name or forecast wraps. */
 .friend-row {
   display: flex;
   align-items: center;
   gap: 12px;
+  height: 100%;
   min-height: 72px;
   padding: 10px 16px 10px 12px;
   border-radius: 22px;
@@ -495,14 +497,6 @@
   font-weight: 600;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-.friend-period {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: right;
 }
 /* Seats: a group’s players and a seat to invite more, four to a row (three on the narrowest phones). */
 .group-seats {

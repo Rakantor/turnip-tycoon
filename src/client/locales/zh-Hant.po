@@ -1019,15 +1019,16 @@ msgstr "無法更新App。"
 msgid "Couldn’t sync"
 msgstr "同步失敗"
 
+#. Button: create a group
+#: src/client/people.tsx
+#, fuzzy
+msgid "Create"
+msgstr "建立"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "Create a code to get your prices back if you lose access to this device. Keep it somewhere private."
 msgstr "建立一組代碼，以便在無法使用這台裝置時找回你的價格。請妥善保管。"
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Create group"
-msgstr "建立群組"
 
 #: src/client/settings.tsx
 #, fuzzy
@@ -2018,6 +2019,17 @@ msgstr "請從App開啟這個要求。"
 msgid "Open your week"
 msgstr "開啟你的一週"
 
+#: src/client/people.tsx
+#, fuzzy
+msgid "Options for {name}"
+msgstr "{name}的選項"
+
+#. Between adding friends and starting a new group
+#: src/client/people.tsx
+#, fuzzy
+msgid "or"
+msgstr "或"
+
 #: src/client/pairing.tsx
 #, fuzzy
 msgid "Or scan this code on your connected device."
@@ -2212,15 +2224,11 @@ msgid "Recovery code"
 msgstr "復原代碼"
 
 #. Button: remove a friend
+#. Menu item: remove a friend
 #: src/client/people.tsx
 #, fuzzy
 msgid "Remove"
 msgstr "移除"
-
-#: src/client/people.tsx
-#, fuzzy
-msgid "Remove {name}"
-msgstr "移除{name}"
 
 #: src/client/people.tsx
 #, fuzzy
@@ -2463,11 +2471,6 @@ msgstr "請傳送JSON要求內文。"
 msgid "Send a JSON request."
 msgstr "請傳送JSON要求。"
 
-#: src/client/people.tsx
-#, fuzzy
-msgid "Send a link. One tap and you’re friends, no code to type."
-msgstr "傳送連結，對方點一下就能成為好友，不必輸入代碼。"
-
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Send valid JSON."
@@ -2518,6 +2521,11 @@ msgstr "分享檢視 · 唯讀"
 #, fuzzy
 msgid "Show players"
 msgstr "顯示哪些玩家"
+
+#: src/client/people.tsx
+#, fuzzy
+msgid "Show profile"
+msgstr "查看個人檔案"
 
 #: src/client/settings.tsx
 #, fuzzy

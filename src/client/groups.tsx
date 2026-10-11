@@ -300,10 +300,15 @@ function RightNow({
                       prediction={member.prediction}
                       scale={scale}
                     />
+                    {/* The heading above names the time of day, so each price stands alone. */}
                     <span className="friend-price">
-                      <span className="reported-price">{price ?? '—'}</span>
-                      <span className="friend-period">
-                        {price === null ? t`Not entered` : periodLabel}
+                      <span className="reported-price">
+                        {price ?? (
+                          <>
+                            <span aria-hidden="true">—</span>
+                            <span className="sr-only">{t`Not entered`}</span>
+                          </>
+                        )}
                       </span>
                     </span>
                   </Link>

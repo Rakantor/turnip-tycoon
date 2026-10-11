@@ -1,6 +1,25 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { Link } from 'react-router';
-import { Check, ChevronDown, Copy, Ellipsis, Plus, Share2, Users } from 'lucide-react';
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  Ellipsis,
+  Plus,
+  Share2,
+  UserMinus,
+  UserRound,
+  Users,
+  X,
+} from 'lucide-react';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import type {
@@ -61,6 +80,94 @@ function usePreview<T>(path: string): [Preview<T>, () => void] {
   }, [path, attempt]);
   const current = state?.path === path && state.attempt === attempt ? state.result : null;
   return [current ?? { status: 'loading' }, () => setAttempt((value) => value + 1)];
+}
+
+/** When something that took focus closes, focus goes back to `selector` inside `scope`. */
+function useFocusOnClose(open: boolean, scope: RefObject<HTMLElement | null>, selector: string) {
+  const wasOpen = useRef(open);
+  useEffect(() => {
+    if (wasOpen.current && !open) scope.current?.querySelector<HTMLElement>(selector)?.focus();
+    wasOpen.current = open;
+  }, [open, scope, selector]);
+}
+
+/** Room a two-item menu needs below its button before it opens upwards instead. */
+const MENU_ROOM = 140;
+
+/** A ⋯ button with a short menu. Arrow keys move, Escape or a tap elsewhere closes it. */
+function RowMenu({ label, children }: { label: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const [up, setUp] = useState(false);
+  const id = useId();
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const items = () =>
+    Array.from(
+      root.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? [],
+    );
+  useEffect(() => {
+    if (!open) return;
+    items()[0]?.focus();
+    const outside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', outside);
+    return () => document.removeEventListener('pointerdown', outside);
+  }, [open]);
+  function toggle() {
+    if (!open && trigger.current) {
+      // The tab bar on phones covers the bottom of the page.
+      const floor = window.innerHeight - parseFloat(getComputedStyle(document.body).paddingBottom);
+      const button = trigger.current.getBoundingClientRect();
+      setUp(floor - button.bottom < MENU_ROOM && button.top > MENU_ROOM);
+    }
+    setOpen(!open);
+  }
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const list = items();
+    const index = list.indexOf(document.activeElement as HTMLElement);
+    const move = (to: number) => {
+      event.preventDefault();
+      list[(to + list.length) % list.length]?.focus();
+    };
+    if (event.key === 'ArrowDown') move(index + 1);
+    else if (event.key === 'ArrowUp') move(index - 1);
+    else if (event.key === 'Home') move(0);
+    else if (event.key === 'End') move(list.length - 1);
+    else if (event.key === 'Escape') {
+      event.preventDefault();
+      setOpen(false);
+      trigger.current?.focus();
+    } else if (event.key === 'Tab') setOpen(false);
+  }
+  return (
+    <div className="row-menu" ref={root}>
+      <button
+        ref={trigger}
+        className="icon-button"
+        type="button"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-controls={open ? id : undefined}
+        onClick={toggle}
+      >
+        <Ellipsis size={18} aria-hidden="true" />
+      </button>
+      {open && (
+        <div
+          className={`row-menu-list${up ? ' row-menu-up' : ''}`}
+          id={id}
+          role="menu"
+          aria-label={label}
+          onKeyDown={onKeyDown}
+          onClick={() => setOpen(false)}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function WaitingItem({
@@ -150,14 +257,14 @@ function GroupLink({
               : t`${groupName} is full right now.`
         }
       >
+        <Button secondary onClick={() => onClose()}>
+          <Trans>Close</Trans>
+        </Button>
         {state.status === 'error' && state.retry && (
           <Button onClick={retry}>
             <Trans>Try again</Trans>
           </Button>
         )}
-        <Button secondary onClick={() => onClose()}>
-          <Trans>Close</Trans>
-        </Button>
       </WaitingItem>
     );
   const members = preview.group.memberCount;
@@ -169,6 +276,9 @@ function GroupLink({
       detail={t`${members} of ${capacity} players`}
       error={error}
     >
+      <Button secondary disabled={busy} onClick={() => onClose()}>
+        <Trans>Not now</Trans>
+      </Button>
       <Button
         busy={busy}
         disabled={data.status !== 'ready'}
@@ -178,9 +288,6 @@ function GroupLink({
       >
         <Users size={16} aria-hidden="true" />
         <Trans>Join group</Trans>
-      </Button>
-      <Button secondary disabled={busy} onClick={() => onClose()}>
-        <Trans>Not now</Trans>
       </Button>
     </WaitingItem>
   );
@@ -239,14 +346,14 @@ function FriendLink({
               : t`You and ${name} are already friends.`
         }
       >
+        <Button secondary onClick={() => onClose()}>
+          <Trans>Close</Trans>
+        </Button>
         {state.status === 'error' && state.retry && (
           <Button onClick={retry}>
             <Trans>Try again</Trans>
           </Button>
         )}
-        <Button secondary onClick={() => onClose()}>
-          <Trans>Close</Trans>
-        </Button>
       </WaitingItem>
     );
   return (
@@ -256,6 +363,9 @@ function FriendLink({
       detail={t`Sent you a friend link`}
       error={error}
     >
+      <Button secondary disabled={busy} onClick={() => onClose()}>
+        <Trans>Not now</Trans>
+      </Button>
       <Button
         busy={busy}
         disabled={data.status !== 'ready'}
@@ -265,9 +375,6 @@ function FriendLink({
       >
         <Check size={16} aria-hidden="true" />
         <Trans comment="Button: accept a friend request">Accept</Trans>
-      </Button>
-      <Button secondary disabled={busy} onClick={() => onClose()}>
-        <Trans>Not now</Trans>
       </Button>
     </WaitingItem>
   );
@@ -308,17 +415,6 @@ function ReceivedRequest({
       error={error}
     >
       <Button
-        busy={busy === 'accept'}
-        disabled={busy !== null || data.status !== 'ready'}
-        aria-label={t`Accept ${name}’s friend request`}
-        onClick={() => {
-          void answer(true);
-        }}
-      >
-        <Check size={16} aria-hidden="true" />
-        <Trans comment="Button: accept a friend request">Accept</Trans>
-      </Button>
-      <Button
         secondary
         busy={busy === 'decline'}
         disabled={busy !== null || data.status !== 'ready'}
@@ -328,6 +424,17 @@ function ReceivedRequest({
         }}
       >
         <Trans comment="Button: decline a friend request">Decline</Trans>
+      </Button>
+      <Button
+        busy={busy === 'accept'}
+        disabled={busy !== null || data.status !== 'ready'}
+        aria-label={t`Accept ${name}’s friend request`}
+        onClick={() => {
+          void answer(true);
+        }}
+      >
+        <Check size={16} aria-hidden="true" />
+        <Trans comment="Button: accept a friend request">Accept</Trans>
       </Button>
     </WaitingItem>
   );
@@ -476,7 +583,7 @@ function OwnCode({ code }: { code: string }) {
   }
   return (
     <div>
-      <div className="group-code-line people-own-code">
+      <div className="group-code-line people-code-box">
         <span>
           <Trans>Your friend code</Trans>
         </span>
@@ -507,6 +614,7 @@ function CodeForm({ data }: { data: GroupData }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState('');
+  const ready = data.status === 'ready' && code.trim() !== '';
   async function submit() {
     setBusy(true);
     setError('');
@@ -534,7 +642,7 @@ function CodeForm({ data }: { data: GroupData }) {
   return (
     <div className="people-code-wrap">
       <form
-        className="people-code"
+        className="people-field-row"
         onSubmit={(event) => {
           event.preventDefault();
           void submit();
@@ -551,12 +659,7 @@ function CodeForm({ data }: { data: GroupData }) {
           autoCapitalize="characters"
           spellCheck={false}
         />
-        <Button
-          type="submit"
-          secondary
-          busy={busy}
-          disabled={data.status !== 'ready' || !code.trim()}
-        >
+        <Button type="submit" secondary={!ready} busy={busy} disabled={!ready}>
           <Trans comment="Button: add a friend or group">Add</Trans>
         </Button>
       </form>
@@ -570,6 +673,7 @@ function NewGroup({ data, onClose }: { data: GroupData; onClose: (done?: string)
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const ready = data.status === 'ready' && name.trim() !== '';
   async function submit() {
     setBusy(true);
     setError('');
@@ -585,29 +689,40 @@ function NewGroup({ data, onClose }: { data: GroupData; onClose: (done?: string)
   return (
     <form
       className="people-new-group"
+      aria-labelledby="new-group-title"
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
       }}
     >
-      <Field
-        label={t`Group name`}
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-        placeholder={t({ message: 'Sunday turnip crew', comment: 'An example group name' })}
-        maxLength={60}
-        required
-        autoComplete="off"
-        autoFocus
-      />
-      <div className="people-actions">
-        <Button type="submit" busy={busy} disabled={data.status !== 'ready' || !name.trim()}>
-          <Plus size={16} aria-hidden="true" />
-          <Trans>Create group</Trans>
-        </Button>
-        <button className="text-button muted" type="button" onClick={() => onClose()}>
-          <Trans>Cancel</Trans>
+      <div className="people-new-group-heading">
+        <h4 id="new-group-title">
+          <Trans>Start a new group</Trans>
+        </h4>
+        <button
+          className="icon-button"
+          type="button"
+          aria-label={t`Cancel`}
+          disabled={busy}
+          onClick={() => onClose()}
+        >
+          <X size={18} aria-hidden="true" />
         </button>
+      </div>
+      <div className="people-field-row">
+        <Field
+          label={t`Group name`}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder={t({ message: 'Sunday turnip crew', comment: 'An example group name' })}
+          maxLength={60}
+          required
+          autoComplete="off"
+          autoFocus
+        />
+        <Button type="submit" secondary={!ready} busy={busy} disabled={!ready}>
+          <Trans comment="Button: create a group">Create</Trans>
+        </Button>
       </div>
       <p className="hint">
         <Trans>
@@ -620,12 +735,15 @@ function NewGroup({ data, onClose }: { data: GroupData; onClose: (done?: string)
   );
 }
 
-/** Ways to bring people in: a friend link first, then your code, any code, or a new group. */
+/** Ways to bring people in: your code and a friend link, then any code, or a new group. */
 function InviteCard({ data, friendCode }: { data: GroupData; friendCode: string }) {
   const [creating, setCreating] = useState(false);
   const [done, setDone] = useState('');
+  const card = useRef<HTMLElement>(null);
+  useFocusOnClose(creating, card, '.people-start-group');
   return (
     <section
+      ref={card}
       className="people-card people-invite"
       id="invite-friends"
       aria-labelledby="invite-title"
@@ -633,12 +751,12 @@ function InviteCard({ data, friendCode }: { data: GroupData; friendCode: string 
       <h3 id="invite-title">
         <Trans>Invite a friend</Trans>
       </h3>
-      <p className="hint">
-        <Trans>Send a link. One tap and you’re friends, no code to type.</Trans>
-      </p>
-      <ShareLink data={data} />
       <OwnCode code={friendCode} />
+      <ShareLink data={data} />
       <CodeForm data={data} />
+      <div className="people-or">
+        <Trans comment="Between adding friends and starting a new group">or</Trans>
+      </div>
       {creating ? (
         <NewGroup
           data={data}
@@ -648,16 +766,17 @@ function InviteCard({ data, friendCode }: { data: GroupData; friendCode: string 
           }}
         />
       ) : (
-        <button
-          className="text-button people-start-group"
-          type="button"
+        <Button
+          secondary
+          className="people-start-group"
           onClick={() => {
             setDone('');
             setCreating(true);
           }}
         >
+          <Plus size={16} aria-hidden="true" />
           <Trans>Start a new group</Trans>
-        </button>
+        </Button>
       )}
       {done && <Notice success>{done}</Notice>}
     </section>
@@ -696,6 +815,8 @@ function GroupPanel({
   const [fallbackLink, setFallbackLink] = useState('');
   const [leaving, setLeaving] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
+  const panel = useRef<HTMLDivElement>(null);
+  useFocusOnClose(confirmLeave, panel, '.people-leave');
   const groupName = group.name;
   const seated = seatsOf(data, group, owner);
   const full = group.memberCount >= group.capacity;
@@ -741,7 +862,7 @@ function GroupPanel({
     }
   }
   return (
-    <div className="people-panel" id={id}>
+    <div className="people-panel" id={id} ref={panel}>
       <ul className="group-seats" aria-label={t`${groupName} players`}>
         {seated.map((member) => {
           const self = member.player.id === owner;
@@ -777,7 +898,7 @@ function GroupPanel({
           </li>
         )}
       </ul>
-      <div className="group-code-line">
+      <div className="group-code-line people-code-box">
         <span>
           <Trans>Group code</Trans>
         </span>
@@ -793,35 +914,35 @@ function GroupPanel({
           <Copy size={15} />
         </button>
       </div>
-      <div className="people-actions">
-        <Button
-          secondary
-          disabled={full}
-          onClick={() => {
-            void share();
-          }}
-        >
-          <Share2 size={15} aria-hidden="true" />
-          {full ? t`Group full` : t`Share group link`}
-        </Button>
+      <Button
+        secondary={full}
+        disabled={full}
+        onClick={() => {
+          void share();
+        }}
+      >
+        <Share2 size={16} aria-hidden="true" />
+        {full ? t`Group full` : t`Share group link`}
+      </Button>
+      {!confirmLeave && (
         <button
-          className="text-button muted"
+          className="text-button muted people-leave"
           type="button"
           disabled={data.status === 'offline'}
           onClick={() => setConfirmLeave(true)}
         >
           <Trans>Leave group</Trans>
         </button>
-      </div>
+      )}
       {confirmLeave && (
-        <div className="leave-confirmation">
+        <div className="leave-confirmation people-confirm">
           <p>
             <Trans>
               Leave {groupName}? You’ll stop sharing with players unless you share another group.
             </Trans>
           </p>
           <div>
-            <Button secondary onClick={() => setConfirmLeave(false)}>
+            <Button secondary autoFocus onClick={() => setConfirmLeave(false)}>
               <Trans>Stay</Trans>
             </Button>
             <Button
@@ -895,8 +1016,11 @@ function FriendRow({ entry, data }: { entry: SharedPlayerWeek; data: GroupData }
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const row = useRef<HTMLLIElement>(null);
+  useFocusOnClose(confirm, row, '.row-menu > button');
   const { player } = entry;
   const name = player.displayName;
+  const profile = `/players/${player.id}/weeks/${entry.week.weekStart}`;
   async function remove() {
     setBusy(true);
     setError('');
@@ -908,28 +1032,32 @@ function FriendRow({ entry, data }: { entry: SharedPlayerWeek; data: GroupData }
     }
   }
   return (
-    <li>
+    <li ref={row}>
       <div className="people-row">
-        <Link
-          className="people-row-link"
-          to={`/players/${player.id}/weeks/${entry.week.weekStart}`}
-        >
+        <Link className="people-row-link" to={profile}>
           <PlayerAvatar name={name} />
           <span className="people-text">
             <strong>{name}</strong>
             <span className="friend-code">{player.friendCode}</span>
           </span>
         </Link>
-        <button
-          className="icon-button"
-          type="button"
-          aria-label={t`Remove ${name}`}
-          aria-expanded={confirm}
-          disabled={data.status === 'offline'}
-          onClick={() => setConfirm(!confirm)}
-        >
-          <Ellipsis size={18} aria-hidden="true" />
-        </button>
+        <RowMenu label={t`Options for ${name}`}>
+          <Link role="menuitem" tabIndex={-1} to={profile}>
+            <UserRound size={17} aria-hidden="true" />
+            <Trans>Show profile</Trans>
+          </Link>
+          <button
+            role="menuitem"
+            tabIndex={-1}
+            type="button"
+            className="row-menu-danger"
+            disabled={data.status === 'offline'}
+            onClick={() => setConfirm(true)}
+          >
+            <UserMinus size={17} aria-hidden="true" />
+            <Trans comment="Menu item: remove a friend">Remove</Trans>
+          </button>
+        </RowMenu>
       </div>
       {confirm && (
         <div className="leave-confirmation people-confirm">
@@ -939,7 +1067,7 @@ function FriendRow({ entry, data }: { entry: SharedPlayerWeek; data: GroupData }
             </Trans>
           </p>
           <div>
-            <Button secondary onClick={() => setConfirm(false)}>
+            <Button secondary autoFocus disabled={busy} onClick={() => setConfirm(false)}>
               <Trans comment="Button: keep a friend instead of removing them">Keep</Trans>
             </Button>
             <Button
@@ -987,17 +1115,18 @@ function SentRequest({ request, data }: { request: FriendRequest; data: GroupDat
             </Trans>
           </span>
         </span>
-        <button
-          className="text-button muted"
-          type="button"
+        <Button
+          secondary
+          className="people-row-button"
           aria-label={t`Cancel your friend request to ${name}`}
-          disabled={busy || data.status === 'offline'}
+          busy={busy}
+          disabled={data.status === 'offline'}
           onClick={() => {
             void cancel();
           }}
         >
           <Trans>Cancel</Trans>
-        </button>
+        </Button>
       </div>
       {error && <Notice>{error}</Notice>}
     </li>
