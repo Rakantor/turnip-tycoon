@@ -171,6 +171,11 @@ msgstr "還有{more}人"
 msgid "{name} disconnected."
 msgstr "已中斷{name}的連線。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "{name} wants to be your friend"
+msgstr "{name}邀請你成為好友"
+
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "{name}’s {price}"
@@ -307,6 +312,11 @@ msgstr "{verdict}你的最高價是{halfDay}的<0>{bestPrice}鈴錢</0>。"
 msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
 msgstr "<0>{groupName}</0>目前已滿。好友們要怎麼稱呼你？"
 
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{inviter}</0> wants to be your friend. What should they call you?"
+msgstr "<0>{inviter}</0>邀請你成為好友。對方要怎麼稱呼你？"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
@@ -368,6 +378,7 @@ msgid "A week holds at most 40 purchases and sales."
 msgstr "每週最多記錄40筆買入和賣出。"
 
 #. Button: accept a friend request
+#. Button: accept a friend request
 #: src/client/friends.tsx
 #, fuzzy
 msgid "Accept"
@@ -383,6 +394,11 @@ msgstr "接受{name}的好友邀請"
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr "在好友頁面接受後，就能比較彼此的價格和預測。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Accept to see each other’s prices and forecasts."
+msgstr "接受後就能互相查看價格和預測。"
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Add friends"
@@ -392,6 +408,11 @@ msgstr "新增好友"
 #, fuzzy
 msgid "Add friends or start a group to compare prices and forecasts."
 msgstr "新增好友或建立群組，比較價格和預測。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Add me as a friend on Turnip Tycoon"
+msgstr "在Turnip Tycoon上加我為好友吧"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -723,6 +744,11 @@ msgstr "請檢查填寫的內容。"
 msgid "Check this entry."
 msgstr "請檢查這個項目。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Checking this friend link…"
+msgstr "正在檢查好友連結…"
+
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Choose a valid device."
@@ -758,6 +784,7 @@ msgstr "選擇要保留的項目。在你選擇之前，你的項目都會保留
 msgid "Clear this device’s saved data"
 msgstr "清除這台裝置儲存的資料"
 
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/turnips.tsx
 #, fuzzy
@@ -884,6 +911,11 @@ msgstr "複製{groupName}的群組代碼"
 #, fuzzy
 msgid "Copy code"
 msgstr "複製代碼"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Copy this friend link to share it."
+msgstr "複製這個好友連結即可分享。"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1116,6 +1148,11 @@ msgstr "如果想保留資料，請先下載。這個動作無法復原。<0>備
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr "將你的個人檔案、所有儲存的價格和交易、群組成員資格以及裝置資訊下載為JSON檔案。這個瀏覽器中尚未傳送的修改會另外包含在內。請妥善保管檔案。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Each link adds one friend and works for 7 days."
+msgstr "每個連結可新增一位好友，7天內有效。"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Edit purchase"
@@ -1283,6 +1320,16 @@ msgstr "好友代碼"
 #, fuzzy
 msgid "Friend code copied."
 msgstr "已複製好友代碼。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link"
+msgstr "好友連結"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link copied."
+msgstr "已複製好友連結。"
 
 #: src/client/friends.tsx
 #, fuzzy
@@ -1912,6 +1959,11 @@ msgstr "未輸入"
 msgid "Not entered, no forecast available"
 msgstr "未輸入，尚無預測"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Not now"
+msgstr "以後再說"
+
 #: src/client/calculator.tsx
 #, fuzzy
 msgid "Not sure"
@@ -2037,6 +2089,11 @@ msgstr "高峰日尚未確定"
 #, fuzzy
 msgid "Permanently delete profile"
 msgstr "永久刪除個人檔案"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please share your friend link again."
+msgstr "請重新分享你的好友連結。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2315,6 +2372,11 @@ msgstr "儲存"
 
 #: src/client/welcome.tsx
 #, fuzzy
+msgid "Save and accept"
+msgstr "儲存並接受"
+
+#: src/client/welcome.tsx
+#, fuzzy
 msgid "Save and join"
 msgstr "儲存並加入"
 
@@ -2449,6 +2511,11 @@ msgstr "請傳送有效的JSON。"
 #, fuzzy
 msgid "Settings"
 msgstr "設定"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Share friend link"
+msgstr "分享好友連結"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2599,6 +2666,11 @@ msgstr "週日，向曹賣購買"
 #, fuzzy
 msgid "Terms"
 msgstr "條款"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "That link couldn’t be saved, so it won’t work. Share a new one."
+msgstr "這個連結未能儲存，因此無法使用。請分享新的連結。"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2773,6 +2845,11 @@ msgstr "這台裝置的名稱"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
+msgid "This friend link expired or was already used. Ask for a new one."
+msgstr "這個好友連結已過期或已被使用。請向對方索取新連結。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
 msgid "This friend request is no longer available."
 msgstr "這個好友邀請已失效。"
 
@@ -2800,6 +2877,12 @@ msgstr "這是你的島本週能達到的最高價。"
 #, fuzzy
 msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr "這是你自己的好友代碼。請輸入好友的代碼。"
+
+#: src/client/data/server-messages.ts
+#: src/client/friends.tsx
+#, fuzzy
+msgid "This is your own friend link. Share it with a friend instead."
+msgstr "這是你自己的好友連結。請分享給好友。"
 
 #: src/client/odds.ts
 #, fuzzy
@@ -2830,6 +2913,11 @@ msgstr "這組連線代碼已無法使用。"
 #, fuzzy
 msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
 msgstr "這會從App資料庫中永久刪除你的名字、好友代碼、價格歷史紀錄、買入、賣出和群組成員資格。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player can’t add more friends right now."
+msgstr "這位玩家目前無法再新增好友。"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -3017,6 +3105,7 @@ msgid "Trades"
 msgstr "交易"
 
 #: src/client/calculator.tsx
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -3246,6 +3335,11 @@ msgstr "你"
 #, fuzzy
 msgid "You"
 msgstr "你"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "You and {name} are already friends."
+msgstr "你和{name}已經是好友了。"
 
 #: src/client/friends.tsx
 #, fuzzy

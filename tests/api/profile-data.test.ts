@@ -44,6 +44,10 @@ describe('Profile download and deletion', () => {
     const request = await owner.request('POST', '/api/friends', { code: other.player.friendCode });
     expect(request.status).toBe(200);
     expect((await friend.request('PUT', `/api/friends/${profile.player.id}`)).status).toBe(200);
+    const inviteCode = 'FRJENDLJNKSHARE2';
+    expect((await owner.request('POST', '/api/friends/invites', { code: inviteCode })).status).toBe(
+      201,
+    );
     const solo = (
       (await (await owner.request('POST', '/api/groups', { name: 'Solo' })).json()) as {
         group: GroupSummary;
@@ -85,7 +89,7 @@ describe('Profile download and deletion', () => {
     expect(
       (await owner.request('POST', '/api/pairing/approve', { code: pendingCode.code })).status,
     ).toBe(200);
-    return { owner, friend, profile, other, group, solo, second, pending, mutation };
+    return { owner, friend, profile, other, group, solo, second, pending, mutation, inviteCode };
   }
 
   it('exports all owned data and private trades without credentials or other members’ data', async () => {
@@ -119,6 +123,9 @@ describe('Profile download and deletion', () => {
         ],
       }),
     ]);
+    expect(output.friendInvites).toEqual([
+      { id: expect.any(String), createdAt: expect.any(String), expiresAt: expect.any(String) },
+    ]);
     expect(JSON.stringify({ ...output, friends: [] })).not.toContain(f.other.player.id);
     const text = JSON.stringify(output);
     for (const forbidden of [
@@ -130,6 +137,7 @@ describe('Profile download and deletion', () => {
       'codeHash',
       'claimHash',
       f.group.code,
+      f.inviteCode,
     ])
       expect(text).not.toContain(forbidden);
   });
@@ -188,6 +196,7 @@ describe('Profile download and deletion', () => {
       { id: f.other.player.id },
     ]);
     expect((await client.query('select * from turnip_private.friend_links')).rows).toEqual([]);
+    expect((await client.query('select * from turnip_private.friend_invites')).rows).toEqual([]);
     expect((await client.query('select id from turnip_private.groups')).rows).toEqual([
       { id: f.group.id },
     ]);

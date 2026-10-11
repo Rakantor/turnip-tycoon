@@ -42,6 +42,16 @@ export const friendCodeInput = z
       .pipe(z.string().regex(/^[A-Z0-9]{12}$/)),
   })
   .strict();
+/** The code in a shared friend link, made up by the sharing app. */
+export const friendInviteInput = z
+  .object({
+    code: z
+      .string()
+      .max(40)
+      .transform(normalizeCode)
+      .pipe(z.string().regex(/^[A-HJ-NP-Z2-9]{16}$/)),
+  })
+  .strict();
 export const emptyInput = z.object({}).strict();
 export const deviceIdInput = z.string().uuid();
 

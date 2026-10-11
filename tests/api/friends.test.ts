@@ -1,10 +1,15 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
-import { FRIEND_LIMIT } from '../../src/server/friends';
+import { FRIEND_INVITE_DAYS, FRIEND_INVITE_LIMIT, FRIEND_LIMIT } from '../../src/server/friends';
 import type { SessionResponse } from '../../src/shared/api';
-import type { FriendResult, GroupsResponse, GroupSummary } from '../../src/shared/groups';
+import type {
+  FriendInvitePreview,
+  FriendResult,
+  GroupsResponse,
+  GroupSummary,
+} from '../../src/shared/groups';
 import type { WeekMutation } from '../../src/shared/week';
 import { createTestDatabase } from '../helpers/database';
 import { Browser, expectError, sessionCookie } from './browser';
@@ -76,6 +81,19 @@ describe('Friends added by friend code', () => {
     };
     expect((await owner.browser.request('PUT', `/api/weeks/${date}`, input)).status).toBe(200);
   }
+  const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const inviteCode = () =>
+    Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => ALPHABET[byte & 31]).join('');
+  async function share(from: Player): Promise<string> {
+    const code = inviteCode();
+    const response = await from.browser.request('POST', '/api/friends/invites', { code });
+    expect(response.status).toBe(201);
+    return code;
+  }
+  const acceptLink = (to: Player, code: string) =>
+    to.browser.request('POST', '/api/friends/invites/accept', { code });
+  const preview = (code: string) =>
+    new Browser(app).request('GET', `/api/friends/invites/preview?code=${code}`);
   const weekOf = (other: Player) => `/api/players/${other.id}/weeks/${weekStart}`;
   const historyOf = (other: Player) => `/api/players/${other.id}/weeks`;
   const shown = (data: GroupsResponse) => data.players.map((entry) => entry.player.id).sort();
@@ -352,5 +370,189 @@ describe('Friends added by friend code', () => {
     ).toBe(200);
     await expectError(await oldTab.request('POST', '/api/friends', { code: mika.code }), 401);
     expect((await client.query('select * from turnip_private.friend_links')).rows).toEqual([]);
+  });
+
+  describe('shared friend links', () => {
+    it('makes friends both ways in one tap, then stops working', async () => {
+      const rosa = await player('Rosa');
+      const mika = await player('Mika');
+      const jun = await player();
+      const code = inviteCode();
+      const created = await rosa.browser.request('POST', '/api/friends/invites', { code });
+      expect(created.status).toBe(201);
+      const { expiresAt } = (await created.json()) as { expiresAt: string };
+      const days = (Date.parse(expiresAt) - Date.now()) / 86_400_000;
+      expect(days).toBeGreaterThan(FRIEND_INVITE_DAYS - 0.01);
+      expect(days).toBeLessThan(FRIEND_INVITE_DAYS + 0.01);
+
+      // A visitor without a profile sees whose link it is, and nothing more.
+      const shown = await preview(code.toLowerCase());
+      expect(shown.status).toBe(200);
+      expect(await shown.json()).toEqual({
+        player: { id: rosa.id, displayName: 'Rosa' },
+        expiresAt,
+      } satisfies FriendInvitePreview);
+
+      const accepted = await acceptLink(mika, code);
+      expect(accepted.status).toBe(200);
+      expect(((await accepted.json()) as { friend: FriendResult }).friend).toEqual({
+        player: rosa.session.player,
+        status: 'friends',
+      });
+      expect((await overview(rosa)).friendIds).toEqual([mika.id]);
+      expect((await overview(mika)).friendIds).toEqual([rosa.id]);
+      expect((await mika.browser.request('GET', weekOf(rosa))).status).toBe(200);
+
+      const used = await expectError(await acceptLink(jun, code), 404);
+      expect(used.error.code).toBe('FRIEND_LINK_UNAVAILABLE');
+      await expectError(await preview(code), 404);
+      expect((await overview(jun)).friendIds).toEqual([]);
+    });
+
+    it('keeps only the code’s hash', async () => {
+      const rosa = await player();
+      const code = await share(rosa);
+      const rows = await client.query('select * from turnip_private.friend_invites');
+      expect(rows.rows).toEqual([
+        expect.objectContaining({
+          player_id: rosa.id,
+          code_hash: createHash('sha256').update(code).digest('hex'),
+        }),
+      ]);
+      expect(JSON.stringify(rows.rows)).not.toContain(code);
+    });
+
+    it('turns down your own link and leaves it for a friend', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const code = await share(rosa);
+      const own = await expectError(await acceptLink(rosa, code), 400);
+      expect(own.error.code).toBe('OWN_FRIEND_LINK');
+      expect((await acceptLink(mika, code)).status).toBe(200);
+    });
+
+    it('leaves the link unused for someone who is already a friend', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const jun = await player();
+      await befriend(rosa, mika);
+      const code = await share(rosa);
+      expect((await acceptLink(mika, code)).status).toBe(200);
+      expect((await acceptLink(jun, code)).status).toBe(200);
+      expect((await overview(rosa)).friendIds.sort()).toEqual([mika.id, jun.id].sort());
+    });
+
+    it('settles a waiting request in either direction', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const jun = await player();
+      await add(mika, rosa.code);
+      await add(rosa, jun.code);
+      expect((await acceptLink(mika, await share(rosa))).status).toBe(200);
+      expect((await acceptLink(jun, await share(rosa))).status).toBe(200);
+      const data = await overview(rosa);
+      expect(data.friendIds.sort()).toEqual([mika.id, jun.id].sort());
+      expect(data.requests).toEqual({ received: [], sent: [] });
+    });
+
+    it('stops working after its days are up', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const code = await share(rosa);
+      await client.query(
+        "update turnip_private.friend_invites set created_at = now() - interval '9 days', expires_at = now() - interval '1 second'",
+      );
+      await expectError(await preview(code), 404);
+      await expectError(await acceptLink(mika, code), 404);
+      // Sharing again clears links that have run out.
+      await share(rosa);
+      expect((await client.query('select * from turnip_private.friend_invites')).rows).toHaveLength(
+        1,
+      );
+    });
+
+    it(`keeps the newest ${FRIEND_INVITE_LIMIT} links usable`, async () => {
+      const rosa = await player();
+      const mika = await player();
+      const codes: string[] = [];
+      for (let index = 0; index <= FRIEND_INVITE_LIMIT; index += 1) codes.push(await share(rosa));
+      await expectError(await preview(codes[0]!), 404);
+      expect((await preview(codes[1]!)).status).toBe(200);
+      expect((await acceptLink(mika, codes.at(-1)!)).status).toBe(200);
+    });
+
+    it('lets only one of two players use a link at the same time', async () => {
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        const rosa = await player();
+        const mika = await player();
+        const jun = await player();
+        const code = await share(rosa);
+        const responses = await Promise.all([acceptLink(mika, code), acceptLink(jun, code)]);
+        expect(responses.map((response) => response.status).sort()).toEqual([200, 404]);
+        expect((await overview(rosa)).friendIds).toHaveLength(1);
+      }
+    });
+
+    it('respects the sharer’s friend limit', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const code = await share(rosa);
+      await client.query(
+        `with others as (
+          insert into turnip_private.players (display_name, friend_code)
+          select 'Extra', 'FAKE-' || lpad(n::text, 4, '0') || '-BBBB' from generate_series(1, $2::int) n
+          returning id
+        )
+        insert into turnip_private.friend_links (player_id, friend_id) select $1, id from others`,
+        [rosa.id, FRIEND_LIMIT],
+      );
+      const full = await expectError(await acceptLink(mika, code), 409);
+      expect(full.error.code).toBe('FRIEND_LIMIT');
+      expect((await client.query('select * from turnip_private.friend_invites')).rows).toHaveLength(
+        1,
+      );
+    });
+
+    it('validates codes, and forgets links when their player is deleted', async () => {
+      const rosa = await player();
+      const mika = await player();
+      for (const code of ['', 'ABCD', 'ABCD-EFGH-JKLM-NPQ1', 'x'.repeat(41)]) {
+        await expectError(
+          await rosa.browser.request('POST', '/api/friends/invites', { code }),
+          400,
+        );
+        await expectError(await acceptLink(mika, code), 400);
+      }
+      await expectError(await preview('nope'), 404);
+      const code = await share(rosa);
+      const deleted = await rosa.browser.request('DELETE', '/api/profile', {
+        playerId: rosa.id,
+        confirm: 'delete',
+      });
+      expect(deleted.status).toBe(200);
+      await expectError(await acceptLink(mika, code), 404);
+      expect((await client.query('select * from turnip_private.friend_invites')).rows).toEqual([]);
+    });
+
+    it('protects creating and accepting links like every friend route', async () => {
+      const rosa = await player();
+      const mika = await player();
+      const code = await share(mika);
+      for (const [path, body] of [
+        ['/api/friends/invites', { code: inviteCode() }],
+        ['/api/friends/invites/accept', { code }],
+      ] as const) {
+        await expectError(
+          await rosa.browser.request('POST', path, body, { origin: 'https://elsewhere.test' }),
+          403,
+        );
+        await expectError(
+          await rosa.browser.request('POST', path, body, { playerId: mika.id }),
+          409,
+        );
+        await expectError(await new Browser(app).request('POST', path, body), 401);
+      }
+      expect((await overview(rosa)).friendIds).toEqual([]);
+    });
   });
 });

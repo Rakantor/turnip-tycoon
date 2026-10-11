@@ -1,15 +1,164 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { Check, Copy, UserPlus } from 'lucide-react';
+import { Check, Copy, Share2, UserPlus } from 'lucide-react';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import type { FriendRequest, SharedPlayerWeek } from '../shared/groups';
+import type { FriendInvitePreview, FriendRequest, SharedPlayerWeek } from '../shared/groups';
+import { ApiError, request } from './data/api';
 import type { useGroups } from './data/use-groups';
 import { PlayerAvatar } from './player-avatar';
 import { Button, Field, messageOf, Notice } from './ui';
+import { appUrl } from './urls';
+import { clearWelcomeJoin, isWelcomeJoin } from './welcome-join';
 import './friends.css';
 
 type GroupData = ReturnType<typeof useGroups>;
+
+const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+/** A friend link's code is made here, so the share sheet can open in the same tap. */
+function newInviteCode(): string {
+  return Array.from(
+    crypto.getRandomValues(new Uint8Array(16)),
+    (byte) => CODE_ALPHABET[byte & 31],
+  ).join('');
+}
+
+type InviteState =
+  | { status: 'loading' }
+  | { status: 'ready'; preview: FriendInvitePreview }
+  | { status: 'error'; message: string; retry: boolean };
+
+function useInvitePreview(code: string): [InviteState, () => void] {
+  const [state, setState] = useState<{ code: string; attempt: number; result: InviteState }>();
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const done = (result: InviteState) => {
+      if (active) setState({ code, attempt, result });
+    };
+    request<FriendInvitePreview>(`/friends/invites/preview?code=${encodeURIComponent(code)}`)
+      .then((preview) => done({ status: 'ready', preview }))
+      .catch((error: unknown) =>
+        done({
+          status: 'error',
+          message: messageOf(error),
+          // An expired or used link stays that way; a lost connection may not.
+          retry: !(error instanceof ApiError && error.status === 404),
+        }),
+      );
+    return () => {
+      active = false;
+    };
+  }, [code, attempt]);
+  const current = state?.code === code && state.attempt === attempt ? state.result : null;
+  return [current ?? { status: 'loading' }, () => setAttempt((value) => value + 1)];
+}
+
+/**
+ * A friend link someone shared: one tap makes you friends, as sharing it was their request.
+ * Someone who chose “Save and accept” in the welcome dialog accepts without a second tap.
+ */
+export function FriendInvite({
+  code,
+  data,
+  owner,
+  onClose,
+}: {
+  code: string;
+  data: GroupData;
+  owner: string;
+  onClose: (done?: string) => void;
+}) {
+  const [state, retry] = useInvitePreview(code);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const autoAccept = useRef(isWelcomeJoin(code));
+  const preview = state.status === 'ready' ? state.preview : null;
+  const name = preview?.player.displayName ?? '';
+  const own = preview !== null && preview.player.id === owner;
+  const already = preview !== null && data.friendIds.includes(preview.player.id);
+  async function accept() {
+    setBusy(true);
+    setError('');
+    try {
+      await data.acceptInvite(code);
+      onClose(t`You and ${name} are now friends.`);
+    } catch (error) {
+      setError(messageOf(error));
+      setBusy(false);
+    }
+  }
+  useEffect(() => {
+    if (!autoAccept.current || !preview || data.status !== 'ready') return;
+    autoAccept.current = false;
+    clearWelcomeJoin();
+    if (!own && !already) void accept();
+  });
+  const close = (
+    <Button secondary onClick={() => onClose()}>
+      <Trans>Close</Trans>
+    </Button>
+  );
+  if (state.status === 'loading')
+    return (
+      <section className="friend-requests friend-invite">
+        <p className="friend-invite-text" role="status">
+          <Trans>Checking this friend link…</Trans>
+        </p>
+      </section>
+    );
+  if (!preview || own || already)
+    return (
+      <section className="friend-requests friend-invite">
+        <p className="friend-invite-text" role="status">
+          {state.status === 'error'
+            ? state.message
+            : own
+              ? t`This is your own friend link. Share it with a friend instead.`
+              : t`You and ${name} are already friends.`}
+        </p>
+        <div className="friend-link-actions">
+          {state.status === 'error' && state.retry && (
+            <Button onClick={retry}>
+              <Trans>Try again</Trans>
+            </Button>
+          )}
+          {close}
+        </div>
+      </section>
+    );
+  return (
+    <section className="friend-requests friend-invite" aria-labelledby="friend-invite-title">
+      <div className="friend-link">
+        <PlayerAvatar name={name} />
+        <span className="friend-link-who">
+          <h2 id="friend-invite-title">
+            <Trans>{name} wants to be your friend</Trans>
+          </h2>
+          <span className="friend-invite-detail">
+            <Trans>Accept to see each other’s prices and forecasts.</Trans>
+          </span>
+        </span>
+        <span className="friend-link-actions">
+          <Button
+            busy={busy}
+            disabled={data.status !== 'ready'}
+            onClick={() => {
+              void accept();
+            }}
+          >
+            <Check size={16} aria-hidden="true" />
+            <Trans comment="Button: accept a friend request">Accept</Trans>
+          </Button>
+          <Button secondary disabled={busy} onClick={() => onClose()}>
+            <Trans>Not now</Trans>
+          </Button>
+        </span>
+        {error && <Notice>{error}</Notice>}
+      </div>
+    </section>
+  );
+}
 
 /** Requests waiting for you stay at the top of Friends until you answer them. */
 export function FriendRequests({ data }: { data: GroupData }) {
@@ -159,6 +308,80 @@ function AddFriend({ data }: { data: GroupData }) {
       </p>
       {error && <Notice>{error}</Notice>}
       {done && <Notice success>{done}</Notice>}
+    </div>
+  );
+}
+
+/** Shares a one-time link that makes the person who opens it a friend in one tap. */
+function ShareLink({ data }: { data: GroupData }) {
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [fallbackLink, setFallbackLink] = useState('');
+  async function share() {
+    setMessage('');
+    setError('');
+    setFallbackLink('');
+    const code = newInviteCode();
+    const url = appUrl(`/friends/add?invite=${code}`);
+    // The share sheet must open within the tap, so the link is saved alongside it.
+    const saved = data.shareInvite(code).then(
+      () => true,
+      () => false,
+    );
+    let shown = '';
+    try {
+      if (!navigator.share) throw new Error('No share sheet');
+      await navigator.share({
+        title: 'Turnip Tycoon',
+        text: t`Add me as a friend on Turnip Tycoon`,
+        url,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      try {
+        await navigator.clipboard.writeText(url);
+        setMessage(t`Friend link copied.`);
+      } catch {
+        shown = url;
+        setMessage(t`Copy this friend link to share it.`);
+      }
+    }
+    if (await saved) setFallbackLink(shown);
+    else {
+      setMessage('');
+      setError(t`That link couldn’t be saved, so it won’t work. Share a new one.`);
+    }
+  }
+  return (
+    <div className="friend-share">
+      <Button
+        secondary
+        disabled={data.status !== 'ready'}
+        onClick={() => {
+          void share();
+        }}
+      >
+        <Share2 size={15} aria-hidden="true" />
+        <Trans>Share friend link</Trans>
+      </Button>
+      <p className="hint">
+        <Trans>Each link adds one friend and works for 7 days.</Trans>
+      </p>
+      {message && (
+        <p className="hint" role="status">
+          {message}
+        </p>
+      )}
+      {fallbackLink && (
+        <input
+          aria-label={t`Friend link`}
+          className="share-fallback"
+          readOnly
+          value={fallbackLink}
+          onFocus={(event) => event.target.select()}
+        />
+      )}
+      {error && <Notice>{error}</Notice>}
     </div>
   );
 }
@@ -328,6 +551,7 @@ export function YourFriends({ data, friendCode }: { data: GroupData; friendCode:
       <div className="group-card-grid">
         <div className="group-detail-card friends-card">
           <OwnCode code={friendCode} />
+          <ShareLink data={data} />
           <AddFriend data={data} />
           {(friends.length > 0 || sent.length > 0) && (
             <ul className="friend-link-list">

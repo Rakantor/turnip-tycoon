@@ -91,13 +91,15 @@ Groups allow twelve equal members and unlimited memberships. Store prices once, 
 
 Players can also add each other by friend code, without a group. A code only sends a request: nothing is shared until the other player accepts, and two players who enter each other's codes become friends straight away. `friend_links` holds one row per direction, so rows both ways are a friendship and a single row is a waiting request. Declining, withdrawing and removing all delete both rows, and either player can do it. Friends then share exactly what group members do, shared reads accept a common group or a friendship, and the board includes your own island when you have friends but no group. Friends and the requests you sent count together towards a limit of 50. Friend codes are read without case, spaces or dashes, and an O or I as 0 or 1, since no code contains those letters.
 
+A shared friend link stands for its sharer's side of a friendship, so whoever accepts it becomes a friend straight away, both ways. The app makes up each link's 16-character code so the share sheet opens within the tap, and `friend_invites` keeps only its SHA-256. A link works once, for seven days; only a player's 20 newest stay usable, and accepting checks both players' limits. Like a group invite, a link's preview shows the sharer's name without authentication, and the welcome dialog offers to save and accept in one step.
+
 ### Access and security invariants
 
 - Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; the custom domain keeps that origin to this app alone.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
 - Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
-- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval: groups first, then friend links in key order. Removing a friend and deleting a profile take the matching update locks in the same order. Each player inserts only their own direction of a friend link; the player lock is `FOR NO KEY UPDATE`, so that insert's foreign-key check never waits on the other player's session, and simultaneous requests both ways can't deadlock. Membership and friendship never grant editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes, friends and requests included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
+- Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval: groups first, then friend links in key order. Removing a friend and deleting a profile take the matching update locks in the same order; profile deletion then locks its shared friend links, and accepting a link locks it first, so only one player can use it. Each player inserts only their own direction of a friend link; the player lock is `FOR NO KEY UPDATE`, so that insert's foreign-key check never waits on the other player's session, and simultaneous requests both ways can't deadlock. Membership and friendship never grant editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes, friends and requests included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
 
 The `turnip_private` schema enables RLS without public policies and must stay outside the Supabase Data API. Use a trusted database role that owns the tables, or has explicit privileges plus BYPASSRLS. Never expose database credentials or a Supabase service key to browsers.
@@ -217,10 +219,11 @@ Other players and nonempty groups stay. The existing origin checks and no-store 
 
 Export reads at most 100 records per page, including expired device metadata and all historical
 weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,
-and other players' data, except that friend links name the other player by ID. The client
-downloads one versioned JSON file, with this profile's local weeks, unsent edits, and conflicts
-separate from server records. Each batch rechecks the session; the file records its start/end
-times and is not a database-wide point-in-time snapshot.
+and other players' data, except that friend links name the other player by ID. Shared friend links
+appear by ID with their dates, never their codes. The client downloads one versioned JSON file,
+with this profile's local weeks, unsent edits, and conflicts separate from server records. Each
+batch rechecks the session; the file records its start/end times and is not a database-wide
+point-in-time snapshot.
 
 `SessionVault` persists deletion intent before sending the request. Profile writes use
 `writeForProfile` to check a per-profile block marker inside the IndexedDB transaction, preventing
@@ -282,6 +285,7 @@ Facts that must stay accurate:
 | Device credentials, code verifiers, memberships, weekly data, trades, sync metadata                  | `src/db/schema.ts`, `src/server/app.ts`, `src/server/http.ts`                                          |
 | Invite previews expose group/member names without authentication; joining requires no host approval  | `src/server/groups.ts`                                                                                 |
 | A friend request shows both players each other's name and friend code; prices wait for acceptance    | `src/server/friends.ts`                                                                                |
+| A friend link's preview shows its sharer's name without authentication; accepting it makes friends   | `src/server/friends.ts`                                                                                |
 | Shared members can read prior weeks; own trade records are excluded                                  | `src/server/groups.ts`, `src/server/weeks.ts`, `src/server/ledger.ts`                                  |
 | Local profile access, history, unsent edits, the latest current-week group snapshot, language choice | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`, `src/client/i18n.ts` |
 | Forecasts run locally; fonts are bundled; no third-party audience analytics are included             | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts`                   |

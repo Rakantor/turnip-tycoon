@@ -43,6 +43,12 @@ export interface GroupsResponse {
   requests: FriendRequests;
 }
 
+/** Whose friend link it is, shown before accepting it, even without a profile. */
+export interface FriendInvitePreview {
+  player: Pick<Player, 'id' | 'displayName'>;
+  expiresAt: string;
+}
+
 /** A friend code request's outcome: friends straight away when they had already asked you. */
 export interface FriendResult {
   player: Player;

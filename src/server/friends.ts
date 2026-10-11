@@ -1,18 +1,40 @@
-import { and, asc, count, eq, inArray, or, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  inArray,
+  lte,
+  notInArray,
+  or,
+  sql,
+  type SQL,
+} from 'drizzle-orm';
 import type { Hono } from 'hono';
 import type { Transaction } from '../db/connection';
-import { friendLinks, players } from '../db/schema';
+import { friendInvites, friendLinks, players } from '../db/schema';
 import type { Player } from '../shared/api';
-import type { FriendRequest, FriendRequests, FriendResult } from '../shared/groups';
+import type {
+  FriendInvitePreview,
+  FriendRequest,
+  FriendRequests,
+  FriendResult,
+} from '../shared/groups';
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
 import { ApiError } from './errors';
 import { readJson } from './http';
-import { formatCode } from './secrets';
-import { friendCodeInput, parseId } from './validation';
+import { formatCode, hashSecret } from './secrets';
+import { friendCodeInput, friendInviteInput, parseId } from './validation';
 
 // Friends and the requests you're waiting on count together, so the island board stays readable.
 export const FRIEND_LIMIT = 50;
+/** A shared friend link works once, for this many days. */
+export const FRIEND_INVITE_DAYS = 7;
+/** Only a player's newest links stay usable. */
+export const FRIEND_INVITE_LIMIT = 20;
 
 const sentBy = (playerId: string, friendId: string) =>
   and(eq(friendLinks.playerId, playerId), eq(friendLinks.friendId, friendId));
@@ -68,30 +90,59 @@ export async function areFriends(tx: Transaction, a: string, b: string): Promise
   return (await lockLinks(tx, between(a, b), 'share')).length === 2;
 }
 
-/** Profile deletion takes these after its group locks, matching shared reads. */
-export async function lockFriendLinks(tx: Transaction, playerId: string): Promise<void> {
+/**
+ * Profile deletion takes these after its group locks, matching shared reads, and then its
+ * friend links, so a link being accepted finishes before the player is gone.
+ */
+export async function lockFriends(tx: Transaction, playerId: string): Promise<void> {
   await lockLinks(tx, involving(playerId), 'update');
+  await tx
+    .select({ id: friendInvites.id })
+    .from(friendInvites)
+    .where(eq(friendInvites.playerId, playerId))
+    .orderBy(asc(friendInvites.id))
+    .for('update');
+}
+
+const ownLimit = () =>
+  new ApiError(
+    409,
+    'FRIEND_LIMIT',
+    `You can have up to ${FRIEND_LIMIT} friends and requests. Remove one to add another.`,
+  );
+const linkUnavailable = () =>
+  new ApiError(
+    404,
+    'FRIEND_LINK_UNAVAILABLE',
+    'This friend link expired or was already used. Ask for a new one.',
+  );
+const usable = (codeHash: string) =>
+  and(eq(friendInvites.codeHash, codeHash), gt(friendInvites.expiresAt, sql`clock_timestamp()`));
+
+/** Adds one direction of a link, within the limit of the player it belongs to. */
+async function link(
+  tx: Transaction,
+  playerId: string,
+  friendId: string,
+  full: () => ApiError,
+): Promise<boolean> {
+  const [existing] = await tx
+    .select({ playerId: friendLinks.playerId })
+    .from(friendLinks)
+    .where(sentBy(playerId, friendId));
+  if (existing) return false;
+  const [row] = await tx
+    .select({ total: count() })
+    .from(friendLinks)
+    .where(eq(friendLinks.playerId, playerId));
+  if (row.total >= FRIEND_LIMIT) throw full();
+  await tx.insert(friendLinks).values({ playerId, friendId }).onConflictDoNothing();
+  return true;
 }
 
 /** Asks to share with a player, or accepts their request when they already asked. */
 async function addLink(tx: Transaction, playerId: string, friend: Player): Promise<FriendResult> {
-  const [existing] = await tx
-    .select({ playerId: friendLinks.playerId })
-    .from(friendLinks)
-    .where(sentBy(playerId, friend.id));
-  if (!existing) {
-    const [row] = await tx
-      .select({ total: count() })
-      .from(friendLinks)
-      .where(eq(friendLinks.playerId, playerId));
-    if (row.total >= FRIEND_LIMIT)
-      throw new ApiError(
-        409,
-        'FRIEND_LIMIT',
-        `You can have up to ${FRIEND_LIMIT} friends and requests. Remove one to add another.`,
-      );
-    await tx.insert(friendLinks).values({ playerId, friendId: friend.id }).onConflictDoNothing();
-  }
+  await link(tx, playerId, friend.id, ownLimit);
   const [reverse] = await tx
     .select({ playerId: friendLinks.playerId })
     .from(friendLinks)
@@ -140,6 +191,95 @@ export function registerFriendRoutes(app: Hono<AppEnvironment>): void {
         );
       const [player] = await tx.select().from(players).where(eq(players.id, id));
       return addLink(tx, session.player.id, player);
+    });
+    return c.json({ friend });
+  });
+
+  // The app makes up each link's code, so the share sheet can open in the same tap.
+  // Only the code's hash is kept, like every other secret.
+  app.post('/api/friends/invites', async (c) => {
+    const input = await readJson(c, friendInviteInput);
+    const codeHash = await hashSecret(input.code);
+    const invite = await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
+      const newest = tx
+        .select({ id: friendInvites.id })
+        .from(friendInvites)
+        .where(eq(friendInvites.playerId, session.player.id))
+        .orderBy(desc(friendInvites.createdAt), desc(friendInvites.id))
+        .limit(FRIEND_INVITE_LIMIT - 1);
+      await tx
+        .delete(friendInvites)
+        .where(
+          and(
+            eq(friendInvites.playerId, session.player.id),
+            or(
+              lte(friendInvites.expiresAt, sql`clock_timestamp()`),
+              notInArray(friendInvites.id, newest),
+            ),
+          ),
+        );
+      const [created] = await tx
+        .insert(friendInvites)
+        .values({
+          codeHash,
+          playerId: session.player.id,
+          expiresAt: sql`clock_timestamp() + ${FRIEND_INVITE_DAYS} * interval '1 day'`,
+        })
+        .onConflictDoNothing()
+        .returning({ expiresAt: friendInvites.expiresAt });
+      if (!created) throw new ApiError(409, 'TRY_AGAIN', 'Please share your friend link again.');
+      return created;
+    });
+    return c.json({ expiresAt: invite.expiresAt }, 201);
+  });
+
+  // Like a group invite, a friend link shows whose it is before the visitor has a profile.
+  app.get('/api/friends/invites/preview', async (c) => {
+    const code = friendInviteInput.shape.code.safeParse(c.req.query('code') ?? '');
+    if (!code.success) throw linkUnavailable();
+    const [row] = await c
+      .get('db')
+      .select({
+        id: players.id,
+        displayName: players.displayName,
+        expiresAt: friendInvites.expiresAt,
+      })
+      .from(friendInvites)
+      .innerJoin(players, eq(players.id, friendInvites.playerId))
+      .where(usable(await hashSecret(code.data)));
+    if (!row) throw linkUnavailable();
+    const preview: FriendInvitePreview = {
+      player: { id: row.id, displayName: row.displayName },
+      expiresAt: row.expiresAt.toISOString(),
+    };
+    return c.json(preview);
+  });
+
+  // Sharing the link was the other player's request, so accepting it adds both sides at once.
+  app.post('/api/friends/invites/accept', async (c) => {
+    const input = await readJson(c, friendInviteInput);
+    const codeHash = await hashSecret(input.code);
+    const friend = await withSession(c.get('db'), await sessionHash(c), async (tx, session) => {
+      // Holding the link keeps two people from both using it.
+      const [invite] = await tx.select().from(friendInvites).where(usable(codeHash)).for('update');
+      if (!invite) throw linkUnavailable();
+      if (invite.playerId === session.player.id)
+        throw new ApiError(
+          400,
+          'OWN_FRIEND_LINK',
+          'This is your own friend link. Share it with a friend instead.',
+        );
+      const [player] = await tx.select().from(players).where(eq(players.id, invite.playerId));
+      const theirs = await link(
+        tx,
+        invite.playerId,
+        session.player.id,
+        () => new ApiError(409, 'FRIEND_LIMIT', 'This player can’t add more friends right now.'),
+      );
+      const yours = await link(tx, session.player.id, invite.playerId, ownLimit);
+      // Already friends: the link stays for whoever it was meant for.
+      if (theirs || yours) await tx.delete(friendInvites).where(eq(friendInvites.id, invite.id));
+      return { player, status: 'friends' } satisfies FriendResult;
     });
     return c.json({ friend });
   });

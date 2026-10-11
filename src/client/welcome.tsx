@@ -4,7 +4,7 @@ import { ChevronLeft, User } from 'lucide-react';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { DISPLAY_NAME_MAX_LENGTH } from '../shared/api';
-import type { GroupPreview } from '../shared/groups';
+import type { FriendInvitePreview, GroupPreview } from '../shared/groups';
 import { request } from './data/api';
 import { PlayerAvatar } from './player-avatar';
 import { PairingCode } from './pairing';
@@ -13,24 +13,25 @@ import { assetUrl } from './urls';
 import { rememberWelcomeJoin } from './welcome-join';
 import './welcome.css';
 
-function useInvitePreview(code: string | null): GroupPreview | null {
-  const [preview, setPreview] = useState<{ code: string; data: GroupPreview | null } | null>(null);
+/** A group invite's or friend link's preview, from a path that includes its code. */
+function useInvitePreview<T>(path: string | null): T | null {
+  const [preview, setPreview] = useState<{ path: string; data: T | null } | null>(null);
   useEffect(() => {
-    if (!code) return;
+    if (!path) return;
     let active = true;
-    request<GroupPreview>(`/groups/preview?code=${encodeURIComponent(code)}`)
+    request<T>(path)
       .then((data) => {
-        if (active) setPreview({ code, data });
+        if (active) setPreview({ path, data });
       })
       .catch(() => {
         // An unknown or expired code just shows the ordinary welcome.
-        if (active) setPreview({ code, data: null });
+        if (active) setPreview({ path, data: null });
       });
     return () => {
       active = false;
     };
-  }, [code]);
-  return code && preview?.code === code ? preview.data : null;
+  }, [path]);
+  return path && preview?.path === path ? preview.data : null;
 }
 
 /** Three seats fit one row on the narrowest phones. */
@@ -102,13 +103,18 @@ export function WelcomeDialog() {
   const [step, setStep] = useState<'name' | 'connect'>('name');
   const [name, setName] = useState('');
   const open = identity.needsProfile && !['/connect', '/recover'].includes(location.pathname);
-  const inviteCode =
-    open && location.pathname === '/groups/join'
-      ? new URLSearchParams(location.search).get('code')
-      : null;
-  const preview = useInvitePreview(inviteCode);
+  const search = new URLSearchParams(location.search);
+  const inviteCode = open && location.pathname === '/groups/join' ? search.get('code') : null;
+  const friendCode = open && location.pathname === '/friends/add' ? search.get('invite') : null;
+  const preview = useInvitePreview<GroupPreview>(
+    inviteCode && `/groups/preview?code=${encodeURIComponent(inviteCode)}`,
+  );
+  const friend = useInvitePreview<FriendInvitePreview>(
+    friendCode && `/friends/invites/preview?code=${encodeURIComponent(friendCode)}`,
+  );
   const full = preview ? preview.group.memberCount >= preview.group.capacity : false;
   const groupName = preview?.group.name;
+  const inviter = friend?.player.displayName;
   const maxLength = DISPLAY_NAME_MAX_LENGTH;
   const length = name.length;
 
@@ -124,6 +130,7 @@ export function WelcomeDialog() {
   }
   function save() {
     if (inviteCode && preview && !full) rememberWelcomeJoin(inviteCode);
+    if (friendCode && friend) rememberWelcomeJoin(friendCode);
     void identity.answerWelcome(name);
   }
 
@@ -163,7 +170,11 @@ export function WelcomeDialog() {
               </h2>
             </div>
             <p className="welcome-text">
-              {preview ? (
+              {friend ? (
+                <Trans>
+                  <strong>{inviter}</strong> wants to be your friend. What should they call you?
+                </Trans>
+              ) : preview ? (
                 full ? (
                   <Trans>
                     <strong>{groupName}</strong> is full right now. What should your friends call
@@ -178,7 +189,10 @@ export function WelcomeDialog() {
                 t`What should your friends call you?`
               )}
             </p>
-            <SeatPreview name={name} members={preview?.members ?? null} />
+            <SeatPreview
+              name={name}
+              members={friend ? [friend.player.displayName] : (preview?.members ?? null)}
+            />
             <div className="field welcome-field">
               <label htmlFor={`${id}-name`}>
                 <Trans>Your display name</Trans>
@@ -203,7 +217,7 @@ export function WelcomeDialog() {
               </Trans>
             </p>
             <Button type="submit" disabled={!name.trim()}>
-              {preview && !full ? t`Save and join` : t`Save name`}
+              {friend ? t`Save and accept` : preview && !full ? t`Save and join` : t`Save name`}
             </Button>
             <button
               className="text-button welcome-switch"

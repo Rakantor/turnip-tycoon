@@ -4,6 +4,7 @@ import { z } from 'zod';
 import type { Transaction } from '../db/connection';
 import {
   devices,
+  friendInvites,
   friendLinks,
   groups,
   memberships,
@@ -22,7 +23,7 @@ import {
 import type { AppEnvironment } from './app';
 import { sessionHash, withSession } from './auth';
 import { ApiError } from './errors';
-import { lockFriendLinks } from './friends';
+import { lockFriends } from './friends';
 import { readJson, writeCredential } from './http';
 
 const PAGE_SIZE = 100;
@@ -90,6 +91,20 @@ async function readPage(tx: Transaction, owner: string, section: ExportSection, 
         .sort((left, right) => (left.id < right.id ? -1 : 1))
         .slice(0, PAGE_SIZE + 1);
     }
+    case 'friendInvites':
+      // When each shared friend link was made and expires; never its code or the code's hash.
+      return tx
+        .select({
+          id: friendInvites.id,
+          createdAt: friendInvites.createdAt,
+          expiresAt: friendInvites.expiresAt,
+        })
+        .from(friendInvites)
+        .where(
+          and(eq(friendInvites.playerId, owner), after ? gt(friendInvites.id, after) : undefined),
+        )
+        .orderBy(asc(friendInvites.id))
+        .limit(PAGE_SIZE + 1);
     case 'pairing':
       return tx
         .select({
@@ -190,9 +205,9 @@ export function registerProfileDataRoutes(app: Hono<AppEnvironment>): void {
             .where(inArray(groups.id, ids))
             .orderBy(asc(groups.id))
             .for('update');
-        await lockFriendLinks(tx, session.player.id);
-        // Foreign keys remove all owned weeks, prices, trades, devices, recovery,
-        // approved pairing challenges, memberships, friend links, and mutation receipts atomically.
+        await lockFriends(tx, session.player.id);
+        // Foreign keys remove all owned weeks, prices, trades, devices, recovery, approved
+        // pairing challenges, memberships, friend links and shared links, and mutation receipts.
         await tx.delete(players).where(eq(players.id, session.player.id));
         if (ids.length)
           await tx

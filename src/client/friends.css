@@ -17,6 +17,29 @@
 .friend-requests h2 + .friend-link-list {
   margin-top: 0;
 }
+/* A friend link someone shared, opened from their message. */
+/* The heading shrinks beside the avatar rather than dropping below it. */
+.friend-invite .friend-link-who {
+  flex-basis: 0;
+}
+.friend-invite .friend-link-who h2 {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.friend-invite-detail {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.friend-invite-text {
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+.friend-invite > .friend-link-actions {
+  justify-content: flex-start;
+}
 /* What's left once the last request is answered. */
 .groups-page > .notice-success {
   margin: 0 0 22px;
@@ -42,6 +65,24 @@
 }
 .friends-card .group-code-line + .hint {
   margin: 8px 0 0;
+}
+/* Sharing a one-time link sits right under your code. */
+.friend-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 12px;
+}
+.friend-share > .hint {
+  flex: 1 1 200px;
+  margin: 0;
+}
+.friend-share > .hint[role='status'],
+.friend-share > .share-fallback,
+.friend-share > .notice {
+  flex-basis: 100%;
+  margin: 0;
 }
 .friends-card .group-form-wrap {
   max-width: none;
@@ -151,5 +192,7 @@
   }
   .friend-requests .friend-link-actions .button {
     flex: 1 1 0;
+    padding-inline: 12px;
+    white-space: nowrap;
   }
 }

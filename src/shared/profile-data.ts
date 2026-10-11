@@ -4,6 +4,7 @@ export const EXPORT_SECTIONS = [
   'devices',
   'groups',
   'friends',
+  'friendInvites',
   'weeks',
   'pairing',
   'syncRecords',

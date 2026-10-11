@@ -154,6 +154,28 @@ export const friendLinks = privateSchema
   )
   .enableRLS();
 
+// A shared friend link stands for its player's side of a friendship: whoever opens it
+// and accepts becomes a friend at once. Each link is used once, and only its hash is kept.
+export const friendInvites = privateSchema
+  .table(
+    'friend_invites',
+    {
+      id: uuid('id').primaryKey().defaultRandom(),
+      codeHash: text('code_hash').notNull().unique(),
+      playerId: uuid('player_id')
+        .notNull()
+        .references(() => players.id, { onDelete: 'cascade' }),
+      createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+      expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    },
+    (table) => [
+      index('friend_invites_player_idx').on(table.playerId),
+      check('friend_invites_code_hash_format', sql`${table.codeHash} ~ '^[0-9a-f]{64}$'`),
+      check('friend_invites_expiry', sql`${table.expiresAt} > ${table.createdAt}`),
+    ],
+  )
+  .enableRLS();
+
 export const weeks = privateSchema
   .table(
     'weeks',

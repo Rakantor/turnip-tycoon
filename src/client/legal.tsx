@@ -110,6 +110,10 @@ export function Terms() {
             see the group’s members and join while there’s room (
             <Link to="/privacy#sharing">who can see what</Link>).
           </li>
+          <li>
+            Only share friend links with people you want as friends. Whoever opens one first becomes
+            your friend.
+          </li>
           <li>Don’t post other people’s private information or try to get into their profile.</li>
           <li>Don’t attack or overload the app, or try to get around its security.</li>
         </ul>
@@ -218,7 +222,8 @@ export function Privacy() {
           </li>
           <li>
             <strong>Friends:</strong> who you sent a friend request to or received one from, when,
-            and whether it was accepted.
+            and whether it was accepted, and the friend links you share, until they’re used or
+            expire.
           </li>
           <li>
             <strong>Devices:</strong> a name such as “My phone”, when each device was connected, and
@@ -259,6 +264,11 @@ export function Privacy() {
             <strong>Anyone with your friend code</strong> can send you a friend request. A request
             shows each of you the other’s display name and friend code, and nothing else is shared
             unless it’s accepted. Either of you can withdraw, decline, or remove it.
+          </li>
+          <li>
+            <strong>Anyone with a friend link you share</strong> can see your display name and
+            become your friend in one tap, until the link is used or 7 days pass. Only share it with
+            people you want as friends.
           </li>
           <li>
             <strong>Anyone with a group invite</strong> can see the group’s name and its members’
@@ -339,8 +349,8 @@ export function Privacy() {
           </li>
           <li>
             <strong>Device access</strong> ends after 30 days without using the app online, and
-            using it online renews it. Pairing codes expire after 10 minutes. Expired access doesn’t
-            delete your records.
+            using it online renews it. Pairing codes expire after 10 minutes, and friend links stop
+            working once used or after 7 days. Expired access doesn’t delete your records.
           </li>
         </ul>
       </section>
@@ -374,8 +384,8 @@ export function Privacy() {
           </li>
           <li>
             <strong>Delete my profile</strong> permanently removes your profile, prices, trades,
-            devices, recovery code, group memberships, friends, and friend requests. Groups with
-            other members stay. You’ll be asked to confirm, and it can’t be undone.
+            devices, recovery code, group memberships, friends, friend requests, and friend links.
+            Groups with other members stay. You’ll be asked to confirm, and it can’t be undone.
           </li>
         </ul>
         <p>

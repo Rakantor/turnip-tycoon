@@ -299,6 +299,13 @@ export function useGroups(
     /** Sends a friend request, or accepts theirs if they already asked you. */
     addFriend: (code: string) => changeFriend('/friends', 'POST', { code }),
     acceptFriend: (playerId: string) => changeFriend(`/friends/${playerId}`, 'PUT'),
+    /** Saves a friend link's code, made on this device so sharing can start in the same tap. */
+    shareInvite: async (code: string) => {
+      assertOwner(owner);
+      await request<{ expiresAt: string }>('/friends/invites', { method: 'POST', body: { code } });
+    },
+    /** Accepting a friend link makes friends both ways at once. */
+    acceptInvite: (code: string) => changeFriend('/friends/invites/accept', 'POST', { code }),
     /** Removes a friend, or declines or withdraws a request. */
     removeFriend: async (playerId: string) => {
       await change(`/friends/${playerId}`, 'DELETE', undefined, (data) =>

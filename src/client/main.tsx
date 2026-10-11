@@ -129,6 +129,10 @@ function App() {
                 element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
               />
               <Route
+                path="/friends/add"
+                element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
+              />
+              <Route
                 path="/groups/:groupId"
                 element={<Groups key={identity.session?.player.id ?? 'connecting'} />}
               />

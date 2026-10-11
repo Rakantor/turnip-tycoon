@@ -11,7 +11,7 @@ import type { WeekRecord } from '../shared/week';
 import { oddsPercent, patternName, percent, slotShortName } from './advice';
 import { useGroups } from './data/use-groups';
 import { useWeek } from './data/use-week';
-import { FriendRequests, YourFriends } from './friends';
+import { FriendInvite, FriendRequests, YourFriends } from './friends';
 import { GroupPriceTable } from './group-price-table';
 import { PlayerAvatar } from './player-avatar';
 import {
@@ -916,6 +916,8 @@ export function Groups() {
   const identity = useApp();
   const [params, setParams] = useSearchParams();
   const linkCode = params.get('code') ?? '';
+  const inviteCode = params.get('invite') ?? '';
+  const [inviteDone, setInviteDone] = useState('');
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
@@ -946,7 +948,7 @@ export function Groups() {
   const sharing = hasGroups || data.friendIds.length > 0;
   const loading = data.status === 'loading' && !sharing;
   const reveal = useReveal(loading);
-  const formOpen = linkCode || showForm || (!sharing && data.status === 'ready');
+  const formOpen = linkCode || showForm || (!sharing && !inviteCode && data.status === 'ready');
   const friendCode = identity.session?.player.friendCode;
   return (
     <main className="page groups-page" id="main-content">
@@ -965,6 +967,19 @@ export function Groups() {
         )}
       </div>
       <ConnectionMessage data={data} />
+      {inviteCode && (
+        <FriendInvite
+          key={inviteCode}
+          code={inviteCode}
+          data={data}
+          owner={owner}
+          onClose={(done) => {
+            setInviteDone(done ?? '');
+            setParams({}, { replace: true });
+          }}
+        />
+      )}
+      {inviteDone && <Notice success>{inviteDone}</Notice>}
       <FriendRequests data={data} />
       {formOpen && (
         <section className="group-create-card">

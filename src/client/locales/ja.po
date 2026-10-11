@@ -171,6 +171,11 @@ msgstr "ほか{more}人"
 msgid "{name} disconnected."
 msgstr "{name}の接続を解除しました。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "{name} wants to be your friend"
+msgstr "{name}からフレンドのお誘いです"
+
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "{name}’s {price}"
@@ -307,6 +312,11 @@ msgstr "{verdict}最高値は{halfDay}の<0>{bestPrice}ベル</0>でした。"
 msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
 msgstr "<0>{groupName}</0>はいま満員です。フレンドからなんと呼ばれたいですか？"
 
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{inviter}</0> wants to be your friend. What should they call you?"
+msgstr "<0>{inviter}</0>からフレンドのお誘いです。なんと呼ばれたいですか？"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
@@ -368,6 +378,7 @@ msgid "A week holds at most 40 purchases and sales."
 msgstr "1週間に記録できる購入と売却は最大40件です。"
 
 #. Button: accept a friend request
+#. Button: accept a friend request
 #: src/client/friends.tsx
 #, fuzzy
 msgid "Accept"
@@ -383,6 +394,11 @@ msgstr "{name}のフレンド申請を承認"
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr "フレンドで承認すると、価格と予測を比べられます。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Accept to see each other’s prices and forecasts."
+msgstr "承認すると、おたがいの価格と予測を見られます。"
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Add friends"
@@ -392,6 +408,11 @@ msgstr "フレンドを追加"
 #, fuzzy
 msgid "Add friends or start a group to compare prices and forecasts."
 msgstr "フレンドを追加するかグループを作って、価格と予測を比べましょう。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Add me as a friend on Turnip Tycoon"
+msgstr "Turnip Tycoonでフレンドになろう"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -723,6 +744,11 @@ msgstr "入力内容を確認してください。"
 msgid "Check this entry."
 msgstr "この項目を確認してください。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Checking this friend link…"
+msgstr "フレンドリンクを確認中…"
+
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Choose a valid device."
@@ -758,6 +784,7 @@ msgstr "残す項目を選んでください。選ぶまではあなたの入力
 msgid "Clear this device’s saved data"
 msgstr "この端末の保存データを消去"
 
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/turnips.tsx
 #, fuzzy
@@ -884,6 +911,11 @@ msgstr "{groupName}のグループコードをコピー"
 #, fuzzy
 msgid "Copy code"
 msgstr "コードをコピー"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Copy this friend link to share it."
+msgstr "共有するには、このフレンドリンクをコピーしてください。"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1116,6 +1148,11 @@ msgstr "残したい場合は先にデータをダウンロードしてくださ
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr "プロフィール、保存したすべての価格と売買、グループの参加情報、端末情報をJSONファイルでダウンロードします。このブラウザの未送信の変更は別に含まれます。ファイルは人に見られない場所に保管してください。"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Each link adds one friend and works for 7 days."
+msgstr "リンク1つでフレンド1人を追加でき、7日間有効です。"
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Edit purchase"
@@ -1283,6 +1320,16 @@ msgstr "フレンドコード"
 #, fuzzy
 msgid "Friend code copied."
 msgstr "フレンドコードをコピーしました。"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link"
+msgstr "フレンドリンク"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link copied."
+msgstr "フレンドリンクをコピーしました。"
 
 #: src/client/friends.tsx
 #, fuzzy
@@ -1912,6 +1959,11 @@ msgstr "未入力"
 msgid "Not entered, no forecast available"
 msgstr "未入力、予測なし"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Not now"
+msgstr "あとで"
+
 #: src/client/calculator.tsx
 #, fuzzy
 msgid "Not sure"
@@ -2037,6 +2089,11 @@ msgstr "ピークの日はまだ未定"
 #, fuzzy
 msgid "Permanently delete profile"
 msgstr "プロフィールを完全に削除"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please share your friend link again."
+msgstr "もう一度フレンドリンクを共有してください。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2315,6 +2372,11 @@ msgstr "保存"
 
 #: src/client/welcome.tsx
 #, fuzzy
+msgid "Save and accept"
+msgstr "保存して承認"
+
+#: src/client/welcome.tsx
+#, fuzzy
 msgid "Save and join"
 msgstr "保存して参加"
 
@@ -2449,6 +2511,11 @@ msgstr "有効なJSONを送信してください。"
 #, fuzzy
 msgid "Settings"
 msgstr "設定"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Share friend link"
+msgstr "フレンドリンクを共有"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2599,6 +2666,11 @@ msgstr "日曜日、ウリから"
 #, fuzzy
 msgid "Terms"
 msgstr "利用規約"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "That link couldn’t be saved, so it won’t work. Share a new one."
+msgstr "リンクを保存できなかったため、このリンクは使えません。新しいリンクを共有してください。"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2773,6 +2845,11 @@ msgstr "この端末の名前"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
+msgid "This friend link expired or was already used. Ask for a new one."
+msgstr "このフレンドリンクは期限切れか、すでに使われています。新しいリンクをもらってください。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
 msgid "This friend request is no longer available."
 msgstr "このフレンド申請はもうありません。"
 
@@ -2800,6 +2877,12 @@ msgstr "今週あなたの島で出せる最高値です。"
 #, fuzzy
 msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr "これは自分のフレンドコードです。フレンドのコードを入力してください。"
+
+#: src/client/data/server-messages.ts
+#: src/client/friends.tsx
+#, fuzzy
+msgid "This is your own friend link. Share it with a friend instead."
+msgstr "これは自分のフレンドリンクです。フレンドに共有してください。"
 
 #: src/client/odds.ts
 #, fuzzy
@@ -2830,6 +2913,11 @@ msgstr "この接続コードはもう使えません。"
 #, fuzzy
 msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
 msgstr "あなたの名前、フレンドコード、価格の履歴、購入、売却、グループの参加情報がアプリのデータベースから完全に削除されます。"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player can’t add more friends right now."
+msgstr "このプレイヤーは今はこれ以上フレンドを追加できません。"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -3017,6 +3105,7 @@ msgid "Trades"
 msgstr "売買"
 
 #: src/client/calculator.tsx
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -3246,6 +3335,11 @@ msgstr "あなた"
 #, fuzzy
 msgid "You"
 msgstr "あなた"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "You and {name} are already friends."
+msgstr "{name}とはすでにフレンドです。"
 
 #: src/client/friends.tsx
 #, fuzzy

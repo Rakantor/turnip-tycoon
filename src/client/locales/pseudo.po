@@ -140,6 +140,10 @@ msgstr ""
 msgid "{name} disconnected."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "{name} wants to be your friend"
+msgstr ""
+
 #: src/client/odds-card.tsx
 msgid "{name}’s {price}"
 msgstr ""
@@ -250,6 +254,10 @@ msgstr ""
 msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
 msgstr ""
 
+#: src/client/welcome.tsx
+msgid "<0>{inviter}</0> wants to be your friend. What should they call you?"
+msgstr ""
+
 #: src/client/settings.tsx
 msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
 msgstr ""
@@ -299,6 +307,7 @@ msgid "A week holds at most 40 purchases and sales."
 msgstr ""
 
 #. Button: accept a friend request
+#. Button: accept a friend request
 #: src/client/friends.tsx
 msgid "Accept"
 msgstr ""
@@ -311,12 +320,20 @@ msgstr ""
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Accept to see each other’s prices and forecasts."
+msgstr ""
+
 #: src/client/groups.tsx
 msgid "Add friends"
 msgstr ""
 
 #: src/client/groups.tsx
 msgid "Add friends or start a group to compare prices and forecasts."
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Add me as a friend on Turnip Tycoon"
 msgstr ""
 
 #: src/client/forecast.tsx
@@ -588,6 +605,10 @@ msgstr ""
 msgid "Check this entry."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Checking this friend link…"
+msgstr ""
+
 #: src/client/data/server-messages.ts
 msgid "Choose a valid device."
 msgstr ""
@@ -616,6 +637,7 @@ msgstr ""
 msgid "Clear this device’s saved data"
 msgstr ""
 
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/turnips.tsx
 msgid "Close"
@@ -716,6 +738,10 @@ msgstr ""
 
 #: src/client/settings.tsx
 msgid "Copy code"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Copy this friend link to share it."
 msgstr ""
 
 #: src/client/groups.tsx
@@ -903,6 +929,10 @@ msgstr ""
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Each link adds one friend and works for 7 days."
+msgstr ""
+
 #: src/client/turnips.tsx
 msgid "Edit purchase"
 msgstr ""
@@ -1036,6 +1066,14 @@ msgstr ""
 
 #: src/client/friends.tsx
 msgid "Friend code copied."
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Friend link"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Friend link copied."
 msgstr ""
 
 #: src/client/friends.tsx
@@ -1543,6 +1581,10 @@ msgstr ""
 msgid "Not entered, no forecast available"
 msgstr ""
 
+#: src/client/friends.tsx
+msgid "Not now"
+msgstr ""
+
 #: src/client/calculator.tsx
 msgid "Not sure"
 msgstr ""
@@ -1642,6 +1684,10 @@ msgstr ""
 
 #: src/client/profile-data.tsx
 msgid "Permanently delete profile"
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "Please share your friend link again."
 msgstr ""
 
 #: src/client/data/server-messages.ts
@@ -1868,6 +1914,10 @@ msgid "Save"
 msgstr ""
 
 #: src/client/welcome.tsx
+msgid "Save and accept"
+msgstr ""
+
+#: src/client/welcome.tsx
 msgid "Save and join"
 msgstr ""
 
@@ -1975,6 +2025,10 @@ msgstr ""
 #: src/client/main.tsx
 #: src/client/settings.tsx
 msgid "Settings"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "Share friend link"
 msgstr ""
 
 #: src/client/groups.tsx
@@ -2096,6 +2150,10 @@ msgstr ""
 
 #: src/client/about.tsx
 msgid "Terms"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "That link couldn’t be saved, so it won’t work. Share a new one."
 msgstr ""
 
 #: src/client/groups.tsx
@@ -2236,6 +2294,10 @@ msgid "This device’s name"
 msgstr ""
 
 #: src/client/data/server-messages.ts
+msgid "This friend link expired or was already used. Ask for a new one."
+msgstr ""
+
+#: src/client/data/server-messages.ts
 msgid "This friend request is no longer available."
 msgstr ""
 
@@ -2257,6 +2319,11 @@ msgstr ""
 
 #: src/client/data/server-messages.ts
 msgid "This is your own friend code. Enter a friend’s code instead."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+#: src/client/friends.tsx
+msgid "This is your own friend link. Share it with a friend instead."
 msgstr ""
 
 #: src/client/odds.ts
@@ -2281,6 +2348,10 @@ msgstr ""
 
 #: src/client/profile-data.tsx
 msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
+msgstr ""
+
+#: src/client/data/server-messages.ts
+msgid "This player can’t add more friends right now."
 msgstr ""
 
 #: src/client/forecast.tsx
@@ -2433,6 +2504,7 @@ msgid "Trades"
 msgstr ""
 
 #: src/client/calculator.tsx
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -2618,6 +2690,10 @@ msgstr ""
 #: src/client/groups.tsx
 #: src/client/welcome.tsx
 msgid "You"
+msgstr ""
+
+#: src/client/friends.tsx
+msgid "You and {name} are already friends."
 msgstr ""
 
 #: src/client/friends.tsx

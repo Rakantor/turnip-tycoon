@@ -171,6 +171,11 @@ msgstr "nog {more}"
 msgid "{name} disconnected."
 msgstr "{name} ontkoppeld."
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "{name} wants to be your friend"
+msgstr "{name} wil vrienden met je worden"
+
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "{name}’s {price}"
@@ -307,6 +312,11 @@ msgstr "{verdict} Je beste prijs was <0>{bestPrice} klingels</0> op {halfDay}."
 msgid "<0>{groupName}</0> is full right now. What should your friends call you?"
 msgstr "<0>{groupName}</0> is nu vol. Hoe moeten je vrienden je noemen?"
 
+#: src/client/welcome.tsx
+#, fuzzy
+msgid "<0>{inviter}</0> wants to be your friend. What should they call you?"
+msgstr "<0>{inviter}</0> wil vrienden met je worden. Hoe wil je genoemd worden?"
+
 #: src/client/settings.tsx
 #, fuzzy
 msgid "<0>Save this recovery code somewhere safe.</0> It is shown only here and gives access to your prices."
@@ -368,6 +378,7 @@ msgid "A week holds at most 40 purchases and sales."
 msgstr "Een week bevat maximaal 40 aankopen en verkopen."
 
 #. Button: accept a friend request
+#. Button: accept a friend request
 #: src/client/friends.tsx
 #, fuzzy
 msgid "Accept"
@@ -383,6 +394,11 @@ msgstr "Vriendschapsverzoek van {name} accepteren"
 msgid "Accept on Friends to compare your prices and forecasts."
 msgstr "Accepteer bij Vrienden om jullie prijzen en voorspellingen te vergelijken."
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Accept to see each other’s prices and forecasts."
+msgstr "Accepteer om elkaars prijzen en voorspellingen te zien."
+
 #: src/client/groups.tsx
 #, fuzzy
 msgid "Add friends"
@@ -392,6 +408,11 @@ msgstr "Vrienden toevoegen"
 #, fuzzy
 msgid "Add friends or start a group to compare prices and forecasts."
 msgstr "Voeg vrienden toe of begin een groep om prijzen en voorspellingen te vergelijken."
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Add me as a friend on Turnip Tycoon"
+msgstr "Voeg me toe als vriend op Turnip Tycoon"
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -723,6 +744,11 @@ msgstr "Controleer de ingevulde velden."
 msgid "Check this entry."
 msgstr "Controleer deze invoer."
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Checking this friend link…"
+msgstr "Vriendlink controleren…"
+
 #: src/client/data/server-messages.ts
 #, fuzzy
 msgid "Choose a valid device."
@@ -758,6 +784,7 @@ msgstr "Kies welke invoer je wilt houden. De jouwe blijft hier tot je kiest."
 msgid "Clear this device’s saved data"
 msgstr "Opgeslagen gegevens van dit apparaat wissen"
 
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/turnips.tsx
 #, fuzzy
@@ -884,6 +911,11 @@ msgstr "Groepscode van {groupName} kopiëren"
 #, fuzzy
 msgid "Copy code"
 msgstr "Code kopiëren"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Copy this friend link to share it."
+msgstr "Kopieer deze vriendlink om hem te delen."
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1116,6 +1148,11 @@ msgstr "Download je gegevens eerst als je ze wilt bewaren. Dit kan niet ongedaan
 msgid "Download your profile, all saved prices and trades, group memberships, and device details as a JSON file. Unsent edits on this browser are included separately. Keep the file somewhere private."
 msgstr "Download je profiel, alle opgeslagen prijzen en transacties, je groepslidmaatschappen en apparaatgegevens als JSON-bestand. Niet-verzonden wijzigingen in deze browser worden apart meegenomen. Bewaar het bestand op een privéplek."
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Each link adds one friend and works for 7 days."
+msgstr "Elke link voegt één vriend toe en werkt 7 dagen."
+
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Edit purchase"
@@ -1283,6 +1320,16 @@ msgstr "Vriendcode"
 #, fuzzy
 msgid "Friend code copied."
 msgstr "Vriendcode gekopieerd."
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link"
+msgstr "Vriendlink"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Friend link copied."
+msgstr "Vriendlink gekopieerd."
 
 #: src/client/friends.tsx
 #, fuzzy
@@ -1912,6 +1959,11 @@ msgstr "Geen prijs"
 msgid "Not entered, no forecast available"
 msgstr "Geen prijs, geen voorspelling beschikbaar"
 
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Not now"
+msgstr "Niet nu"
+
 #: src/client/calculator.tsx
 #, fuzzy
 msgid "Not sure"
@@ -2037,6 +2089,11 @@ msgstr "Piekdag nog open"
 #, fuzzy
 msgid "Permanently delete profile"
 msgstr "Profiel definitief verwijderen"
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Please share your friend link again."
+msgstr "Deel je vriendlink opnieuw."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2315,6 +2372,11 @@ msgstr "Opslaan"
 
 #: src/client/welcome.tsx
 #, fuzzy
+msgid "Save and accept"
+msgstr "Opslaan en accepteren"
+
+#: src/client/welcome.tsx
+#, fuzzy
 msgid "Save and join"
 msgstr "Opslaan en lid worden"
 
@@ -2449,6 +2511,11 @@ msgstr "Stuur geldige JSON."
 #, fuzzy
 msgid "Settings"
 msgstr "Instellingen"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "Share friend link"
+msgstr "Vriendlink delen"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2599,6 +2666,11 @@ msgstr "Zondag, bij Daisy Mae"
 #, fuzzy
 msgid "Terms"
 msgstr "Voorwaarden"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "That link couldn’t be saved, so it won’t work. Share a new one."
+msgstr "Die link kon niet worden opgeslagen en werkt dus niet. Deel een nieuwe."
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -2773,6 +2845,11 @@ msgstr "Naam van dit apparaat"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
+msgid "This friend link expired or was already used. Ask for a new one."
+msgstr "Deze vriendlink is verlopen of al gebruikt. Vraag om een nieuwe."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
 msgid "This friend request is no longer available."
 msgstr "Dit vriendschapsverzoek is niet meer beschikbaar."
 
@@ -2800,6 +2877,12 @@ msgstr "Dit is de hoogste prijs die je eiland deze week kan halen."
 #, fuzzy
 msgid "This is your own friend code. Enter a friend’s code instead."
 msgstr "Dit is je eigen vriendcode. Vul de code van een vriend in."
+
+#: src/client/data/server-messages.ts
+#: src/client/friends.tsx
+#, fuzzy
+msgid "This is your own friend link. Share it with a friend instead."
+msgstr "Dit is je eigen vriendlink. Deel hem met een vriend."
 
 #: src/client/odds.ts
 #, fuzzy
@@ -2830,6 +2913,11 @@ msgstr "Deze koppelcode is niet meer beschikbaar."
 #, fuzzy
 msgid "This permanently removes your name, friend code, price history, purchases, sales, and group memberships from the app’s database."
 msgstr "Hiermee worden je naam, vriendcode, prijshistorie, aankopen, verkopen en groepslidmaatschappen definitief uit de database van de app verwijderd."
+
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "This player can’t add more friends right now."
+msgstr "Deze persoon kan nu geen vrienden meer toevoegen."
 
 #: src/client/forecast.tsx
 #, fuzzy
@@ -3017,6 +3105,7 @@ msgid "Trades"
 msgstr "Transacties"
 
 #: src/client/calculator.tsx
+#: src/client/friends.tsx
 #: src/client/groups.tsx
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -3246,6 +3335,11 @@ msgstr "jij"
 #, fuzzy
 msgid "You"
 msgstr "Jij"
+
+#: src/client/friends.tsx
+#, fuzzy
+msgid "You and {name} are already friends."
+msgstr "Jij en {name} zijn al vrienden."
 
 #: src/client/friends.tsx
 #, fuzzy
