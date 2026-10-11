@@ -185,19 +185,22 @@ possible self-hosted configuration.
 
 The pages are written for players: short, plain sections with the privacy summary first. Keep
 them that way. Put implementation detail here, not on the pages. They state these operator facts,
-confirmed on 2026-10-06:
+confirmed on 2026-10-06 (email setup on 2026-10-11):
 
-- The controller is Rakantor, `rakantor.dev@gmail.com`; the operator confirmed the public
+- The controller is Rakantor, `hello@turniptycoon.app`; the operator confirmed the public
   pseudonym is sufficient where they are established.
+- Cloudflare Email Routing receives `hello@turniptycoon.app` and forwards it to the operator's
+  Gmail. Replies go out through Resend's SMTP on its **Free plan** (30-day retention). **Changing
+  how mail is received or sent changes "Services we use".**
 - Supabase hosts the database in the EU on the **Free plan**: no automatic backups, 1-day logs.
   Cloudflare Workers runs on the **Free plan**: 3-day Workers Logs. `wrangler.jsonc` disables
   per-request invocation logs, so only the app's own error logs (event, error name, and path) are
   kept; re-enabling them would put every request in the logs and change the page. No
   operator-managed backups exist. **Upgrading either plan changes these facts; update "How long we keep it".**
 - Support emails are deleted within a month after the request is resolved.
-- Transfers: GitHub, Cloudflare, and Google state EU-U.S. Data Privacy Framework certification
-  (with standard contractual clauses as well); Supabase relies on standard contractual clauses
-  for the United States and Singapore.
+- Transfers: GitHub, Cloudflare, Google, and Resend state EU-U.S. Data Privacy Framework
+  certification (with standard contractual clauses as well); Supabase relies on standard
+  contractual clauses for the United States and Singapore.
 
 ### Profile data controls
 
@@ -292,8 +295,12 @@ Research checked on 2026-10-06: [GDPR text (especially Articles 5, 6, 11–20, 2
 [Supabase plan limits](https://supabase.com/pricing),
 [Workers Logs retention](https://developers.cloudflare.com/workers/observability/logs/workers-logs/),
 [GitHub privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement),
-[Google's transfer frameworks](https://policies.google.com/privacy/frameworks), and
-[Google privacy policy](https://policies.google.com/privacy).
+[Google's transfer frameworks](https://policies.google.com/privacy/frameworks),
+[Google privacy policy](https://policies.google.com/privacy), and on 2026-10-11:
+[Cloudflare Email Routing](https://developers.cloudflare.com/email-routing/postmaster/),
+[Resend DPF certification](https://resend.com/changelog/data-privacy-framework-certification),
+[Resend privacy policy](https://resend.com/legal/privacy-policy), and
+[Resend plan limits](https://resend.com/pricing).
 
 ## Assets and licensing
 

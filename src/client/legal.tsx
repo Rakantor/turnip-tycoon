@@ -279,26 +279,31 @@ export function Privacy() {
             addresses for security.
           </li>
           <li>
-            <strong>Cloudflare</strong> runs the server the app talks to.
+            <strong>Cloudflare</strong> runs the server the app talks to and forwards the emails you
+            send us.
           </li>
           <li>
             <strong>Supabase</strong> hosts our database in the European Union.
           </li>
           <li>
-            <strong>Gmail</strong> (Google) receives the emails you send us.
+            <strong>Gmail</strong> (Google) holds the emails you send us.
+          </li>
+          <li>
+            <strong>Resend</strong> sends our replies.
           </li>
         </ul>
         <p>
           Some of these companies can access data from outside the EU, mainly from the United
-          States. GitHub, Cloudflare, and Google are certified under the EU-U.S. Data Privacy
-          Framework, and Supabase uses the EU’s standard contractual clauses. More details are in
-          the privacy policies of{' '}
+          States. GitHub, Cloudflare, Google, and Resend are certified under the EU-U.S. Data
+          Privacy Framework, and Supabase uses the EU’s standard contractual clauses. More details
+          are in the privacy policies of{' '}
           <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">
             GitHub
           </a>
           , <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a>,{' '}
-          <a href="https://supabase.com/privacy">Supabase</a>, and{' '}
-          <a href="https://policies.google.com/privacy">Google</a>.
+          <a href="https://supabase.com/privacy">Supabase</a>,{' '}
+          <a href="https://policies.google.com/privacy">Google</a>, and{' '}
+          <a href="https://resend.com/legal/privacy-policy">Resend</a>.
         </p>
       </section>
 
