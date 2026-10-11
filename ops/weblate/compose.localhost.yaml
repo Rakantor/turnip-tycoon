@@ -1,0 +1,6 @@
+# HTTPS option 2: a reverse proxy installed on the server itself (Caddy, nginx, Apache…). Weblate
+# listens on the server's loopback address only, so nothing but that proxy can reach it.
+services:
+  weblate:
+    ports:
+      - 127.0.0.1:${WEBLATE_HOST_PORT:-8080}:8080

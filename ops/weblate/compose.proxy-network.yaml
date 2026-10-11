@@ -1,0 +1,12 @@
+# HTTPS option 3: a reverse proxy that runs in its own container. Weblate joins the proxy's Docker
+# network, where the proxy reaches it as weblate:8080. The database and cache stay on Weblate's
+# own network, out of the proxy's reach, and no port is published.
+services:
+  weblate:
+    networks:
+      - default
+      - proxy
+networks:
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:?Set PROXY_NETWORK in .env to your proxy's Docker network}

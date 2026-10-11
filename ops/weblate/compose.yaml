@@ -1,0 +1,43 @@
+# Weblate for Turnip Tycoon: Weblate, PostgreSQL and Valkey, following WeblateOrg/docker-compose.
+# Weblate serves plain HTTP on port 8080 inside its container. One of the compose.*.yaml files
+# beside this one decides how HTTPS reaches it; .env picks it through COMPOSE_FILE. Setup steps
+# are in README.md.
+name: weblate
+services:
+  weblate:
+    # The monthly tag picks up that month's bug-fix releases; README.md covers upgrades.
+    image: weblate/weblate:2026.10
+    depends_on:
+      - database
+      - cache
+    volumes:
+      - weblate-data:/app/data
+      - weblate-cache:/app/cache
+    env_file: .env
+    restart: always
+    read_only: true
+    tmpfs:
+      - /run
+      - /tmp
+  database:
+    image: postgres:18-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    # Only the database settings, so the other secrets in .env stay out of this container.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: always
+  cache:
+    image: valkey/valkey:9.1.2
+    volumes:
+      - valkey-data:/data
+    command: [valkey-server, --save, '60', '1', --loglevel, warning]
+    restart: always
+    read_only: true
+volumes:
+  weblate-data: {}
+  weblate-cache: {}
+  postgres-data: {}
+  valkey-data: {}

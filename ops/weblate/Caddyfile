@@ -1,0 +1,5 @@
+# Used by compose.caddy.yaml. Caddy fills in the domain from the environment.
+{$WEBLATE_SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy weblate:8080
+}

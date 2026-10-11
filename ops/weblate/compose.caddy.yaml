@@ -1,0 +1,21 @@
+# HTTPS option 1: a bundled Caddy, for a server with nothing else on ports 80 and 443. Caddy gets
+# a certificate for WEBLATE_SITE_DOMAIN from Let's Encrypt and renews it.
+services:
+  caddy:
+    image: caddy:2.11
+    depends_on:
+      - weblate
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    environment:
+      WEBLATE_SITE_DOMAIN: ${WEBLATE_SITE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: always
+volumes:
+  caddy-data: {}
+  caddy-config: {}
