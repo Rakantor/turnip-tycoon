@@ -2655,8 +2655,8 @@ msgstr "이 그룹 코드는 사용할 수 없어요. 코드를 확인하고 다
 
 #: src/client/data/server-messages.ts
 #, fuzzy
-msgid "This group is full. A group can have up to 8 players."
-msgstr "이 그룹은 꽉 찼어요. 그룹에는 최대 8명까지 있을 수 있어요."
+msgid "This group is full. A group can have up to 12 players."
+msgstr "이 그룹은 꽉 찼어요. 그룹에는 최대 12명까지 있을 수 있어요."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2951,8 +2951,8 @@ msgstr "최대 {maxLength}자. 비워 두면 기본 이름({defaultName})을 사
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "최대 8명. 멤버끼리 이름, 친구 코드, 주간 가격과 기록을 볼 수 있어요."
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "최대 12명. 멤버끼리 이름, 친구 코드, 주간 가격과 기록을 볼 수 있어요."
 
 #: src/client/pwa/update-notice.tsx
 #, fuzzy

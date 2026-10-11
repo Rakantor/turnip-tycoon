@@ -438,7 +438,7 @@ function GroupForm({
       </form>
       <p className="hint">
         <Trans>
-          Up to 8 players. Members can see each other’s name, friend code, weekly prices and
+          Up to 12 players. Members can see each other’s name, friend code, weekly prices and
           history.
         </Trans>
       </p>

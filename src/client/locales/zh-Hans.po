@@ -2655,8 +2655,8 @@ msgstr "此群组码不可用。请检查代码后重试。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
-msgid "This group is full. A group can have up to 8 players."
-msgstr "此群组已满。一个群组最多可有8名玩家。"
+msgid "This group is full. A group can have up to 12 players."
+msgstr "此群组已满。一个群组最多可有12名玩家。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2951,8 +2951,8 @@ msgstr "最多{maxLength}个字符。留空则使用“{defaultName}”。"
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "最多8名玩家。成员可以互相看到名字、好友码、每周价格和历史。"
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "最多12名玩家。成员可以互相看到名字、好友码、每周价格和历史。"
 
 #: src/client/pwa/update-notice.tsx
 #, fuzzy

@@ -2140,8 +2140,8 @@ msgid "This group code is not available. Check the code and try again."
 msgstr "This group code is not available. Check the code and try again."
 
 #: src/client/data/server-messages.ts
-msgid "This group is full. A group can have up to 8 players."
-msgstr "This group is full. A group can have up to 8 players."
+msgid "This group is full. A group can have up to 12 players."
+msgstr "This group is full. A group can have up to 12 players."
 
 #: src/client/data/server-messages.ts
 msgid "This group is no longer available to you."
@@ -2379,8 +2379,8 @@ msgid "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
 msgstr "Up to {maxLength} characters. Leave it empty to go by {defaultName}."
 
 #: src/client/groups.tsx
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
 
 #: src/client/pwa/update-notice.tsx
 msgid "Update now"

@@ -2655,8 +2655,8 @@ msgstr "Этот код группы недоступен. Проверь код
 
 #: src/client/data/server-messages.ts
 #, fuzzy
-msgid "This group is full. A group can have up to 8 players."
-msgstr "Эта группа заполнена. В группе может быть до 8 игроков."
+msgid "This group is full. A group can have up to 12 players."
+msgstr "Эта группа заполнена. В группе может быть до 12 игроков."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2951,8 +2951,8 @@ msgstr "До {maxLength} символов. Оставь пустым, чтобы
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "До 8 игроков. Участники видят имена, коды друзей, недельные цены и историю друг друга."
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "До 12 игроков. Участники видят имена, коды друзей, недельные цены и историю друг друга."
 
 #: src/client/pwa/update-notice.tsx
 #, fuzzy

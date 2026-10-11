@@ -2655,8 +2655,8 @@ msgstr "Ce code de groupe n’est pas disponible. Vérifie le code et réessaie.
 
 #: src/client/data/server-messages.ts
 #, fuzzy
-msgid "This group is full. A group can have up to 8 players."
-msgstr "Ce groupe est complet. Un groupe peut compter jusqu’à 8 membres."
+msgid "This group is full. A group can have up to 12 players."
+msgstr "Ce groupe est complet. Un groupe peut compter jusqu’à 12 membres."
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2951,8 +2951,8 @@ msgstr "Jusqu’à {maxLength} caractères. Laisse vide pour apparaître sous le
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "Jusqu’à 8 personnes. Les membres voient le nom, le code ami, les prix de la semaine et l’historique des autres."
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "Jusqu’à 12 personnes. Les membres voient le nom, le code ami, les prix de la semaine et l’historique des autres."
 
 #: src/client/pwa/update-notice.tsx
 #, fuzzy

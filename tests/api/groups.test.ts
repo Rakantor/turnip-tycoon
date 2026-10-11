@@ -127,7 +127,7 @@ describe('Groups and shared player prices', () => {
     const response = await visitor.request('GET', `/api/groups/preview?code=${code}`);
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
-      group: { name: 'Odds crew', memberCount: 2, capacity: 8 },
+      group: { name: 'Odds crew', memberCount: 2, capacity: GROUP_CAPACITY },
       members: ['Mika', 'Rosa'],
     });
     await expectError(await visitor.request('GET', '/api/groups/preview?code=ABCD-EFGH-JKMN'), 404);

@@ -14,7 +14,7 @@ import { formatCode, normalizeCode, randomCode } from './secrets';
 import { attachPrices, historyInput, parseWeekStart, readHistory, readWeek } from './weeks';
 
 // A single limit covers creation, admission, and the capacity shown to members.
-export const GROUP_CAPACITY = 8;
+export const GROUP_CAPACITY = 12;
 
 const createInput = z.object({ name: z.string().trim().min(1).max(60) }).strict();
 const joinInput = z

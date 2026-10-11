@@ -2655,8 +2655,8 @@ msgstr "このグループコードは使えません。コードを確認して
 
 #: src/client/data/server-messages.ts
 #, fuzzy
-msgid "This group is full. A group can have up to 8 players."
-msgstr "このグループは満員です。グループは最大8人までです。"
+msgid "This group is full. A group can have up to 12 players."
+msgstr "このグループは満員です。グループは最大12人までです。"
 
 #: src/client/data/server-messages.ts
 #, fuzzy
@@ -2951,8 +2951,8 @@ msgstr "最大{maxLength}文字。空欄にすると「{defaultName}」になり
 
 #: src/client/groups.tsx
 #, fuzzy
-msgid "Up to 8 players. Members can see each other’s name, friend code, weekly prices and history."
-msgstr "最大8人まで。メンバーどうしで名前、フレンドコード、週ごとの価格と履歴を見られます。"
+msgid "Up to 12 players. Members can see each other’s name, friend code, weekly prices and history."
+msgstr "最大12人まで。メンバーどうしで名前、フレンドコード、週ごとの価格と履歴を見られます。"
 
 #: src/client/pwa/update-notice.tsx
 #, fuzzy

@@ -28,7 +28,7 @@ export function serverMessages(): Record<string, string> {
     'This device is no longer connected.': t`This device is no longer connected.`,
     'This device’s access expired. Reconnect your profile.': t`This device’s access expired. Reconnect your profile.`,
     'This group code is not available. Check the code and try again.': t`This group code is not available. Check the code and try again.`,
-    'This group is full. A group can have up to 8 players.': t`This group is full. A group can have up to 8 players.`,
+    'This group is full. A group can have up to 12 players.': t`This group is full. A group can have up to 12 players.`,
     'This group is no longer available to you.': t`This group is no longer available to you.`,
     'This pairing code expired or is no longer available. Start again on the new device.': t`This pairing code expired or is no longer available. Start again on the new device.`,
     'This pairing code has already been approved.': t`This pairing code has already been approved.`,
