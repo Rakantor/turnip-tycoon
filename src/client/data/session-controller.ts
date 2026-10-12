@@ -74,6 +74,11 @@ function transientFailure(error: unknown): boolean {
   );
 }
 
+/** A refusal the server answered itself, issued before anything it would have created. */
+function refused(error: unknown): boolean {
+  return error instanceof ApiError && error.status < 500 && error.code !== 'REQUEST_FAILED';
+}
+
 export class SessionController {
   state: IdentityState = {
     session: null,
@@ -330,10 +335,18 @@ export class SessionController {
             if (attempt !== this.generation) return;
           }
           const { displayName } = this.answer;
-          session = await this.deps.request<CredentialResponse>('/session', {
-            method: 'POST',
-            body: { deviceName: this.deps.deviceName(), ...(displayName ? { displayName } : {}) },
-          });
+          try {
+            session = await this.deps.request<CredentialResponse>('/session', {
+              method: 'POST',
+              body: { deviceName: this.deps.deviceName(), ...(displayName ? { displayName } : {}) },
+            });
+          } catch (error) {
+            // A refusal, such as a rate limit, created nothing, so it is no interrupted
+            // creation: forget the marker and let the kept answer try again on retry.
+            if (this.deps.vault.bearer && refused(error) && attempt === this.generation)
+              await this.forgetCreation(attempt);
+            throw error;
+          }
           this.answer = null;
         }
         await this.apply(session, attempt, false);
@@ -516,6 +529,22 @@ export class SessionController {
       this.refresh();
       throw error;
     }
+  }
+
+  /** Drops the creation marker of an attempt the server refused, while it is still ours. */
+  private async forgetCreation(attempt: number) {
+    try {
+      await this.deps.vault.clearInterruptedCreation(
+        this.stored.revision,
+        () => attempt === this.generation,
+      );
+    } catch {
+      // Another tab's identity, a newer attempt, or unreadable storage: leave the record.
+      return;
+    }
+    this.stored = { ...EMPTY };
+    this.durable = { ...EMPTY };
+    this.unsaved = false;
   }
 
   async restartInterruptedCreation(): Promise<void> {

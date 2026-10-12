@@ -406,6 +406,34 @@ describe('silent profile connection', () => {
     expect(reloaded.network).toHaveBeenCalledTimes(2);
   });
 
+  it('starts over after the server refuses a creation, instead of calling it interrupted', async () => {
+    const { vault } = makeVault();
+    const refused = () =>
+      new ApiError(429, 'RATE_LIMITED', 'Too many attempts. Wait a minute and try again.');
+    const h = harness(vault);
+    h.network.mockRejectedValueOnce(unauthorized()).mockRejectedValueOnce(refused());
+    await h.controller.retry();
+    expect(h.controller.state).toMatchObject({
+      status: 'error',
+      error: 'Too many attempts. Wait a minute and try again.',
+      creationInterrupted: false,
+    });
+    expect(await vault.read()).toMatchObject({ creating: false, session: null, token: null });
+    // Reloading within the minute is refused again and still offers a plain retry.
+    const reloaded = harness(vault);
+    reloaded.network.mockRejectedValueOnce(unauthorized()).mockRejectedValueOnce(refused());
+    await reloaded.controller.retry();
+    expect(reloaded.network).toHaveBeenCalledTimes(2);
+    expect(reloaded.controller.state.creationInterrupted).toBe(false);
+    // The retry creates the profile without asking the welcome dialog again.
+    reloaded.network
+      .mockRejectedValueOnce(unauthorized())
+      .mockResolvedValueOnce({ ...session('two'), sessionToken: tokenB });
+    await reloaded.controller.retry();
+    expect(reloaded.controller.state).toMatchObject({ status: 'ready', session: session('two') });
+    expect(reloaded.network).toHaveBeenCalledTimes(4);
+  });
+
   it('cannot restart creation over a profile another tab already connected', async () => {
     const { vault } = makeVault();
     const pending = await vault.beginCreation(null, () => true);
