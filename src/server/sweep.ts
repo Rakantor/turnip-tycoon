@@ -1,5 +1,5 @@
-import { and, eq, inArray, lte, not, or, sql, type SQL } from 'drizzle-orm';
-import { connectDatabase, transaction, type Database } from '../db/connection';
+import { and, asc, eq, gt, inArray, lte, not, or, sql, type SQL } from 'drizzle-orm';
+import { connectDatabase, transaction, type Database, type Transaction } from '../db/connection';
 import {
   devices,
   friendInvites,
@@ -18,12 +18,14 @@ const BATCH = 1000;
 /** Statements per table and run; anything beyond waits for the next run. */
 const BATCHES_PER_RUN = 50;
 /**
- * Profiles deleted per run at most, each in a transaction of its own. Profile creation admits
- * 60 a minute, so an hourly run has to manage well over 3,600 to outpace a flood.
+ * Profiles handled per run at most, each deletion in a transaction of its own. Profile creation
+ * admits 60 a minute, so an hourly run has to manage well over 3,600 to outpace a flood.
  */
 const PLAYERS_PER_RUN = 5000;
-/** Wall time a run spends on profiles; a cron trigger gets 15 minutes in all. */
-const PLAYERS_BUDGET_MS = 10 * 60 * 1000;
+/** Players examined per statement, by primary key: a bounded query whatever the table's size. */
+const SCAN_PAGE = 10_000;
+/** Wall time a run gets, shared by its phases; a cron trigger has 15 minutes in all. */
+const RUN_BUDGET_MS = 10 * 60 * 1000;
 /** Failures in a row that end a run: the database itself, not one profile, is the problem. */
 const FAILURE_STREAK = 5;
 
@@ -41,17 +43,32 @@ export interface SweepReport {
   friendInvites: number;
   /** Profiles deleted. */
   players: number;
-  /** Profiles whose deletion failed; a later run tries them again. */
+  /** Deletions, or pages of the scan, that failed; a later run tries them again. */
   failures: number;
 }
 
-/** Deletes rows past `expiresAt` in bounded batches and returns how many went. */
+export interface SweepOptions {
+  /** When to stop handling profiles and leave the rest for the next run. */
+  deadline?: number;
+  /** The player id the scan starts after; a run starts at random, so no profile is always last. */
+  start?: string;
+  /** Players examined per statement. */
+  pageSize?: number;
+}
+
+/** Logs a failure by its name alone, as requests do: never SQL parameters or credentials. */
+function logFailure(event: string, error: unknown): void {
+  console.error(JSON.stringify({ event, name: error instanceof Error ? error.name : 'unknown' }));
+}
+
+/** Deletes rows past `expiresAt` in bounded batches until the deadline, returning how many went. */
 async function deleteExpired(
   db: Database,
   table: typeof pairingChallenges | typeof friendInvites,
+  deadline: number,
 ): Promise<number> {
   let deleted = 0;
-  for (let batch = 0; batch < BATCHES_PER_RUN; batch += 1) {
+  for (let batch = 0; batch < BATCHES_PER_RUN && Date.now() < deadline; batch += 1) {
     const rows = await transaction(db, async (tx) => {
       const expired = tx
         .select({ id: table.id })
@@ -72,10 +89,11 @@ async function deleteExpired(
  */
 export async function sweepExpired(
   db: Database,
+  deadline = Date.now() + RUN_BUDGET_MS,
 ): Promise<Pick<SweepReport, 'pairingChallenges' | 'friendInvites'>> {
   return {
-    pairingChallenges: await deleteExpired(db, pairingChallenges),
-    friendInvites: await deleteExpired(db, friendInvites),
+    pairingChallenges: await deleteExpired(db, pairingChallenges, deadline),
+    friendInvites: await deleteExpired(db, friendInvites, deadline),
   };
 }
 
@@ -123,22 +141,61 @@ function abandoned(): SQL {
 }
 
 /**
+ * One page of the scan: the players with ids in (`after`, `upTo`], at most `size` of them, as
+ * the id the next page starts after, null once the range is used up, and the abandoned ones
+ * among them, up to `limit`. Both statements walk one page of the primary key, so each stays
+ * small however many players there are.
+ */
+async function scanPage(
+  tx: Transaction,
+  after: string | null,
+  upTo: string | null,
+  size: number,
+  limit: number,
+): Promise<{ end: string | null; candidates: string[] }> {
+  const within = (end: string | null) =>
+    and(
+      after === null ? undefined : gt(players.id, after),
+      end === null ? undefined : lte(players.id, end),
+    );
+  const [edge] = await tx
+    .select({ id: players.id })
+    .from(players)
+    .where(within(upTo))
+    .orderBy(asc(players.id))
+    .offset(size - 1)
+    .limit(1);
+  const rows = await tx
+    .select({ id: players.id })
+    .from(players)
+    .where(and(within(edge ? edge.id : upTo), abandoned()))
+    .orderBy(asc(players.id))
+    .limit(limit);
+  return { end: edge ? edge.id : null, candidates: rows.map((row) => row.id) };
+}
+
+/**
  * Deletes abandoned profiles one at a time, through the same path as a player's own request,
- * until the candidates, the run's cap or its time are used up.
+ * until the candidates, the run's cap or its time are used up. The scan walks the players by
+ * id from a random start, round to it again, a bounded page at a time: no statement grows with
+ * the table, and a profile behind one whose deletion keeps failing is reached by a later run.
  */
 export async function sweepAbandoned(
   db: Database,
-  deadline = Date.now() + PLAYERS_BUDGET_MS,
+  {
+    deadline = Date.now() + RUN_BUDGET_MS,
+    start = crypto.randomUUID(),
+    pageSize = SCAN_PAGE,
+  }: SweepOptions = {},
 ): Promise<Pick<SweepReport, 'players' | 'failures'>> {
-  const candidates = await db
-    .select({ id: players.id })
-    .from(players)
-    .where(abandoned())
-    .limit(PLAYERS_PER_RUN);
   const report = { players: 0, failures: 0 };
+  let handled = 0;
   let streak = 0;
-  for (const { id } of candidates) {
-    if (Date.now() >= deadline) break;
+  const withinBudget = () => handled < PLAYERS_PER_RUN && Date.now() < deadline;
+
+  /** Deletes one candidate unless a request holds it; false once failures end the run. */
+  const remove = async (id: string): Promise<boolean> => {
+    handled += 1;
     try {
       const gone = await transaction(db, async (tx) => {
         // A request holding the player is using the profile: leave it for a later run.
@@ -153,28 +210,45 @@ export async function sweepAbandoned(
       });
       if (gone) report.players += 1;
       streak = 0;
+      return true;
     } catch (error) {
-      // One profile's failure, such as a group lock held past lock_timeout, stops nothing
-      // else. As for requests, keep only the error's name.
+      // One profile's failure, such as a group lock held past lock_timeout, stops nothing else.
       report.failures += 1;
-      console.error(
-        JSON.stringify({
-          event: 'sweep_player_failed',
-          name: error instanceof Error ? error.name : 'unknown',
-        }),
-      );
+      logFailure('sweep_player_failed', error);
       streak += 1;
-      if (streak >= FAILURE_STREAK) break;
+      return streak < FAILURE_STREAK;
     }
-  }
+  };
+
+  /** Works through the players with ids in (`after`, `upTo`]; false once the run is over. */
+  const scan = async (after: string | null, upTo: string | null): Promise<boolean> => {
+    while (withinBudget()) {
+      let page: Awaited<ReturnType<typeof scanPage>>;
+      try {
+        page = await transaction(db, (tx) =>
+          scanPage(tx, after, upTo, pageSize, PLAYERS_PER_RUN - handled),
+        );
+      } catch (error) {
+        report.failures += 1;
+        logFailure('sweep_scan_failed', error);
+        return false;
+      }
+      for (const id of page.candidates) if (!withinBudget() || !(await remove(id))) return false;
+      if (page.end === null) return true;
+      after = page.end;
+    }
+    return false;
+  };
+  if (await scan(start, null)) await scan(null, start);
   return report;
 }
 
-/** One scheduled run against the production database. */
+/** One scheduled run against the production database, within one budget for both phases. */
 export async function sweep(databaseUrl: string): Promise<SweepReport> {
+  const deadline = Date.now() + RUN_BUDGET_MS;
   const { client, db } = await connectDatabase(databaseUrl);
   try {
-    return { ...(await sweepExpired(db)), ...(await sweepAbandoned(db)) };
+    return { ...(await sweepExpired(db, deadline)), ...(await sweepAbandoned(db, { deadline })) };
   } finally {
     await client.end();
   }

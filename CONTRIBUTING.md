@@ -230,9 +230,12 @@ device may hold unsent edits, which it clears on finding the profile gone. The s
 device history alone, so a profile left with no devices, by removing or logging out of the last
 one, stays. Expired devices are never deleted on their own, so a device of a deleted profile gets
 `401 DEVICE_REMOVED` at its next online check and clears its local copy, as after an explicit
-deletion. A run handles up to 5,000 profiles within a ten-minute budget; a profile whose deletion
+deletion. A run has ten minutes in all, for expired rows first and then up to 5,000 profiles, and
+leaves the rest for the next run; a profile whose deletion
 fails, say on a lock held past `lock_timeout`, is counted in the run's report and left for a later
-run, and five failures in a row end the run. The privacy page states these periods.
+run, and five failures in a row end the run. The scan walks the players by id in bounded pages from
+a random start, round to it again, so no statement grows with the table and a profile behind one
+whose deletion keeps failing is reached by a later run. The privacy page states these periods.
 
 Export reads at most 100 records per page, including expired device metadata and all historical
 weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,

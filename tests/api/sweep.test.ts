@@ -102,6 +102,11 @@ describe('Scheduled sweep', () => {
          from generate_series(1, 2500) n`,
       );
       const live = await startPairing('Laptop');
+      // A run out of time leaves the backlog for the next one.
+      expect(await connected((db) => sweepExpired(db, Date.now()))).toEqual({
+        pairingChallenges: 0,
+        friendInvites: 0,
+      });
       expect(await connected(sweepExpired)).toEqual({ pairingChallenges: 2500, friendInvites: 0 });
       expect(await count('pairing_challenges')).toBe(1);
       expect(live.code).toMatch(/^[A-HJ-NP-Z2-9]{4}(?:-[A-HJ-NP-Z2-9]{4}){3}$/);
@@ -275,12 +280,32 @@ describe('Scheduled sweep', () => {
       const gone = await startProfile();
       await saveWeek(gone.id);
       await age(gone.id, '70 days', abandoned);
-      expect(await connected((db) => sweepAbandoned(db, Date.now()))).toEqual({
+      expect(await connected((db) => sweepAbandoned(db, { deadline: Date.now() }))).toEqual({
         players: 0,
         failures: 0,
       });
       expect(await exists(gone.id)).toBe(true);
       expect(await run()).toEqual({ players: 1, failures: 0 });
+    });
+
+    it('scans the players a page at a time from its starting point round to it again', async () => {
+      const ids: string[] = [];
+      for (let n = 0; n < 5; n += 1) {
+        const { id } = await startProfile();
+        await saveWeek(id);
+        await age(id, '70 days', abandoned);
+        ids.push(id);
+      }
+      const kept = await startProfile();
+      // Postgres orders uuids by their bytes, as the hex strings sort.
+      ids.sort();
+      // Starting in the middle, pages of two run to the table's end and then from its beginning.
+      expect(await connected((db) => sweepAbandoned(db, { start: ids[2], pageSize: 2 }))).toEqual({
+        players: 5,
+        failures: 0,
+      });
+      for (const id of ids) expect(await exists(id)).toBe(false);
+      expect(await exists(kept.id)).toBe(true);
     });
   });
 });
