@@ -97,7 +97,7 @@ A shared friend link stands for its sharer's side of a friendship, so whoever ac
 
 - Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; the custom domain keeps that origin to this app alone.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
-- Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked. An hourly sweep (`src/server/sweep.ts`, run by the Worker's cron trigger) deletes expired challenges and shared friend links in bounded batches; nothing reads them once they expire.
+- Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked. An hourly sweep (`src/server/sweep.ts`, run by the Worker's cron trigger) deletes expired challenges and shared friend links in bounded batches; nothing reads them once they expire. It also deletes abandoned profiles; see Profile data controls.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
 - Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval: groups first, then friend links in key order. Removing a friend and deleting a profile take the matching update locks in the same order; profile deletion then locks its shared friend links, and accepting a link locks it first, so only one player can use it. Each player inserts only their own direction of a friend link; the player lock is `FOR NO KEY UPDATE`, so that insert's foreign-key check never waits on the other player's session, and simultaneous requests both ways can't deadlock. Membership and friendship never grant editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes, friends and requests included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
@@ -218,6 +218,17 @@ recovery verifiers, approved pairing challenges, and mutation records. Unapprove
 challenges have no player association.
 Other players and nonempty groups stay. The existing origin checks and no-store headers apply.
 
+The hourly sweep (`src/server/sweep.ts`) deletes abandoned profiles through the same `deletePlayer`
+path, one transaction each, taking the player's lock with `SKIP LOCKED` so a profile in use is left
+for a later run. Without a recovery code, a profile is unreachable once every device access has
+expired, since pairing needs a connected device; it is deleted 30 days after the last expiry, which
+is 60 days after its last online use. With a recovery code it is kept for 365 days after the last
+expiry. A profile holding no weeks, memberships, friend links or shared links, with no recovery code
+and no device added or renewed in the last 7 days, is deleted as never used. Expired devices are
+never deleted on their own, so a device of a deleted profile gets `401 DEVICE_REMOVED` at its next
+online check and clears its local copy, as after an explicit deletion. The privacy page states
+these periods.
+
 Export reads at most 100 records per page, including expired device metadata and all historical
 weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,
 and other players' data, except that friend links name the other player by ID. Shared friend links
@@ -291,6 +302,7 @@ Facts that must stay accurate:
 | Local profile access, history, unsent edits, the latest current-week group snapshot, language choice | `src/client/data/database.ts`, `session-vault.ts`, `shared-groups.ts`, `sync.ts`, `src/client/i18n.ts` |
 | Forecasts run locally; fonts are bundled; no third-party audience analytics are included             | `src/prediction`, `src/client/fonts.css`, `src/client/data/api.ts`, `vite.config.ts`                   |
 | Removing a device or clearing browser data does not delete the player/history                        | `src/server/app.ts`, `src/db/schema.ts`                                                                |
+| Abandoned and never-used profiles are deleted after the stated periods, and only then                | `src/server/sweep.ts`                                                                                  |
 
 Research checked on 2026-10-06: [GDPR text (especially Articles 5, 6, 11–20, 28 and 44–49)](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng),
 [European Commission: principles](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en),

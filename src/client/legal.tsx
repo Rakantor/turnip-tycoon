@@ -166,7 +166,8 @@ export function Terms() {
         <h2 id="terms-changes">Leaving, and changes to these terms</h2>
         <p>
           You can stop using the app at any time. Uninstalling it or removing a device doesn’t
-          delete your data from our server. To do that, use{' '}
+          delete your data from our server, though an abandoned profile is eventually deleted, as
+          the privacy policy explains. To delete it yourself, use{' '}
           <Link to="/settings#your-data">Settings → Your data → Delete my profile</Link>.
         </p>
         <p>
@@ -338,8 +339,12 @@ export function Privacy() {
         <h2 id="privacy-retention">How long we keep it</h2>
         <ul>
           <li>
-            <strong>Your profile and history</strong> stay until you delete your profile. We don’t
-            delete inactive profiles. A group is deleted when its last member leaves.
+            <strong>Your profile and history</strong> stay until you delete your profile or it is
+            abandoned. Without a recovery code, a profile is abandoned 30 days after its last device
+            access expired, so 60 days after you last used the app online; with a recovery code, it
+            is kept for a year after that. A profile that was started but never used again, with no
+            prices, trades, groups or friends, is deleted after a week. A group is deleted when its
+            last member leaves.
           </li>
           <li>
             <strong>Deleting your profile</strong> removes it from our database straight away. There
@@ -357,7 +362,8 @@ export function Privacy() {
           <li>
             <strong>Device access</strong> ends after 30 days without using the app online, and
             using it online renews it. Pairing codes expire after 10 minutes, and friend links stop
-            working once used or after 7 days. Expired access doesn’t delete your records.
+            working once used or after 7 days. Expired access doesn’t delete your records by itself;
+            an abandoned profile is deleted as described above.
           </li>
         </ul>
       </section>

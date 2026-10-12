@@ -163,6 +163,39 @@ async function readPage(tx: Transaction, owner: string, section: ExportSection, 
   }
 }
 
+/**
+ * Removes a player and everything theirs; the caller holds the player's lock. Groups are locked
+ * in ID order first, as admission, departure and shared reads lock them, then the player's
+ * friend links and shared links. Groups left empty go too; others stay.
+ */
+export async function deletePlayer(tx: Transaction, playerId: string): Promise<void> {
+  const memberOf = await tx
+    .select({ id: memberships.groupId })
+    .from(memberships)
+    .where(eq(memberships.playerId, playerId));
+  const ids = memberOf.map((row) => row.id);
+  if (ids.length)
+    await tx
+      .select({ id: groups.id })
+      .from(groups)
+      .where(inArray(groups.id, ids))
+      .orderBy(asc(groups.id))
+      .for('update');
+  await lockFriends(tx, playerId);
+  // Foreign keys remove all owned weeks, prices, trades, devices, recovery, approved
+  // pairing challenges, memberships, friend links and shared links, and mutation receipts.
+  await tx.delete(players).where(eq(players.id, playerId));
+  if (ids.length)
+    await tx
+      .delete(groups)
+      .where(
+        and(
+          inArray(groups.id, ids),
+          sql`not exists (select 1 from ${memberships} where ${memberships.groupId} = ${groups.id})`,
+        ),
+      );
+}
+
 export function registerProfileDataRoutes(app: Hono<AppEnvironment>): void {
   app.get('/api/profile/export', async (c) => {
     const input = exportInput.safeParse(c.req.query());
@@ -192,32 +225,7 @@ export function registerProfileDataRoutes(app: Hono<AppEnvironment>): void {
             'PLAYER_CHANGED',
             'Your profile changed. Review it before deleting.',
           );
-        const memberOf = await tx
-          .select({ id: memberships.groupId })
-          .from(memberships)
-          .where(eq(memberships.playerId, session.player.id));
-        const ids = memberOf.map((row) => row.id);
-        // Match group admission/departure and shared-read locks, always in the same order.
-        if (ids.length)
-          await tx
-            .select({ id: groups.id })
-            .from(groups)
-            .where(inArray(groups.id, ids))
-            .orderBy(asc(groups.id))
-            .for('update');
-        await lockFriends(tx, session.player.id);
-        // Foreign keys remove all owned weeks, prices, trades, devices, recovery, approved
-        // pairing challenges, memberships, friend links and shared links, and mutation receipts.
-        await tx.delete(players).where(eq(players.id, session.player.id));
-        if (ids.length)
-          await tx
-            .delete(groups)
-            .where(
-              and(
-                inArray(groups.id, ids),
-                sql`not exists (select 1 from ${memberships} where ${memberships.groupId} = ${groups.id})`,
-              ),
-            );
+        await deletePlayer(tx, session.player.id);
         return session.player.id;
       },
     );
