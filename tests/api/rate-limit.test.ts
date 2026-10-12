@@ -16,6 +16,16 @@ class FakeLimiter implements RateLimiter {
   }
 }
 
+type Limits = { profiles?: number; client?: number; creation?: number };
+
+function limiters(limits: Limits) {
+  return {
+    profiles: limits.profiles === undefined ? undefined : new FakeLimiter(limits.profiles),
+    client: limits.client === undefined ? undefined : new FakeLimiter(limits.client),
+    creation: limits.creation === undefined ? undefined : new FakeLimiter(limits.creation),
+  };
+}
+
 describe('Rate limits on unauthenticated writes', () => {
   let database: Awaited<ReturnType<typeof createTestDatabase>>;
   let client: Client;
@@ -34,16 +44,14 @@ describe('Rate limits on unauthenticated writes', () => {
     if (database) await database.stop();
   });
 
-  function build(limits: { client?: number; creation?: number }) {
-    const limiters = {
-      client: limits.client === undefined ? undefined : new FakeLimiter(limits.client),
-      creation: limits.creation === undefined ? undefined : new FakeLimiter(limits.creation),
-    };
-    return { app: createApp(database.url, { rateLimits: limiters }), limiters };
+  function build(limits: Limits) {
+    const rateLimits = limiters(limits);
+    return { app: createApp(database.url, { rateLimits }), limiters: rateLimits };
   }
 
-  const start = (app: ReturnType<typeof createApp>, address: string) =>
-    new Browser(app).request('POST', '/api/session', { deviceName: 'Phone' }, { address });
+  const address = '203.0.113.1';
+  const start = (app: ReturnType<typeof createApp>, from = address) =>
+    new Browser(app).request('POST', '/api/session', { deviceName: 'Phone' }, { address: from });
 
   async function players() {
     const result = await client.query('select count(*)::int as total from turnip_private.players');
@@ -51,10 +59,10 @@ describe('Rate limits on unauthenticated writes', () => {
   }
 
   it('refuses an address that keeps creating profiles, and says how long to wait', async () => {
-    const { app } = build({ client: 2 });
-    expect((await start(app, '203.0.113.1')).status).toBe(201);
-    expect((await start(app, '203.0.113.1')).status).toBe(201);
-    const refused = await start(app, '203.0.113.1');
+    const { app } = build({ profiles: 2 });
+    expect((await start(app)).status).toBe(201);
+    expect((await start(app)).status).toBe(201);
+    const refused = await start(app);
     const error = await expectError(refused, 429);
     expect(error.error.code).toBe('RATE_LIMITED');
     expect(refused.headers.get('Retry-After')).toBe(String(RATE_LIMIT_SECONDS));
@@ -64,18 +72,33 @@ describe('Rate limits on unauthenticated writes', () => {
   });
 
   it('does not count a connected device asking for its session again', async () => {
-    const { app, limiters } = build({ client: 1 });
+    const { app, limiters } = build({ profiles: 1 });
     const browser = new Browser(app);
     const request = () =>
-      browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address: '203.0.113.1' });
+      browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address });
     expect((await request()).status).toBe(201);
     for (let repeat = 0; repeat < 3; repeat += 1) expect((await request()).status).toBe(200);
-    expect(limiters.client!.counts.get('players:203.0.113.1')).toBe(1);
+    expect(limiters.profiles!.counts.get(`players:${address}`)).toBe(1);
+  });
+
+  it('counts a device whose credential no longer connects as a new profile', async () => {
+    const { app, limiters } = build({ profiles: 2 });
+    const browser = new Browser(app);
+    const request = () =>
+      browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address });
+    expect((await request()).status).toBe(201);
+    await client.query('delete from turnip_private.devices');
+    // The stale credential starts a new profile, which counts like a request without one.
+    expect((await request()).status).toBe(201);
+    expect(limiters.profiles!.counts.get(`players:${address}`)).toBe(2);
+    await client.query('delete from turnip_private.devices');
+    await expectError(await request(), 429);
+    expect(await players()).toBe(2);
   });
 
   it('caps new profiles across every address', async () => {
     const { app } = build({ creation: 1 });
-    expect((await start(app, '203.0.113.1')).status).toBe(201);
+    expect((await start(app)).status).toBe(201);
     const refused = await expectError(await start(app, '203.0.113.2'), 429);
     expect(refused.error.code).toBe('RATE_LIMITED');
     expect(await players()).toBe(1);
@@ -83,7 +106,6 @@ describe('Rate limits on unauthenticated writes', () => {
 
   it('throttles pairing and recovery attempts separately per address', async () => {
     const { app } = build({ client: 2 });
-    const address = '203.0.113.1';
     const pairing = () =>
       new Browser(app).request('POST', '/api/pairing', { deviceName: 'Laptop' }, { address });
     const recovery = () =>
@@ -100,12 +122,37 @@ describe('Rate limits on unauthenticated writes', () => {
     await expectError(await recovery(), 401);
     await expectError(await recovery(), 401);
     await expectError(await recovery(), 429);
-    expect((await start(app, address)).status).toBe(201);
+    // Neither counts against new profiles.
+    expect((await start(app)).status).toBe(201);
+  });
+
+  it('refuses before opening a database connection', async () => {
+    // Nothing listens on this port: any request that reaches the database fails with a 500.
+    const app = createApp('postgresql://turnip:turnip@127.0.0.1:1/turnip', {
+      rateLimits: limiters({ profiles: 0, client: 0 }),
+    });
+    const browser = new Browser(app);
+    await expectError(
+      await browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address }),
+      429,
+    );
+    await expectError(
+      await browser.request('POST', '/api/pairing', { deviceName: 'Laptop' }, { address }),
+      429,
+    );
+    await expectError(
+      await browser.request(
+        'POST',
+        '/api/recovery',
+        { code: 'A'.repeat(32), deviceName: 'Laptop' },
+        { address },
+      ),
+      429,
+    );
   });
 
   it('applies no limit without bindings', async () => {
     const app = createApp(database.url);
-    for (let repeat = 0; repeat < 3; repeat += 1)
-      expect((await start(app, '203.0.113.1')).status).toBe(201);
+    for (let repeat = 0; repeat < 3; repeat += 1) expect((await start(app)).status).toBe(201);
   });
 });

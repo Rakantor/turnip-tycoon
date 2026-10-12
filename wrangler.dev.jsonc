@@ -8,6 +8,7 @@
   // Cloudflare counts attempts per key for a minute, in each of its locations. The database
   // never sees a client address.
   "ratelimits": [
+    { "name": "PROFILE_LIMIT", "namespace_id": "1003", "simple": { "limit": 2, "period": 60 } },
     { "name": "CLIENT_LIMIT", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
     { "name": "CREATION_LIMIT", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } },
   ],

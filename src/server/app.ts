@@ -90,6 +90,25 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
     await next();
   });
 
+  /** New profiles count per address and across everyone; nothing else touches those counters. */
+  const throttleCreation = async (c: Context<AppEnvironment>) => {
+    await throttle(c, rateLimits.profiles, 'players');
+    await throttle(c, rateLimits.creation, 'players', 'everyone');
+  };
+
+  // Refuse a flood before it costs a database connection. A request carrying a credential is
+  // a connected device unless the database says otherwise, which startSession counts instead.
+  app.use('/api/*', async (c, next) => {
+    if (c.req.method === 'POST') {
+      const path = c.req.path;
+      if ((path === '/api/session' || path === '/api/players') && !readCredential(c, 'session'))
+        await throttleCreation(c);
+      else if (path === '/api/pairing') await throttle(c, rateLimits.client, 'pairing');
+      else if (path === '/api/recovery') await throttle(c, rateLimits.client, 'recovery');
+    }
+    await next();
+  });
+
   app.use('/api/*', async (c, next) => {
     const { client, db } = await connectDatabase(databaseUrl);
     c.set('db', db);
@@ -166,10 +185,10 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
       } catch (error) {
         if (!(error instanceof ApiError) || error.status !== 401) throw error;
       }
+      // A credential that no longer connects a device starts a new profile, like a request
+      // without one, which was counted before the database was opened.
+      await throttleCreation(c);
     }
-    // A connected device was answered above; only a new profile counts against the limits.
-    await throttle(c, rateLimits.client, 'players');
-    await throttle(c, rateLimits.creation, 'players', 'everyone');
     const result = await transaction(c.get('db'), async (tx) => {
       // Retry the unlikely public-code collision without aborting the transaction.
       for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -290,7 +309,6 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
 
   app.post('/api/pairing', async (c) => {
     const input = await readJson(c, deviceInput);
-    await throttle(c, rateLimits.client, 'pairing');
     const code = randomCode(16);
     const claim = randomToken();
     const expiresAt = new Date(Date.now() + PAIRING_SECONDS * 1000);
@@ -416,7 +434,6 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
 
   app.post('/api/recovery', async (c) => {
     const input = await readJson(c, recoveryInput);
-    await throttle(c, rateLimits.client, 'recovery');
     const codeHash = await hashSecret(input.code);
     const recoveryCode = randomCode(32);
     const newCodeHash = await hashSecret(recoveryCode);

@@ -8,7 +8,11 @@ export default {
     return createApp(env.HYPERDRIVE.connectionString, {
       credentialMode: env.AUTH_MODE,
       frontendOrigin: env.FRONTEND_ORIGIN,
-      rateLimits: { client: env.CLIENT_LIMIT, creation: env.CREATION_LIMIT },
+      rateLimits: {
+        profiles: env.PROFILE_LIMIT,
+        client: env.CLIENT_LIMIT,
+        creation: env.CREATION_LIMIT,
+      },
     }).fetch(request, env, ctx);
   },
   async scheduled(controller, env) {
