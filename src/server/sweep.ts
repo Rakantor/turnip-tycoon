@@ -10,30 +10,39 @@ import {
   recoveryCredentials,
   weeks,
 } from '../db/schema';
+import { RENEWAL_SECONDS, SESSION_SECONDS } from './http';
 import { deletePlayer } from './profile-data';
 
 /** Rows removed per statement, so a backlog never holds one long transaction. */
 const BATCH = 1000;
 /** Statements per table and run; anything beyond waits for the next run. */
 const BATCHES_PER_RUN = 50;
-/** Profiles deleted per run, each in a transaction of its own. */
-const PLAYERS_PER_RUN = 200;
+/**
+ * Profiles deleted per run at most, each in a transaction of its own. Profile creation admits
+ * 60 a minute, so an hourly run has to manage well over 3,600 to outpace a flood.
+ */
+const PLAYERS_PER_RUN = 5000;
+/** Wall time a run spends on profiles; a cron trigger gets 15 minutes in all. */
+const PLAYERS_BUDGET_MS = 10 * 60 * 1000;
+/** Failures in a row that end a run: the database itself, not one profile, is the problem. */
+const FAILURE_STREAK = 5;
 
 /**
  * Without a recovery code, a profile whose every device access has expired can never be opened
  * again, since pairing needs a connected device to approve it. It is deleted this long after
- * the last access expired: 60 days after the app was last used online.
+ * the last access expired: a session window plus this after the app was last used online.
  */
 export const ABANDONED_AFTER_DAYS = 30;
 /** With a recovery code the profile can still be opened, so it waits this long instead. */
 export const RECOVERABLE_RETENTION_DAYS = 365;
-/** A profile holding nothing, never used again after its first day, is deleted this soon. */
-export const UNUSED_AFTER_DAYS = 7;
 
 export interface SweepReport {
   pairingChallenges: number;
   friendInvites: number;
+  /** Profiles deleted. */
   players: number;
+  /** Profiles whose deletion failed; a later run tries them again. */
+  failures: number;
 }
 
 /** Deletes rows past `expiresAt` in bounded batches and returns how many went. */
@@ -71,14 +80,24 @@ export async function sweepExpired(
 }
 
 const recoverable = sql`exists (select 1 from ${recoveryCredentials} where ${recoveryCredentials.playerId} = ${players.id})`;
+/** Whether the player has a device meeting `condition`. */
+const device = (condition: SQL) =>
+  sql`exists (select 1 from ${devices} where ${devices.playerId} = ${players.id} and ${condition})`;
+/**
+ * The sweep judges a profile by its devices. One without any, which only removing or logging
+ * out of the last device leaves behind, gives it nothing to go on, so that profile stays.
+ */
+const hasDevices = device(sql`true`);
+/** A device that can still use the profile. */
+const live = device(sql`${devices.expiresAt} > clock_timestamp()`);
 /** A device whose access is live, or expired less than this many days ago. */
 const reachableWithin = (days: number) =>
-  sql`exists (select 1 from ${devices} where ${devices.playerId} = ${players.id} and ${devices.expiresAt} > clock_timestamp() - ${days} * interval '1 day')`;
-// A device starts with 30 days of access, and renewal happens a day or more later, so only a
-// renewed device's expiry lies this far past its creation.
-const RENEWED = sql`interval '30 days 12 hours'`;
-/** A device added lately, or one renewed by use after its first day. */
-const usedLately = sql`exists (select 1 from ${devices} where ${devices.playerId} = ${players.id} and (${devices.createdAt} > clock_timestamp() - ${UNUSED_AFTER_DAYS} * interval '1 day' or ${devices.expiresAt} >= ${devices.createdAt} + ${RENEWED}))`;
+  device(sql`${devices.expiresAt} > clock_timestamp() - ${days} * interval '1 day'`);
+// A device starts with a session window of access, and use renews it no sooner than a renewal
+// interval later, so only a renewed device's expiry lies this far past its creation.
+const renewed = device(
+  sql`${devices.expiresAt} >= ${devices.createdAt} + ${SESSION_SECONDS + RENEWAL_SECONDS / 2} * interval '1 second'`,
+);
 const holdsAnything = or(
   sql`exists (select 1 from ${weeks} where ${weeks.playerId} = ${players.id})`,
   sql`exists (select 1 from ${memberships} where ${memberships.playerId} = ${players.id})`,
@@ -86,45 +105,76 @@ const holdsAnything = or(
   sql`exists (select 1 from ${friendInvites} where ${friendInvites.playerId} = ${players.id})`,
 )!;
 
-/** Which players the sweep may delete; checked again under the player's lock before deleting. */
+/**
+ * Which players the sweep may delete; checked again under the player's lock before deleting.
+ * A profile is never deleted while a device can still use it: that device may hold edits it
+ * has not sent yet, and would clear them on learning that the profile is gone.
+ */
 function abandoned(): SQL {
-  return or(
-    and(not(recoverable), not(reachableWithin(ABANDONED_AFTER_DAYS))),
-    and(recoverable, not(reachableWithin(RECOVERABLE_RETENTION_DAYS))),
-    and(not(recoverable), not(holdsAnything), not(usedLately)),
+  return and(
+    hasDevices,
+    or(
+      and(not(recoverable), not(reachableWithin(ABANDONED_AFTER_DAYS))),
+      and(recoverable, not(reachableWithin(RECOVERABLE_RETENTION_DAYS))),
+      // Started but never used again: nothing saved, and no device renewed after its first day.
+      and(not(recoverable), not(live), not(renewed), not(holdsAnything)),
+    ),
   )!;
 }
 
-/** Deletes abandoned profiles one at a time, through the same path as a player's own request. */
-export async function sweepAbandoned(db: Database): Promise<number> {
+/**
+ * Deletes abandoned profiles one at a time, through the same path as a player's own request,
+ * until the candidates, the run's cap or its time are used up.
+ */
+export async function sweepAbandoned(
+  db: Database,
+  deadline = Date.now() + PLAYERS_BUDGET_MS,
+): Promise<Pick<SweepReport, 'players' | 'failures'>> {
   const candidates = await db
     .select({ id: players.id })
     .from(players)
     .where(abandoned())
     .limit(PLAYERS_PER_RUN);
-  let deleted = 0;
+  const report = { players: 0, failures: 0 };
+  let streak = 0;
   for (const { id } of candidates) {
-    const gone = await transaction(db, async (tx) => {
-      // A request holding the player is using the profile: leave it for a later run.
-      const [player] = await tx
-        .select({ id: players.id })
-        .from(players)
-        .where(and(eq(players.id, id), abandoned()))
-        .for('no key update', { skipLocked: true });
-      if (!player) return false;
-      await deletePlayer(tx, id);
-      return true;
-    });
-    if (gone) deleted += 1;
+    if (Date.now() >= deadline) break;
+    try {
+      const gone = await transaction(db, async (tx) => {
+        // A request holding the player is using the profile: leave it for a later run.
+        const [player] = await tx
+          .select({ id: players.id })
+          .from(players)
+          .where(and(eq(players.id, id), abandoned()))
+          .for('no key update', { skipLocked: true });
+        if (!player) return false;
+        await deletePlayer(tx, id);
+        return true;
+      });
+      if (gone) report.players += 1;
+      streak = 0;
+    } catch (error) {
+      // One profile's failure, such as a group lock held past lock_timeout, stops nothing
+      // else. As for requests, keep only the error's name.
+      report.failures += 1;
+      console.error(
+        JSON.stringify({
+          event: 'sweep_player_failed',
+          name: error instanceof Error ? error.name : 'unknown',
+        }),
+      );
+      streak += 1;
+      if (streak >= FAILURE_STREAK) break;
+    }
   }
-  return deleted;
+  return report;
 }
 
 /** One scheduled run against the production database. */
 export async function sweep(databaseUrl: string): Promise<SweepReport> {
   const { client, db } = await connectDatabase(databaseUrl);
   try {
-    return { ...(await sweepExpired(db)), players: await sweepAbandoned(db) };
+    return { ...(await sweepExpired(db)), ...(await sweepAbandoned(db)) };
   } finally {
     await client.end();
   }

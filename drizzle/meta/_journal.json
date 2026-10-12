@@ -36,6 +36,13 @@
       "when": 1791713176777,
       "tag": "0004_friend_invites",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791802497101,
+      "tag": "0005_friend_invites_expiry",
+      "breakpoints": true
     }
   ]
 }

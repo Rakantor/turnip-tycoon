@@ -4,7 +4,7 @@ import { transaction, type Database, type Transaction } from '../db/connection';
 import { devices, players, recoveryCredentials } from '../db/schema';
 import type { AppEnvironment } from './app';
 import { ApiError } from './errors';
-import { readCredential, SESSION_SECONDS } from './http';
+import { readCredential, RENEWAL_SECONDS, SESSION_SECONDS } from './http';
 import { hashSecret, randomToken } from './secrets';
 
 export async function sessionHash(c: Context<AppEnvironment>): Promise<string> {
@@ -48,7 +48,7 @@ export async function renewSession(db: Database, tokenHash: string): Promise<boo
         gt(devices.expiresAt, sql`clock_timestamp()`),
         lt(
           devices.expiresAt,
-          sql`clock_timestamp() + ${SESSION_SECONDS - 86400} * interval '1 second'`,
+          sql`clock_timestamp() + ${SESSION_SECONDS - RENEWAL_SECONDS} * interval '1 second'`,
         ),
       ),
     )

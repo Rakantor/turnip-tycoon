@@ -343,8 +343,8 @@ export function Privacy() {
             abandoned. Without a recovery code, a profile is abandoned 30 days after its last device
             access expired, so 60 days after you last used the app online; with a recovery code, it
             is kept for a year after that. A profile that was started but never used again, with no
-            prices, trades, groups or friends, is deleted after a week. A group is deleted when its
-            last member leaves.
+            prices, trades, groups or friends, is deleted as soon as its device access expires, 30
+            days after it was started. A group is deleted when its last member leaves.
           </li>
           <li>
             <strong>Deleting your profile</strong> removes it from our database straight away. There

@@ -224,10 +224,15 @@ for a later run. Without a recovery code, a profile is unreachable once every de
 expired, since pairing needs a connected device; it is deleted 30 days after the last expiry, which
 is 60 days after its last online use. With a recovery code it is kept for 365 days after the last
 expiry. A profile holding no weeks, memberships, friend links or shared links, with no recovery code
-and no device added or renewed in the last 7 days, is deleted as never used. Expired devices are
-never deleted on their own, so a device of a deleted profile gets `401 DEVICE_REMOVED` at its next
-online check and clears its local copy, as after an explicit deletion. The privacy page states
-these periods.
+and no device renewed after its first day, is deleted as never used once its last access expires,
+30 days after it was started. A profile is never deleted while a device can still use it: that
+device may hold unsent edits, which it clears on finding the profile gone. The sweep judges by
+device history alone, so a profile left with no devices, by removing or logging out of the last
+one, stays. Expired devices are never deleted on their own, so a device of a deleted profile gets
+`401 DEVICE_REMOVED` at its next online check and clears its local copy, as after an explicit
+deletion. A run handles up to 5,000 profiles within a ten-minute budget; a profile whose deletion
+fails, say on a lock held past `lock_timeout`, is counted in the run's report and left for a later
+run, and five failures in a row end the run. The privacy page states these periods.
 
 Export reads at most 100 records per page, including expired device metadata and all historical
 weeks with prices and private trades. It omits secret credentials/verifiers, group invite codes,

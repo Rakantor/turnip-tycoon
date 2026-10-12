@@ -170,6 +170,7 @@ export const friendInvites = privateSchema
     },
     (table) => [
       index('friend_invites_player_idx').on(table.playerId),
+      index('friend_invites_expiry_idx').on(table.expiresAt),
       check('friend_invites_code_hash_format', sql`${table.codeHash} ~ '^[0-9a-f]{64}$'`),
       check('friend_invites_expiry', sql`${table.expiresAt} > ${table.createdAt}`),
     ],

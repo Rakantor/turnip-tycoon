@@ -6,7 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "routes": [{ "pattern": "api.turniptycoon.app", "custom_domain": true }],
-  // Every hour, delete pairing codes and shared friend links that have expired.
+  // Every hour, delete expired pairing codes and shared friend links, and abandoned profiles.
   "triggers": { "crons": ["23 * * * *"] },
   // Cloudflare counts attempts per key for a minute, in each of its locations. The database
   // never sees a client address.

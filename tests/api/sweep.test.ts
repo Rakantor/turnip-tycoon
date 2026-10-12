@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { connectDatabase } from '../../src/db/connection';
@@ -9,16 +8,11 @@ import {
   sweep,
   sweepAbandoned,
   sweepExpired,
-  UNUSED_AFTER_DAYS,
 } from '../../src/server/sweep';
 import type { PairingResponse, SessionResponse } from '../../src/shared/api';
 import type { GroupSummary } from '../../src/shared/groups';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, createPlayer, expectError } from './browser';
-
-function hash(code: string) {
-  return createHash('sha256').update(code.replace(/-/g, '')).digest('hex');
-}
+import { Browser, createPlayer, expectError, hashCode } from './browser';
 
 describe('Scheduled sweep', () => {
   let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -74,11 +68,11 @@ describe('Scheduled sweep', () => {
         expect((await owner.request('POST', '/api/friends/invites', { code })).status).toBe(201);
       await client.query(
         "update turnip_private.pairing_challenges set expires_at = now() - interval '1 second' where code_hash = $1",
-        [hash(stale.code)],
+        [hashCode(stale.code)],
       );
       await client.query(
         "update turnip_private.friend_invites set created_at = now() - interval '8 days', expires_at = now() - interval '1 second' where code_hash = $1",
-        [hash(staleLink)],
+        [hashCode(staleLink)],
       );
 
       expect(await connected(sweepExpired)).toEqual({ pairingChallenges: 1, friendInvites: 1 });
@@ -96,6 +90,7 @@ describe('Scheduled sweep', () => {
         pairingChallenges: 0,
         friendInvites: 0,
         players: 0,
+        failures: 0,
       });
     });
 
@@ -145,17 +140,25 @@ describe('Scheduled sweep', () => {
       return result.rowCount === 1;
     }
 
+    const createGroup = async (browser: Browser, name: string) =>
+      (
+        (await (await browser.request('POST', '/api/groups', { name })).json()) as {
+          group: GroupSummary;
+        }
+      ).group;
+
     const run = () => connected(sweepAbandoned);
+    const abandoned = `${ABANDONED_AFTER_DAYS + 1} days`;
 
     it('deletes a profile without a recovery code 30 days after its last access expired', async () => {
       const gone = await startProfile();
       const kept = await startProfile();
       await saveWeek(gone.id);
       await saveWeek(kept.id);
-      await age(gone.id, '70 days', `${ABANDONED_AFTER_DAYS + 1} days`);
+      await age(gone.id, '70 days', abandoned);
       await age(kept.id, '70 days', `${ABANDONED_AFTER_DAYS - 1} days`);
 
-      expect(await run()).toBe(1);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
       expect(await exists(gone.id)).toBe(false);
       expect(await exists(kept.id)).toBe(true);
       // The device learns of the deletion as it would of any other, and clears its copy.
@@ -168,48 +171,56 @@ describe('Scheduled sweep', () => {
     it('keeps a profile with a recovery code for a year after its access expired', async () => {
       const profile = await createPlayer(new Browser(app), 'Maple');
       await age(profile.player.id, '400 days', '200 days');
-      expect(await run()).toBe(0);
+      expect(await run()).toEqual({ players: 0, failures: 0 });
       await age(profile.player.id, '400 days', `${RECOVERABLE_RETENTION_DAYS + 1} days`);
-      expect(await run()).toBe(1);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
       expect(await exists(profile.player.id)).toBe(false);
     });
 
-    it('deletes a profile that was started but never used again, after a week', async () => {
+    it('deletes a profile that was started but never used again, once its access expires', async () => {
       const unused = await startProfile();
       const young = await startProfile();
       const renewed = await startProfile();
       const saved = await startProfile();
       await saveWeek(saved.id);
       // A device keeps its first 30-day expiry unless use renews it, a day or more later.
-      const stale = `${UNUSED_AFTER_DAYS + 1} days`;
-      await age(unused.id, stale, `${UNUSED_AFTER_DAYS + 1 - 30} days`);
-      await age(young.id, `${UNUSED_AFTER_DAYS - 1} days`, `${UNUSED_AFTER_DAYS - 1 - 30} days`);
-      await age(renewed.id, stale, '-30 days');
-      await age(saved.id, stale, `${UNUSED_AFTER_DAYS + 1 - 30} days`);
+      await age(unused.id, '31 days', '1 day');
+      await age(young.id, '29 days', '-1 day');
+      await age(renewed.id, '40 days', '1 day');
+      await age(saved.id, '31 days', '1 day');
 
-      expect(await run()).toBe(1);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
       expect(await exists(unused.id)).toBe(false);
       for (const { id } of [young, renewed, saved]) expect(await exists(id)).toBe(true);
+      // A device that can still use its profile may hold unsent edits, so it is never cut off.
+      expect((await young.browser.request('GET', '/api/session')).status).toBe(200);
+    });
+
+    it('leaves a profile with no devices alone, with or without a recovery code', async () => {
+      const recoverable = new Browser(app);
+      const profile = await createPlayer(recoverable, 'Maple');
+      const empty = await startProfile();
+      expect((await recoverable.request('POST', '/api/logout', {})).status).toBe(200);
+      expect((await empty.browser.request('POST', '/api/logout', {})).status).toBe(200);
+      expect(await count('devices')).toBe(0);
+
+      expect(await run()).toEqual({ players: 0, failures: 0 });
+      expect(await exists(profile.player.id)).toBe(true);
+      expect(await exists(empty.id)).toBe(true);
     });
 
     it('removes a group left empty and leaves groups with other members', async () => {
       const gone = await startProfile();
       const friend = new Browser(app);
       const other = await createPlayer(friend, 'Cherry');
-      const create = async (browser: Browser, name: string) =>
-        (
-          (await (await browser.request('POST', '/api/groups', { name })).json()) as {
-            group: GroupSummary;
-          }
-        ).group;
-      const alone = await create(gone.browser, 'Alone');
-      const shared = await create(friend, 'Shared');
+      const alone = await createGroup(gone.browser, 'Alone');
+      const shared = await createGroup(friend, 'Shared');
       expect(
         (await gone.browser.request('POST', '/api/groups/join', { code: shared.code })).status,
       ).toBe(200);
-      await age(gone.id, '70 days', `${ABANDONED_AFTER_DAYS + 1} days`);
+      await age(gone.id, '70 days', abandoned);
 
-      expect(await run()).toBe(1);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
       const groups = await client.query('select id from turnip_private.groups');
       expect(groups.rows.map((row) => row.id)).toEqual([shared.id]);
       expect(alone.id).not.toBe(shared.id);
@@ -223,18 +234,53 @@ describe('Scheduled sweep', () => {
     it('leaves a profile alone while a request holds it', async () => {
       const gone = await startProfile();
       await saveWeek(gone.id);
-      await age(gone.id, '70 days', `${ABANDONED_AFTER_DAYS + 1} days`);
+      await age(gone.id, '70 days', abandoned);
       await client.query('begin');
       await client.query('select id from turnip_private.players where id = $1 for no key update', [
         gone.id,
       ]);
       try {
-        expect(await run()).toBe(0);
+        expect(await run()).toEqual({ players: 0, failures: 0 });
       } finally {
         await client.query('rollback');
       }
-      expect(await run()).toBe(1);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
       expect(await exists(gone.id)).toBe(false);
+    });
+
+    it('counts a profile whose deletion fails and goes on with the rest', async () => {
+      const stuck = await startProfile();
+      const gone = await startProfile();
+      await saveWeek(gone.id);
+      const group = await createGroup(stuck.browser, 'Stuck');
+      await age(stuck.id, '70 days', abandoned);
+      await age(gone.id, '70 days', abandoned);
+      // Deleting the profile locks its groups; a lock held past lock_timeout fails that one only.
+      await client.query('begin');
+      await client.query('select id from turnip_private.groups where id = $1 for update', [
+        group.id,
+      ]);
+      try {
+        expect(await run()).toEqual({ players: 1, failures: 1 });
+      } finally {
+        await client.query('rollback');
+      }
+      expect(await exists(stuck.id)).toBe(true);
+      expect(await exists(gone.id)).toBe(false);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
+      expect(await exists(stuck.id)).toBe(false);
+    }, 30_000);
+
+    it('stops at its time budget and leaves the rest for the next run', async () => {
+      const gone = await startProfile();
+      await saveWeek(gone.id);
+      await age(gone.id, '70 days', abandoned);
+      expect(await connected((db) => sweepAbandoned(db, Date.now()))).toEqual({
+        players: 0,
+        failures: 0,
+      });
+      expect(await exists(gone.id)).toBe(true);
+      expect(await run()).toEqual({ players: 1, failures: 0 });
     });
   });
 });

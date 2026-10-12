@@ -5,6 +5,8 @@ import type { AppEnvironment } from './app';
 import { ApiError } from './errors';
 
 export const SESSION_SECONDS = 30 * 24 * 60 * 60;
+/** Use renews a device's access no more often than this. */
+export const RENEWAL_SECONDS = 24 * 60 * 60;
 export const PAIRING_SECONDS = 10 * 60;
 const MAX_BODY_BYTES = 16 * 1024;
 const CORS_METHODS = ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE'];

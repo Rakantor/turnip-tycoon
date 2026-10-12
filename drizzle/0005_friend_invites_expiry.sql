@@ -1,0 +1,1 @@
+CREATE INDEX "friend_invites_expiry_idx" ON "turnip_private"."friend_invites" USING btree ("expires_at");
