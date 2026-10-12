@@ -6,6 +6,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "routes": [{ "pattern": "api.turniptycoon.app", "custom_domain": true }],
+  // Every hour, delete pairing codes and shared friend links that have expired.
+  "triggers": { "crons": ["23 * * * *"] },
   "secrets": { "required": [] },
   "vars": {
     "AUTH_MODE": "bearer",

@@ -64,22 +64,22 @@ Keep each commit focused on a coherent change. Describe the resulting behavior, 
 
 ## Architecture and data rules
 
-| Path               | Responsibility                                                                               |
-| ------------------ | -------------------------------------------------------------------------------------------- |
-| `src/client`       | Calculator, forecasts, turnip trades, Friends, history, Settings, and PWA controls           |
-| `src/client/data`  | Browser API, identity bootstrap, IndexedDB, sync queue, and merging edits from other devices |
-| `src/shared`       | API/week/group/friend contracts, ledger calculations, and device-local calendar helpers      |
-| `src/prediction`   | Standalone prediction adapter and audited upstream engine                                    |
-| `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, friends, shared reads    |
-| `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                    |
-| `drizzle`          | Versioned SQL migrations and snapshots                                                       |
-| `scripts`          | Local database, development server, migrations, and icon generation                          |
-| `tests/api`        | API and database integration tests                                                           |
-| `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                    |
-| `tests/shared`     | Calendar and ledger calculations shared by the client and API                                |
-| `tests/prediction` | Prediction fixtures and regression tests                                                     |
-| `tests/build`      | Generated service-worker behavior                                                            |
-| `public/licenses`  | Distributed upstream licenses and notices                                                    |
+| Path               | Responsibility                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| `src/client`       | Calculator, forecasts, turnip trades, Friends, history, Settings, and PWA controls               |
+| `src/client/data`  | Browser API, identity bootstrap, IndexedDB, sync queue, and merging edits from other devices     |
+| `src/shared`       | API/week/group/friend contracts, ledger calculations, and device-local calendar helpers          |
+| `src/prediction`   | Standalone prediction adapter and audited upstream engine                                        |
+| `src/server`       | Hono API, access, weekly records and trades, ledger totals, groups, friends, shared reads, sweep |
+| `src/db/schema.ts` | Drizzle PostgreSQL schema                                                                        |
+| `drizzle`          | Versioned SQL migrations and snapshots                                                           |
+| `scripts`          | Local database, development server, migrations, and icon generation                              |
+| `tests/api`        | API and database integration tests                                                               |
+| `tests/client`     | Browser-storage, session, synchronization, merging, ledger, and PWA tests                        |
+| `tests/shared`     | Calendar and ledger calculations shared by the client and API                                    |
+| `tests/prediction` | Prediction fixtures and regression tests                                                         |
+| `tests/build`      | Generated service-worker behavior                                                                |
+| `public/licenses`  | Distributed upstream licenses and notices                                                        |
 
 ESLint keeps the `src` directories layered: `src/shared` imports none of the others, `src/prediction` only `src/shared`, the client and server never import each other, and `src/db` serves only the server.
 
@@ -97,7 +97,7 @@ A shared friend link stands for its sharer's side of a friendship, so whoever ac
 
 - Device access uses a 30-day window, renewed at most daily by successful authenticated online use; PostgreSQL stores SHA-256 verifiers. Cookie responses renew Max-Age only when the database expiry advances and the client coordinates credential changes through Web Locks. Offline use does not renew access, and there is no background keepalive. Local development uses HttpOnly, SameSite=Strict cookies. Pages uses bearer credentials encrypted in IndexedDB with a non-extractable AES-GCM key. Encryption does not defend against same-origin JavaScript; the custom domain keeps that origin to this app alone.
 - Save credentials and public profile metadata atomically. Reject stale identity responses. Expected-player assertions prevent older tabs from uploading into another identity, but never replace authentication.
-- Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked.
+- Recovery is opt-in and single-use, atomically rotating the code and issuing a new session. Never persist recovery codes or log credentials. Pairing requires existing-device approval and a separate initiating-browser claim secret; challenges expire after ten minutes and are invalidated when the approving device is revoked. An hourly sweep (`src/server/sweep.ts`, run by the Worker's cron trigger) deletes expired challenges and shared friend links in bounded batches; nothing reads them once they expire.
 - Mutations serialize against the player and revalidate the session inside the transaction. Immutable mutation IDs, payload hashes, and base revisions provide retry deduplication and explicit conflicts; retain pending local values for review. Devices combine edits to different entries, trade by trade for trades, against the version they started from; only an entry both devices changed differently asks the player.
 - Group changes serialize against the group. Shared reads lock through current-membership validation and data retrieval: groups first, then friend links in key order. Removing a friend and deleting a profile take the matching update locks in the same order; profile deletion then locks its shared friend links, and accepting a link locks it first, so only one player can use it. Each player inserts only their own direction of a friend link; the player lock is `FOR NO KEY UPDATE`, so that insert's foreign-key check never waits on the other player's session, and simultaneous requests both ways can't deadlock. Membership and friendship never grant editing rights. Each profile keeps only the latest current-week groups response in IndexedDB, codes, friends and requests included, for offline reading; each refresh replaces it, and a 401/403 or a rejected device session deletes it.
 - Enforce the exact `FRONTEND_ORIGIN`, validate preflights before opening database connections, require credentials on protected endpoints, and validate bounded JSON bodies. Cookie mutations retain same-origin checks. API responses must remain uncacheable.
@@ -122,7 +122,7 @@ The API answers in English. `src/client/data/server-messages.ts` translates each
 
 Frontend: `https://turniptycoon.app/`, served by GitHub Pages. API: `https://api.turniptycoon.app`, a Worker custom domain with the `workers.dev` address switched off. Pages uses hash routes and project-relative assets and links.
 
-`wrangler.jsonc` configures the production API, its custom domain, bearer auth, allowed origin, and Hyperdrive. The Hyperdrive ID is public; database credentials stay in Hyperdrive. `wrangler.dev.jsonc` uses local PostgreSQL and cookie auth. Deployment commands explicitly select the production configuration.
+`wrangler.jsonc` configures the production API, its custom domain, bearer auth, allowed origin, Hyperdrive, and the hourly cron trigger that runs the sweep. The Hyperdrive ID is public; database credentials stay in Hyperdrive. `wrangler.dev.jsonc` uses local PostgreSQL and cookie auth. Deployment commands explicitly select the production configuration.
 
 ### Supabase and Hyperdrive
 
