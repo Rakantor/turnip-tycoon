@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
@@ -13,7 +13,7 @@ import type {
 } from '../../src/shared/groups';
 import type { WeekMutation } from '../../src/shared/week';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, expectError, sessionCookie } from './browser';
+import { Browser, expectError, hashCode, sessionCookie } from './browser';
 
 describe('Friends added by friend code', () => {
   let database: Awaited<ReturnType<typeof createTestDatabase>>;
@@ -417,7 +417,7 @@ describe('Friends added by friend code', () => {
       expect(rows.rows).toEqual([
         expect.objectContaining({
           player_id: rosa.id,
-          code_hash: createHash('sha256').update(code).digest('hex'),
+          code_hash: hashCode(code),
         }),
       ]);
       expect(JSON.stringify(rows.rows)).not.toContain(code);

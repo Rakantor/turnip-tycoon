@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { expect } from 'vitest';
 import type { createApp } from '../../src/server/app';
 import type { AccessResponse, ApiErrorResponse, SessionResponse } from '../../src/shared/api';
@@ -5,6 +6,16 @@ import type { AccessResponse, ApiErrorResponse, SessionResponse } from '../../sr
 export const origin = 'https://turnip.test';
 export const sessionCookie = '__Host-turnip-session';
 export const pairingCookie = '__Host-turnip-pairing';
+
+/** The SHA-256 verifier the API keeps for a token, as hashSecret computes it. */
+export function sha256(value: string): string {
+  return createHash('sha256').update(value).digest('hex');
+}
+
+/** The verifier of a code as shown or typed: the API drops spaces and dashes and uppercases first. */
+export function hashCode(code: string): string {
+  return sha256(code.replace(/[\s-]/g, '').toUpperCase());
+}
 
 interface RequestOptions {
   origin?: string | null;

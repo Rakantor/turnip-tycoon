@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
@@ -12,7 +12,7 @@ import {
 import type { GroupSummary, SharedPlayerWeek } from '../../src/shared/groups';
 import type { OwnWeekRecord, WeekMutation } from '../../src/shared/week';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, expectError, pairingCookie, sessionCookie } from './browser';
+import { Browser, expectError, pairingCookie, sessionCookie, sha256 } from './browser';
 
 const frontendOrigin = 'https://turniptycoon.app';
 const apiOrigin = 'https://turnip-api.workers.dev';
@@ -180,9 +180,7 @@ describe('Bearer access from GitHub Pages', () => {
       'select token_hash from turnip_private.devices where id = $1',
       [session.deviceId],
     );
-    expect(stored.rows).toEqual([
-      { token_hash: createHash('sha256').update(sessionToken!).digest('hex') },
-    ]);
+    expect(stored.rows).toEqual([{ token_hash: sha256(sessionToken!) }]);
     for (const path of ['/api/session', '/api/players']) {
       const reused = await send('POST', path, {
         token: sessionToken,

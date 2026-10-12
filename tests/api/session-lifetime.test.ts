@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,7 +7,7 @@ import { findSession, renewSession, sessionHash } from '../../src/server/auth';
 import { SESSION_SECONDS } from '../../src/server/http';
 import type { SessionCredentialsResponse } from '../../src/shared/api';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, createPlayer, expectError, sessionCookie } from './browser';
+import { Browser, createPlayer, expectError, sessionCookie, sha256 } from './browser';
 
 const frontendOrigin = 'https://frontend.test';
 const lifetime = 30 * 24 * 60 * 60 * 1000;
@@ -110,7 +109,7 @@ describe.each(['cookie', 'bearer'] as const)('Device inactivity in %s mode', (mo
       expectCookie(response, h.token);
       const row = await stored(h.session.deviceId);
       expect(Math.abs(row.expires_at.getTime() - Date.now() - lifetime)).toBeLessThan(5000);
-      expect(row.token_hash).toBe(createHash('sha256').update(h.token).digest('hex'));
+      expect(row.token_hash).toBe(sha256(h.token));
     }
   });
 
@@ -136,7 +135,7 @@ describe.each(['cookie', 'bearer'] as const)('Device inactivity in %s mode', (mo
       Array.from({ length: 4 }, () => connectDatabase(database.url)),
     );
     try {
-      const tokenHash = createHash('sha256').update(h.token).digest('hex');
+      const tokenHash = sha256(h.token);
       const results = await Promise.all(connections.map(({ db }) => renewSession(db, tokenHash)));
       expect(results.filter(Boolean)).toHaveLength(1);
     } finally {
@@ -347,7 +346,7 @@ describe.each(['cookie', 'bearer'] as const)('Device inactivity in %s mode', (mo
     const h = await connect();
     const db = await connectDatabase(database.url);
     try {
-      const tokenHash = createHash('sha256').update(h.token).digest('hex');
+      const tokenHash = sha256(h.token);
       await client.query(
         "update turnip_private.devices set created_at = now() - interval '31 days', expires_at = now() - interval '1 second' where id = $1",
         [h.session.deviceId],

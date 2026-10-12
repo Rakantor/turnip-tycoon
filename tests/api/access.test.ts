@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { Client } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -11,11 +11,15 @@ import {
   type SessionResponse,
 } from '../../src/shared/api';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, createPlayer, expectError, pairingCookie, sessionCookie } from './browser';
-
-function hash(value: string) {
-  return createHash('sha256').update(value).digest('hex');
-}
+import {
+  Browser,
+  createPlayer,
+  expectError,
+  hashCode,
+  pairingCookie,
+  sessionCookie,
+  sha256,
+} from './browser';
 
 function normalized(code: string) {
   return code.replace(/[\s-]/g, '').toUpperCase();
@@ -425,7 +429,7 @@ describe('Account-free player access over the API', () => {
     const challenge = await startPairing(laptop);
     await client.query(
       "update turnip_private.pairing_challenges set expires_at = now() - interval '1 second' where code_hash = $1",
-      [hash(normalized(challenge.code))],
+      [hashCode(challenge.code)],
     );
     await expectError(
       await phone.request('POST', '/api/pairing/approve', { code: challenge.code }),
@@ -681,10 +685,10 @@ describe('Account-free player access over the API', () => {
       [access.player.id],
     );
     const pairingRows = await client.query('select * from turnip_private.pairing_challenges');
-    expect(deviceRows.rows[0].token_hash).toBe(hash(token));
-    expect(recoveryRows.rows[0].code_hash).toBe(hash(normalized(access.recoveryCode)));
-    expect(pairingRows.rows[0].code_hash).toBe(hash(normalized(challenge.code)));
-    expect(pairingRows.rows[0].claim_hash).toBe(hash(claim));
+    expect(deviceRows.rows[0].token_hash).toBe(sha256(token));
+    expect(recoveryRows.rows[0].code_hash).toBe(hashCode(access.recoveryCode));
+    expect(pairingRows.rows[0].code_hash).toBe(hashCode(challenge.code));
+    expect(pairingRows.rows[0].claim_hash).toBe(sha256(claim));
     const stored = JSON.stringify([deviceRows.rows, recoveryRows.rows, pairingRows.rows]);
     for (const plaintext of [
       token,
@@ -698,7 +702,7 @@ describe('Account-free player access over the API', () => {
     }
     const listed = JSON.stringify(await devices(owner));
     expect(listed).not.toContain(token);
-    expect(listed).not.toContain(hash(token));
+    expect(listed).not.toContain(sha256(token));
     expect(listed).not.toContain(access.recoveryCode);
   });
 });
