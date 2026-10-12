@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../../src/server/app';
 import { RATE_LIMIT_SECONDS, type RateLimiter } from '../../src/server/limits';
 import { createTestDatabase } from '../helpers/database';
-import { Browser, expectError } from './browser';
+import { Browser, expectError, sessionCookie } from './browser';
 
 /** Counts like Cloudflare's binding, without its clock: a limit of n lets n calls through. */
 class FakeLimiter implements RateLimiter {
@@ -71,14 +71,16 @@ describe('Rate limits on unauthenticated writes', () => {
     expect(await players()).toBe(3);
   });
 
-  it('does not count a connected device asking for its session again', async () => {
-    const { app, limiters } = build({ profiles: 1 });
+  it('counts a connected device asking for its session again as an attempt, not a profile', async () => {
+    const { app, limiters } = build({ profiles: 1, client: 3 });
     const browser = new Browser(app);
     const request = () =>
       browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address });
     expect((await request()).status).toBe(201);
     for (let repeat = 0; repeat < 3; repeat += 1) expect((await request()).status).toBe(200);
     expect(limiters.profiles!.counts.get(`players:${address}`)).toBe(1);
+    expect(limiters.client!.counts.get(`session:${address}`)).toBe(3);
+    await expectError(await request(), 429);
   });
 
   it('counts a device whose credential no longer connects as a new profile', async () => {
@@ -134,6 +136,13 @@ describe('Rate limits on unauthenticated writes', () => {
     const browser = new Browser(app);
     await expectError(
       await browser.request('POST', '/api/session', { deviceName: 'Phone' }, { address }),
+      429,
+    );
+    // A made-up credential is an attempt too, not a connected device the database must check.
+    const pretender = new Browser(app);
+    pretender.cookies.set(sessionCookie, 'a'.repeat(64));
+    await expectError(
+      await pretender.request('POST', '/api/session', { deviceName: 'Phone' }, { address }),
       429,
     );
     await expectError(

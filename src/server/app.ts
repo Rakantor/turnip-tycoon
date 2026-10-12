@@ -97,13 +97,16 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
   };
 
   // Refuse a flood before it costs a database connection. A request carrying a credential is
-  // a connected device unless the database says otherwise, which startSession counts instead.
+  // a connected device unless the database says otherwise, which startSession then counts as a
+  // new profile; until then it is an attempt like pairing, so made-up credentials buy no
+  // connection each.
   app.use('/api/*', async (c, next) => {
     if (c.req.method === 'POST') {
       const path = c.req.path;
-      if ((path === '/api/session' || path === '/api/players') && !readCredential(c, 'session'))
-        await throttleCreation(c);
-      else if (path === '/api/pairing') await throttle(c, rateLimits.client, 'pairing');
+      if (path === '/api/session' || path === '/api/players') {
+        if (readCredential(c, 'session')) await throttle(c, rateLimits.client, 'session');
+        else await throttleCreation(c);
+      } else if (path === '/api/pairing') await throttle(c, rateLimits.client, 'pairing');
       else if (path === '/api/recovery') await throttle(c, rateLimits.client, 'recovery');
     }
     await next();
