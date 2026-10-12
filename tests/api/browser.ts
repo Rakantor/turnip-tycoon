@@ -13,6 +13,8 @@ interface RequestOptions {
   playerId?: string;
   /** Simulate the app's renewal opt-in while its browser credential lock is held. */
   sessionRenewal?: boolean;
+  /** The client address Cloudflare would report, for rate limits. */
+  address?: string;
 }
 
 /** Separate cookie jars represent separate browsers, including HttpOnly cookies. */
@@ -25,6 +27,7 @@ export class Browser {
     const headers = new Headers();
     if (options.sessionRenewal) headers.set('X-Session-Renewal', '1');
     if (options.playerId) headers.set('X-Player-Id', options.playerId);
+    if (options.address) headers.set('CF-Connecting-IP', options.address);
     if (method !== 'GET') {
       if (options.origin !== null) headers.set('Origin', options.origin ?? origin);
       if (options.contentType !== null)

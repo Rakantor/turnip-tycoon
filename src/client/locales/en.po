@@ -2500,6 +2500,10 @@ msgstr "Today’s <0>{current} bells</0> is as good as it gets this week. Time t
 msgid "Too late to sell"
 msgstr "Too late to sell"
 
+#: src/client/data/server-messages.ts
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "Too many attempts. Wait a minute and try again."
+
 #: src/client/odds.ts
 msgid "Tops out at {best}"
 msgstr "Tops out at {best}"

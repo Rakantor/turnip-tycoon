@@ -3099,6 +3099,11 @@ msgstr "De <0>{current} klingels</0> van vandaag zijn het beste van deze week. T
 msgid "Too late to sell"
 msgstr "Te laat om te verkopen"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "Te veel pogingen. Wacht een minuut en probeer het opnieuw."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"

@@ -3099,6 +3099,11 @@ msgstr "今天的<0>{current}铃钱</0>就是本周最高价。该卖了！"
 msgid "Too late to sell"
 msgstr "太晚了，卖不了"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "尝试次数过多。请等待一分钟后再试。"
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"

@@ -3099,6 +3099,11 @@ msgstr "Выше сегодняшних <0>{current} диней</0> на это�
 msgid "Too late to sell"
 msgstr "Продавать уже поздно"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "Слишком много попыток. Подожди минуту и попробуй еще раз."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"

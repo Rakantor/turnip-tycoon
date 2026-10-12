@@ -53,7 +53,7 @@ function LegalPage({
           <p className="legal-intro">{intro}</p>
           {dated && (
             <p className="legal-date">
-              Last updated <time dateTime="2026-10-11">11 October 2026</time>
+              Last updated <time dateTime="2026-10-12">12 October 2026</time>
             </p>
           )}
         </header>
@@ -306,8 +306,8 @@ export function Privacy() {
             addresses for security.
           </li>
           <li>
-            <strong>Cloudflare</strong> runs the server the app talks to and forwards the emails you
-            send us.
+            <strong>Cloudflare</strong> runs the server the app talks to, counts requests per
+            internet address for a minute to limit abuse, and forwards the emails you send us.
           </li>
           <li>
             <strong>Supabase</strong> hosts our database in the European Union.

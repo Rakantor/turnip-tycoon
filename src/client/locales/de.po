@@ -3099,6 +3099,11 @@ msgstr "Heute gibt es <0>{current} Sternis</0> – besser wird es diese Woche ni
 msgid "Too late to sell"
 msgstr "Zu spät zum Verkaufen"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "Zu viele Versuche. Warte eine Minute und versuch es dann noch einmal."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"

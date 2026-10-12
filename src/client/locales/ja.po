@@ -3099,6 +3099,11 @@ msgstr "今日の<0>{current}ベル</0>が今週の最高値です。売りど�
 msgid "Too late to sell"
 msgstr "もう売れません"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "試行回数が多すぎます。1分待ってからもう一度お試しください。"
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"

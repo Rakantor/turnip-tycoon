@@ -47,6 +47,7 @@ export function serverMessages(): Record<string, string> {
     'This player no longer shares prices with you.': t`This player no longer shares prices with you.`,
     'This recovery code is invalid or has already been replaced.': t`This recovery code is invalid or has already been replaced.`,
     'This save request was already used for a different edit.': t`This save request was already used for a different edit.`,
+    'Too many attempts. Wait a minute and try again.': t`Too many attempts. Wait a minute and try again.`,
     'Use HTTPS to connect securely.': t`Use HTTPS to connect securely.`,
     'You can have up to 50 friends and requests. Remove one to add another.': t`You can have up to 50 friends and requests. Remove one to add another.`,
     'Your profile changed. Review it before deleting.': t`Your profile changed. Review it before deleting.`,

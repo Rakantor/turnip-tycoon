@@ -8,6 +8,12 @@
   "routes": [{ "pattern": "api.turniptycoon.app", "custom_domain": true }],
   // Every hour, delete pairing codes and shared friend links that have expired.
   "triggers": { "crons": ["23 * * * *"] },
+  // Cloudflare counts attempts per key for a minute, in each of its locations. The database
+  // never sees a client address.
+  "ratelimits": [
+    { "name": "CLIENT_LIMIT", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "CREATION_LIMIT", "namespace_id": "1002", "simple": { "limit": 60, "period": 60 } },
+  ],
   "secrets": { "required": [] },
   "vars": {
     "AUTH_MODE": "bearer",

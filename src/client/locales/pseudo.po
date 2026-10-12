@@ -2500,6 +2500,10 @@ msgstr ""
 msgid "Too late to sell"
 msgstr ""
 
+#: src/client/data/server-messages.ts
+msgid "Too many attempts. Wait a minute and try again."
+msgstr ""
+
 #: src/client/odds.ts
 msgid "Tops out at {best}"
 msgstr ""

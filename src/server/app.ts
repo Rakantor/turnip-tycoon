@@ -17,6 +17,7 @@ import {
   type CredentialMode,
 } from './http';
 import { formatCode, hashSecret, randomCode, randomToken } from './secrets';
+import { throttle, type RateLimits } from './limits';
 import {
   deviceIdInput,
   deviceInput,
@@ -44,6 +45,8 @@ export type AppEnvironment = {
 export interface AppOptions {
   frontendOrigin?: string;
   credentialMode?: CredentialMode;
+  /** Cloudflare's rate limiting bindings in production; tests pass counters or nothing. */
+  rateLimits?: RateLimits;
 }
 
 function pairingUnavailable() {
@@ -57,6 +60,7 @@ function pairingUnavailable() {
 export function createApp(databaseUrl: string, options: AppOptions = {}) {
   const app = new Hono<AppEnvironment>();
   const credentialMode = options.credentialMode ?? 'cookie';
+  const rateLimits = options.rateLimits ?? {};
   const frontendOrigin =
     credentialMode === 'bearer' ? validateFrontendOrigin(options.frontendOrigin) : undefined;
 
@@ -163,6 +167,9 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
         if (!(error instanceof ApiError) || error.status !== 401) throw error;
       }
     }
+    // A connected device was answered above; only a new profile counts against the limits.
+    await throttle(c, rateLimits.client, 'players');
+    await throttle(c, rateLimits.creation, 'players', 'everyone');
     const result = await transaction(c.get('db'), async (tx) => {
       // Retry the unlikely public-code collision without aborting the transaction.
       for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -283,6 +290,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
 
   app.post('/api/pairing', async (c) => {
     const input = await readJson(c, deviceInput);
+    await throttle(c, rateLimits.client, 'pairing');
     const code = randomCode(16);
     const claim = randomToken();
     const expiresAt = new Date(Date.now() + PAIRING_SECONDS * 1000);
@@ -408,6 +416,7 @@ export function createApp(databaseUrl: string, options: AppOptions = {}) {
 
   app.post('/api/recovery', async (c) => {
     const input = await readJson(c, recoveryInput);
+    await throttle(c, rateLimits.client, 'recovery');
     const codeHash = await hashSecret(input.code);
     const recoveryCode = randomCode(32);
     const newCodeHash = await hashSecret(recoveryCode);

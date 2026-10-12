@@ -3099,6 +3099,11 @@ msgstr "오늘의 <0>{current}벨</0>이 이번 주 최고가예요. 지금 파�
 msgid "Too late to sell"
 msgstr "팔기엔 너무 늦었어요"
 
+#: src/client/data/server-messages.ts
+#, fuzzy
+msgid "Too many attempts. Wait a minute and try again."
+msgstr "시도가 너무 많아요. 1분 기다렸다가 다시 시도해 보세요."
+
 #: src/client/odds.ts
 #, fuzzy
 msgid "Tops out at {best}"
