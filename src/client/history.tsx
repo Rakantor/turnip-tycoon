@@ -46,15 +46,7 @@ interface HistoryResponse {
 type Layout = 'cards' | 'list';
 
 /** All-time profit: every finished week's result, plus this week's so far, and how it went. */
-function ProfitSummary({
-  weeks,
-  currentWeek,
-  layout,
-}: {
-  weeks: LedgerWeek[];
-  currentWeek: string;
-  layout: Layout;
-}) {
+function ProfitSummary({ weeks, currentWeek }: { weeks: LedgerWeek[]; currentWeek: string }) {
   const id = useId();
   const traded = weeks.filter((week) => week.weekStart <= currentWeek);
   const overall = overallProfit(weeks, currentWeek);
@@ -66,7 +58,7 @@ function ProfitSummary({
     );
   const sold = traded.reduce((total, week) => total + week.sold, 0);
   return (
-    <section className={`profit-summary profit-${layout}`} aria-labelledby={`${id}-title`}>
+    <section className="profit-summary" aria-labelledby={`${id}-title`}>
       <div className={`profit-total${overall < 0 ? ' is-loss' : ''}`}>
         <span className="profit-icon">
           <BellBag size={30} aria-hidden="true" />
@@ -75,9 +67,7 @@ function ProfitSummary({
           <h2 id={`${id}-title`}>
             <Trans>All-time profit</Trans>
           </h2>
-          <p className={`profit-value ${overall < 0 ? 'bells-down' : 'bells-up'}`}>
-            {signedBells(overall)}
-          </p>
+          <p className="profit-value">{signedBells(overall)}</p>
         </div>
       </div>
       <dl className="profit-stats">
@@ -93,14 +83,14 @@ function ProfitSummary({
             <dd className="profit-note">{weekLabel(best.weekStart)}</dd>
           </div>
         )}
-        <div className="profit-count">
+        <div>
           <dt>
             <CalendarCheck size={16} aria-hidden="true" />
             <Trans>Weeks traded</Trans>
           </dt>
           <dd className="profit-stat">{traded.length}</dd>
         </div>
-        <div className="profit-count">
+        <div>
           <dt>
             <Turnip size={16} aria-hidden="true" />
             <Trans>Turnips sold</Trans>
@@ -415,9 +405,7 @@ export function History() {
           </button>
         </div>
       </div>
-      {ledger && ledger.length > 0 && (
-        <ProfitSummary weeks={ledger} currentWeek={currentWeek} layout={layout} />
-      )}
+      {ledger && ledger.length > 0 && <ProfitSummary weeks={ledger} currentWeek={currentWeek} />}
       {identity.status === 'offline' || identity.status === 'error' ? (
         <div className="sync-message">
           <p>

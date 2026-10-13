@@ -6,116 +6,17 @@
 }
 
 .profit-summary {
-  margin-bottom: 22px;
-}
-.profit-total {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.profit-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 60px;
-  height: 60px;
-  border-radius: 999px;
-  background: var(--leaf-soft);
-  color: var(--leaf-dark);
-}
-.profit-total.is-loss .profit-icon {
-  background: var(--pink-soft);
-  color: var(--clay);
-}
-.profit-summary h2 {
-  margin: 0;
-  color: var(--leaf-dark);
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.profit-total.is-loss h2 {
-  color: var(--clay);
-}
-.profit-value {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-}
-.profit-note {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 700;
-}
-.profit-stats {
-  margin: 0;
-}
-.profit-stats dt {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.profit-stats dt svg {
-  flex: none;
-  color: var(--subtle);
-}
-.profit-stats dd {
-  margin: 0;
-}
-.profit-stat {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.profit-stats .profit-note {
-  font-size: 13px;
-}
-
-/* List: one card, the total beside its stats. */
-.profit-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px 36px;
-  padding: 24px 28px;
-  border: 2px solid var(--border);
-  border-radius: var(--card-radius);
-  background: var(--surface);
-  box-shadow: 0 5px 0 var(--border);
-}
-.profit-list .profit-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 36px;
-}
-/* Counts sit centred under their labels. */
-.profit-list .profit-count dd {
-  text-align: center;
-}
-
-/* Cards: the total on a leaf-green card, or clay at a loss, with a tile for each stat. */
-.profit-cards {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 20px;
+  margin-bottom: 22px;
 }
-.profit-cards .profit-total {
+/* The total on a leaf-green card, or clay at a loss, a bag of bells faint behind it. */
+.profit-total {
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
   padding: 26px 32px;
   border: 2px solid var(--leaf-dark);
   border-radius: var(--card-radius);
@@ -123,39 +24,47 @@
   box-shadow: 0 5px 0 var(--leaf-deep);
   color: #fff;
 }
-.profit-cards .profit-total.is-loss {
+.profit-total.is-loss {
   border-color: #6f2f25;
   background: var(--clay);
   box-shadow: 0 5px 0 #5a261e;
 }
-.profit-cards .profit-icon {
+.profit-icon {
   position: absolute;
   right: 24px;
   bottom: -40px;
-  width: auto;
-  height: auto;
-  background: none;
-  color: #fff;
   opacity: 0.16;
 }
-.profit-cards .profit-icon svg {
+.profit-icon svg {
   width: 190px;
   height: 190px;
 }
-.profit-cards h2,
-.profit-cards .profit-value {
+.profit-total h2 {
+  margin: 0;
   color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-.profit-cards .profit-value {
+.profit-value {
+  margin: 0;
+  font-family: var(--font-display);
   font-size: 56px;
+  font-weight: 600;
   line-height: 1.05;
+  font-variant-numeric: tabular-nums;
 }
-.profit-cards .profit-stats {
+
+/* A tile for each stat, the best week in gold. */
+.profit-stats {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin: 0;
 }
-.profit-cards .profit-stats > div {
+.profit-stats > div {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -166,28 +75,42 @@
   background: var(--surface);
   box-shadow: 0 3px 0 var(--border);
 }
-.profit-cards .profit-stats dt {
+.profit-stats dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
   font-size: 13px;
-  letter-spacing: 0;
-  text-transform: none;
+  font-weight: 800;
 }
-.profit-cards .profit-stat {
+.profit-stats dt svg {
+  flex: none;
+  color: var(--subtle);
+}
+.profit-stats dd {
+  margin: 0;
+}
+.profit-stat {
+  font-family: var(--font-display);
   font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   text-align: right;
 }
-.profit-cards .profit-stats .profit-best {
+.profit-stats .profit-best {
   border-color: var(--gold-line);
   background: var(--gold-soft);
   box-shadow: 0 3px 0 var(--gold-line);
 }
-.profit-cards .profit-best dt,
-.profit-cards .profit-best dt svg,
-.profit-cards .profit-best .profit-note {
+.profit-best dt,
+.profit-best dt svg,
+.profit-best .profit-note {
   color: var(--gold-text);
 }
-.profit-cards .profit-best .profit-note {
+.profit-note {
   grid-column: 1 / -1;
   font-size: 12px;
+  font-weight: 700;
 }
 
 /* A week's calendar tile: the month on a band coloured by the result, then its days. */
@@ -522,58 +445,40 @@
   .segmented-control.layout-toggle button {
     width: 42px;
   }
-  .profit-value {
-    font-size: 32px;
-  }
-  .profit-list {
-    padding: 18px 16px;
-  }
-  .profit-list .profit-stats {
-    flex-basis: 100%;
-    gap: 12px 24px;
-    padding-top: 14px;
-    border-top: 1.5px dashed var(--border);
-  }
-  .profit-list .profit-stats dt {
-    font-size: 11px;
-  }
-  .profit-list .profit-stat {
-    font-size: 19px;
-  }
-  .profit-cards {
+  .profit-summary {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
-  .profit-cards .profit-total {
+  .profit-total {
     padding: 20px;
   }
-  .profit-cards .profit-value {
+  .profit-value {
     font-size: 38px;
   }
-  .profit-cards .profit-icon {
+  .profit-icon {
     right: -16px;
     bottom: -22px;
   }
-  .profit-cards .profit-icon svg {
+  .profit-icon svg {
     width: 130px;
     height: 130px;
   }
   /* The best week across the row, where its figure has room, then two small tiles. */
-  .profit-cards .profit-stats {
+  .profit-stats {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
-  .profit-cards .profit-stats > div {
+  .profit-stats > div {
     padding: 8px 12px;
   }
-  .profit-cards .profit-stats .profit-best {
+  .profit-stats .profit-best {
     grid-column: 1 / -1;
   }
-  .profit-cards .profit-stats dt {
+  .profit-stats dt {
     font-size: 12px;
   }
-  .profit-cards .profit-stat {
+  .profit-stat {
     font-size: 18px;
   }
   /* Tight enough for prices and turnips on one line beside the result; rotted turnips,
