@@ -16,6 +16,8 @@ pnpm dev
 
 Open **http://127.0.0.1:5173**. The launcher starts PostgreSQL 17, applies migrations, and runs React and the Workers API without Docker or cloud accounts. Stop with Ctrl+C; data persists in `.local/postgres`.
 
+A browser without a session, such as a private window, opens a demo profile with this week's prices and trades, ten weeks of history, friends, a group and a waiting friend request. Each launch resets the demo players to that data, dated from the day you start; see `scripts/demo.ts`. Browsers that already have a profile keep it. Run `pnpm dev --no-demo` to give each new browser a new profile instead, for example to test the welcome dialog.
+
 PostgreSQL listens on `127.0.0.1:54329` with local-only credentials and must run as a regular user. Review native install scripts before extending the `pnpm-workspace.yaml` dependency allowlist.
 
 To use another PostgreSQL instance, start it separately and configure:
