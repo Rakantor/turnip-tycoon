@@ -271,11 +271,6 @@ msgstr "{requester} veut partager ses prix avec toi"
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 msgstr "{rotted, plural, one {# navet a pourri dimanche.} other {# navets ont pourri dimanche.}}"
 
-#: src/client/history.tsx
-#, fuzzy
-msgid "{rottedCount} rotted"
-msgstr "{rottedCount} pourris"
-
 #: src/client/groups.tsx
 #, fuzzy
 msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
@@ -533,9 +528,7 @@ msgstr "Retour aux prix"
 
 #. The unit under a price
 #. The unit under a price
-#. The unit under a price
 #: src/client/groups.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "bells"
@@ -562,12 +555,6 @@ msgstr "clochettes prévues"
 #, fuzzy
 msgid "bells reported"
 msgstr "clochettes notées"
-
-#. Under the all-time profit, which is in bells
-#: src/client/history.tsx
-#, fuzzy
-msgid "bells, with this week’s {thisWeekSoFar} so far"
-msgstr "clochettes, dont {thisWeekSoFar} cette semaine pour l’instant"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -658,6 +645,12 @@ msgstr "Annuler"
 #, fuzzy
 msgid "Cancel your friend request to {name}"
 msgstr "Annuler ta demande d’ami à {name}"
+
+#. History layout: a card for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "Cards"
+msgstr "Cartes"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1623,6 +1616,12 @@ msgstr "Navets de la semaine dernière"
 msgid "Later"
 msgstr "Plus tard"
 
+#. Switches History between cards and a list
+#: src/client/history.tsx
+#, fuzzy
+msgid "Layout"
+msgstr "Affichage"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
@@ -1637,6 +1636,12 @@ msgstr "Quitter le groupe"
 #, fuzzy
 msgid "Licenses"
 msgstr "Licences"
+
+#. History layout: a row for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "List"
+msgstr "Liste"
 
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -1890,6 +1895,7 @@ msgstr "Aucun navet acheté"
 msgid "No turnips bought. Log a purchase"
 msgstr "Aucun navet acheté. Noter un achat"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "No turnips logged."
@@ -2312,6 +2318,7 @@ msgstr "Retour à l’accueil"
 msgid "Right now"
 msgstr "En ce moment"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Rotted"
@@ -3000,7 +3007,6 @@ msgid "This was most likely a small-spike week ({chance})."
 msgstr "C’était très probablement une semaine à petit pic ({chance})."
 
 #: src/client/calculator.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "This week"
@@ -3152,8 +3158,8 @@ msgstr "Les navets se vendent par lots de 10."
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "Turnips rotted"
-msgstr "Navets pourris"
+msgid "Turnips sold"
+msgstr "Navets vendus"
 
 #: src/client/group-price-table.tsx
 #, fuzzy
@@ -3249,7 +3255,6 @@ msgstr "mercredi après-midi"
 msgid "Wednesday morning"
 msgstr "mercredi matin"
 
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Week"

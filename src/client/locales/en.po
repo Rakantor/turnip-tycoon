@@ -221,10 +221,6 @@ msgstr "{requester} wants to share prices with you"
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 msgstr "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 
-#: src/client/history.tsx
-msgid "{rottedCount} rotted"
-msgstr "{rottedCount} rotted"
-
 #: src/client/groups.tsx
 msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
 msgstr "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
@@ -433,9 +429,7 @@ msgstr "Back to prices"
 
 #. The unit under a price
 #. The unit under a price
-#. The unit under a price
 #: src/client/groups.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 msgid "bells"
 msgstr "bells"
@@ -457,11 +451,6 @@ msgstr "bells predicted"
 #: src/client/group-price-table.tsx
 msgid "bells reported"
 msgstr "bells reported"
-
-#. Under the all-time profit, which is in bells
-#: src/client/history.tsx
-msgid "bells, with this week’s {thisWeekSoFar} so far"
-msgstr "bells, with this week’s {thisWeekSoFar} so far"
 
 #: src/client/groups.tsx
 msgid "Best {shownName} price"
@@ -535,6 +524,11 @@ msgstr "Cancel"
 #: src/client/people.tsx
 msgid "Cancel your friend request to {name}"
 msgstr "Cancel your friend request to {name}"
+
+#. History layout: a card for each week
+#: src/client/history.tsx
+msgid "Cards"
+msgstr "Cards"
 
 #: src/client/groups.tsx
 msgid "Certain"
@@ -1311,6 +1305,11 @@ msgstr "Last week’s turnips"
 msgid "Later"
 msgstr "Later"
 
+#. Switches History between cards and a list
+#: src/client/history.tsx
+msgid "Layout"
+msgstr "Layout"
+
 #: src/client/people.tsx
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
 msgstr "Leave {groupName}? You’ll stop sharing with players unless you share another group."
@@ -1322,6 +1321,11 @@ msgstr "Leave group"
 #: src/client/footer.tsx
 msgid "Licenses"
 msgstr "Licenses"
+
+#. History layout: a row for each week
+#: src/client/history.tsx
+msgid "List"
+msgstr "List"
 
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -1526,6 +1530,7 @@ msgstr "No turnips bought"
 msgid "No turnips bought. Log a purchase"
 msgstr "No turnips bought. Log a purchase"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 msgid "No turnips logged."
 msgstr "No turnips logged."
@@ -1867,6 +1872,7 @@ msgstr "Return to welcome"
 msgid "Right now"
 msgstr "Right now"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 msgid "Rotted"
 msgstr "Rotted"
@@ -2420,7 +2426,6 @@ msgid "This was most likely a small-spike week ({chance})."
 msgstr "This was most likely a small-spike week ({chance})."
 
 #: src/client/calculator.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 msgid "This week"
 msgstr "This week"
@@ -2543,8 +2548,8 @@ msgid "Turnips come in bunches of 10."
 msgstr "Turnips come in bunches of 10."
 
 #: src/client/history.tsx
-msgid "Turnips rotted"
-msgstr "Turnips rotted"
+msgid "Turnips sold"
+msgstr "Turnips sold"
 
 #: src/client/group-price-table.tsx
 msgid "Unavailable"
@@ -2622,7 +2627,6 @@ msgstr "Wednesday afternoon"
 msgid "Wednesday morning"
 msgstr "Wednesday morning"
 
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 msgid "Week"
 msgstr "Week"

@@ -271,11 +271,6 @@ msgstr "{requester}想和你分享价格"
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 msgstr "{rotted, plural, other {#棵大头菜在周日坏掉了。}}"
 
-#: src/client/history.tsx
-#, fuzzy
-msgid "{rottedCount} rotted"
-msgstr "坏掉{rottedCount}棵"
-
 #: src/client/groups.tsx
 #, fuzzy
 msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
@@ -533,9 +528,7 @@ msgstr "返回价格"
 
 #. The unit under a price
 #. The unit under a price
-#. The unit under a price
 #: src/client/groups.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "bells"
@@ -562,12 +555,6 @@ msgstr "铃钱（预测）"
 #, fuzzy
 msgid "bells reported"
 msgstr "铃钱（已报告）"
-
-#. Under the all-time profit, which is in bells
-#: src/client/history.tsx
-#, fuzzy
-msgid "bells, with this week’s {thisWeekSoFar} so far"
-msgstr "铃钱，其中本周目前{thisWeekSoFar}"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -658,6 +645,12 @@ msgstr "取消"
 #, fuzzy
 msgid "Cancel your friend request to {name}"
 msgstr "取消发给{name}的好友请求"
+
+#. History layout: a card for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "Cards"
+msgstr "卡片"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1623,6 +1616,12 @@ msgstr "上周的大头菜"
 msgid "Later"
 msgstr "稍后"
 
+#. Switches History between cards and a list
+#: src/client/history.tsx
+#, fuzzy
+msgid "Layout"
+msgstr "视图"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
@@ -1637,6 +1636,12 @@ msgstr "退出群组"
 #, fuzzy
 msgid "Licenses"
 msgstr "许可证"
+
+#. History layout: a row for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "List"
+msgstr "列表"
 
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -1890,6 +1895,7 @@ msgstr "没有买入大头菜"
 msgid "No turnips bought. Log a purchase"
 msgstr "没有买入大头菜。记录买入"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "No turnips logged."
@@ -2312,6 +2318,7 @@ msgstr "返回欢迎页"
 msgid "Right now"
 msgstr "现在"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Rotted"
@@ -3000,7 +3007,6 @@ msgid "This was most likely a small-spike week ({chance})."
 msgstr "这很可能是小幅上涨的一周（{chance}）。"
 
 #: src/client/calculator.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "This week"
@@ -3152,8 +3158,8 @@ msgstr "大头菜以10棵为一捆出售。"
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "Turnips rotted"
-msgstr "坏掉的大头菜"
+msgid "Turnips sold"
+msgstr "卖出的大头菜"
 
 #: src/client/group-price-table.tsx
 #, fuzzy
@@ -3249,7 +3255,6 @@ msgstr "星期三下午"
 msgid "Wednesday morning"
 msgstr "星期三上午"
 
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Week"

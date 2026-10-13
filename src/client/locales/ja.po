@@ -271,11 +271,6 @@ msgstr "{requester}からフレンド申請が届いています"
 msgid "{rotted, plural, one {# turnip rotted on Sunday.} other {# turnips rotted on Sunday.}}"
 msgstr "{rotted, plural, other {日曜日にカブが#株くさりました。}}"
 
-#: src/client/history.tsx
-#, fuzzy
-msgid "{rottedCount} rotted"
-msgstr "くさった {rottedCount}株"
-
 #: src/client/groups.tsx
 #, fuzzy
 msgid "{saving, plural, one {That’s # bell cheaper than yours.} other {That’s # bells cheaper than yours.}}"
@@ -533,9 +528,7 @@ msgstr "価格に戻る"
 
 #. The unit under a price
 #. The unit under a price
-#. The unit under a price
 #: src/client/groups.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "bells"
@@ -562,12 +555,6 @@ msgstr "ベル（予測）"
 #, fuzzy
 msgid "bells reported"
 msgstr "ベル（入力値）"
-
-#. Under the all-time profit, which is in bells
-#: src/client/history.tsx
-#, fuzzy
-msgid "bells, with this week’s {thisWeekSoFar} so far"
-msgstr "ベル（今週ここまで{thisWeekSoFar}）"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -658,6 +645,12 @@ msgstr "キャンセル"
 #, fuzzy
 msgid "Cancel your friend request to {name}"
 msgstr "{name}へのフレンド申請を取り消す"
+
+#. History layout: a card for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "Cards"
+msgstr "カード"
 
 #: src/client/groups.tsx
 #, fuzzy
@@ -1623,6 +1616,12 @@ msgstr "先週のカブ"
 msgid "Later"
 msgstr "あとで"
 
+#. Switches History between cards and a list
+#: src/client/history.tsx
+#, fuzzy
+msgid "Layout"
+msgstr "表示"
+
 #: src/client/people.tsx
 #, fuzzy
 msgid "Leave {groupName}? You’ll stop sharing with players unless you share another group."
@@ -1637,6 +1636,12 @@ msgstr "グループから退出"
 #, fuzzy
 msgid "Licenses"
 msgstr "ライセンス"
+
+#. History layout: a row for each week
+#: src/client/history.tsx
+#, fuzzy
+msgid "List"
+msgstr "リスト"
 
 #: src/client/history.tsx
 #: src/client/shared-player.tsx
@@ -1890,6 +1895,7 @@ msgstr "カブを買っていません"
 msgid "No turnips bought. Log a purchase"
 msgstr "カブを買っていません。購入を記録"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "No turnips logged."
@@ -2312,6 +2318,7 @@ msgstr "ようこそ画面に戻る"
 msgid "Right now"
 msgstr "いま"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Rotted"
@@ -3000,7 +3007,6 @@ msgid "This was most likely a small-spike week ({chance})."
 msgstr "おそらく跳ね小型の週でした（{chance}）。"
 
 #: src/client/calculator.tsx
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "This week"
@@ -3152,8 +3158,8 @@ msgstr "カブは10株単位で売られています。"
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "Turnips rotted"
-msgstr "くさったカブ"
+msgid "Turnips sold"
+msgstr "売ったカブ"
 
 #: src/client/group-price-table.tsx
 #, fuzzy
@@ -3249,7 +3255,6 @@ msgstr "水曜日の午後"
 msgid "Wednesday morning"
 msgstr "水曜日の午前"
 
-#: src/client/history.tsx
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Week"
