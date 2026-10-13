@@ -307,12 +307,12 @@
 }
 @container (min-width: 560px) {
   .trade-row {
-    grid-template-columns: 84px 150px minmax(0, 1fr) auto 44px;
+    grid-template-columns: 84px 96px minmax(0, 1fr) auto 44px;
     grid-template-areas: 'tag when amount bells edit';
     gap: 12px;
   }
   .trade-row:not(:has(.trade-edit)) {
-    grid-template-columns: 84px 150px minmax(0, 1fr) auto;
+    grid-template-columns: 84px 96px minmax(0, 1fr) auto;
     grid-template-areas: 'tag when amount bells';
   }
   .trade-tag {

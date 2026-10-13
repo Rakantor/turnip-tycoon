@@ -523,11 +523,6 @@ msgstr "Bought for<0>, average per turnip</0>"
 msgid "Buy"
 msgstr "Buy"
 
-#. Under “Sun” on the week board
-#: src/client/calculator.tsx
-msgid "buy price"
-msgstr "buy price"
-
 #: src/client/odds-card.tsx
 msgid "By Saturday night"
 msgstr "By Saturday night"
@@ -2118,10 +2113,6 @@ msgstr "Start a new profile"
 #: src/client/people.tsx
 msgid "Stay"
 msgstr "Stay"
-
-#: src/client/turnips.tsx
-msgid "Sunday"
-msgstr "Sunday"
 
 #: src/client/group-price-table.tsx
 msgid "Sunday buy"

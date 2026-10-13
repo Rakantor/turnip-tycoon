@@ -643,12 +643,6 @@ msgstr "Achetés à<0>, moyenne par navet</0>"
 msgid "Buy"
 msgstr "Achat"
 
-#. Under “Sun” on the week board
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "buy price"
-msgstr "prix d’achat"
-
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "By Saturday night"
@@ -2624,11 +2618,6 @@ msgstr "Créer un nouveau profil"
 #, fuzzy
 msgid "Stay"
 msgstr "Rester"
-
-#: src/client/turnips.tsx
-#, fuzzy
-msgid "Sunday"
-msgstr "dimanche"
 
 #: src/client/group-price-table.tsx
 #, fuzzy

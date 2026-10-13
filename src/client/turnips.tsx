@@ -14,7 +14,7 @@ import {
   type Trade,
 } from '../shared/ledger';
 import { PURCHASE_PRICE_RANGE, SELLING_PRICE_RANGE, type OwnWeekRecord } from '../shared/week';
-import { slotName } from './advice';
+import { dayName, dayShortName, slotName, slotShortName } from './advice';
 import { average, bells, Button, signedBells } from './ui';
 import './turnips.css';
 
@@ -53,7 +53,12 @@ function TradeList({
               {trade.kind === 'buy' ? t`Bought` : t`Sold`}
             </span>
             <span className="trade-when">
-              {trade.kind === 'buy' ? t`Sunday` : slotName(trade.slot)}
+              <span aria-hidden="true">
+                {trade.kind === 'buy' ? dayShortName(0) : slotShortName(trade.slot)}
+              </span>
+              <span className="sr-only">
+                {trade.kind === 'buy' ? dayName(0) : slotName(trade.slot)}
+              </span>
             </span>
             <span className="trade-amount">{what}</span>
             <span className={`trade-bells ${trade.kind === 'buy' ? 'bells-down' : 'bells-up'}`}>

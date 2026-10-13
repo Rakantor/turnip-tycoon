@@ -643,12 +643,6 @@ msgstr "買値<0>（カブ1株あたりの平均）</0>"
 msgid "Buy"
 msgstr "購入"
 
-#. Under “Sun” on the week board
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "buy price"
-msgstr "買値"
-
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "By Saturday night"
@@ -2624,11 +2618,6 @@ msgstr "新しいプロフィールを作成"
 #, fuzzy
 msgid "Stay"
 msgstr "残る"
-
-#: src/client/turnips.tsx
-#, fuzzy
-msgid "Sunday"
-msgstr "日曜日"
 
 #: src/client/group-price-table.tsx
 #, fuzzy

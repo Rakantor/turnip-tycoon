@@ -430,6 +430,10 @@
   .forecast {
     gap: 18px;
   }
+  /* One column: the patterns follow the prices they come from. */
+  .pattern-card {
+    order: -1;
+  }
   .forecast-card,
   .pattern-card {
     flex-basis: 100%;

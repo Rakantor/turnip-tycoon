@@ -505,9 +505,6 @@ function WeekCalculator({
               <div className="day-card-head">
                 <span className="day-name">{weekday(0)}</span>
                 <span className="day-date">{shortDate(0)}</span>
-                <span className="day-sub">
-                  <Trans comment="Under “Sun” on the week board">buy price</Trans>
-                </span>
                 {sundayToday && (
                   <span className="day-tag">
                     <Trans>Today</Trans>

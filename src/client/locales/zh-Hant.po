@@ -643,12 +643,6 @@ msgstr "買入價<0>（每棵大頭菜平均）</0>"
 msgid "Buy"
 msgstr "買入"
 
-#. Under “Sun” on the week board
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "buy price"
-msgstr "買入價"
-
 #: src/client/odds-card.tsx
 #, fuzzy
 msgid "By Saturday night"
@@ -2624,11 +2618,6 @@ msgstr "建立新的個人檔案"
 #, fuzzy
 msgid "Stay"
 msgstr "留下"
-
-#: src/client/turnips.tsx
-#, fuzzy
-msgid "Sunday"
-msgstr "週日"
 
 #: src/client/group-price-table.tsx
 #, fuzzy

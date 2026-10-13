@@ -798,9 +798,6 @@ summary {
   font-weight: 700;
   white-space: nowrap;
 }
-.day-sub {
-  display: none;
-}
 .has-tag .day-date {
   display: none;
 }
@@ -1340,9 +1337,7 @@ span.sunday-turnips {
   .day-today .day-name::after {
     background: var(--leaf);
   }
-  .has-tag .day-date {
-    display: inline;
-  }
+  .day-date,
   .day-tag,
   .period-slot > svg {
     display: none;
@@ -1373,15 +1368,6 @@ span.sunday-turnips {
   .day-card-sunday .price-field input,
   .sunday-turnips {
     padding-left: 25px;
-  }
-  .day-card-sunday .day-date {
-    display: none;
-  }
-  .day-card-sunday .day-sub {
-    display: block;
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 800;
   }
   .price-field input,
   .sunday-turnips {

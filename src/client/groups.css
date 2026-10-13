@@ -384,7 +384,6 @@
   flex: 1 1 0;
   min-width: 40px;
   max-width: 78px;
-  margin-left: auto;
 }
 .friend-row:hover {
   background: #fff;
@@ -407,7 +406,8 @@
   background: var(--pink-soft);
 }
 /* The sparkline takes only the room the forecast chip leaves, between 40px and its full width,
-   so the chip wraps only on rows too narrow for both. */
+   so the chip wraps only on rows too narrow for both. The rest keeps the price at the right,
+   with or without a sparkline. */
 .friend-identity {
   display: flex;
   flex: 0 1 auto;
@@ -415,6 +415,7 @@
   align-items: flex-start;
   gap: 3px;
   min-width: 0;
+  margin-right: auto;
 }
 .friend-name {
   display: inline-flex;
