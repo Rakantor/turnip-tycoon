@@ -17,7 +17,7 @@
 Bought turnips from Daisy Mae? Enter the prices Nook's Cranny offers, and Turnip Tycoon tells you where your week is heading and when to sell, before your turnips spoil.
 
 <p align="center">
-  <img src="assets/readme/screens.webp" width="100%" alt="Four phone screens: this week's prices with the mascot's forecast, a hold-or-sell card with the week's trades, the friends' island board showing the best price right now, and the history page with all-time profit." />
+  <img src="assets/readme/screens.webp" width="100%" alt="Four phone screens: this week's prices with the mascot's forecast, a hold-or-sell card with the week's trades, the friends' island board showing the best price right now, and the history page with all-time profit and a card for each week." />
 </p>
 
 ## What you can do
