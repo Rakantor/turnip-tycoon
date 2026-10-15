@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState, type PointerEvent } from 'react';
+import { useId, useMemo, useState, type PointerEvent } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import { plural, t } from '@lingui/core/macro';
@@ -134,7 +134,6 @@ function OddsExplorer({
   groupNow: boolean;
 }) {
   const id = useId();
-  const svg = useRef<SVGSVGElement>(null);
   // What was paid, or an earlier half-day's price, is a preset, but nobody can sell at it now.
   const ownNow = sellNow ? own.price : null;
   const presets = useMemo(() => {
@@ -200,6 +199,8 @@ function OddsExplorer({
   // New prices can move the range after one is picked.
   const price = clamp(chosen ?? group?.price ?? own.price ?? low);
   const show = (value: number) => setChosen(clamp(value));
+  // What's typed in the price field while it has focus; null shows the price.
+  const [draft, setDraft] = useState<string | null>(null);
   const x = (value: number) =>
     CHART.left + ((value - low) / (high - low)) * (CHART.right - CHART.left);
   const y = (chance: number) => CHART.bottom - chance * (CHART.bottom - CHART.top);
@@ -216,23 +217,48 @@ function OddsExplorer({
   const ownChance = ownCurve[price - low];
   const friendsChance = group ? friends[price - low] : null;
   const fromPointer = (event: PointerEvent<SVGSVGElement>) => {
-    const box = svg.current?.getBoundingClientRect();
-    if (!box) return;
+    const box = event.currentTarget.getBoundingClientRect();
     const at = ((event.clientX - box.left) / box.width) * CHART.width;
-    if (at < CHART.left - 4 || at > CHART.right + 4) return;
     show(low + ((at - CHART.left) / (CHART.right - CHART.left)) * (high - low));
   };
   const holderName = group?.holder.player.displayName ?? '';
   const groupPrice = group?.price ?? 0;
   return (
     <div className="odds-explorer-body">
-      <label className="odds-explorer-label" htmlFor={`${id}-price`}>
+      <label className="odds-explorer-label" id={`${id}-label`}>
         <Trans>
-          Selling for more than <output htmlFor={`${id}-price`}>{price}</output> bells
+          Selling for more than{' '}
+          <input
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={String(high).length}
+            value={draft ?? price}
+            onChange={(event) => {
+              // The chart follows as soon as the digits make a price in range.
+              const next = event.target.value.replace(/\D/g, '');
+              setDraft(next);
+              const value = Number(next);
+              if (next && value >= low && value <= high) show(value);
+            }}
+            onBlur={() => {
+              if (draft) show(Number(draft));
+              setDraft(null);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') event.currentTarget.blur();
+              else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                show(price + (event.key === 'ArrowUp' ? 1 : -1));
+                setDraft(null);
+              }
+            }}
+          />{' '}
+          bells
         </Trans>
       </label>
       <input
-        id={`${id}-price`}
+        aria-labelledby={`${id}-label`}
         type="range"
         min={low}
         max={high}
@@ -287,13 +313,20 @@ function OddsExplorer({
         )}
       </div>
       <svg
-        ref={svg}
         className="odds-chart"
         viewBox={`0 0 ${CHART.width} ${CHART.height}`}
         role="img"
         aria-label={t`Chance of selling for more than each price from ${low} to ${high} bells.`}
-        onPointerDown={fromPointer}
-        onPointerMove={fromPointer}
+        onPointerDown={(event) => {
+          if (event.button !== 0) return;
+          // Keep the pointer while pressed, so a drag past either end stops there.
+          event.currentTarget.setPointerCapture(event.pointerId);
+          fromPointer(event);
+        }}
+        onPointerMove={(event) => {
+          // Only a press or a drag moves the price, not hovering.
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) fromPointer(event);
+        }}
       >
         {[0, 0.5, 1].map((chance) => (
           <g key={chance}>

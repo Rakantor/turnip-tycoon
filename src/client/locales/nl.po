@@ -2464,8 +2464,8 @@ msgstr "Vanavond verkopen"
 
 #: src/client/odds-card.tsx
 #, fuzzy
-msgid "Selling for more than <0>{price}</0> bells"
-msgstr "Verkopen voor meer dan <0>{price}</0> klingels"
+msgid "Selling for more than <0/> bells"
+msgstr "Verkopen voor meer dan <0/> klingels"
 
 #: src/client/odds-card.tsx
 #, fuzzy

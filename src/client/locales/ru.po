@@ -2464,8 +2464,8 @@ msgstr "Продавай сегодня"
 
 #: src/client/odds-card.tsx
 #, fuzzy
-msgid "Selling for more than <0>{price}</0> bells"
-msgstr "Цена продажи в динях выше <0>{price}</0>"
+msgid "Selling for more than <0/> bells"
+msgstr "Цена продажи в динях выше <0/>"
 
 #: src/client/odds-card.tsx
 #, fuzzy

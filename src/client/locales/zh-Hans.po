@@ -2464,8 +2464,8 @@ msgstr "今晚卖"
 
 #: src/client/odds-card.tsx
 #, fuzzy
-msgid "Selling for more than <0>{price}</0> bells"
-msgstr "以高于<0>{price}</0>铃钱卖出"
+msgid "Selling for more than <0/> bells"
+msgstr "以高于<0/>铃钱卖出"
 
 #: src/client/odds-card.tsx
 #, fuzzy

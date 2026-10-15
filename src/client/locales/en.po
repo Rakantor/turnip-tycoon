@@ -1989,8 +1989,8 @@ msgid "Sell tonight"
 msgstr "Sell tonight"
 
 #: src/client/odds-card.tsx
-msgid "Selling for more than <0>{price}</0> bells"
-msgstr "Selling for more than <0>{price}</0> bells"
+msgid "Selling for more than <0/> bells"
+msgstr "Selling for more than <0/> bells"
 
 #: src/client/odds-card.tsx
 msgid "Selling now looks good"
