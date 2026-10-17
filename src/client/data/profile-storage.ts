@@ -51,6 +51,7 @@ export async function eraseProfileCopies(
   for (const row of metadata) {
     if (
       row.key === `ledger:${owner}` ||
+      row.key === `history:${owner}` ||
       row.key === `groups-refresh:${owner}` ||
       row.key === `shared-groups:${owner}` ||
       row.key.startsWith(`refresh:${owner}|`) ||

@@ -1,6 +1,7 @@
 import type { LedgerResponse } from '../../shared/ledger';
 import { request } from './api';
 import { database, type StoredWeek } from './database';
+import { HistoryCache, type HistoryPage } from './history-cache';
 import { LedgerCache } from './ledger-cache';
 import { WeekStore } from './sync';
 
@@ -16,6 +17,11 @@ export const weekStore = new WeekStore(database, {
 
 export const ledgerCache = new LedgerCache(database, {
   get: () => request<LedgerResponse>('/ledger'),
+  isActive: (owner) => activeIdentity.connected && activeIdentity.owner === owner,
+});
+
+export const historyCache = new HistoryCache(database, {
+  get: (before) => request<HistoryPage>(`/weeks?before=${encodeURIComponent(before)}&limit=20`),
   isActive: (owner) => activeIdentity.connected && activeIdentity.owner === owner,
 });
 

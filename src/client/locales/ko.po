@@ -805,6 +805,11 @@ msgstr "기존 프로필 연결"
 msgid "Connect this device to an existing profile"
 msgstr "이 기기를 기존 프로필에 연결"
 
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load older weeks."
+msgstr "연결하면 이전 주를 불러올 수 있어요."
+
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Connect to load this player’s shared prices."
@@ -1719,6 +1724,7 @@ msgstr "최저"
 msgid "Lowest buy price among your friends."
 msgstr "친구 중 가장 낮은 구매 가격."
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Made so far"
@@ -3019,8 +3025,8 @@ msgstr "이 주는 볼 수 없어요."
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "This week will appear here when a new week starts."
-msgstr "새 주가 시작되면 이번 주가 여기에 표시돼요."
+msgid "This week will appear here once you sell turnips."
+msgstr "무를 팔면 이번 주가 여기에 표시돼요."
 
 #: src/client/outlook.tsx
 #, fuzzy

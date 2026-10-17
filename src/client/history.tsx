@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useId, useMemo, useState } from 'react';
+import { Fragment, useId, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { Bug, CalendarCheck, LayoutGrid, List, ShoppingBasket, Store, Trophy } from 'lucide-react';
 import { i18n } from '@lingui/core';
@@ -8,6 +8,7 @@ import { currentWeekStart } from '../shared/calendar';
 import {
   averageCost,
   averageSale,
+  madeSoFar,
   overallProfit,
   totalsOf,
   unsold,
@@ -17,8 +18,7 @@ import {
 } from '../shared/ledger';
 import type { OwnWeekRecord } from '../shared/week';
 import { dayShortName } from './advice';
-import { request } from './data/api';
-import { ownWeek, type StoredWeek } from './data/database';
+import { useHistory } from './data/use-history';
 import { useLedger } from './data/use-ledger';
 import { BellBag, Turnip } from './icons';
 import {
@@ -36,11 +36,6 @@ import {
   weekLabel,
 } from './ui';
 import './history.css';
-
-interface HistoryResponse {
-  weeks: StoredWeek[];
-  nextCursor: string | null;
-}
 
 /** Cards show each week's prices as a little chart; the list keeps a week to one row. */
 type Layout = 'cards' | 'list';
@@ -103,13 +98,21 @@ function ProfitSummary({ weeks, currentWeek }: { weeks: LedgerWeek[]; currentWee
 }
 
 /** A little calendar page for the week, topped in the colour of its result. */
-function WeekTile({ weekStart, tone }: { weekStart: string; tone: 'up' | 'down' | 'even' }) {
+function WeekTile({
+  weekStart,
+  tone,
+  current,
+}: {
+  weekStart: string;
+  tone: 'up' | 'down' | 'even';
+  current: boolean;
+}) {
   const start = dateFromWeek(weekStart);
   const end = dateFromWeek(weekStart, 6);
   const label = weekLabel(weekStart);
   return (
     <Link
-      to={`/weeks/${weekStart}`}
+      to={current ? '/' : `/weeks/${weekStart}`}
       className={`week-tile week-${tone}`}
       aria-label={label}
       title={label}
@@ -124,12 +127,13 @@ function WeekTile({ weekStart, tone }: { weekStart: string; tone: 'up' | 'down' 
 
 /**
  * Average prices and turnip counts, each value marked by an icon and named for screen readers.
- * Rotted turnips come last, so on a narrow row they are what moves to a second line.
+ * Rotted turnips come last, so on a narrow row they are what moves to a second line. This
+ * week's unsold turnips are still held, not rotted.
  */
-function WeekFigures({ totals }: { totals: LedgerTotals }) {
+function WeekFigures({ totals, current }: { totals: LedgerTotals; current: boolean }) {
   const cost = averageCost(totals);
   const sale = averageSale(totals);
-  const rotted = unsold(totals);
+  const rotted = current ? 0 : unsold(totals);
   return (
     <dl className="week-figures">
       <div className="week-figure">
@@ -218,21 +222,38 @@ function WeekChart({ week }: { week: OwnWeekRecord }) {
   );
 }
 
-function PastWeek({ week, layout }: { week: OwnWeekRecord; layout: Layout }) {
+/** A past week, or this week once a sale gives it a result so far. */
+function HistoryWeek({
+  week,
+  layout,
+  current,
+}: {
+  week: OwnWeekRecord;
+  layout: Layout;
+  current: boolean;
+}) {
   const totals = totalsOf(week.trades);
   const traded = week.trades.length > 0;
-  const result = weekResult(totals);
+  // Turnips still held this week don't count yet, as in the all-time profit.
+  const result = current ? madeSoFar(totals) : weekResult(totals);
   return (
     <li className={layout === 'cards' ? 'week-card' : 'week-row'}>
       <WeekTile
         weekStart={week.weekStart}
         tone={!traded || result === 0 ? 'even' : result > 0 ? 'up' : 'down'}
+        current={current}
       />
       {traded ? (
         <dl className="week-result">
-          <dt className="sr-only">
-            <Trans>Profit</Trans>
-          </dt>
+          {current ? (
+            <dt className="week-so-far">
+              <Trans>Made so far</Trans>
+            </dt>
+          ) : (
+            <dt className="sr-only">
+              <Trans>Profit</Trans>
+            </dt>
+          )}
           <dd className={result < 0 ? 'bells-down' : 'bells-up'}>{signedBells(result)}</dd>
         </dl>
       ) : (
@@ -242,7 +263,7 @@ function PastWeek({ week, layout }: { week: OwnWeekRecord; layout: Layout }) {
       )}
       {layout === 'cards' && <WeekChart week={week} />}
       {traded ? (
-        <WeekFigures totals={totals} />
+        <WeekFigures totals={totals} current={current} />
       ) : (
         <p className="week-idle">
           <Trans>No turnips logged.</Trans>
@@ -318,55 +339,16 @@ export function History() {
   const ledger = useLedger(owner, identity.status === 'ready');
   const currentWeek = currentWeekStart();
   const [layout, setLayout] = useState<Layout>('cards');
-  const [weeks, setWeeks] = useState<OwnWeekRecord[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [refreshCount, setRefreshCount] = useState(0);
-  useEffect(() => {
-    if (identity.status !== 'ready' || !identity.session) return;
-    let current = true;
-    setLoading(true);
-    setError('');
-    void request<HistoryResponse>(`/weeks?before=${currentWeekStart()}&limit=20`)
-      .then((result) => {
-        if (!current) return;
-        setWeeks(result.weeks.map(ownWeek));
-        setNextCursor(result.nextCursor);
-      })
-      .catch((error: unknown) => {
-        if (current) setError(messageOf(error));
-      })
-      .finally(() => {
-        if (current) setLoading(false);
-      });
-    return () => {
-      current = false;
-    };
-  }, [identity.status, identity.session, refreshCount]);
-  const reveal = useReveal(loading && weeks.length === 0);
+  const offline = identity.status === 'offline' || identity.status === 'error';
+  const history = useHistory(owner, identity.status === 'ready', currentWeek);
+  const { weeks, nextCursor } = history;
+  // Until a list arrives from this device or the server, there is nothing to show yet.
+  const waiting =
+    (owner !== null && !history.hydrated) ||
+    history.loading ||
+    (!offline && !history.listed && !history.error);
+  const reveal = useReveal(waiting && weeks.length === 0);
   const groups = useMemo(() => byYear(weeks), [weeks]);
-  async function more() {
-    if (!nextCursor) return;
-    setLoading(true);
-    setError('');
-    try {
-      const result = await request<HistoryResponse>(
-        `/weeks?before=${encodeURIComponent(nextCursor)}&limit=20`,
-      );
-      setWeeks((current) => [
-        ...current,
-        ...result.weeks
-          .filter((week) => !current.some((entry) => entry.weekStart === week.weekStart))
-          .map(ownWeek),
-      ]);
-      setNextCursor(result.nextCursor);
-    } catch (error) {
-      setError(messageOf(error));
-    } finally {
-      setLoading(false);
-    }
-  }
   const cardsLabel = t({ message: 'Cards', comment: 'History layout: a card for each week' });
   const listLabel = t({ message: 'List', comment: 'History layout: a row for each week' });
   return (
@@ -406,10 +388,72 @@ export function History() {
         </div>
       </div>
       {ledger && ledger.length > 0 && <ProfitSummary weeks={ledger} currentWeek={currentWeek} />}
-      {identity.status === 'offline' || identity.status === 'error' ? (
+      {history.error !== null && (
+        <>
+          <Notice>{messageOf(history.error)}</Notice>
+          <Button secondary onClick={history.retry}>
+            <Trans>Retry history</Trans>
+          </Button>
+        </>
+      )}
+      {weeks.length > 0 && (
+        <section className={`history-weeks ${reveal}`} aria-label={t`Past weeks and their profit`}>
+          <WeekKey layout={layout} />
+          {groups.map((group) => (
+            <Fragment key={group.year}>
+              {group.year !== currentWeek.slice(0, 4) && (
+                <h2 className="history-year">
+                  {i18n.date(dateFromWeek(group.weeks[0].weekStart), { year: 'numeric' })}
+                </h2>
+              )}
+              <ul className={layout === 'cards' ? 'week-cards' : 'week-list'}>
+                {group.weeks.map((week) => (
+                  <HistoryWeek
+                    key={week.weekStart}
+                    week={week}
+                    layout={layout}
+                    current={week.weekStart === currentWeek}
+                  />
+                ))}
+              </ul>
+            </Fragment>
+          ))}
+        </section>
+      )}
+      {waiting && weeks.length === 0 && <WeeksLoading layout={layout} />}
+      {!waiting && history.listed && history.error === null && weeks.length === 0 && (
+        <div className="empty-history">
+          <p>
+            <Trans>No past weeks yet.</Trans>
+          </p>
+          <p className="muted">
+            <Trans>This week will appear here once you sell turnips.</Trans>
+          </p>
+          <Link to="/">
+            <Trans>Enter this week’s prices</Trans>
+          </Link>
+        </div>
+      )}
+      {nextCursor && identity.status === 'ready' && (
+        <Button
+          secondary
+          busy={history.loading}
+          onClick={() => {
+            void history.more();
+          }}
+        >
+          <Trans>Load older weeks</Trans>
+        </Button>
+      )}
+      {/* Offline, the weeks saved on this device show; older ones wait for a connection. */}
+      {offline && !waiting && (!history.listed || nextCursor) && (
         <div className="sync-message">
           <p>
-            <Trans>Connect to load your saved history.</Trans>
+            {history.listed ? (
+              <Trans>Connect to load older weeks.</Trans>
+            ) : (
+              <Trans>Connect to load your saved history.</Trans>
+            )}
           </p>
           <Button
             secondary
@@ -420,64 +464,6 @@ export function History() {
             <Trans>Try again</Trans>
           </Button>
         </div>
-      ) : (
-        <>
-          {error && (
-            <>
-              <Notice>{error}</Notice>
-              <Button secondary onClick={() => setRefreshCount((count) => count + 1)}>
-                <Trans>Retry history</Trans>
-              </Button>
-            </>
-          )}
-          {weeks.length > 0 && (
-            <section
-              className={`history-weeks ${reveal}`}
-              aria-label={t`Past weeks and their profit`}
-            >
-              <WeekKey layout={layout} />
-              {groups.map((group) => (
-                <Fragment key={group.year}>
-                  {group.year !== currentWeek.slice(0, 4) && (
-                    <h2 className="history-year">
-                      {i18n.date(dateFromWeek(group.weeks[0].weekStart), { year: 'numeric' })}
-                    </h2>
-                  )}
-                  <ul className={layout === 'cards' ? 'week-cards' : 'week-list'}>
-                    {group.weeks.map((week) => (
-                      <PastWeek key={week.weekStart} week={week} layout={layout} />
-                    ))}
-                  </ul>
-                </Fragment>
-              ))}
-            </section>
-          )}
-          {loading && weeks.length === 0 && <WeeksLoading layout={layout} />}
-          {!loading && !error && weeks.length === 0 && (
-            <div className="empty-history">
-              <p>
-                <Trans>No past weeks yet.</Trans>
-              </p>
-              <p className="muted">
-                <Trans>This week will appear here when a new week starts.</Trans>
-              </p>
-              <Link to="/">
-                <Trans>Enter this week’s prices</Trans>
-              </Link>
-            </div>
-          )}
-          {nextCursor && (
-            <Button
-              secondary
-              busy={loading}
-              onClick={() => {
-                void more();
-              }}
-            >
-              <Trans>Load older weeks</Trans>
-            </Button>
-          )}
-        </>
       )}
     </main>
   );

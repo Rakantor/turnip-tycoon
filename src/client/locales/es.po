@@ -805,6 +805,11 @@ msgstr "Conectar un perfil existente"
 msgid "Connect this device to an existing profile"
 msgstr "Conectar este dispositivo a un perfil existente"
 
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load older weeks."
+msgstr "Conéctate para cargar semanas anteriores."
+
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Connect to load this player’s shared prices."
@@ -1719,6 +1724,7 @@ msgstr "Bajo"
 msgid "Lowest buy price among your friends."
 msgstr "El precio de compra más bajo entre tus amigos."
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Made so far"
@@ -3019,8 +3025,8 @@ msgstr "Esta semana no está disponible."
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "This week will appear here when a new week starts."
-msgstr "Esta semana aparecerá aquí cuando empiece una nueva semana."
+msgid "This week will appear here once you sell turnips."
+msgstr "Esta semana aparecerá aquí cuando vendas nabos."
 
 #: src/client/outlook.tsx
 #, fuzzy

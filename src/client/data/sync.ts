@@ -26,7 +26,8 @@ function fresh(owner: string, weekStart: string): LocalWeek {
     slots: [],
   };
 }
-function mergeTouched(target: StoredWeek, local: LocalWeek): StoredWeek {
+/** The server's week with this device's touched entries on top. */
+export function mergeTouched(target: StoredWeek, local: LocalWeek): StoredWeek {
   const data = { ...target, prices: [...target.prices] };
   for (const field of local.fields) Object.assign(data, { [field]: local.data[field] });
   for (const slot of local.slots) data.prices[slot] = local.data.prices[slot];

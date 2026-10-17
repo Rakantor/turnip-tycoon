@@ -805,6 +805,11 @@ msgstr "連線現有的個人檔案"
 msgid "Connect this device to an existing profile"
 msgstr "將這台裝置連線到現有的個人檔案"
 
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load older weeks."
+msgstr "連線後可載入更早的週。"
+
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Connect to load this player’s shared prices."
@@ -1719,6 +1724,7 @@ msgstr "最低"
 msgid "Lowest buy price among your friends."
 msgstr "好友中最低的買入價。"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Made so far"
@@ -3019,8 +3025,8 @@ msgstr "這週無法使用。"
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "This week will appear here when a new week starts."
-msgstr "新的一週開始後，本週會顯示在這裡。"
+msgid "This week will appear here once you sell turnips."
+msgstr "賣出大頭菜後，本週會顯示在這裡。"
 
 #: src/client/outlook.tsx
 #, fuzzy

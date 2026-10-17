@@ -654,6 +654,10 @@ msgstr ""
 msgid "Connect this device to an existing profile"
 msgstr ""
 
+#: src/client/history.tsx
+msgid "Connect to load older weeks."
+msgstr ""
+
 #: src/client/shared-player.tsx
 msgid "Connect to load this player’s shared prices."
 msgstr ""
@@ -1388,6 +1392,7 @@ msgstr ""
 msgid "Lowest buy price among your friends."
 msgstr ""
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 msgid "Made so far"
 msgstr ""
@@ -2435,7 +2440,7 @@ msgid "This week is not available."
 msgstr ""
 
 #: src/client/history.tsx
-msgid "This week will appear here when a new week starts."
+msgid "This week will appear here once you sell turnips."
 msgstr ""
 
 #: src/client/outlook.tsx

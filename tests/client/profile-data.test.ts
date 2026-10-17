@@ -7,6 +7,7 @@ import { blockedProfileKey, ProfileWriteBlockedError } from '../../src/client/da
 import { collectProfileExport } from '../../src/client/data/profile-export';
 import { SharedGroupsCache } from '../../src/client/data/shared-groups';
 import { LedgerCache } from '../../src/client/data/ledger-cache';
+import { HistoryCache } from '../../src/client/data/history-cache';
 import { PendingEdits } from '../../src/client/data/pending-edits';
 import { emptyOwnWeek } from '../../src/shared/week';
 import type { ProfileExportPage } from '../../src/shared/profile-data';
@@ -85,8 +86,10 @@ describe('local profile cleanup', () => {
       await h.store.edit(id, week, { purchasePrice: 100 });
     await h.db.meta.bulkPut([
       { key: `ledger:${owner}`, value: { weeks: [] } },
+      { key: `history:${owner}`, value: { weeks: [], nextCursor: null } },
       { key: `refresh:${owner}|${week}`, value: 1 },
       { key: 'ledger:other', value: { weeks: [] } },
+      { key: 'history:other', value: { weeks: [], nextCursor: null } },
       { key: 'shared-groups:other', value: { players: [{ player: profile }] } },
       // Known only through a friend request, the deleted player must still disappear.
       {
@@ -98,10 +101,12 @@ describe('local profile cleanup', () => {
     await h.vault.finishRemoval(owner, 'deleted');
     expect((await h.db.weeks.toArray()).map((row) => row.owner)).toEqual(['other']);
     expect(await h.db.meta.get(`ledger:${owner}`)).toBeUndefined();
+    expect(await h.db.meta.get(`history:${owner}`)).toBeUndefined();
     expect(await h.db.meta.get(`refresh:${owner}|${week}`)).toBeUndefined();
     expect(await h.db.meta.get('shared-groups:other')).toBeUndefined();
     expect(await h.db.meta.get('shared-groups:third')).toBeUndefined();
     expect(await h.db.meta.get('ledger:other')).toBeDefined();
+    expect(await h.db.meta.get('history:other')).toBeDefined();
     expect(await h.vault.read()).toMatchObject({ session: null, token: null });
     await expect(h.store.edit(owner, week, { purchasePrice: 110 })).rejects.toBeInstanceOf(
       ProfileWriteBlockedError,
@@ -131,7 +136,7 @@ describe('local profile cleanup', () => {
     expect(h.transport.put).not.toHaveBeenCalled();
   });
 
-  it('blocks delayed ledger/group caches and drops retained in-memory edits', async () => {
+  it('blocks delayed ledger/history/group caches and drops retained in-memory edits', async () => {
     const h = harness();
     let finish!: (value: { weeks: [] }) => void;
     const ledger = new LedgerCache(h.db, {
@@ -152,7 +157,13 @@ describe('local profile cleanup', () => {
       friendIds: [],
       requests: { received: [], sent: [] },
     });
+    const history = new HistoryCache(h.db, {
+      isActive: () => true,
+      get: async () => ({ weeks: [], nextCursor: null }),
+    });
+    await history.save(owner, { weeks: [], nextCursor: null });
     expect(await ledger.read(owner)).toBeNull();
+    expect(await history.read(owner)).toBeNull();
     expect(await new SharedGroupsCache(h.db).read(owner, week)).toBeNull();
     const pending = new PendingEdits(async () => {
       throw new Error('Storage full');

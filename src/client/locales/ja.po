@@ -805,6 +805,11 @@ msgstr "既存のプロフィールに接続"
 msgid "Connect this device to an existing profile"
 msgstr "この端末を既存のプロフィールに接続"
 
+#: src/client/history.tsx
+#, fuzzy
+msgid "Connect to load older weeks."
+msgstr "接続すると、以前の週を読み込めます。"
+
 #: src/client/shared-player.tsx
 #, fuzzy
 msgid "Connect to load this player’s shared prices."
@@ -1719,6 +1724,7 @@ msgstr "最低"
 msgid "Lowest buy price among your friends."
 msgstr "フレンド内の最安の買値。"
 
+#: src/client/history.tsx
 #: src/client/turnips.tsx
 #, fuzzy
 msgid "Made so far"
@@ -3019,8 +3025,8 @@ msgstr "この週は表示できません。"
 
 #: src/client/history.tsx
 #, fuzzy
-msgid "This week will appear here when a new week starts."
-msgstr "新しい週が始まると、今週の記録がここに表示されます。"
+msgid "This week will appear here once you sell turnips."
+msgstr "カブを売ると、今週の記録がここに表示されます。"
 
 #: src/client/outlook.tsx
 #, fuzzy
