@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../../src/client/data/api';
 import { TurnipDatabase, type StoredWeek } from '../../src/client/data/database';
 import { withPendingEdits } from '../../src/client/data/pending-edits';
+import { blockedProfileKey } from '../../src/client/data/profile-storage';
 import { WeekStore, weekKey, type WeekTransport } from '../../src/client/data/sync';
 import type { Trade } from '../../src/shared/ledger';
 import { emptyOwnWeek, emptyWeek, type WeekMutation, type WeekRecord } from '../../src/shared/week';
@@ -625,5 +626,78 @@ describe('durable weekly sync', () => {
       dirty: false,
       data: { revision: 4 },
     });
+  });
+});
+
+describe('weeks read from a list', () => {
+  const listed: StoredWeek = {
+    ...emptyOwnWeek(owner, week),
+    revision: 2,
+    purchasePrice: 98,
+    prices: prices(87),
+  };
+
+  it('keeps a listed week as read, so it opens offline as saved', async () => {
+    const h = harness();
+    await h.store.remember(owner, [structuredClone(listed)]);
+    h.setActive('offline');
+    await h.store.initialize(owner, week);
+    expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
+      hydrated: true,
+      dirty: false,
+      data: listed,
+    });
+  });
+
+  it('replaces only an older copy', async () => {
+    const h = harness();
+    const purchasePrice = async () =>
+      (await h.db.weeks.get(weekKey(owner, week)))?.data.purchasePrice;
+    await h.store.remember(owner, [listed]);
+    await h.store.remember(owner, [{ ...listed, revision: 1, purchasePrice: 90 }]);
+    await h.store.remember(owner, [{ ...listed, purchasePrice: 91 }]);
+    expect(await purchasePrice()).toBe(98);
+    await h.store.remember(owner, [{ ...listed, revision: 3, purchasePrice: 101 }]);
+    expect(await purchasePrice()).toBe(101);
+  });
+
+  it('leaves unsent edits for sync to combine', async () => {
+    const h = harness();
+    await h.store.edit(owner, week, { purchasePrice: 95 });
+    const edited = await h.db.weeks.get(weekKey(owner, week));
+    await h.store.remember(owner, [{ ...listed, revision: 5 }]);
+    expect(await h.db.weeks.get(weekKey(owner, week))).toEqual(edited);
+  });
+
+  it('keeps nothing for a profile that isn’t signed in or is being removed', async () => {
+    const h = harness();
+    h.setActive('someone-else');
+    await h.store.remember(owner, [listed]);
+    h.setActive(owner);
+    await h.db.meta.put({ key: blockedProfileKey(owner), value: 'deleted' });
+    await h.store.remember(owner, [listed]);
+    expect(await h.db.weeks.count()).toBe(0);
+  });
+
+  it('logs an offline sale on top of the listed purchases, beside another device’s save', async () => {
+    const bought: Trade = { id: 'buy-1', kind: 'buy', quantity: 4000, price: 98 };
+    const sold: Trade = { id: 'sell-1', kind: 'sell', quantity: 1000, price: 87, slot: 0 };
+    const h = harness({ ...listed, trades: [bought] });
+    await h.store.remember(owner, [{ ...listed, trades: [bought] }]);
+    h.setActive('offline');
+    const shown = await h.db.weeks.get(weekKey(owner, week));
+    await h.store.edit(owner, week, { trades: [...(shown?.data.trades ?? []), sold] });
+    // Meanwhile another device saved Monday afternoon.
+    h.remote.set(week, { ...h.remote.get(week)!, revision: 3, prices: prices(87, 82) });
+    h.setActive(owner);
+    await h.store.sync(owner, week);
+    expect(h.remote.get(week)).toMatchObject({
+      revision: 4,
+      prices: prices(87, 82),
+      trades: [bought, sold],
+    });
+    const row = await h.db.weeks.get(weekKey(owner, week));
+    expect(row).toMatchObject({ dirty: false, data: { revision: 4 } });
+    expect(row?.conflict).toBeUndefined();
   });
 });

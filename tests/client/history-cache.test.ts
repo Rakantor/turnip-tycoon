@@ -5,6 +5,7 @@ import {
   HistoryCache,
   type HistoryPage,
   withLocalHistory,
+  withOlderPage,
 } from '../../src/client/data/history-cache';
 import { weekKey } from '../../src/client/data/sync';
 import type { Trade } from '../../src/shared/ledger';
@@ -77,14 +78,21 @@ describe('saved history', () => {
     expect(starts(first!.weeks)).toEqual([thisWeek, lastWeek]);
   });
 
-  it('adds the next older page after the list, once each', async () => {
+  it('reads the page after the list’s oldest week, and nothing once it reaches the first', async () => {
     const h = harness();
     const list: HistoryPage = { weeks: [week(lastWeek, 2)], nextCursor: lastWeek };
-    h.transport.get.mockResolvedValueOnce({
-      weeks: [week(lastWeek, 2), week(twoAgo, 1)],
-      nextCursor: twoAgo,
+    expect(await h.cache.older(owner, list)).toEqual({
+      weeks: [week(twoAgo, 1)],
+      nextCursor: null,
     });
-    expect(await h.cache.more(owner, list)).toEqual({
+    expect(await h.cache.older(owner, { ...list, nextCursor: null })).toBeNull();
+    expect(h.transport.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('adds an older page after the list, once each', () => {
+    const list: HistoryPage = { weeks: [week(lastWeek, 2)], nextCursor: lastWeek };
+    const page: HistoryPage = { weeks: [week(lastWeek, 2), week(twoAgo, 1)], nextCursor: twoAgo };
+    expect(withOlderPage(list, page)).toEqual({
       weeks: [week(lastWeek, 2), week(twoAgo, 1)],
       nextCursor: twoAgo,
     });

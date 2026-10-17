@@ -2,8 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { liveQuery } from 'dexie';
 import type { OwnWeekRecord } from '../../shared/week';
 import { database, type LocalWeek } from './database';
-import { type HistoryPage, withLocalHistory } from './history-cache';
-import { historyCache } from './runtime';
+import { type HistoryPage, withLocalHistory, withOlderPage } from './history-cache';
+import { historyCache, weekStore } from './runtime';
+
+/**
+ * Saves the list so it reads offline, and the weeks just read so each opens offline too.
+ * Only a fresh page counts as a server read: a saved list may be older than this device.
+ */
+function keep(owner: string, list: HistoryPage, page: HistoryPage) {
+  void historyCache.save(owner, list).catch(() => undefined);
+  void weekStore.remember(owner, page.weeks).catch(() => undefined);
+}
 
 interface DeviceCopy {
   owner: string;
@@ -66,7 +75,7 @@ export function useHistory(
       .then((list) => {
         if (!current || !list) return;
         setFetched({ owner, list });
-        void historyCache.save(owner, list).catch(() => undefined);
+        keep(owner, list, list);
       })
       .catch((error: unknown) => {
         if (current) setError(error);
@@ -92,10 +101,11 @@ export function useHistory(
     setLoading(true);
     setError(null);
     try {
-      const next = await historyCache.more(owner, list);
-      if (!next || run !== generation.current) return;
+      const page = await historyCache.older(owner, list);
+      if (!page || run !== generation.current) return;
+      const next = withOlderPage(list, page);
       setFetched({ owner, list: next });
-      void historyCache.save(owner, next).catch(() => undefined);
+      keep(owner, next, page);
     } catch (error) {
       if (run === generation.current) setError(error);
     } finally {

@@ -108,6 +108,24 @@ export class WeekStore {
     });
   }
 
+  /**
+   * Keeps weeks the server listed, such as a History page, so each opens offline. Unsent
+   * edits and conflicts are left for sync to combine; an older read never replaces a newer one.
+   */
+  async remember(owner: string, weeks: readonly StoredWeek[]): Promise<void> {
+    if (owner === 'unassigned' || !weeks.length || !this.transport.isActive(owner)) return;
+    await writeForProfile(this.db, owner, [this.db.weeks], async () => {
+      const rows = await this.db.weeks.bulkGet(weeks.map((week) => weekKey(owner, week.weekStart)));
+      const read = weeks.flatMap((remote, index) => {
+        const row = rows[index] ?? fresh(owner, remote.weekStart);
+        if (row.dirty || row.pending || row.conflict) return [];
+        if (row.hydrated && remote.revision <= row.data.revision) return [];
+        return [{ ...row, data: remote, hydrated: true, syncedAt: Date.now() }];
+      });
+      if (read.length) await this.db.weeks.bulkPut(read);
+    });
+  }
+
   async edit(
     owner: string,
     weekStart: string,

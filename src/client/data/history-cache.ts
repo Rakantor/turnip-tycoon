@@ -43,16 +43,9 @@ export class HistoryCache {
     return this.fetch(owner, shiftWeek(currentWeek, 1));
   }
 
-  /** The list with its next older page after it. */
-  async more(owner: string, list: HistoryPage): Promise<HistoryPage | null> {
-    if (!list.nextCursor) return list;
-    const page = await this.fetch(owner, list.nextCursor);
-    if (!page) return null;
-    const known = new Set(list.weeks.map((week) => week.weekStart));
-    return {
-      weeks: [...list.weeks, ...page.weeks.filter((week) => !known.has(week.weekStart))],
-      nextCursor: page.nextCursor,
-    };
+  /** The page after the list's oldest week. Null if the profile changed while it loaded. */
+  older(owner: string, list: HistoryPage): Promise<HistoryPage | null> {
+    return list.nextCursor ? this.fetch(owner, list.nextCursor) : Promise.resolve(null);
   }
 
   /** Keeps the list as History shows it, replacing the one saved before. */
@@ -68,6 +61,15 @@ export class HistoryCache {
     // The response belongs to whoever was signed in when it was requested.
     return this.transport.isActive(owner) ? page : null;
   }
+}
+
+/** The list with an older page after it, each week once. */
+export function withOlderPage(list: HistoryPage, page: HistoryPage): HistoryPage {
+  const known = new Set(list.weeks.map((week) => week.weekStart));
+  return {
+    weeks: [...list.weeks, ...page.weeks.filter((week) => !known.has(week.weekStart))],
+    nextCursor: page.nextCursor,
+  };
 }
 
 /**
