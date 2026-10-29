@@ -14,7 +14,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 
-// This schema is deliberately outside Supabase's exposed public schema.
+// Not the public schema, which Supabase exposes through its Data API.
 export const privateSchema = pgSchema('turnip_private');
 
 export const players = privateSchema

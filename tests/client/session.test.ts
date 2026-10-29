@@ -30,7 +30,7 @@ function serialLock() {
     return result;
   };
 }
-/** Most tests start from an answered welcome dialog (a skip), as before deferral. */
+/** Most tests start from an answered welcome dialog (a skip). */
 function harness(vault: SessionVault, lock = serialLock(), answered = true) {
   const network =
     vi.fn<(path: string, options?: { method?: string; body?: unknown }) => Promise<unknown>>();

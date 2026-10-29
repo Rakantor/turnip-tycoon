@@ -42,9 +42,9 @@
   --clay: #8a3b2e;
   --sun: #8a5a12;
   --night: #57487a;
-  /* The friends line in the odds chart; checked against --leaf for colour-blind contrast. */
+  /* The friends line in the odds chart. */
   --friends: #6b55a8;
-  /* Older names used across the components. */
+  /* Aliases used across the components. */
   --accent: var(--leaf);
   --green: var(--leaf);
   --accent-soft: var(--leaf-soft);

@@ -14,7 +14,6 @@ import {
 
 const _ = null;
 const WEEK = '2026-10-04';
-// Thursday afternoon in the design's example week.
 const THURSDAY_PM = 7;
 
 function member(

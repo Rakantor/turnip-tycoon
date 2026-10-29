@@ -8,7 +8,7 @@ export const pagesPwaOptions: Partial<VitePWAOptions> = {
   strategies: 'generateSW',
   filename: 'sw.js',
   scope: '/',
-  // The checked-in manifest and native registration retain control of their lifecycle.
+  // The manifest is checked in, and the app registers the worker itself.
   manifest: false,
   injectRegister: false,
   registerType: 'prompt',
@@ -25,13 +25,12 @@ export const pagesPwaOptions: Partial<VitePWAOptions> = {
       'icons/*.{png,webp}',
       'licenses/turnip-prophet/{COPYRIGHT,LICENSE,NOTICE}',
     ],
-    // Japanese, Korean and Chinese fonts reach only the players who choose those languages.
+    // CJK fonts are fetched on demand, not precached.
     globIgnores: ['assets/cjk-*.woff2'],
     // Pages uses hash routes: only the app's entry document needs a fallback.
     navigateFallback: 'index.html',
     navigateFallbackAllowlist: [/^\/(?:index\.html)?(?:\?.*)?$/],
-    // User data stays in the existing IndexedDB store; API responses are never cached. A CJK
-    // font is kept once fetched, so its language keeps its look offline.
+    // Only the CJK fonts, kept once fetched. API responses are never cached.
     runtimeCaching: [
       {
         urlPattern: /\/assets\/cjk-[^/]+\.woff2$/,

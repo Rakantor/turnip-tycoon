@@ -3,7 +3,7 @@ import { messages as english } from './locales/en.po';
 
 export interface Language {
   locale: string;
-  /** The language's own name, so people can find it whatever is showing. */
+  /** The language's name in that language. */
   name: string;
   /** Machine-translated and not yet reviewed by players. */
   unreviewed?: boolean;
@@ -24,7 +24,7 @@ export const LANGUAGES: Language[] = [
   ...(import.meta.env.DEV ? [{ locale: 'pseudo', name: 'Pseudo' }] : []),
 ];
 
-// English ships with the app, so text stays readable if another catalog can't load.
+// English is bundled; the other catalogs load on demand and fall back to it.
 const catalogs: Record<string, () => Promise<{ messages: Messages }>> = {
   de: () => import('./locales/de.po'),
   es: () => import('./locales/es.po'),

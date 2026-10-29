@@ -122,7 +122,7 @@ export function Loading({
   );
 }
 
-/** A class that fades content in when it replaces placeholders someone actually saw. */
+/** A class that fades content in when it replaces placeholders that were shown. */
 export function useReveal(placeholder: boolean): string {
   const since = useRef<number | null>(null);
   const [reveal, setReveal] = useState(false);

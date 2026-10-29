@@ -85,9 +85,9 @@ export async function request<T>(
       ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
     });
   // A cookie is installed before fetch resolves, even when its JSON is later ignored.
-  // Share ordinary requests, but drain them before issuing any credential change.
-  // The name follows the origin-wide cookie scope, not a particular app/base path.
-  // Without Web Locks, keep the issued cookie's fixed lifetime instead of renewing unsafely.
+  // Ordinary requests share the lock; a credential change takes it exclusively.
+  // The lock is named for the origin-wide cookie scope, not an app or base path.
+  // Without Web Locks, the cookie keeps the fixed lifetime it was issued with.
   const changesCredential =
     options.method === 'DELETE' ||
     (options.method === 'POST' &&

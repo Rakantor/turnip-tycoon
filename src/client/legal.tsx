@@ -36,7 +36,7 @@ function LegalPage({
 
   return (
     <main className="page legal-page" id="main-content">
-      {/* The terms and privacy page are published in English only. */}
+      {/* The terms and privacy pages are published in English only. */}
       {i18n.locale !== 'en' && (
         <p className="hint legal-language">
           <Trans>This page is only available in English.</Trans>

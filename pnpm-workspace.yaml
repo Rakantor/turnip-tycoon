@@ -16,6 +16,6 @@ onlyBuiltDependencies:
   - esbuild
   - workerd
 
-# macOS file watching has a native optional fallback; normal Vite watching works without it.
+# fsevents is an optional native speed-up for file watching on macOS; Vite works without it.
 ignoredBuiltDependencies:
   - fsevents

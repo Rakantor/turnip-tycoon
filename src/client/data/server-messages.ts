@@ -54,7 +54,7 @@ export function serverMessages(): Record<string, string> {
   };
 }
 
-/** The message in the reader's language; one the app doesn't know yet stays as sent. */
+/** The translation of a server message; one the app doesn't know yet stays as sent. */
 export function serverMessage(message: string): string {
   return serverMessages()[message] ?? message;
 }

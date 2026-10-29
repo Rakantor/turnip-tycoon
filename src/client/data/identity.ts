@@ -68,8 +68,8 @@ const answerWelcome = (displayName: string | null) => controller.answerWelcome(d
 const startAfterRemoval = () => controller.startAfterRemoval();
 
 /**
- * Read current state after async local writes, rather than a stale render. Public legal
- * pages never start the controller, so they hold no profile access to lose.
+ * Reads the controller's current state, not a render's. Before the controller starts, as on
+ * the public legal pages, there is no profile access to lose.
  */
 export const canReloadIdentity = () => !started || controller.state.canReload;
 

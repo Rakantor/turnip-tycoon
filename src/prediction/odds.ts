@@ -57,7 +57,7 @@ export function oddsAbove(
     driver = prediction.patterns.find((pattern) => pattern.id === id) ?? null;
   }
   return {
-    // Floating-point sums can land a hair away from the exact answer.
+    // Floating-point sums can land slightly outside 0 to 1.
     chance: certain ? 1 : impossible ? 0 : Math.min(1, Math.max(0, chance)),
     certain,
     impossible,

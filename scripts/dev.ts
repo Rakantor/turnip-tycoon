@@ -19,7 +19,7 @@ if (demo) {
   }
   console.log('Browsers without a profile open the demo profile, reset to its sample weeks.');
 }
-console.log('Local PostgreSQL is ready. Starting Turnip Tycoon…');
+console.log('Local PostgreSQL is ready. Starting Turnip Tycoon.');
 const vite = spawn(process.execPath, ['node_modules/vite/bin/vite.js', '--host', '127.0.0.1'], {
   stdio: 'inherit',
   env: {

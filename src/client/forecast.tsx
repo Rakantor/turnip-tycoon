@@ -109,8 +109,7 @@ function ForecastChart({
   const tooltip = useRef<HTMLDivElement>(null);
   const tail = useRef<HTMLSpanElement>(null);
 
-  // Sit just above the anchor, but slide down onto a very tall bar rather than
-  // leaving the card: the tooltip may cover the heading, never the page around it.
+  // Just above the anchor, or down onto a very tall bar: the tooltip stays inside the card.
   useLayoutEffect(() => {
     const place = () => {
       const box = tooltip.current;

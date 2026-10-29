@@ -267,7 +267,7 @@ function RightNow({
           </Link>
         </section>
       )}
-      {/* Everyone stays listed, the best price included, for a quick overview. */}
+      {/* Everyone stays listed, the best price included. */}
       {sorted.length > 0 && (
         <>
           <h3 className="friend-list-heading">
@@ -586,7 +586,7 @@ export function Groups() {
     return () => window.clearInterval(timer);
   }, []);
   const weekStart = currentWeekStart(now);
-  // Compare is hidden for now, so the board always shows the current half-day.
+  // There is no period selector: the board always shows the current half-day.
   const period = (currentSlot(now) ?? -1) + 1;
   const { groupId } = useParams();
   const data = useGroups(weekStart, identity.session, identity.status);
@@ -716,20 +716,6 @@ export function Groups() {
                   <Trans>Full week</Trans>
                 </button>
               </div>
-              {/* Compare is hidden for now. To bring it back, keep a chosen period in state
-                  (null meaning the current half-day), pass it to RightNow, and restore:
-              {view === 'now' && (
-                <label className="period-select">
-                  Compare
-                  <select value={period} onChange={(event) => setPeriod(Number(event.target.value))}>
-                    {Array.from({ length: 13 }, (_, index) => (
-                      <option key={index} value={index}>
-                        {periodName(index)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )} */}
             </div>
             {view === 'now' ? (
               <RightNow

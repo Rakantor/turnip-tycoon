@@ -18,7 +18,7 @@ export function useLedger(owner: string | null, connected: boolean): LedgerWeek[
       rows: await database.weeks.where('owner').equals(owner).toArray(),
     })).subscribe({
       next: ({ saved, rows }) => setState({ owner, weeks: withLocalWeeks(saved, rows) }),
-      // Unreadable browser storage leaves the summary out rather than showing wrong totals.
+      // Without readable browser storage there is no summary.
       error: () => setState(null),
     });
     return () => subscription.unsubscribe();

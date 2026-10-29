@@ -9,7 +9,7 @@ import { pagesPwaOptions } from '../../vite.config';
 
 type PrecacheEntry = { url: string; revision: string | null };
 
-// Observe the generated worker's Workbox calls rather than just its source options.
+// Observes the generated worker's Workbox calls, not the source options.
 function inspectWorker(source: string) {
   const calls = {
     entries: [] as PrecacheEntry[],

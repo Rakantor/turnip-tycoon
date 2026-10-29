@@ -142,7 +142,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
           price !== displayedWeek.prices[index] ? [index] : [],
         );
       void pendingEdits.enqueue(editOwner, weekStart, patch, priceSlots).catch(() => {
-        // The queue retains both the patch and an honest persistence warning.
+        // The queue keeps the patch and its persistence warning.
       });
     },
     [owner, weekStart, displayedWeek.prices],
@@ -199,7 +199,7 @@ export function useWeek(weekStart: string, session: SessionResponse | null, conn
                 : 'local';
   return {
     week: displayedWeek,
-    /** This device holds the week or edits to it, rather than an empty placeholder. */
+    /** This device holds the week or edits to it. */
     stored: Boolean(row) || pending.edits.length > 0,
     status,
     error: pending.error ?? relevantFailure?.message ?? null,

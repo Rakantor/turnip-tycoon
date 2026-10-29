@@ -380,8 +380,8 @@ function WeekCalculator({
   const slot = isCurrent ? currentSlot(now) : null;
   const readOnly = !editable;
   const lastWeek = editable && !isCurrent;
-  // What last week's prices identified before this visit's first edit. Only a change
-  // made here prompts the offer, so a pattern chosen on purpose is never questioned.
+  // What last week's prices identified before this visit's first edit. Only a change made
+  // here prompts the offer.
   const [patternBefore, setPatternBefore] = useState<PatternId | null>();
   const implied = uniquePattern(prediction);
   function edit(patch: Partial<OwnWeeklyInputs>, changedSlots?: number[]) {

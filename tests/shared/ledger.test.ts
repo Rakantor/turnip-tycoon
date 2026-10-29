@@ -30,7 +30,7 @@ const sell = (quantity: number, price: number, slot = 4): Trade => ({
   slot,
 });
 
-// The plan's worked example: two purchases at different prices, sold in two goes.
+// Two purchases at different prices, sold in two goes.
 const bought = [buy(4000, 98), buy(6000, 94)];
 
 describe('turnip ledger', () => {

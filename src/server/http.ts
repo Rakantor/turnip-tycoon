@@ -114,7 +114,7 @@ export function checkOrigin(c: Context): void {
   }
 }
 
-// Check actual streamed bytes as well as Content-Length, which clients can omit.
+// Check the streamed bytes as well as Content-Length, which clients can omit.
 export async function readJson<T extends z.ZodType>(c: Context, schema: T): Promise<z.output<T>> {
   if (c.req.header('Content-Type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
     throw new ApiError(415, 'JSON_REQUIRED', 'Send a JSON request.');

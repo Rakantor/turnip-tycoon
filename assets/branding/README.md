@@ -21,7 +21,7 @@ Web PNGs use palette compression. Store PNGs reduce colors before encoding in th
 
 The linked `public/manifest.webmanifest` supplies app metadata and install icons. See [offline setup and verification](../../CONTRIBUTING.md#offline-and-update-verification) for the Pages service worker. Store exports are ready for native packaging; generating them does not create or publish a native app.
 
-The 32px favicon is 1.9 KB, the standard header WebP is 4.9 KB, and the store exports are 298 KB (Apple) and 91 KB (Play). Asset checks cover dimensions, white backgrounds, alpha channels, ICO frames, and maskable safe areas. Build, TypeScript, lint, and formatting pass. Browser checks cover resource responses, manifest parsing, retina selection, and layouts at 320, 390, and 1280 pixels.
+The 32px favicon is 1.9 KB, the standard header WebP is 4.9 KB, and the store exports are 298 KB (Apple) and 91 KB (Play).
 
 References:
 

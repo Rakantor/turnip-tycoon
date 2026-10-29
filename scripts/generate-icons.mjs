@@ -35,7 +35,7 @@ const width = right - left + 1;
 const height = bottom - top + 1;
 const artwork = await sharp(source).extract({ left, top, width, height }).png().toBuffer();
 
-// Measure the actual silhouette so every visible part fits the maskable safe circle.
+// Measure the silhouette so every visible part fits the maskable safe circle.
 let radius = 0;
 for (let y = top; y <= bottom; y++) {
   for (let x = left; x <= right; x++) {

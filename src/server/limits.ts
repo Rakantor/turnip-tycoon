@@ -8,14 +8,14 @@ export interface RateLimiter {
 }
 
 export interface RateLimits {
-  /** Per client address: new profiles, which a person starts once in a long while. */
+  /** Per client address: new profiles. */
   profiles?: RateLimiter;
   /**
    * Per client address and endpoint: pairing, recovery and session starts carrying a
    * credential, the writes a script could repeat.
    */
   client?: RateLimiter;
-  /** Across everyone: new profiles, so a flood spread over many addresses still has a ceiling. */
+  /** Across everyone: new profiles. */
   creation?: RateLimiter;
 }
 

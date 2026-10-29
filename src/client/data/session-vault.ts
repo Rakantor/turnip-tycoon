@@ -26,7 +26,7 @@ function sessionRecord(
   value: unknown,
 ): (Omit<SessionRecord, 'revision'> & { revision: string | null }) | undefined {
   if (!value) return undefined;
-  // Same-origin installations originally saved the public session directly.
+  // A record without a revision is a bare session response from an earlier same-origin install.
   return 'revision' in (value as object)
     ? (value as SessionRecord)
     : { revision: null, session: value as SessionResponse };

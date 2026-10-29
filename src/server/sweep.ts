@@ -102,8 +102,8 @@ const recoverable = sql`exists (select 1 from ${recoveryCredentials} where ${rec
 const device = (condition: SQL) =>
   sql`exists (select 1 from ${devices} where ${devices.playerId} = ${players.id} and ${condition})`;
 /**
- * The sweep judges a profile by its devices. One without any, which only removing or logging
- * out of the last device leaves behind, gives it nothing to go on, so that profile stays.
+ * The sweep judges a profile by its devices. One with none, which only removing or logging out
+ * of the last device leaves behind, is left alone.
  */
 const hasDevices = device(sql`true`);
 /** A device that can still use the profile. */

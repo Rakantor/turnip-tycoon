@@ -202,8 +202,7 @@ export function weekAdvice({
   const peak = prediction.slots[peakSlot].max;
   const floor = prediction.slots[peakSlot].min;
   const current = slot === null ? null : prices[slot];
-  // Early in the week several half-days can reach the same maximum; naming
-  // only the first of them would suggest a precision the forecast lacks.
+  // Half-days within 3% of the peak count as the peak; early in the week there are several.
   const peakSlots = upcoming.filter((index) => prediction.slots[index].max >= peak * 0.97);
   const halfDay = slotName(peakSlot);
   const first = slotName(peakSlots[0]);

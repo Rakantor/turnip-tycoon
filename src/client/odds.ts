@@ -97,8 +97,7 @@ function hasPrices(member: SharedPlayerWeek): boolean {
  * The chance that anyone in the group beats the best price reported for this
  * half-day before Saturday closes. Until anyone reports it, the best price of the
  * latest half-day someone did report stands in. Only islands with a price this week
- * count: entering prices is the best sign a friend will check theirs and open their
- * gates. `closed` is after 10 PM, when tonight's half-day is over.
+ * count. `closed` is after 10 PM, when tonight's half-day is over.
  */
 export function groupOdds(
   members: ForecastMember[],

@@ -24,7 +24,7 @@ function useInvitePreview<T>(path: string | null): T | null {
         if (active) setPreview({ path, data });
       })
       .catch(() => {
-        // An unknown or expired code just shows the ordinary welcome.
+        // An unknown or expired code shows the ordinary welcome.
         if (active) setPreview({ path, data: null });
       });
     return () => {

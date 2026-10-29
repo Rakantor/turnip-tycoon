@@ -162,7 +162,7 @@ VITE_API_URL=http://127.0.0.1:8787 pnpm build:pages
 VITE_API_URL=http://127.0.0.1:8787 pnpm preview:pages
 ```
 
-Open **http://localhost:4174/**. With the checked-in local connection settings, this uses the local database, not Supabase. Production's origin allowlist intentionally rejects localhost pages. Rebuild with the production `VITE_API_URL` before publishing.
+Open **http://localhost:4174/**. With the checked-in local connection settings, this uses the local database, not Supabase. Production's origin allowlist rejects localhost pages. Rebuild with the production `VITE_API_URL` before publishing.
 
 ## Offline and update verification
 
@@ -180,7 +180,7 @@ Using the local Pages preview:
 4. Keep two tabs open. Make a visible source change, rebuild with the local API origin, reload one tab to fetch the update, and apply from Prices. Confirm the new version, retained queued edits, and no reload in the other tab. Repeat with an invalid draft and with a downloaded update while offline.
 5. On physical Android/iOS devices, test installation, standalone launch, recovery, offline reopening, reconnection, and queued uploads after rollover.
 
-Persistent-profile Chromium checks passed for offline reopening/reconnection, downloaded updates applied offline, invalid-draft protection, preserving another tab's draft, 320-pixel Settings, and manifest/installability checks. Automated private profiles stalled during activation; updates timed out safely. **Physical-device installation and further private-mode update verification remain outstanding.**
+Physical-device installation and private-mode updates have not been verified.
 
 ## Terms and privacy
 
@@ -194,8 +194,8 @@ The pages are written for players: short, plain sections with the privacy summar
 them that way. Put implementation detail here, not on the pages. They state these operator facts,
 confirmed on 2026-10-06 (email setup on 2026-10-11):
 
-- The controller is Rakantor, `hello@turniptycoon.app`; the operator confirmed the public
-  pseudonym is sufficient where they are established.
+- The controller is Rakantor, `hello@turniptycoon.app`; the public pseudonym is sufficient
+  where they are established.
 - Cloudflare Email Routing receives `hello@turniptycoon.app` and forwards it to the operator's
   Gmail. Replies go out through Resend's SMTP on its **Free plan** (30-day retention). **Changing
   how mail is received or sent changes "Services we use".**
@@ -282,7 +282,7 @@ does not prove deletion: the UI offers local cleanup and a private contact route
 server success. In cookie mode, local cleanup requires acknowledged logout before reporting access
 cleared. Logout also acknowledges already removed or expired credentials and clears the cookie.
 Provider logs, backups, and contact email are outside these endpoints. Before
-restoring any backup, ensure previously erased records cannot become active again.
+restoring any backup, check that previously erased records cannot become active again.
 
 When changing the pages or the app:
 
