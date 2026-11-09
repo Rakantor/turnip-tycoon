@@ -2076,11 +2076,6 @@ msgstr "지난 주"
 msgid "Past weeks and their profit"
 msgstr "지난 주와 이익"
 
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "Past weeks are read-only. <0>Return to this week</0>"
-msgstr "지난 주는 볼 수만 있어요. <0>이번 주로 돌아가기</0>"
-
 #: src/client/advice.ts
 #, fuzzy
 msgid "Peak day still open"

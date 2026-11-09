@@ -2076,11 +2076,6 @@ msgstr "Vergangene Wochen"
 msgid "Past weeks and their profit"
 msgstr "Vergangene Wochen und ihr Gewinn"
 
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "Past weeks are read-only. <0>Return to this week</0>"
-msgstr "Vergangene Wochen sind schreibgeschützt. <0>Zurück zu dieser Woche</0>"
-
 #: src/client/advice.ts
 #, fuzzy
 msgid "Peak day still open"

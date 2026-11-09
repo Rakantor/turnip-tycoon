@@ -2076,11 +2076,6 @@ msgstr "Eerdere weken"
 msgid "Past weeks and their profit"
 msgstr "Eerdere weken en hun winst"
 
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "Past weeks are read-only. <0>Return to this week</0>"
-msgstr "Eerdere weken zijn alleen-lezen. <0>Terug naar deze week</0>"
-
 #: src/client/advice.ts
 #, fuzzy
 msgid "Peak day still open"

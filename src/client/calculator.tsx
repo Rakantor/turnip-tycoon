@@ -471,13 +471,6 @@ function WeekCalculator({
           </Link>
         )}
       </div>
-      {readOnly && (
-        <p className="history-note">
-          <Trans>
-            Past weeks are read-only. <Link to="/">Return to this week</Link>
-          </Trans>
-        </p>
-      )}
       <Outlook advice={advice} />
       <div className="calculator-layout">
         <section className="weekly-entry" aria-labelledby="prices-title">

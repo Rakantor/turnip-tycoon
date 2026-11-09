@@ -349,12 +349,6 @@ p {
   justify-content: flex-start;
   gap: 14px;
 }
-.history-note {
-  margin: -6px 0 22px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--muted);
-}
 .narrow-page {
   max-width: 680px;
 }

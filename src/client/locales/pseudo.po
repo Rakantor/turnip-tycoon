@@ -1676,10 +1676,6 @@ msgstr ""
 msgid "Past weeks and their profit"
 msgstr ""
 
-#: src/client/calculator.tsx
-msgid "Past weeks are read-only. <0>Return to this week</0>"
-msgstr ""
-
 #: src/client/advice.ts
 msgid "Peak day still open"
 msgstr ""

@@ -2076,11 +2076,6 @@ msgstr "過去の週"
 msgid "Past weeks and their profit"
 msgstr "過去の週と利益"
 
-#: src/client/calculator.tsx
-#, fuzzy
-msgid "Past weeks are read-only. <0>Return to this week</0>"
-msgstr "過去の週は閲覧のみです。<0>今週に戻る</0>"
-
 #: src/client/advice.ts
 #, fuzzy
 msgid "Peak day still open"
