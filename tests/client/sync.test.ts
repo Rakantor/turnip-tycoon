@@ -195,6 +195,105 @@ describe('durable weekly sync', () => {
     },
   );
 
+  describe('a cached week that was never saved', () => {
+    const decreasing = [90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35];
+
+    it.each([
+      { cached: null, server: 'decreasing' },
+      { cached: 'decreasing', server: null },
+    ] as const)(
+      'saves the server’s current default $server over the cached $cached',
+      async ({ cached, server }) => {
+        const h = harness({ ...emptyWeek(owner, week), previousPattern: cached });
+        await h.store.sync(owner, week);
+        expect(await h.db.weeks.get(weekKey(owner, week))).toMatchObject({
+          hydrated: true,
+          dirty: false,
+          data: { previousPattern: cached, revision: 0 },
+        });
+        // The week before was saved since, so the server infers a different default.
+        h.remote.set(week, { ...emptyWeek(owner, week), previousPattern: server });
+        await h.store.edit(owner, week, { purchasePrice: 100 });
+        await h.store.sync(owner, week);
+        expect(h.transport.put.mock.calls[0][1].previousPattern).toBe(server);
+        expect(h.remote.get(week)).toMatchObject({ purchasePrice: 100, previousPattern: server });
+      },
+    );
+
+    it('saves the default from unsent edits to a loaded week before', async () => {
+      const h = harness();
+      await h.store.sync(owner, week);
+      await h.store.sync(owner, '2026-09-27');
+      await h.store.edit(owner, '2026-09-27', { purchasePrice: 100, prices: [...decreasing] });
+      await h.store.edit(owner, week, { purchasePrice: 100 });
+      await h.store.sync(owner, week);
+      expect(h.remote.get(week)?.previousPattern).toBe('decreasing');
+    });
+
+    it('keeps the cached default when the week before was edited here but never loaded', async () => {
+      const previous = '2026-09-27';
+      const h = harness({
+        ...emptyWeek(owner, previous),
+        purchasePrice: 100,
+        prices: [...decreasing],
+        revision: 3,
+      });
+      h.remote.set(week, { ...emptyWeek(owner, week), previousPattern: 'decreasing' });
+      await h.store.sync(owner, week);
+      // Offline, an edit to the week before covers only what this device changed.
+      await h.store.initialize(owner, previous);
+      await h.store.edit(owner, previous, { purchasePrice: 101 });
+      await h.store.edit(owner, week, { purchasePrice: 100 });
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1].previousPattern).toBe('decreasing');
+    });
+
+    it('shows and saves the pattern a never-loaded week before identifies on its own', async () => {
+      const previous = '2026-09-27';
+      const h = harness();
+      await h.store.sync(owner, week);
+      await h.store.initialize(owner, previous);
+      await h.store.edit(owner, previous, { purchasePrice: 100, prices: [...decreasing] });
+      await h.store.sync(owner, week);
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.data.previousPattern).toBe('decreasing');
+      await h.store.edit(owner, week, { purchasePrice: 100 });
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1].previousPattern).toBe('decreasing');
+    });
+
+    it('keeps an Unknown chosen after the week was cached', async () => {
+      const h = harness();
+      await h.store.sync(owner, week);
+      h.remote.set(week, { ...emptyWeek(owner, week), previousPattern: 'decreasing' });
+      await h.store.edit(owner, week, { previousPattern: null });
+      await h.store.sync(owner, week);
+      expect(h.transport.put.mock.calls[0][1].previousPattern).toBeNull();
+      expect(h.remote.get(week)?.previousPattern).toBeNull();
+    });
+
+    it('takes another device’s pattern saved during the upload without a conflict', async () => {
+      const h = harness();
+      await h.store.sync(owner, week);
+      await h.store.edit(owner, week, { purchasePrice: 100 });
+      h.remote.set(week, {
+        ...emptyWeek(owner, week),
+        previousPattern: 'large-spike',
+        revision: 1,
+      });
+      h.transport.get.mockResolvedValueOnce({
+        ...emptyWeek(owner, week),
+        previousPattern: 'decreasing',
+      });
+      await h.store.sync(owner, week);
+      expect((await h.db.weeks.get(weekKey(owner, week)))?.conflict).toBeUndefined();
+      expect(h.remote.get(week)).toMatchObject({
+        purchasePrice: 100,
+        previousPattern: 'large-spike',
+        revision: 2,
+      });
+    });
+  });
+
   it('combines rapid field edits from the same stale rendered price snapshot', async () => {
     const h = harness();
     // Both blur handlers saw the original empty render. Each explicitly marks

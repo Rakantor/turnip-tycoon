@@ -221,6 +221,8 @@ export class WeekStore {
         if (row.pending || row.conflict) return;
         // Only a never-saved week receives a default. A saved Unknown is a choice.
         let defaults = remote;
+        // Edits to a week this device never loaded can't decide the default on their own.
+        let partialPrevious = false;
         if (remote.revision === 0) {
           const previous = await this.db.weeks.get(weekKey(owner, shiftWeek(weekStart, -1)));
           // The server supersedes a clean cache; only unsynced prior edits are newer.
@@ -229,6 +231,7 @@ export class WeekStore {
               ...remote,
               previousPattern: inferPreviousPattern(previous.data, owner, weekStart),
             };
+            partialPrevious = !previous.hydrated;
           }
         }
         if (!row.hydrated) {
@@ -241,6 +244,11 @@ export class WeekStore {
           row.data = defaults;
           row.syncedAt = Date.now();
         } else if (remote.revision !== row.data.revision) reconcile(row, remote);
+        else if (remote.revision === 0 && !partialPrevious) {
+          // Still never saved: entries left alone here keep following the defaults.
+          row.data = mergeTouched(defaults, row);
+          row.base = defaults;
+        }
         await this.db.weeks.put(row);
       });
     }
