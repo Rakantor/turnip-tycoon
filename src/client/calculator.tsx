@@ -358,7 +358,7 @@ function WeekCalculator({
   weekStart: string;
   now: Date;
   isCurrent: boolean;
-  /** This week or last week; older weeks are read-only. */
+  /** This week or one of the four before it; older weeks are read-only. */
   editable: boolean;
 }) {
   const identity = useApp();
@@ -379,7 +379,7 @@ function WeekCalculator({
   const prediction = useMemo(() => predictWeek(week), [week]);
   const slot = isCurrent ? currentSlot(now) : null;
   const readOnly = !editable;
-  const lastWeek = editable && !isCurrent;
+  const lastWeek = !isCurrent && shiftWeek(weekStart, 1) === currentWeekStart(now);
   // What last week's prices identified before this visit's first edit. Only a change made
   // here prompts the offer.
   const [patternBefore, setPatternBefore] = useState<PatternId | null>();
@@ -464,11 +464,7 @@ function WeekCalculator({
         {!isCurrent && (
           <Link
             className="icon-button"
-            to={
-              shiftWeek(weekStart, 1) === currentWeekStart(now)
-                ? '/'
-                : `/weeks/${shiftWeek(weekStart, 1)}`
-            }
+            to={lastWeek ? '/' : `/weeks/${shiftWeek(weekStart, 1)}`}
             aria-label={t`Next week`}
           >
             <ArrowRight size={19} />

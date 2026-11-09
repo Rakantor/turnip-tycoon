@@ -15,10 +15,12 @@ export function shiftWeek(weekStart: string, offset: number): string {
   return calendarDate(date);
 }
 
-/** The interface edits this week and last week, so a forgotten entry can still be fixed. */
+const EDITABLE_PAST_WEEKS = 4;
+
+/** The interface edits this week and the four before it, so a missed sale can be logged. */
 export function isEditableWeek(weekStart: string, date = new Date()): boolean {
   const current = currentWeekStart(date);
-  return weekStart <= current && weekStart >= shiftWeek(current, -1);
+  return weekStart <= current && weekStart >= shiftWeek(current, -EDITABLE_PAST_WEEKS);
 }
 
 export function currentSlot(date = new Date()): number | null {

@@ -23,20 +23,25 @@ describe('island calendar helpers', () => {
     expect(currentSlot(new Date(2026, 9, 10, 12, 0))).toBe(11);
   });
 
-  it('keeps this week and last week editable until the next local Sunday', () => {
+  it('keeps this week and the four before it editable until the next local Sunday', () => {
     const saturday = new Date(2026, 9, 3, 23, 59, 59);
     expect(isEditableWeek('2026-09-27', saturday)).toBe(true);
     expect(isEditableWeek('2026-09-20', saturday)).toBe(true);
-    expect(isEditableWeek('2026-09-13', saturday)).toBe(false);
+    expect(isEditableWeek('2026-08-30', saturday)).toBe(true);
+    expect(isEditableWeek('2026-08-23', saturday)).toBe(false);
 
     const sunday = new Date(2026, 9, 4, 0, 0, 0);
     expect(isEditableWeek('2026-10-04', sunday)).toBe(true);
     expect(isEditableWeek('2026-09-27', sunday)).toBe(true);
-    expect(isEditableWeek('2026-09-20', sunday)).toBe(false);
+    expect(isEditableWeek('2026-09-06', sunday)).toBe(true);
+    expect(isEditableWeek('2026-08-30', sunday)).toBe(false);
     expect(isEditableWeek('2026-10-11', sunday)).toBe(false);
 
-    // Last week stays editable across a year boundary.
-    expect(isEditableWeek('2025-12-28', new Date(2026, 0, 4, 9))).toBe(true);
+    // The window reaches back across a year boundary.
+    const january = new Date(2026, 0, 4, 9);
+    expect(isEditableWeek('2025-12-28', january)).toBe(true);
+    expect(isEditableWeek('2025-12-07', january)).toBe(true);
+    expect(isEditableWeek('2025-11-30', january)).toBe(false);
   });
 
   it('shifts calendar weeks through month and year boundaries', () => {

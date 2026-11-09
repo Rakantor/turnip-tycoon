@@ -606,7 +606,7 @@ export function WeekTurnips({
   );
 }
 
-/** A finished week's turnips. Last week can still be changed; older weeks are read-only. */
+/** A finished week's turnips. The four weeks before this one can still be changed. */
 export function PastTurnips({
   week,
   lastWeek,
